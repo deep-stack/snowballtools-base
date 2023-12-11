@@ -12,7 +12,7 @@ const Sidebar = () => {
         <div>
           <NavLink
             to="/"
-            className={({ isActive }) => (isActive ? 'text-blue-500	' : '')}
+            className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
             Projects
           </NavLink>
@@ -20,7 +20,7 @@ const Sidebar = () => {
         <div>
           <NavLink
             to="/settings"
-            className={({ isActive }) => (isActive ? 'text-blue-500	' : '')}
+            className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
             Settings
           </NavLink>
