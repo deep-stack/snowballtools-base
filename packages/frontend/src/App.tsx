@@ -1,28 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React from 'react'
+import {
+  createBrowserRouter,
+  RouterProvider } from "react-router-dom";
+
+import Dashboard from './pages/dashboard';
+import Projects from './pages/dashboard/Projects';
+import Settings from './pages/dashboard/Settings';
+import Project from './pages/dashboard/Project';
+import CreateProject from './pages/dashboard/CreateProject';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Dashboard />,
+    children: [
+      { index: true, element: <Projects /> },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+      {
+        path: ":id",
+        element: <Project />,
+      }, {
+        path: "create",
+        element: <CreateProject />,
+      }
+    ]
+  },
+]);
 
 function App() {
   return (
-    <div className="text-center">
-      <header className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
-        <img
-          src={logo}
-          className="animate-spin pointer-events-none h-96"
-          alt="logo"
-        />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-blue-400"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router} />
   );
 }
 
