@@ -6,7 +6,7 @@ const Sidebar = () => {
     <div className="flex flex-col h-full p-4">
       <div className="basis-1/2 flex flex-col justify-start gap-4">
         <div>
-          <h3 className="text-black	text-2xl">Snowball</h3>
+          <h3 className="text-black text-2xl">Snowball</h3>
         </div>
         <div>Organization</div>
         <div>

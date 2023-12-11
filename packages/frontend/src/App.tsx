@@ -2,13 +2,13 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Dashboard from './pages/dashboard';
-import { DashboardRoutes } from './pages/dashboard/routes';
+import { dashboardRoutes } from './pages/dashboard/routes';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Dashboard />,
-    children: DashboardRoutes,
+    children: dashboardRoutes,
   },
 ]);
 
