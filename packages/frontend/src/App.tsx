@@ -1,7 +1,5 @@
-import React from 'react'
-import {
-  createBrowserRouter,
-  RouterProvider } from "react-router-dom";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Dashboard from './pages/dashboard';
 import { DashboardRoutes } from './pages/dashboard/routes';
@@ -15,9 +13,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

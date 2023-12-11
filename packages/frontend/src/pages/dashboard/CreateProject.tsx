@@ -1,11 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-const CreateProject =()=>{
+const CreateProject = () => {
   return (
-    <div>
-      Create new project page
-    </div>
-  )
-}
+    <div className="bg-white rounded-3xl h-full">Create new project page</div>
+  );
+};
 
-export default CreateProject
+export default CreateProject;

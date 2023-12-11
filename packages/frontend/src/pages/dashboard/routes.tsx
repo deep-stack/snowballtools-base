@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-import Projects from "./Projects";
-import Project from "./Project";
-import Settings from "./Settings";
-import CreateProject from "./CreateProject";
+import Projects from './Projects';
+import Project from './Project';
+import Settings from './Settings';
+import CreateProject from './CreateProject';
 
 export const DashboardRoutes = [
   {
@@ -11,15 +11,15 @@ export const DashboardRoutes = [
     element: <Projects />,
   },
   {
-    path: "settings",
+    path: 'settings',
     element: <Settings />,
   },
   {
-    path: ":id",
+    path: ':id',
     element: <Project />,
-  }, {
-    path: "create",
+  },
+  {
+    path: 'create',
     element: <CreateProject />,
-  }
-]
-
+  },
+];

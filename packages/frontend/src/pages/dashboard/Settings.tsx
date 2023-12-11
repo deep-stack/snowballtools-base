@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-const Settings =()=>{
-  return (
-    <div>Settings page</div>
-  )
-}
+const Settings = () => {
+  return <div className="bg-white rounded-3xl h-full">Settings page</div>;
+};
 
-export default Settings
+export default Settings;
