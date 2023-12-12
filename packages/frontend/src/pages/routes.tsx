@@ -1,9 +1,8 @@
 import React from 'react';
 
 import Projects from './Projects';
-import Project from './Project';
 import Settings from './Settings';
-import CreateProject from './CreateProject';
+import { projectsRoutes } from './projects/routes';
 
 export const dashboardRoutes = [
   {
@@ -15,11 +14,7 @@ export const dashboardRoutes = [
     element: <Settings />,
   },
   {
-    path: ':id',
-    element: <Project />,
-  },
-  {
-    path: 'create',
-    element: <CreateProject />,
+    path: 'projects',
+    children: projectsRoutes,
   },
 ];

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import Dashboard from './pages/dashboard';
-import { dashboardRoutes } from './pages/dashboard/routes';
+import Dashboard from './pages';
+import { dashboardRoutes } from './pages/routes';
 
 const router = createBrowserRouter([
   {
