@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <div className="flex flex-col h-full p-4">
-      <div className="basis-1/2 flex flex-col justify-start gap-4">
+      <div className="grow">
         <div>
           <h3 className="text-black text-2xl">Snowball</h3>
         </div>
@@ -26,7 +26,7 @@ const Sidebar = () => {
           </NavLink>
         </div>
       </div>
-      <div className="basis-1/2 flex flex-col justify-end gap-4">
+      <div className="grow flex flex-col justify-end">
         <div>Documentation</div>
         <div>Support</div>
       </div>
