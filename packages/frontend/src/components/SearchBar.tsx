@@ -1,13 +1,27 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onSearch: (searchText: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const { watch, register } = useForm({
+    defaultValues: {
+      search: '',
+    },
+  });
+  const searchValue = watch('search');
+  onSearch(searchValue);
+
   return (
-    <div className="w-full p-2 flex items-center">
-      <div className="grid place-items-center h-full w-10 text-gray-300">^</div>
+    <div className="w-full flex">
+      <div className="text-gray-300">^</div>
       <input
+        {...register('search')}
         type="text"
         placeholder="Search"
-        className="h-full w-full text-gray-700 border-none focus:outline-none text-xs"
+        className="grow text-gray-700 border-none focus:outline-none text-xs"
       />
     </div>
   );

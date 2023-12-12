@@ -1,14 +1,14 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import Dashboard from './pages';
-import { dashboardRoutes } from './pages/routes';
+import Home from './pages';
+import { homeRoutes } from './pages/routes';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Dashboard />,
-    children: dashboardRoutes,
+    element: <Home />,
+    children: homeRoutes,
   },
 ]);
 

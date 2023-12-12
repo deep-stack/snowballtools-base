@@ -4,7 +4,7 @@ import Projects from './Projects';
 import Settings from './Settings';
 import { projectsRoutes } from './projects/routes';
 
-export const dashboardRoutes = [
+export const homeRoutes = [
   {
     path: '/',
     element: <Projects />,
