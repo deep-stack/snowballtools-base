@@ -8,7 +8,7 @@ const Projects = () => {
     <div className="bg-white rounded-3xl h-full">
       <div className="flex p-4">
         <div className="grow">
-          <SearchBar onSearch={() => {}} />
+          <SearchBar handler={() => {}} />
         </div>
         <div className="text-gray-300">^</div>
         <div className="text-gray-300">^</div>
