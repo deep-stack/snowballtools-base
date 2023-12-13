@@ -15,11 +15,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       <div>^</div>
       <div className="grow">
         <p>{repository.title}</p>
-        <p>
-          {DateTime.fromISO(repository.updatedTime).toRelative({
-            round: false,
-          })}
-        </p>
+        <p>{DateTime.fromISO(repository.updatedTime).toRelative()}</p>
       </div>
     </div>
   );
