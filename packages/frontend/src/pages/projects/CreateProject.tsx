@@ -4,60 +4,26 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar';
 import repositoryDetails from '../../assets/repository.json';
 import templateDetails from '../../assets/template.json';
-
-interface RepositoryDetails {
-  title: string;
-  updatedTime: string;
-}
-interface ProjectRepoCardProps {
-  repository: RepositoryDetails;
-}
-const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
-  return (
-    <div className="flex text-gray-500 text-xs bg-gray-100 m-2">
-      <div>^</div>
-      <div className="grow">
-        <p>{repository.title}</p>
-        <p>{repository.updatedTime}</p>
-      </div>
-    </div>
-  );
-};
-
-interface TemplateDetails {
-  framework: string;
-  icon: string;
-}
-interface TemplateCardProps {
-  framework: TemplateDetails;
-}
-
-const TemplateCard: React.FC<TemplateCardProps> = ({ framework }) => {
-  return (
-    <div className="bg-gray-200 text-gray-500 text-xs border-gray-200 rounded-lg shadow p-4">
-      {framework.icon}
-      {framework.framework}
-    </div>
-  );
-};
+import TemplateCard from '../../components/TemplateCard';
+import ProjectRepoCard from '../../components/ProjectRepoCard';
 
 const RepositoryList = () => {
   return (
     <div className="p-4">
       <div className="flex">
         <div className="basis-1/3">
-          <SearchBar handler={() => {}} placeholder="All accounts" />
+          <input
+            type="text"
+            placeholder="All accounts"
+            className="text-gray-700 text-xs w-full border-none focus:outline-none"
+          />
         </div>
         <div className="basis-2/3">
           <SearchBar handler={() => {}} placeholder="Search for repositorry" />
         </div>
       </div>
       {repositoryDetails.map((repo, key) => {
-        return (
-          <div key={key}>
-            <ProjectRepoCard repository={repo} key={key} />
-          </div>
-        );
+        return <ProjectRepoCard repository={repo} key={key} />;
       })}
     </div>
   );
@@ -82,11 +48,7 @@ const CreateProject = () => {
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
         {templateDetails.map((framework, key) => {
-          return (
-            <div key={key}>
-              <TemplateCard framework={framework} key={key} />
-            </div>
-          );
+          return <TemplateCard framework={framework} key={key} />;
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
