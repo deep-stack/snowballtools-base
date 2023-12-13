@@ -1,0 +1,22 @@
+[
+  {
+    "framework": "React",
+    "icon": "^"
+  },
+  {
+    "framework": "Reactnative",
+    "icon": "^"
+  },
+  {
+    "framework": "Kotlin",
+    "icon": "^"
+  },
+  {
+    "framework": "Swift",
+    "icon": "^"
+  },
+  {
+    "framework": "Webapp",
+    "icon": "^"
+  }
+]

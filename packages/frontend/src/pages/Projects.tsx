@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import SearchBar from '../components/SearchBar';
 import Card from '../components/Card';
@@ -21,9 +22,11 @@ const Projects = () => {
         </div>
         <div>
           {/* TODO: Create button component */}
-          <button className="bg-sky-600 text-white text-sm px-4 py-2 border rounded-full">
-            Create project
-          </button>
+          <Link to="/projects/create">
+            <button className="bg-sky-600 text-white text-sm px-4 py-2 border rounded-full">
+              Create project
+            </button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-5 p-5">
