@@ -1,23 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SearchBar from '../../components/SearchBar';
 
-const ProjectRepoCard = () => {
+import SearchBar from '../../components/SearchBar';
+import repositoryDetails from '../../assets/repository.json';
+import templateDetails from '../../assets/template.json';
+
+interface RepositoryDetails {
+  title: string;
+  updatedTime: string;
+}
+interface ProjectRepoCardProps {
+  repository: RepositoryDetails;
+}
+const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
   return (
     <div className="flex text-gray-500 text-xs bg-gray-100 m-2">
       <div>^</div>
       <div className="grow">
-        <p>Project title</p>
-        <p>5 minutes ago</p>
+        <p>{repository.title}</p>
+        <p>{repository.updatedTime}</p>
       </div>
     </div>
   );
 };
 
-const FrameworkCard = () => {
+interface TemplateDetails {
+  framework: string;
+  icon: string;
+}
+interface TemplateCardProps {
+  framework: TemplateDetails;
+}
+
+const TemplateCard: React.FC<TemplateCardProps> = ({ framework }) => {
   return (
-    <div className="bg-gray-200 text-gray-500 text-xs  border-gray-200 rounded-lg shadow p-4">
-      Framework Cards
+    <div className="bg-gray-200 text-gray-500 text-xs border-gray-200 rounded-lg shadow p-4">
+      {framework.icon}
+      {framework.framework}
     </div>
   );
 };
@@ -33,12 +52,13 @@ const RepositoryList = () => {
           <SearchBar handler={() => {}} placeholder="Search for repositorry" />
         </div>
       </div>
-      <div>
-        <ProjectRepoCard />
-        <ProjectRepoCard />
-        <ProjectRepoCard />
-        <ProjectRepoCard />
-      </div>
+      {repositoryDetails.map((repo, key) => {
+        return (
+          <div key={key}>
+            <ProjectRepoCard repository={repo} key={key} />
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -61,10 +81,13 @@ const CreateProject = () => {
       <hr className="h-px bg-slate-200 border-0" />
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
-        <FrameworkCard />
-        <FrameworkCard />
-        <FrameworkCard />
-        <FrameworkCard />
+        {templateDetails.map((framework, key) => {
+          return (
+            <div key={key}>
+              <TemplateCard framework={framework} key={key} />
+            </div>
+          );
+        })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
       <RepositoryList />
