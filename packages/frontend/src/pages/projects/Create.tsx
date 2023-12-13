@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import templateDetails from '../../assets/template.json';
+import templateDetails from '../../assets/templates.json';
 import TemplateCard from '../../components/TemplateCard';
 import RepositoryList from '../../components/RepositoryList';
+import ConnectAccount from '../../components/ConnectAccount';
+
+const isGitAuth = false;
 
 const CreateProject = () => {
   return (
-    <div className="bg-white rounded-3xl h-full">
+    <div className="bg-white rounded-3xl h-full p-4">
       <div className="flex p-2">
         <div className="grow p-4">
           <h3 className="text-gray-750 text-2xl">Create new project</h3>
@@ -28,7 +31,7 @@ const CreateProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      <RepositoryList />
+      {isGitAuth ? <RepositoryList /> : <ConnectAccount />}
     </div>
   );
 };

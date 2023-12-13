@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import SearchBar from '../components/SearchBar';
-import Card from '../components/Card';
+import ProjectCard from '../components/ProjectCard';
+import HorizontalLine from '../components/HorizontalLine';
+import projectsDetail from '../assets/projects.json';
 
 const Projects = () => {
   return (
@@ -15,7 +17,7 @@ const Projects = () => {
         <div className="text-gray-300">^</div>
         <div className="text-gray-300">^</div>
       </div>
-      <hr className="h-px bg-slate-200 border-0" />
+      <HorizontalLine />
       <div className="flex p-4">
         <div className="grow">
           <h3 className="text-gray-750 text-2xl">Projects</h3>
@@ -30,10 +32,9 @@ const Projects = () => {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-5 p-5">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        {projectsDetail.map((project, key) => {
+          return <ProjectCard project={project} key={key} />;
+        })}
       </div>
     </div>
   );

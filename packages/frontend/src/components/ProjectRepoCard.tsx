@@ -5,6 +5,7 @@ interface RepositoryDetails {
   title: string;
   updatedTime: string;
 }
+
 interface ProjectRepoCardProps {
   repository: RepositoryDetails;
 }

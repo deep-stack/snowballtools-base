@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CreateProject from './CreateProject';
+import CreateProject from './Create';
 import Project from './Project';
 
 export const projectsRoutes = [

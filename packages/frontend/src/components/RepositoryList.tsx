@@ -2,7 +2,7 @@ import React from 'react';
 
 import SearchBar from './SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
-import repositoryDetails from '../assets/repository.json';
+import repositoryDetails from '../assets/repositories.json';
 
 const RepositoryList = () => {
   return (
