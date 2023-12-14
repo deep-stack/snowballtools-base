@@ -1,14 +1,13 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-const Overview = () => (
-  <div>
-    Content of overview tab
-    <p className="block">
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-    </p>
-  </div>
-);
+import Overview from './Overview';
+import { ProjectDetails } from '../types/project';
+
+interface ProjectTabsProps {
+  project: ProjectDetails;
+}
+
 const Deployments = () => (
   <div>
     Content of deployments tab
@@ -44,7 +43,7 @@ const Settings = () => (
   </div>
 );
 
-const ProjectTab = () => {
+const ProjectTabs = ({ project }: ProjectTabsProps) => {
   return (
     <Tabs
       selectedTabClassName={
@@ -59,7 +58,7 @@ const ProjectTab = () => {
         <Tab className={'p-2 cursor-pointer'}>Settings</Tab>
       </TabList>
       <TabPanel>
-        <Overview />
+        <Overview project={project} />
       </TabPanel>
       <TabPanel>
         <Deployments />
@@ -77,4 +76,4 @@ const ProjectTab = () => {
   );
 };
 
-export default ProjectTab;
+export default ProjectTabs;

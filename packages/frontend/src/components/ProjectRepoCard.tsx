@@ -1,5 +1,6 @@
 import React from 'react';
-import { DateTime } from 'luxon';
+
+import { relativeTime } from '../utils/time';
 
 interface RepositoryDetails {
   title: string;
@@ -16,7 +17,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       <div>^</div>
       <div className="grow">
         <p>{repository.title}</p>
-        <p>{DateTime.fromISO(repository.updatedTime).toRelative()}</p>
+        <p>{relativeTime(repository.updatedTime)}</p>
       </div>
     </div>
   );

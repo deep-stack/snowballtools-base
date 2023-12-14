@@ -1,19 +1,11 @@
 import React from 'react';
-import { DateTime } from 'luxon';
 import { Link } from 'react-router-dom';
 
-interface projectDetails {
-  icon: string;
-  title: string;
-  domain: string;
-  id: number;
-  latestCommit: {
-    [key: string]: string;
-  };
-}
+import { relativeTime } from '../utils/time';
+import { ProjectDetails } from '../types/project';
 
 interface ProjectCardProps {
-  project: projectDetails;
+  project: ProjectDetails;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
@@ -32,7 +24,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       <div className="border-slate-200 border-t-2 border-solid p-4 text-gray-500 text-xs">
         <p>{project.latestCommit.message}</p>
         <p>
-          {DateTime.fromISO(project.latestCommit.time).toRelative()} on{' '}
+          {relativeTime(project.latestCommit.createdAt)} on{' '}
           {project.latestCommit.branch}
         </p>
       </div>

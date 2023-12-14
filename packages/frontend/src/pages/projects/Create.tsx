@@ -6,7 +6,7 @@ import TemplateCard from '../../components/TemplateCard';
 import RepositoryList from '../../components/RepositoryList';
 import ConnectAccount from '../../components/ConnectAccount';
 
-const isGitAuth = true;
+const IS_GIT_AUTH = true;
 
 const CreateProject = () => {
   return (
@@ -31,7 +31,7 @@ const CreateProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      {isGitAuth ? <RepositoryList /> : <ConnectAccount />}
+      {IS_GIT_AUTH ? <RepositoryList /> : <ConnectAccount />}
     </div>
   );
 };

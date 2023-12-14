@@ -1,0 +1,37 @@
+[
+  {
+    "author": "Bob",
+    "authorAvatar": "^",
+    "createdAt": "2023-12-11T04:20:00",
+    "branch": "main",
+    "message": "Design integrate and tested"
+  },
+  {
+    "author": "Alice",
+    "authorAvatar": "^",
+    "createdAt": "2023-12-11T04:20:00",
+    "branch": "prod",
+    "message": "Fix lint errors"
+  },
+  {
+    "author": "Charlie",
+    "authorAvatar": "^",
+    "createdAt": "2023-12-11T04:20:00",
+    "branch": "main",
+    "message": "Sidebar changed"
+  },
+  {
+    "author": "Roy",
+    "authorAvatar": "^",
+    "createdAt": "2023-12-11T04:20:00",
+    "branch": "staging",
+    "message": "Add style to the page"
+  },
+  {
+    "author": "Brad",
+    "authorAvatar": "^",
+    "createdAt": "2023-12-11T04:20:00",
+    "branch": "dev",
+    "message": "404 not found"
+  }
+]
