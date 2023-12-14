@@ -1,10 +1,12 @@
 import React from 'react';
 import { DateTime } from 'luxon';
+import { Link } from 'react-router-dom';
 
 interface projectDetails {
   icon: string;
   title: string;
   domain: string;
+  id: number;
   latestCommit: {
     [key: string]: string;
   };
@@ -20,7 +22,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       <div className="flex gap-2 p-2 items-center">
         <div>{project.icon}</div>
         <div className="grow">
-          <p className="text-sm text-gray-750">{project.title}</p>
+          <Link to={`projects/${project.id}`} className="text-sm text-gray-700">
+            {project.title}
+          </Link>
           <p className="text-sm text-gray-400">{project.domain}</p>
         </div>
         <div>...</div>

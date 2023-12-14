@@ -6,7 +6,7 @@ import TemplateCard from '../../components/TemplateCard';
 import RepositoryList from '../../components/RepositoryList';
 import ConnectAccount from '../../components/ConnectAccount';
 
-const isGitAuth = false;
+const isGitAuth = true;
 
 const CreateProject = () => {
   return (
