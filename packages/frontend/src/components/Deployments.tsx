@@ -2,6 +2,12 @@ import React from 'react';
 
 import deploymentDetails from '../assets/deployments.json';
 import DeployDetailsCard from './DeploymentDetailsCard';
+import Dropdown from './Dropdown';
+
+const statusOptions = [
+  { value: 'production', label: 'Production' },
+  { value: 'preview', label: 'Preview' },
+];
 
 const Deployments = () => {
   return (
@@ -22,10 +28,10 @@ const Deployments = () => {
           />
         </div>
         <div className="col-span-1">
-          <input
-            type="text"
-            className="border border-gray-300 rounded p-2 w-full focus:border-blue-300 focus:outline-none focus:shadow-outline-blue"
+          <Dropdown
             placeholder="All status"
+            options={statusOptions}
+            handler={() => {}}
           />
         </div>
       </div>
