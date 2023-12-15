@@ -1,12 +1,14 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
     <div className="flex flex-col h-full p-4">
       <div className="grow">
         <div>
-          <h3 className="text-black text-2xl">Snowball</h3>
+          <Link to="/">
+            <h3 className="text-black text-2xl">Snowball</h3>
+          </Link>
         </div>
         <div>Organization</div>
         <div>

@@ -1,0 +1,38 @@
+[
+  {
+    "title": "nextjs-bolerplate-9t44zbky4dg-bygideon-projects",
+    "status": "Building",
+    "environment": "Production",
+    "branch": "prod",
+    "commit": {
+      "hash": "9haif19",
+      "message": "Update hover state"
+    },
+    "author": "Gideon",
+    "updatedAt": "2023-12-11T04:20:00"
+  },
+  {
+    "title": "nextjs-bolerplate-9232dwky4dg-bygideon-projects",
+    "status": "Ready",
+    "environment": "Preview",
+    "branch": "prod",
+    "commit": {
+      "hash": "43de569",
+      "message": "Fix lint errors"
+    },
+    "author": "Brad",
+    "updatedAt": "2023-12-11T04:20:00"
+  },
+  {
+    "title": "nextjs-bolerplate-9saa22y4dg-bygideon-projects",
+    "status": "Error",
+    "environment": "Production",
+    "branch": "main",
+    "commit": {
+      "hash": "4hdsf19",
+      "message": "Apply style to button"
+    },
+    "author": "Alice",
+    "updatedAt": "2023-12-11T04:20:00"
+  }
+]

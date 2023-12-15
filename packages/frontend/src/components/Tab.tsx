@@ -2,20 +2,13 @@ import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import Overview from './Overview';
+import Deployments from './Deployments';
 import { ProjectDetails } from '../types/project';
 
 interface ProjectTabsProps {
   project: ProjectDetails;
 }
 
-const Deployments = () => (
-  <div>
-    Content of deployments tab
-    <p className="block">
-      Contrary to popular belief, Lorem Ipsum is not simply random text.
-    </p>
-  </div>
-);
 const Database = () => (
   <div>
     Content of database tab

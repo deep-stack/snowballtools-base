@@ -21,7 +21,7 @@ const Overview = ({ project }: OverviewProps) => (
       </div>
       <div className="flex justify-between p-2 text-sm">
         <p>Domain</p>
-        <button>Set up</button>
+        {project.domain ? <p>{project.domain}</p> : <button>Set up</button>}
       </div>
       <div className="flex justify-between p-2 text-sm">
         <p>Source</p>
