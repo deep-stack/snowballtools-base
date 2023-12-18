@@ -4,7 +4,7 @@ import deploymentDetails from '../assets/deployments.json';
 import DeployDetailsCard from './DeploymentDetailsCard';
 import Dropdown from './Dropdown';
 
-const statusOptions = [
+const STATUS_OPTIONS = [
   { value: 'production', label: 'Production' },
   { value: 'preview', label: 'Preview' },
 ];
@@ -30,8 +30,8 @@ const Deployments = () => {
         <div className="col-span-1">
           <Dropdown
             placeholder="All status"
-            options={statusOptions}
-            handler={() => {}}
+            options={STATUS_OPTIONS}
+            onChange={() => {}}
           />
         </div>
       </div>

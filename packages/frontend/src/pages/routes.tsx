@@ -6,7 +6,7 @@ import { projectsRoutes } from './projects/routes';
 
 export const homeRoutes = [
   {
-    path: '/',
+    index: true,
     element: <Projects />,
   },
   {

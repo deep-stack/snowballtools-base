@@ -11,19 +11,21 @@ interface Option {
 }
 
 interface DropdownProps {
-  placeholder: string;
   options: Option[];
-  handler: (arg: ReactDropdownOption) => void;
+  onChange: (arg: ReactDropdownOption) => void;
+  placeholder?: string;
+  value?: Option;
 }
 
-const Dropdown = ({ placeholder, options, handler }: DropdownProps) => {
+const Dropdown = ({ placeholder, options, onChange, value }: DropdownProps) => {
   return (
     <ReactDropdown
       options={options}
       placeholder={placeholder}
       className="h-full"
       controlClassName="h-full"
-      onChange={handler}
+      onChange={onChange}
+      value={value}
     />
   );
 };
