@@ -3,8 +3,11 @@ import React, { useState } from 'react';
 import { Stopwatch, setStopWatchOffset } from './StopWatch';
 import FormatMillisecond from './FormatMilliSecond';
 
-const PROCESS_LOG =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+const PROCESS_LOGS = [
+  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+  'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+  'When an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+];
 
 enum DeployStatus {
   PROCESSING = 'progress',
@@ -58,7 +61,9 @@ const DeployStep = ({
         )}
       </div>
       <div className={`text-sm ${!collapse ? 'hidden' : ''}`}>
-        {PROCESS_LOG}
+        {PROCESS_LOGS.map((log, key) => {
+          return <p key={key}>{log}</p>;
+        })}
       </div>
     </>
   );

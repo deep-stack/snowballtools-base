@@ -5,6 +5,7 @@ const FormatMillisecond = ({ time }: { time: number }) => {
   const formatTime = Duration.fromMillis(time)
     .shiftTo('days', 'hours', 'minutes', 'seconds')
     .toObject();
+
   return (
     <div>
       {formatTime.days !== 0 && <span>{formatTime.days}d&nbsp;</span>}

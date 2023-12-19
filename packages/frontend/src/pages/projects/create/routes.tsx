@@ -3,6 +3,7 @@ import React from 'react';
 import NewProject from './index';
 import CreateWithTemplate from './Template';
 import { templateRoutes } from './template/routes';
+import Success from './Success';
 
 export const createProjectRoutes = [
   {
@@ -13,5 +14,9 @@ export const createProjectRoutes = [
     path: 'template',
     element: <CreateWithTemplate />,
     children: templateRoutes,
+  },
+  {
+    path: 'success',
+    element: <Success />,
   },
 ];
