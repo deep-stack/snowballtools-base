@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { Button } from '@material-tailwind/react';
+
 import HorizontalLine from '../../components/HorizontalLine';
 import projects from '../../assets/projects.json';
 import ProjectTabs from '../../components/Tab';
@@ -21,10 +23,20 @@ const Project = () => {
       {project ? (
         <>
           <div className="flex p-4 gap-4">
-            <button onClick={() => navigate(-1)}>{'<'}</button>
+            <Button
+              variant="outlined"
+              className="rounded-full"
+              onClick={() => navigate(-1)}
+            >
+              {'<'}
+            </Button>
             <h3 className="grow">{project?.title} </h3>
-            <button>Open Repo</button>
-            <button>Go to app</button>
+            <Button className="rounded-full" variant="outlined">
+              Open Repo
+            </Button>
+            <Button className="rounded-full" color="blue">
+              Go to app
+            </Button>
           </div>
           <HorizontalLine />
           <div className="p-4">

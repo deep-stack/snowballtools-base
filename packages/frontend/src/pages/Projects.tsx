@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { Button } from '@material-tailwind/react';
+
 import SearchBar from '../components/SearchBar';
 import ProjectCard from '../components/ProjectCard';
 import HorizontalLine from '../components/HorizontalLine';
@@ -25,9 +27,9 @@ const Projects = () => {
         <div>
           {/* TODO: Create button component */}
           <Link to="/projects/create">
-            <button className="bg-sky-600 text-white text-sm px-4 py-2 border rounded-full">
+            <Button className="rounded-full" color="blue">
               Create project
-            </button>
+            </Button>
           </Link>
         </div>
       </div>

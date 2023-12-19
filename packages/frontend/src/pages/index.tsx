@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar';
 
 const Home = () => {
   return (
-    <div className="grid grid-cols-5 h-screen bg-sky-100">
+    <div className="grid grid-cols-5 h-screen bg-light-blue-50">
       <div className="h-full">
         <Sidebar />
       </div>
