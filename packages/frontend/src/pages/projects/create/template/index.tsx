@@ -1,7 +1,8 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
-import Dropdown from './Dropdown';
+import Dropdown from '../../../../components/Dropdown';
 
 const USER_OPTIONS = [
   { value: 'saugatyadav1', label: 'saugatyadav1' },
@@ -88,9 +89,11 @@ const CreateRepo = () => {
         </label>
       </div>
       <div className="mb-2">
-        <button className="bg-blue-500 rounded-xl p-2" type="submit">
-          Deploy ^
-        </button>
+        <Link to={'/projects/create/template/deploy'}>
+          <button className="bg-blue-500 rounded-xl p-2" type="submit">
+            Deploy ^
+          </button>
+        </Link>
       </div>
     </form>
   );

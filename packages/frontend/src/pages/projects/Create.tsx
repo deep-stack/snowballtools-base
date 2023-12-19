@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 const CreateProject = () => {
   const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-3xl h-full p-4">
       <div className="flex p-2">

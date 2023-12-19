@@ -1,6 +1,5 @@
 import React from 'react';
-
-import CreateRepo from '../../../components/CreateRepo';
+import { Outlet } from 'react-router-dom';
 
 const CreateWithTemplate = () => {
   return (
@@ -16,7 +15,7 @@ const CreateWithTemplate = () => {
           <div>2 Deploy</div>
         </div>
         <div className="col-span-2">
-          <CreateRepo />
+          <Outlet />
         </div>
       </div>
     </div>
