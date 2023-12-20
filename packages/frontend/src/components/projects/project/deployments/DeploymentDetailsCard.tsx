@@ -7,7 +7,7 @@ import {
   MenuItem,
 } from '@material-tailwind/react';
 
-import { relativeTime } from '../../../utils/time';
+import { relativeTime } from '../../../../utils/time';
 
 interface DeploymentDetails {
   title: string;
