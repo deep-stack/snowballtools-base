@@ -38,7 +38,7 @@ const CancelDeploymentDialog = ({
         <Button variant="outlined" onClick={handleOpen} className="mr-1">
           <span>Cancel</span>
         </Button>
-        <Link to="/projects/create/template/">
+        <Link to="/projects/create/template">
           <Button variant="gradient" color="red" onClick={handleOpen}>
             <span>Yes, Cancel deployment</span>
           </Button>

@@ -30,7 +30,7 @@ const Deploy = () => {
         </div>
         <div>
           <Button onClick={handleOpen} variant="outlined" size="sm">
-            ^Cancel
+            ^ Cancel
           </Button>
         </div>
         <CancelDeploymentDialog handleOpen={handleOpen} open={open} />
