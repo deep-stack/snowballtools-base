@@ -1,9 +1,9 @@
 import React from 'react';
 
 import templateDetails from '../../../assets/templates.json';
-import TemplateCard from '../../../components/TemplateCard';
-import RepositoryList from '../../../components/RepositoryList';
-import ConnectAccount from '../../../components/ConnectAccount';
+import TemplateCard from '../../../components/projects/create/TemplateCard';
+import RepositoryList from '../../../components/projects/create/RepositoryList';
+import ConnectAccount from '../../../components/projects/create/ConnectAccount';
 
 const IS_GIT_AUTH = true;
 

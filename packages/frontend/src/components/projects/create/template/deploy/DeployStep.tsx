@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { Stopwatch, setStopWatchOffset } from './StopWatch';
-import FormatMillisecond from './FormatMilliSecond';
+import { Stopwatch, setStopWatchOffset } from '../../../../StopWatch';
+import FormatMillisecond from '../../../../FormatMilliSecond';
 
 const PROCESS_LOGS = [
   'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',

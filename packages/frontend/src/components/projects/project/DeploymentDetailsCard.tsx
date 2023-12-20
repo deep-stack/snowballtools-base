@@ -1,5 +1,12 @@
 import React from 'react';
 
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from '@material-tailwind/react';
+
 import { relativeTime } from '../../../utils/time';
 
 interface DeploymentDetails {
@@ -39,7 +46,19 @@ const DeployDetailsCard = ({ deployment }: DeployDetailsCardProps) => {
         <p className="grow">
           {relativeTime(deployment.updatedAt)} ^ {deployment.author}
         </p>
-        <button className="self-start">...</button>
+        <Menu placement="bottom-start">
+          <MenuHandler>
+            <button className="self-start">...</button>
+          </MenuHandler>
+          <MenuList>
+            <MenuItem>^ Visit</MenuItem>
+            <MenuItem>^ Assign domain</MenuItem>
+            <MenuItem>^ Change to production</MenuItem>
+            <hr className="my-3" />
+            <MenuItem>^ Redeploy</MenuItem>
+            <MenuItem>^ Rollback to this version</MenuItem>
+          </MenuList>
+        </Menu>
       </div>
     </div>
   );

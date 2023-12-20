@@ -1,12 +1,21 @@
 import React from 'react';
 
-import { DeployStep, DeployStatus } from '../../../../components/DeployStep';
+import { Button } from '@material-tailwind/react';
+
+import {
+  DeployStep,
+  DeployStatus,
+} from '../../../../components/projects/create/template/deploy/DeployStep';
 import {
   Stopwatch,
   setStopWatchOffset,
 } from '../../../../components/StopWatch';
+import CancelDeploymentDialog from '../../../../components/projects/create/template/deploy/CancelDeploymentDialog';
 
 const Deploy = () => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(!open);
+
   return (
     <div>
       <div className="flex justify-between mb-6">
@@ -20,8 +29,11 @@ const Deploy = () => {
           </div>
         </div>
         <div>
-          <button className="border rounded-xl p-1 text-sm">^Cancel</button>
+          <Button onClick={handleOpen} variant="outlined" size="sm">
+            ^Cancel
+          </Button>
         </div>
+        <CancelDeploymentDialog handleOpen={handleOpen} open={open} />
       </div>
       <DeployStep
         title="Building"

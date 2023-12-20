@@ -5,8 +5,9 @@ import DeployDetailsCard from './DeploymentDetailsCard';
 import Dropdown from '../../Dropdown';
 
 const STATUS_OPTIONS = [
-  { value: 'production', label: 'Production' },
-  { value: 'preview', label: 'Preview' },
+  { value: 'building', label: 'Building' },
+  { value: 'ready', label: 'Ready' },
+  { value: 'error', label: 'Error' },
 ];
 
 const DeploymentsTabPanel = () => {

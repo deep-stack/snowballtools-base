@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from '@material-tailwind/react';
+
 import { relativeTime } from '../../utils/time';
 import { ProjectDetails } from '../../types/project';
 
@@ -19,7 +26,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           </Link>
           <p className="text-sm text-gray-400">{project.domain}</p>
         </div>
-        <div>...</div>
+        <Menu placement="bottom-end">
+          <MenuHandler>
+            <button>...</button>
+          </MenuHandler>
+          <MenuList>
+            <MenuItem>^ Project settings</MenuItem>
+            <MenuItem className="text-red-500">^ Delete project</MenuItem>
+          </MenuList>
+        </Menu>
       </div>
       <div className="border-slate-200 border-t-2 border-solid p-4 text-gray-500 text-xs">
         <p>{project.latestCommit.message}</p>
