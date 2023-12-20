@@ -3,7 +3,7 @@ import React, { ChangeEventHandler, forwardRef } from 'react';
 import { Input } from '@material-tailwind/react';
 
 interface SearchBarProps {
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   value?: string;
   placeholder?: string;
 }
@@ -15,7 +15,6 @@ const SearchBar: React.ForwardRefRenderFunction<
   return (
     <div className="relative flex w-full gap-2">
       <Input
-        variant="standard"
         onChange={onChange}
         value={value}
         type="search"
@@ -23,7 +22,7 @@ const SearchBar: React.ForwardRefRenderFunction<
         containerProps={{
           className: 'min-w-[288px]',
         }}
-        className="pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+        className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
         labelProps={{
           className: 'before:content-none after:content-none',
         }}
