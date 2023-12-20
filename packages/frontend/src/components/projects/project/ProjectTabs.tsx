@@ -1,9 +1,10 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-import Overview from './Overview';
-import Deployments from './Deployments';
-import { ProjectDetails } from '../types/project';
+import OverviewTabPanel from './OverviewTabPanel';
+import DeploymentsTabPanel from './DeploymentsTabPanel';
+import { ProjectDetails } from '../../../types/project';
+import SettingsTabPanel from './SettingsTabPanel';
 
 interface ProjectTabsProps {
   project: ProjectDetails;
@@ -26,15 +27,6 @@ const Integrations = () => (
     </p>
   </div>
 );
-const Settings = () => (
-  <div>
-    Content of settings tab
-    <p className="block">
-      It uses a dictionary of over 200 Latin words, combined with a handful of
-      model sentence.
-    </p>
-  </div>
-);
 
 const ProjectTabs = ({ project }: ProjectTabsProps) => {
   return (
@@ -51,10 +43,10 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         <Tab className={'p-2 cursor-pointer'}>Settings</Tab>
       </TabList>
       <TabPanel>
-        <Overview project={project} />
+        <OverviewTabPanel project={project} />
       </TabPanel>
       <TabPanel>
-        <Deployments />
+        <DeploymentsTabPanel />
       </TabPanel>
       <TabPanel>
         <Database />
@@ -63,7 +55,7 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         <Integrations />
       </TabPanel>
       <TabPanel>
-        <Settings />
+        <SettingsTabPanel />
       </TabPanel>
     </Tabs>
   );

@@ -5,7 +5,7 @@ import { Button } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import projects from '../../assets/projects.json';
-import ProjectTabs from '../../components/Tab';
+import ProjectTabs from '../../components/projects/project/ProjectTabs';
 
 const getProject = (id: number) => {
   return projects.find((project) => {

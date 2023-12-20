@@ -1,15 +1,15 @@
 import React from 'react';
 
 import ActivityCard from './ActivityCard';
-import activityDetails from '../assets/activities.json';
-import { ProjectDetails } from '../types/project';
-import { relativeTime } from '../utils/time';
+import activityDetails from '../../../assets/activities.json';
+import { ProjectDetails } from '../../../types/project';
+import { relativeTime } from '../../../utils/time';
 
 interface OverviewProps {
   project: ProjectDetails;
 }
 
-const Overview = ({ project }: OverviewProps) => (
+const OverviewTabPanel = ({ project }: OverviewProps) => (
   <div className="grid grid-cols-5">
     <div className="col-span-3 p-2">
       <div className="flex items-center gap-2 p-2 ">
@@ -54,4 +54,4 @@ const Overview = ({ project }: OverviewProps) => (
   </div>
 );
 
-export default Overview;
+export default OverviewTabPanel;

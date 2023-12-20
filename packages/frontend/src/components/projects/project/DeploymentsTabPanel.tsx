@@ -1,15 +1,15 @@
 import React from 'react';
 
-import deploymentDetails from '../assets/deployments.json';
+import deploymentDetails from '../../../assets/deployments.json';
 import DeployDetailsCard from './DeploymentDetailsCard';
-import Dropdown from './Dropdown';
+import Dropdown from '../../Dropdown';
 
 const STATUS_OPTIONS = [
   { value: 'production', label: 'Production' },
   { value: 'preview', label: 'Preview' },
 ];
 
-const Deployments = () => {
+const DeploymentsTabPanel = () => {
   return (
     <div className="p-4">
       <div className="grid grid-cols-4 gap-2 text-sm text-gray-600">
@@ -44,4 +44,4 @@ const Deployments = () => {
   );
 };
 
-export default Deployments;
+export default DeploymentsTabPanel;

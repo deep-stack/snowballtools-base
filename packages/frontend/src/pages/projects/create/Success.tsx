@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
+
+import { Button } from '@material-tailwind/react';
 
 const Success = () => {
   return (
@@ -16,7 +17,7 @@ const Success = () => {
               Your project has been deployed at{' '}
               <Link to="https://www.iglootools.snowballtools.xyz">
                 <span className="text-blue-600">
-                  ^www.iglootools.snowballtools.xyz
+                  ^ www.iglootools.snowballtools.xyz
                 </span>
               </Link>
             </span>
