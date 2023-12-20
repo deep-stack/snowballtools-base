@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { relativeTime } from '../utils/time';
-import { ProjectDetails } from '../types/project';
+import { relativeTime } from '../../utils/time';
+import { ProjectDetails } from '../../types/project';
 
 interface ProjectCardProps {
   project: ProjectDetails;
@@ -15,7 +15,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         <div>{project.icon}</div>
         <div className="grow">
           <Link to={`projects/${project.id}`} className="text-sm text-gray-700">
-            {project.title}
+            {project.name}
           </Link>
           <p className="text-sm text-gray-400">{project.domain}</p>
         </div>

@@ -2,14 +2,16 @@
   {
     "id": 1,
     "icon": "^",
+    "name": "iglotools",
     "title": "Iglotools",
-    "domain": "iglotools.com",
+    "organization": "Airfoil",
+    "domain": "iglotools.co",
     "createdAt": "2023-12-07T04:20:00",
-    "createdBy": "Bob",
-    "deployment": "iglotools.snowball.com",
+    "createdBy": "Alice",
+    "deployment": "iglotools.snowballtools.co",
     "source": "feature/add-remote-control",
     "latestCommit": {
-      "message": "Subscription added",
+      "message": "subscription added",
       "createdAt": "2023-12-11T04:20:00",
       "branch": "main"
     }
@@ -17,14 +19,16 @@
   {
     "id": 2,
     "icon": "^",
-    "title": "snowball-starter-kit",
-    "domain": "snowball-starter-kit.com",
+    "name": "snowball-starter-kit",
+    "title": "Snowball Starter Kit",
+    "organization": "Snowball",
+    "domain": "starterkit.snowballtools.com",
     "createdAt": "2023-12-04T04:20:00",
-    "createdBy": "Erin",
-    "deployment": "snowball-starter-kit.com",
+    "createdBy": "Bob",
+    "deployment": "deploy.snowballtools.com",
     "source": "prod/add-docker-compose",
     "latestCommit": {
-      "message": "404 added",
+      "message": "component updates",
       "createdAt": "2023-12-11T04:20:00",
       "branch": "staging"
     }
@@ -32,14 +36,16 @@
   {
     "id": 3,
     "icon": "^",
-    "title": "passkeys-demo",
-    "domain": "passkeys-demo.com",
+    "name": "web3-android",
+    "title": "Web3 Android",
+    "organization": "Personal",
+    "domain": "web3fordroids.com",
     "createdAt": "2023-12-01T04:20:00",
     "createdBy": "Charlie",
-    "deployment": "passkeys-demo.com",
+    "deployment": "deploy.web3fordroids.com",
     "source": "dev/style-page",
     "latestCommit": {
-      "message": "Design system integrated",
+      "message": "No repo connected",
       "createdAt": "2023-12-01T04:20:00",
       "branch": "main"
     }
@@ -47,14 +53,50 @@
   {
     "id": 4,
     "icon": "^",
-    "title": "watcher-tool",
-    "domain": "azimuth-watcher.com",
+    "name": "passkeys-demo",
+    "title": "Passkeys Demo",
+    "organization": "Airfoil",
+    "domain": "passkeys.iglootools.xyz",
+    "createdAt": "2023-12-01T04:20:00",
+    "createdBy": "David",
+    "deployment": "demo.passkeys.xyz",
+    "source": "dev/style-page",
+    "latestCommit": {
+      "message": "hello world",
+      "createdAt": "2023-12-01T04:20:00",
+      "branch": "main"
+    }
+  },
+  {
+    "id": 5,
+    "icon": "^",
+    "name": "iglootools",
+    "title": "Iglootools",
+    "organization": "Airfoil",
+    "domain": "iglotools.xyz",
     "createdAt": "2023-12-11T04:20:00",
-    "createdBy": "Alice",
-    "deployment": "azimuth-watcher.com",
+    "createdBy": "Erin",
+    "deployment": "staging.snowballtools.com",
     "source": "prod/fix-error",
     "latestCommit": {
-      "message": "Listen for subscription",
+      "message": "404 added",
+      "createdAt": "2023-12-09T04:20:00",
+      "branch": "main"
+    }
+  },
+  {
+    "id": 6,
+    "icon": "^",
+    "name": "iglootools",
+    "title": "Iglootools",
+    "organization": "Airfoil",
+    "domain": "iglotools.xyz",
+    "createdAt": "2023-12-11T04:20:00",
+    "createdBy": "Frank",
+    "deployment": "iglotools.snowballtools.com",
+    "source": "prod/fix-error",
+    "latestCommit": {
+      "message": "design system integrated",
       "createdAt": "2023-12-09T04:20:00",
       "branch": "prod"
     }

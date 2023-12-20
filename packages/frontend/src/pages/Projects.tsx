@@ -3,17 +3,17 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@material-tailwind/react';
 
-import SearchBar from '../components/SearchBar';
-import ProjectCard from '../components/ProjectCard';
+import ProjectCard from '../components/projects/ProjectCard';
 import HorizontalLine from '../components/HorizontalLine';
 import projectsDetail from '../assets/projects.json';
+import ProjectSearch from '../components/projects/ProjectSearch';
 
 const Projects = () => {
   return (
     <div className="bg-white rounded-3xl h-full">
       <div className="flex p-4">
         <div className="grow">
-          <SearchBar handler={() => {}} />
+          <ProjectSearch onChange={() => {}} />
         </div>
         <div className="text-gray-300">^</div>
         <div className="text-gray-300">^</div>

@@ -1,6 +1,8 @@
 export interface ProjectDetails {
   icon: string;
+  name: string;
   title: string;
+  organization: string;
   domain: string;
   id: number;
   createdAt: string;

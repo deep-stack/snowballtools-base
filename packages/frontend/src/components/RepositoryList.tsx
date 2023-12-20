@@ -16,7 +16,7 @@ const RepositoryList = () => {
           />
         </div>
         <div className="basis-2/3">
-          <SearchBar handler={() => {}} placeholder="Search for repositorry" />
+          <SearchBar onChange={() => {}} placeholder="Search for repository" />
         </div>
       </div>
       {repositoryDetails.map((repo, key) => {
