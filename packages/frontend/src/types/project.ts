@@ -4,7 +4,7 @@ export interface ProjectDetails {
   title: string;
   organization: string;
   url: string;
-  domain: string;
+  domain: string | null;
   id: number;
   createdAt: string;
   createdBy: string;
