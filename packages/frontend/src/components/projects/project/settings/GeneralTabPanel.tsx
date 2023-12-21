@@ -1,8 +1,25 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { Button } from '@material-tailwind/react';
 import { Input } from '@material-tailwind/react';
+
+const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
+
+const CopyIcon = ({ value }: { value: string }) => {
+  return (
+    <span
+      onClick={() => {
+        navigator.clipboard.writeText(value);
+        toast.success('Project ID copied');
+      }}
+      className="cursor-pointer"
+    >
+      ^
+    </span>
+  );
+};
 
 const GeneralTabPanel = () => {
   const { handleSubmit, register } = useForm({
@@ -59,9 +76,10 @@ const GeneralTabPanel = () => {
           id="input"
           crossOrigin={undefined}
           variant="outlined"
-          value="62f87575-7a2b-4951-8156-9f9821j380d"
+          value={PROJECT_ID}
           size="md"
           disabled
+          icon={<CopyIcon value={PROJECT_ID} />}
         />
       </div>
       <div>
@@ -69,6 +87,7 @@ const GeneralTabPanel = () => {
           Save
         </Button>
       </div>
+      <Toaster />
     </form>
   );
 };

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+
+import { Collapse, Button } from '@material-tailwind/react';
 
 import { Stopwatch, setStopWatchOffset } from '../../../../StopWatch';
 import FormatMillisecond from '../../../../FormatMilliSecond';
-
-const PROCESS_LOGS = [
-  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-  'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
-  'When an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-];
+import processLogs from '../../../../../assets/process-logs.json';
 
 enum DeployStatus {
   PROCESSING = 'progress',
@@ -33,8 +31,8 @@ const DeployStep = ({
   const [collapse, setCollapse] = useState(false);
 
   return (
-    <>
-      <div className="border-b-2 border-slate-200 flex justify-between p-2 gap-2">
+    <div className="border-b-2 border-slate-200">
+      <div className="flex justify-between p-2 gap-2">
         {status === DeployStatus.NOT_STARTED && <div>{step}</div>}
         {status === DeployStatus.PROCESSING && <div>O</div>}
         {status === DeployStatus.COMPLETE && (
@@ -60,12 +58,27 @@ const DeployStep = ({
           </>
         )}
       </div>
-      <div className={`text-sm ${!collapse ? 'hidden' : ''}`}>
-        {PROCESS_LOGS.map((log, key) => {
-          return <p key={key}>{log}</p>;
-        })}
-      </div>
-    </>
+      <Collapse open={collapse}>
+        <div className="p-2 text-sm text-gray-500 h-36 overflow-y-scroll">
+          {processLogs.map((log, key) => {
+            return <div key={key}>{log}</div>;
+          })}
+          <div className="sticky bottom-0 left-1/2 flex justify-center">
+            <Button
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(processLogs.join('\n'));
+                toast.success('Logs copied');
+              }}
+              color="blue"
+            >
+              ^ Copy log
+            </Button>
+          </div>
+        </div>
+      </Collapse>
+      <Toaster />
+    </div>
   );
 };
 
