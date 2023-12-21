@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { Collapse, Button } from '@material-tailwind/react';
+import { Collapse, Button, Typography } from '@material-tailwind/react';
 
 import { Stopwatch, setStopWatchOffset } from '../../../../StopWatch';
 import FormatMillisecond from '../../../../FormatMilliSecond';
@@ -61,7 +61,11 @@ const DeployStep = ({
       <Collapse open={collapse}>
         <div className="p-2 text-sm text-gray-500 h-36 overflow-y-scroll">
           {processLogs.map((log, key) => {
-            return <div key={key}>{log}</div>;
+            return (
+              <Typography variant="small" color="gray" key={key}>
+                {log}
+              </Typography>
+            );
           })}
           <div className="sticky bottom-0 left-1/2 flex justify-center">
             <Button

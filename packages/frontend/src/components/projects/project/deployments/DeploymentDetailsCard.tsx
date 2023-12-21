@@ -5,6 +5,7 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  Typography,
 } from '@material-tailwind/react';
 
 import { relativeTime } from '../../../../utils/time';
@@ -28,24 +29,26 @@ interface DeployDetailsCardProps {
 
 const DeployDetailsCard = ({ deployment }: DeployDetailsCardProps) => {
   return (
-    <div className="grid grid-cols-4 gap-2 text-sm text-gray-600 border-b border-gray-300">
+    <div className="grid grid-cols-4 gap-2 border-b border-gray-300">
       <div className="col-span-2">
         <div className="flex">
-          <p className=" text-gray-900 basis-2/3">{deployment.title}</p>
-          <p className="basis-1/3">{deployment.status}</p>
+          <Typography className=" basis-2/3">{deployment.title}</Typography>
+          <Typography color="gray" className="basis-1/3">
+            {deployment.status}
+          </Typography>
         </div>
-        <p>{deployment.environment}</p>
+        <Typography color="gray">{deployment.environment}</Typography>
       </div>
       <div className="col-span-1">
-        <p>{deployment.branch}</p>
-        <p>
-          {deployment.commit.hash} {deployment.commit.message}
-        </p>
+        <Typography color="gray">^ {deployment.branch}</Typography>
+        <Typography color="gray">
+          ^ {deployment.commit.hash} {deployment.commit.message}
+        </Typography>
       </div>
       <div className="col-span-1 flex items-center">
-        <p className="grow">
+        <Typography color="gray" className="grow">
           {relativeTime(deployment.updatedAt)} ^ {deployment.author}
-        </p>
+        </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>
             <button className="self-start">...</button>

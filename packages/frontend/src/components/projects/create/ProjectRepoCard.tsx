@@ -16,7 +16,7 @@ interface ProjectRepoCardProps {
 
 const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
   return (
-    <div className="group flex items-center gap-4 text-gray-500 text-xs hover:bg-gray-100 m-2">
+    <div className="group flex items-center gap-4 text-gray-500 text-xs hover:bg-gray-100 p-2 cursor-pointer">
       <div>^</div>
       <div className="grow">
         <p className="text-black">

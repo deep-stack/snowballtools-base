@@ -6,6 +6,7 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  Typography,
 } from '@material-tailwind/react';
 
 import { relativeTime } from '../../utils/time';
@@ -21,10 +22,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       <div className="flex gap-2 p-2 items-center">
         <div>{project.icon}</div>
         <div className="grow">
-          <Link to={`projects/${project.id}`} className="text-sm text-gray-700">
-            {project.name}
+          <Link to={`projects/${project.id}`}>
+            <Typography>{project.name}</Typography>
+            <Typography color="gray" variant="small">
+              {project.domain}
+            </Typography>
           </Link>
-          <p className="text-sm text-gray-400">{project.domain}</p>
         </div>
         <Menu placement="bottom-end">
           <MenuHandler>
@@ -36,12 +39,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           </MenuList>
         </Menu>
       </div>
-      <div className="border-slate-200 border-t-2 border-solid p-4 text-gray-500 text-xs">
-        <p>{project.latestCommit.message}</p>
-        <p>
+      <div className="border-slate-200 border-t-2 border-solid p-4 bg-gray-50">
+        <Typography variant="small" color="gray">
+          {project.latestCommit.message}
+        </Typography>
+        <Typography variant="small" color="gray">
           {relativeTime(project.latestCommit.createdAt)} on{' '}
           {project.latestCommit.branch}
-        </p>
+        </Typography>
       </div>
     </div>
   );

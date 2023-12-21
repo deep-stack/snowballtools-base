@@ -57,12 +57,16 @@ const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
     <div className="relative">
       <SearchBar {...getInputProps()} />
       <Card
-        className={`absolute w-1/2 max-h-100 overflow-y-scroll ${
+        className={`absolute w-1/2 max-h-100 -mt-1 overflow-y-scroll ${
           !(isOpen && items.length) && 'hidden'
         }`}
       >
-        <p>Suggestions</p>
         <List {...getMenuProps()}>
+          <div className="p-3">
+            <Typography variant="small" color="gray">
+              Suggestions
+            </Typography>
+          </div>
           {items.map((item, index) => (
             <ListItem
               selected={highlightedIndex === index || selectedItem === item}

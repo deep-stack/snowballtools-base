@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
+import { Card, CardBody, Typography } from '@material-tailwind/react';
+
 const Sidebar = () => {
   return (
     <div className="flex flex-col h-full p-4">
@@ -10,13 +12,17 @@ const Sidebar = () => {
             <h3 className="text-black text-2xl">Snowball</h3>
           </Link>
         </div>
-        <div>Organization</div>
+        <Card className="-ml-1 my-2">
+          <CardBody className="p-1 py-2">
+            <Typography>Organization</Typography>
+          </CardBody>
+        </Card>
         <div>
           <NavLink
             to="/"
             className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
-            Projects
+            <Typography>Projects</Typography>
           </NavLink>
         </div>
         <div>
@@ -24,7 +30,7 @@ const Sidebar = () => {
             to="/settings"
             className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
-            Settings
+            <Typography>Settings</Typography>
           </NavLink>
         </div>
       </div>

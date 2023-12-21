@@ -35,7 +35,7 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         'border-b-2 border-gray-900 text-gray-900 focus:outline-none'
       }
     >
-      <TabList className="flex border-b border-gray-300 text-gray-400">
+      <TabList className="flex border-b border-gray-300 text-gray-600">
         <Tab className={'p-2 cursor-pointer'}>Overview</Tab>
         <Tab className={'p-2 cursor-pointer'}>Deployments</Tab>
         <Tab className={'p-2 cursor-pointer'}>Database</Tab>

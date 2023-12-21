@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Typography } from '@material-tailwind/react';
+
 import { relativeTime } from '../../../utils/time';
 
 interface ActivityDetails {
@@ -19,12 +21,14 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
     <div className="flex hover:bg-gray-200 rounded mt-1">
       <div className="w-4">{activity.authorAvatar}</div>
 
-      <div className="grow text-sm text-gray-500">
-        <p className="text-black">{activity.author}</p>
-        <p className="text-xs">
+      <div className="grow">
+        <Typography>{activity.author}</Typography>
+        <Typography variant="small" color="gray">
           {relativeTime(activity.createdAt)} ^ {activity.branch}
-        </p>
-        <p>{activity.message}</p>
+        </Typography>
+        <Typography variant="small" color="gray">
+          {activity.message}
+        </Typography>
       </div>
     </div>
   );

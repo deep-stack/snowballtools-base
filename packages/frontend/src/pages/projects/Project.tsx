@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Button } from '@material-tailwind/react';
+import { Button, Typography } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import projects from '../../assets/projects.json';
@@ -22,7 +22,7 @@ const Project = () => {
     <div className="bg-white rounded-3xl h-full">
       {project ? (
         <>
-          <div className="flex p-4 gap-4">
+          <div className="flex p-4 gap-4 items-center">
             <Button
               variant="outlined"
               className="rounded-full"
@@ -30,7 +30,9 @@ const Project = () => {
             >
               {'<'}
             </Button>
-            <h3 className="grow">{project?.title} </h3>
+            <Typography variant="h3" className="grow">
+              {project?.title}
+            </Typography>
             <Button className="rounded-full" variant="outlined">
               Open Repo
             </Button>

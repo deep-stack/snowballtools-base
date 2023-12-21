@@ -2,6 +2,8 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
+import { Typography } from '@material-tailwind/react';
+
 import Dropdown from '../../../../components/Dropdown';
 
 const USER_OPTIONS = [
@@ -23,10 +25,10 @@ const CreateRepo = () => {
   return (
     <form onSubmit={handleSubmit(() => {})}>
       <div className="mb-2">
-        <h3>Create a repository</h3>
-        <p className="text-sm text-gray-400">
+        <Typography variant="h6">Create a repository</Typography>
+        <Typography color="gray">
           The project will be cloned into this repository
-        </p>
+        </Typography>
       </div>
       <div className="mb-2">
         <h5>Framework</h5>

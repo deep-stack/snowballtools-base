@@ -2,8 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { Button } from '@material-tailwind/react';
-import { Input } from '@material-tailwind/react';
+import { Button, Typography, Input } from '@material-tailwind/react';
 
 const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
 
@@ -32,7 +31,7 @@ const GeneralTabPanel = () => {
   return (
     <form onSubmit={handleSubmit(() => {})}>
       <div className="mb-4">
-        <h4>Project info</h4>
+        <Typography variant="h6">Project info</Typography>
       </div>
       <div className="my-2 w-3/5">
         <label

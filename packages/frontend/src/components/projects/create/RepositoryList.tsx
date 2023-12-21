@@ -38,7 +38,7 @@ const RepositoryList = () => {
 
   return (
     <div className="p-4">
-      <div className="flex gap-2">
+      <div className="flex gap-2 mb-2">
         <div className="basis-1/3">
           <Select
             value={selectedUser}
@@ -73,7 +73,6 @@ const RepositoryList = () => {
             <Typography>No repository found</Typography>
             <Button
               className="rounded-full mt-5"
-              color="white"
               size="sm"
               onClick={handleResetFilters}
             >
