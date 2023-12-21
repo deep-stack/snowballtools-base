@@ -1,10 +1,13 @@
 import React from 'react';
 
+import { IconButton } from '@material-tailwind/react';
+
 import { relativeTime } from '../../../utils/time';
 
 interface RepositoryDetails {
   title: string;
-  updatedTime: string;
+  updatedAt: string;
+  user: string;
 }
 
 interface ProjectRepoCardProps {
@@ -13,11 +16,16 @@ interface ProjectRepoCardProps {
 
 const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
   return (
-    <div className="flex text-gray-500 text-xs bg-gray-100 m-2">
+    <div className="group flex items-center gap-4 text-gray-500 text-xs hover:bg-gray-100 m-2">
       <div>^</div>
       <div className="grow">
-        <p>{repository.title}</p>
-        <p>{relativeTime(repository.updatedTime)}</p>
+        <p className="text-black">
+          {repository.user}/{repository.title}
+        </p>
+        <p>{relativeTime(repository.updatedAt)}</p>
+      </div>
+      <div className="hidden group-hover:block">
+        <IconButton size="sm">{'>'}</IconButton>
       </div>
     </div>
   );

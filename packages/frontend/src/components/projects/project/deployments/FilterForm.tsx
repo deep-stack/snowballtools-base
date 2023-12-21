@@ -57,7 +57,6 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
         <Select
           value={selectedStatus}
           onChange={(value) => setSelectedStatus(value!)}
-          label="Select Version"
         >
           {Object.values(StatusOptions).map((status) => (
             <Option
