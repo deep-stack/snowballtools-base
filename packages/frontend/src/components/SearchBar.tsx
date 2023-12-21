@@ -1,10 +1,10 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, RefAttributes } from 'react';
 
 import { Input, InputProps } from '@material-tailwind/react';
 
 const SearchBar: React.ForwardRefRenderFunction<
   HTMLInputElement,
-  InputProps
+  InputProps & RefAttributes<HTMLInputElement>
 > = ({ value, onChange, placeholder = 'Search', ...props }, ref) => {
   return (
     <div className="relative flex w-full gap-2">
@@ -23,7 +23,7 @@ const SearchBar: React.ForwardRefRenderFunction<
         // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
         crossOrigin={undefined}
         {...props}
-        ref={ref}
+        inputRef={ref}
       />
       <div className="!absolute left-3 top-[13px]">
         <i>^</i>

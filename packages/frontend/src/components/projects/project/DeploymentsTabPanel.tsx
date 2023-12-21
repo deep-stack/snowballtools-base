@@ -4,9 +4,12 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import deploymentData from '../../../assets/deployments.json';
 import DeployDetailsCard from './deployments/DeploymentDetailsCard';
-import FilterForm, { StatusOptions } from './deployments/FilterForm';
+import FilterForm, {
+  FilterValue,
+  StatusOptions,
+} from './deployments/FilterForm';
 
-const DEFAULT_FILTER_VALUE = {
+const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
   status: 'All status',
 };
@@ -28,7 +31,12 @@ const DeploymentsTabPanel = () => {
         filterValue.status === StatusOptions.ALL_STATUS ||
         deployment.status === filterValue.status;
 
-      return branchMatch && statusMatch;
+      const dateMatch =
+        !filterValue.updateAtRange ||
+        (new Date(deployment.updatedAt) >= filterValue.updateAtRange!.from! &&
+          new Date(deployment.updatedAt) <= filterValue.updateAtRange!.to!);
+
+      return branchMatch && statusMatch && dateMatch;
     });
   }, [filterValue]);
 

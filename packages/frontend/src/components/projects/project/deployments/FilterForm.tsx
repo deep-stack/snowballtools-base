@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
 import { Option, Select } from '@material-tailwind/react';
 
 import SearchBar from '../../../SearchBar';
+import DatePicker from '../../../DatePicker';
 
 export enum StatusOptions {
   ALL_STATUS = 'All status',
@@ -11,9 +13,10 @@ export enum StatusOptions {
   ERROR = 'Error',
 }
 
-interface FilterValue {
+export interface FilterValue {
   searchedBranch: string;
   status: string;
+  updateAtRange?: DateRange;
 }
 
 interface FilterFormProps {
@@ -24,17 +27,20 @@ interface FilterFormProps {
 const FilterForm = ({ value, onChange }: FilterFormProps) => {
   const [searchedBranch, setSearchedBranch] = useState(value.searchedBranch);
   const [selectedStatus, setSelectedStatus] = useState(value.status);
+  const [dateRange, setDateRange] = useState<DateRange>();
 
   useEffect(() => {
     onChange({
       searchedBranch,
       status: selectedStatus,
+      updateAtRange: dateRange,
     });
-  }, [searchedBranch, selectedStatus]);
+  }, [searchedBranch, selectedStatus, dateRange]);
 
   useEffect(() => {
     setSearchedBranch(value.searchedBranch);
     setSelectedStatus(value.status);
+    setDateRange(value.updateAtRange);
   }, [value]);
 
   return (
@@ -47,11 +53,7 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
         />
       </div>
       <div className="col-span-1">
-        <input
-          type="text"
-          className="border border-gray-300 rounded p-2 w-full focus:border-blue-300 focus:outline-none focus:shadow-outline-blue"
-          placeholder="All time"
-        />
+        <DatePicker mode="range" selected={dateRange} onSelect={setDateRange} />
       </div>
       <div className="col-span-1">
         <Select

@@ -31,7 +31,9 @@ const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
     onInputValueChange({ inputValue }) {
       setItems(
         inputValue
-          ? projectsData.filter((project) => project.title.includes(inputValue))
+          ? projectsData.filter((project) =>
+              project.title.toLowerCase().includes(inputValue.toLowerCase()),
+            )
           : [],
       );
     },
