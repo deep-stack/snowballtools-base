@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Typography } from '@material-tailwind/react';
+import { Typography, IconButton } from '@material-tailwind/react';
 
 import { relativeTime } from '../../../utils/time';
 
@@ -18,7 +18,7 @@ interface ActivityCardProps {
 
 const ActivityCard = ({ activity }: ActivityCardProps) => {
   return (
-    <div className="flex hover:bg-gray-200 rounded mt-1">
+    <div className="group flex hover:bg-gray-200 rounded mt-1">
       <div className="w-4">{activity.authorAvatar}</div>
 
       <div className="grow">
@@ -29,6 +29,11 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
         <Typography variant="small" color="gray">
           {activity.message}
         </Typography>
+      </div>
+      <div className="mr-2 self-center hidden group-hover:block">
+        <IconButton size="sm" className="rounded-full bg-gray-600">
+          {'>'}
+        </IconButton>
       </div>
     </div>
   );

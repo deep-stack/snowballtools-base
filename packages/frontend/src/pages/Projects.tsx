@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, IconButton, Typography } from '@material-tailwind/react';
+import { Button, IconButton, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../components/projects/ProjectCard';
 import HorizontalLine from '../components/HorizontalLine';
@@ -26,12 +26,18 @@ const Projects = () => {
         </div>
       </div>
       <HorizontalLine />
-      <div className="flex p-4">
+      <div className="flex p-5">
         <div className="grow">
-          <Typography variant="h4">Projects</Typography>
+          <div className="flex gap-2 items-center">
+            <Typography variant="h4">Projects</Typography>
+            <Chip
+              className="bg-gray-300 rounded-full static"
+              value={projectsDetail.length}
+              size="sm"
+            />
+          </div>
         </div>
         <div>
-          {/* TODO: Create button component */}
           <Link to="/projects/create">
             <Button className="rounded-full" color="blue">
               Create project

@@ -3,7 +3,9 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Typography } from '@material-tailwind/react';
 
 import deploymentData from '../../../assets/deployments.json';
-import DeployDetailsCard from './deployments/DeploymentDetailsCard';
+import DeployDetailsCard, {
+  DeploymentDetails,
+} from './deployments/DeploymentDetailsCard';
 import FilterForm, {
   FilterValue,
   StatusOptions,
@@ -17,7 +19,7 @@ const DEFAULT_FILTER_VALUE: FilterValue = {
 const DeploymentsTabPanel = () => {
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
 
-  const filteredDeployments = useMemo(() => {
+  const filteredDeployments = useMemo<DeploymentDetails[]>(() => {
     return deploymentData.filter((deployment) => {
       // Searched branch filter
       const branchMatch =
@@ -37,7 +39,7 @@ const DeploymentsTabPanel = () => {
           new Date(deployment.updatedAt) <= filterValue.updateAtRange!.to!);
 
       return branchMatch && statusMatch && dateMatch;
-    });
+    }) as DeploymentDetails[];
   }, [filterValue]);
 
   const handleResetFilters = useCallback(() => {

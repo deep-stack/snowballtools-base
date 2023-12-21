@@ -2,31 +2,31 @@
   {
     "title": "project-101",
     "updatedAt": "2023-12-21T08:30:00",
-    "user": "bob"
+    "user": "bob",
+    "private": false
   },
   {
     "title": "project-102",
     "updatedAt": "2023-12-21T08:30:00",
-    "user": "alice"
+    "user": "alice",
+    "private": true
   },
   {
     "title": "project-103",
     "updatedAt": "2023-12-21T04:20:00",
-    "user": "charlie"
+    "user": "charlie",
+    "private": false
   },
   {
     "title": "project-104",
     "updatedAt": "2023-12-21T04:27:00",
-    "user": "alice"
+    "user": "alice",
+    "private": false
   },
   {
     "title": "project-105",
     "updatedAt": "2023-12-21T04:41:00",
-    "user": "ivan"
-  },
-  {
-    "title": "project-106",
-    "updatedAt": "2023-12-21T04:32:00",
-    "user": "david"
+    "user": "ivan",
+    "private": false
   }
 ]

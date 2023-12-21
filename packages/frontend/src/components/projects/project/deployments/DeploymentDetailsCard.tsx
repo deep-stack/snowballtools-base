@@ -6,13 +6,21 @@ import {
   MenuList,
   MenuItem,
   Typography,
+  Chip,
+  ChipProps,
 } from '@material-tailwind/react';
 
 import { relativeTime } from '../../../../utils/time';
 
-interface DeploymentDetails {
+export enum Status {
+  BUILDING = 'Building',
+  READY = 'Ready',
+  ERROR = 'Error',
+}
+
+export interface DeploymentDetails {
   title: string;
-  status: string;
+  status: Status;
   environment: string;
   branch: string;
   commit: {
@@ -27,15 +35,24 @@ interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
 }
 
+const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
+  [Status.BUILDING]: 'blue',
+  [Status.READY]: 'green',
+  [Status.ERROR]: 'red',
+};
+
 const DeployDetailsCard = ({ deployment }: DeployDetailsCardProps) => {
   return (
-    <div className="grid grid-cols-4 gap-2 border-b border-gray-300">
+    <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
       <div className="col-span-2">
         <div className="flex">
-          <Typography className=" basis-2/3">{deployment.title}</Typography>
-          <Typography color="gray" className="basis-1/3">
-            {deployment.status}
-          </Typography>
+          <Typography className=" basis-3/4">{deployment.title}</Typography>
+          <Chip
+            value={deployment.status}
+            color={STATUS_COLORS[deployment.status] ?? 'gray'}
+            variant="ghost"
+            icon={<i>^</i>}
+          />
         </div>
         <Typography color="gray">{deployment.environment}</Typography>
       </div>

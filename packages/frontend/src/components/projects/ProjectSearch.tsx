@@ -27,6 +27,7 @@ const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
     getInputProps,
     getItemProps,
     highlightedIndex,
+    inputValue,
   } = useCombobox({
     onInputValueChange({ inputValue }) {
       setItems(
@@ -57,39 +58,47 @@ const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
     <div className="relative">
       <SearchBar {...getInputProps()} />
       <Card
-        className={`absolute w-1/2 max-h-100 -mt-1 overflow-y-scroll ${
-          !(isOpen && items.length) && 'hidden'
+        className={`absolute w-1/2 max-h-52 -mt-1 overflow-y-auto ${
+          (!inputValue || !isOpen) && 'hidden'
         }`}
       >
         <List {...getMenuProps()}>
-          <div className="p-3">
-            <Typography variant="small" color="gray">
-              Suggestions
-            </Typography>
-          </div>
-          {items.map((item, index) => (
-            <ListItem
-              selected={highlightedIndex === index || selectedItem === item}
-              key={item.id}
-              {...getItemProps({ item, index })}
-            >
-              <ListItemPrefix>
-                <i>^</i>
-              </ListItemPrefix>
-              <div>
-                <Typography variant="h6" color="blue-gray">
-                  {item.title}
-                </Typography>
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="font-normal"
-                >
-                  {item.organization}
+          {items.length ? (
+            <>
+              <div className="p-3">
+                <Typography variant="small" color="gray">
+                  Suggestions
                 </Typography>
               </div>
-            </ListItem>
-          ))}
+              {items.map((item, index) => (
+                <ListItem
+                  selected={highlightedIndex === index || selectedItem === item}
+                  key={item.id}
+                  {...getItemProps({ item, index })}
+                >
+                  <ListItemPrefix>
+                    <i>^</i>
+                  </ListItemPrefix>
+                  <div>
+                    <Typography variant="h6" color="blue-gray">
+                      {item.title}
+                    </Typography>
+                    <Typography
+                      variant="small"
+                      color="gray"
+                      className="font-normal"
+                    >
+                      {item.organization}
+                    </Typography>
+                  </div>
+                </ListItem>
+              ))}
+            </>
+          ) : (
+            <div className="p-3">
+              <Typography>^ No projects matching this name</Typography>
+            </div>
+          )}
         </List>
       </Card>
     </div>

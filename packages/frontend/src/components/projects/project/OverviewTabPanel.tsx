@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Typography } from '@material-tailwind/react';
+import { Typography, Button, Chip } from '@material-tailwind/react';
 
 import ActivityCard from './ActivityCard';
 import activityDetails from '../../../assets/activities.json';
@@ -19,24 +19,40 @@ const OverviewTabPanel = ({ project }: OverviewProps) => (
         <div className="grow">
           <Typography>{project.name}</Typography>
           <Typography variant="small" color="gray">
-            {project.domain}
+            {project.url}
           </Typography>
         </div>
       </div>
-      <div className="flex justify-between p-2 text-sm">
-        <p>Domain</p>
-        {project.domain ? <p>{project.domain}</p> : <button>Set up</button>}
+      <div className="flex justify-between p-2 text-sm items-center">
+        <div>
+          ^ Domain
+          {!project.domain && (
+            <Chip
+              className="normal-case ml-6 bg-[#FED7AA] text-[#EA580C] inline font-normal"
+              size="sm"
+              value="Not connected"
+              icon="^"
+            />
+          )}
+        </div>
+        {project.domain ? (
+          <p>{project.domain}</p>
+        ) : (
+          <Button className="normal-case rounded-full" color="blue" size="sm">
+            Setup
+          </Button>
+        )}
       </div>
       <div className="flex justify-between p-2 text-sm">
-        <p>Source</p>
-        <p>^ {project.source}</p>
+        <p>^ Source</p>
+        <p>{project.source}</p>
       </div>
       <div className="flex justify-between p-2 text-sm">
-        <p>deployment</p>
-        <p>{project.deployment} ^</p>
+        <p>^ Deployment</p>
+        <p className="text-blue-600">{project.deployment}</p>
       </div>
       <div className="flex justify-between p-2 text-sm">
-        <p>Created</p>
+        <p>^ Created</p>
         <p>
           {relativeTime(project.createdAt)} by ^ {project.createdBy}
         </p>
