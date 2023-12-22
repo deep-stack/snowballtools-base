@@ -39,7 +39,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           </MenuList>
         </Menu>
       </div>
-      <div className="border-slate-200 border-t-2 border-solid p-4 bg-gray-50">
+      <div className="border-t-2 border-solid p-4 bg-gray-50">
         <Typography variant="small" color="gray">
           {project.latestCommit.message}
         </Typography>

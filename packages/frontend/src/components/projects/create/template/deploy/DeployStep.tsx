@@ -31,7 +31,7 @@ const DeployStep = ({
   const [collapse, setCollapse] = useState(false);
 
   return (
-    <div className="border-b-2 border-slate-200">
+    <div className="border-b-2">
       <div className="flex justify-between p-2 gap-2">
         {status === DeployStatus.NOT_STARTED && <div>{step}</div>}
         {status === DeployStatus.PROCESSING && <div>O</div>}

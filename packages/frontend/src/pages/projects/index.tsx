@@ -1,31 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, IconButton, Typography, Chip } from '@material-tailwind/react';
+import { Button, Typography, Chip } from '@material-tailwind/react';
 
-import ProjectCard from '../components/projects/ProjectCard';
-import HorizontalLine from '../components/HorizontalLine';
-import projectsDetail from '../assets/projects.json';
-import ProjectSearch from '../components/projects/ProjectSearch';
+import ProjectCard from '../../components/projects/ProjectCard';
+import projectsDetail from '../../assets/projects.json';
 
 const Projects = () => {
   return (
-    <div className="bg-white rounded-3xl h-full">
-      <div className="flex p-4">
-        <div className="grow mr-2">
-          <ProjectSearch onChange={() => {}} />
-        </div>
-        <IconButton color="blue" className="rounded-full mr-2">
-          <Typography variant="h5">+</Typography>
-        </IconButton>
-        <div className="mr-2 flex items-center">
-          <Typography>^</Typography>
-        </div>
-        <div className="px-2 py-1 bg-blue-gray-50 rounded-lg">
-          <Typography variant="lead">SY</Typography>
-        </div>
-      </div>
-      <HorizontalLine />
+    <div>
       <div className="flex p-5">
         <div className="grow">
           <div className="flex gap-2 items-center">

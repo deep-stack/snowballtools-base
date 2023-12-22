@@ -17,7 +17,7 @@ interface ProjectsSearchProps {
   onChange?: (data: ProjectDetails) => void;
 }
 
-const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
+const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
   const [items, setItems] = useState<ProjectDetails[]>([]);
   const [selectedItem, setSelectedItem] = useState<ProjectDetails | null>(null);
 
@@ -105,4 +105,4 @@ const ProjectSearch = ({ onChange }: ProjectsSearchProps) => {
   );
 };
 
-export default ProjectSearch;
+export default ProjectSearchBar;

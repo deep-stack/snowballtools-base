@@ -1,14 +1,41 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import DashboardLayout from './layouts/Dashboard';
 import Home from './pages/index';
-import { homeRoutes } from './pages/routes';
+import Settings from './pages/Settings';
+import {
+  projectsRoutesWithSearch,
+  projectsRoutesWithoutSearch,
+} from './pages/projects/routes';
+import ProjectSearchLayout from './layouts/ProjectSearch';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Home />,
-    children: homeRoutes,
+    element: <DashboardLayout />,
+    children: [
+      {
+        element: <ProjectSearchLayout />,
+        children: [
+          {
+            path: '/',
+            element: <Home />,
+          },
+          {
+            path: 'projects',
+            children: projectsRoutesWithSearch,
+          },
+        ],
+      },
+      {
+        path: 'settings',
+        element: <Settings />,
+      },
+      {
+        path: 'projects',
+        children: projectsRoutesWithoutSearch,
+      },
+    ],
   },
 ]);
 

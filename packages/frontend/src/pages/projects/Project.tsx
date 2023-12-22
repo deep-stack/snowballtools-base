@@ -19,7 +19,7 @@ const Project = () => {
   const project = useMemo(() => getProject(Number(id)), [id]);
 
   return (
-    <div className="bg-white rounded-3xl h-full">
+    <div className="h-full">
       {project ? (
         <>
           <div className="flex p-4 gap-4 items-center">

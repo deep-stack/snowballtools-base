@@ -57,8 +57,8 @@ const DeleteProjectDialog = ({
       >
         <DialogBody className="flex flex-col gap-2">
           <Typography variant="paragraph">
-            Deleting your project is irreversible. Enter your project’s name
-            &nbsp;
+            Deleting your project is irreversible. Enter your project’s
+            name&nbsp;
             <span className="bg-blue-100 text-blue-700">({project.name})</span>
             &nbsp;below to confirm you want to permanently delete it:
           </Typography>
