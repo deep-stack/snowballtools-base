@@ -52,9 +52,13 @@ const tabsData = [
 const SettingsTabPanel = () => {
   return (
     <>
-      <Tabs value={'general'} orientation="vertical" className="my-6">
+      <Tabs
+        value={'general'}
+        orientation="vertical"
+        className="grid grid-cols-4"
+      >
         <TabsHeader
-          className="w-60 bg-transparent"
+          className="bg-transparent col-span-1"
           indicatorProps={{
             className: 'bg-gray-900/10 shadow-none !text-gray-900',
           }}
@@ -68,7 +72,7 @@ const SettingsTabPanel = () => {
             </Tab>
           ))}
         </TabsHeader>
-        <TabsBody>
+        <TabsBody className="col-span-2">
           {tabsData.map(({ value, component }) => (
             <TabPanel key={value} value={value} className="p-2">
               {createElement(component)}

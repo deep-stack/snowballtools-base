@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@material-tailwind/react';
+import { Button, Typography } from '@material-tailwind/react';
 
 import {
   DeployStep,
@@ -10,11 +11,16 @@ import {
   Stopwatch,
   setStopWatchOffset,
 } from '../../../../components/StopWatch';
-import CancelDeploymentDialog from '../../../../components/projects/create/template/deploy/CancelDeploymentDialog';
+import ConfirmDialog from '../../../../components/shared/ConfirmDialog';
 
 const Deploy = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
+  const navigate = useNavigate();
+
+  const handleCancel = useCallback(() => {
+    navigate('/projects/create/template');
+  }, []);
 
   return (
     <div>
@@ -33,7 +39,19 @@ const Deploy = () => {
             ^ Cancel
           </Button>
         </div>
-        <CancelDeploymentDialog handleOpen={handleOpen} open={open} />
+        <ConfirmDialog
+          dialogTitle="Cancel deployment?"
+          handleOpen={handleOpen}
+          open={open}
+          confirmButtonTitle="Yes, Cancel deployment"
+          handleConfirm={handleCancel}
+          color="red"
+        >
+          <Typography variant="small">
+            This will halt the deployment and you will have to start the process
+            from scratch.
+          </Typography>
+        </ConfirmDialog>
       </div>
       <DeployStep
         title="Building"
