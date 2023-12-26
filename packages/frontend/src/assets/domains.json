@@ -1,7 +1,7 @@
 [
   {
-    "domainid":1,
-    "projectid":1,
+    "domainid": 1,
+    "projectid": 1,
     "domain": "randomurl.snowballtools.xyz",
     "status": "live"
   }

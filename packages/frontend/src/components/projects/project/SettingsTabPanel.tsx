@@ -9,10 +9,7 @@ import {
 
 import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';
-
-const EnvironmentVariables = () => {
-  return <div>Environment Variables</div>;
-};
+import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariablesTabPanel';
 
 const Members = () => {
   return <div>Members</div>;
@@ -35,7 +32,7 @@ const tabsData = [
     label: 'Environment variables',
     icon: '^',
     value: 'environmentVariables',
-    component: EnvironmentVariables,
+    component: EnvironmentVariablesTabPanel,
   },
   {
     label: 'Members',
