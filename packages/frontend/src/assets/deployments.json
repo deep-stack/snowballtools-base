@@ -1,8 +1,9 @@
 [
   {
+    "id": 1,
     "title": "nextjs-boilerplate-9t44zbky4dg-bygideon-projects",
     "status": "Building",
-    "environment": "Production",
+    "isProduction": true,
     "branch": "prod",
     "commit": {
       "hash": "9haif19",
@@ -12,9 +13,10 @@
     "updatedAt": "2023-12-11T04:20:00"
   },
   {
+    "id": 2,
     "title": "nextjs-boilerplate-9232dwky4dg-bygideon-projects",
     "status": "Ready",
-    "environment": "Preview",
+    "isProduction": false,
     "branch": "prod",
     "commit": {
       "hash": "43de569",
@@ -24,9 +26,10 @@
     "updatedAt": "2023-12-11T04:20:00"
   },
   {
+    "id": 3,
     "title": "nextjs-boilerplate-9saa22y4dg-bygideon-projects",
     "status": "Error",
-    "environment": "Production",
+    "isProduction": false,
     "branch": "main",
     "commit": {
       "hash": "4hdsf19",

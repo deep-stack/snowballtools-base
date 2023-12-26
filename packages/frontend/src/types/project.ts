@@ -16,3 +16,22 @@ export interface ProjectDetails {
     branch: string;
   };
 }
+
+export interface DeploymentDetails {
+  title: string;
+  isProduction: boolean;
+  status: Status;
+  branch: string;
+  commit: {
+    hash: string;
+    message: string;
+  };
+  author: string;
+  updatedAt: string;
+}
+
+export enum Status {
+  BUILDING = 'Building',
+  READY = 'Ready',
+  ERROR = 'Error',
+}

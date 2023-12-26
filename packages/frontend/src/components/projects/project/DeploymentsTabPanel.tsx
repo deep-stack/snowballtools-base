@@ -3,13 +3,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Typography } from '@material-tailwind/react';
 
 import deploymentData from '../../../assets/deployments.json';
-import DeployDetailsCard, {
-  DeploymentDetails,
-} from './deployments/DeploymentDetailsCard';
+import DeploymentDetailsCard from './deployments/DeploymentDetailsCard';
 import FilterForm, {
   FilterValue,
   StatusOptions,
 } from './deployments/FilterForm';
+import { DeploymentDetails } from '../../../types/project';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
@@ -18,6 +17,12 @@ const DEFAULT_FILTER_VALUE: FilterValue = {
 
 const DeploymentsTabPanel = () => {
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
+
+  const productionDeployment = useMemo(() => {
+    return deploymentData.find((deployment) => {
+      return deployment.isProduction === true;
+    }) as DeploymentDetails;
+  }, []);
 
   const filteredDeployments = useMemo<DeploymentDetails[]>(() => {
     return deploymentData.filter((deployment) => {
@@ -55,7 +60,13 @@ const DeploymentsTabPanel = () => {
       <div className="mt-2">
         {Boolean(filteredDeployments.length) ? (
           filteredDeployments.map((deployment, key) => {
-            return <DeployDetailsCard deployment={deployment} key={key} />;
+            return (
+              <DeploymentDetailsCard
+                deployment={deployment}
+                key={key}
+                productionDeployment={productionDeployment}
+              />
+            );
           })
         ) : (
           <div className="h-[50vh] bg-gray-100 flex rounded items-center justify-center">
