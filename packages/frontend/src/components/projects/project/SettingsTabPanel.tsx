@@ -1,5 +1,4 @@
 import React, { createElement } from 'react';
-
 import {
   Tabs,
   TabsHeader,
@@ -8,11 +7,8 @@ import {
   TabPanel,
 } from '@material-tailwind/react';
 
+import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';
-
-const Domains = () => {
-  return <div>Domains</div>;
-};
 
 const EnvironmentVariables = () => {
   return <div>Environment Variables</div>;
