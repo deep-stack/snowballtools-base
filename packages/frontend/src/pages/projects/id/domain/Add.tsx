@@ -53,13 +53,9 @@ const AddDomain = () => {
           </div>
         </div>
 
-        <div className="flex justify-between">
-          <div>
-            <Stepper activeStep={activeStep} stepperValues={stepperValues} />
-          </div>
-          <div>
-            <SetupDomain />
-          </div>
+        <div className="flex justify-start gap-3">
+          <Stepper activeStep={activeStep} stepperValues={stepperValues} />
+          <SetupDomain />
         </div>
       </div>
     </div>

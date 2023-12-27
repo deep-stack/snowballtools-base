@@ -1,32 +1,90 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, Button, Input } from '@material-tailwind/react';
+import { useForm } from 'react-hook-form';
+import {
+  Radio,
+  Typography,
+  Button,
+  Input,
+  Alert,
+} from '@material-tailwind/react';
 
 const SetupDomain = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+    watch,
+  } = useForm({
+    defaultValues: {
+      domainName: '',
+      isWWW: 'false',
+    },
+  });
+
   return (
-    <div className="flex flex-col gap-2">
+    <form
+      onSubmit={handleSubmit(() => {})}
+      className="flex flex-col gap-6 w-full"
+    >
       <div>
-        <Typography variant="h3">Setup domain name</Typography>
+        <Typography variant="h5">Setup domain name</Typography>
         <Typography variant="small">
           Add your domain and setup redirects
         </Typography>
       </div>
-      <div>
-        <Typography variant="lead">Domain name</Typography>
+
+      <div className="w-auto">
+        <Typography variant="small">Domain name</Typography>
         <Input
           type="text"
           variant="outlined"
           size="lg"
-          className="border-2 rounded w-full"
-          crossOrigin={''}
+          crossOrigin={undefined}
+          className="w-full"
+          {...register('domainName', {
+            required: true,
+          })}
         />
       </div>
-      <Button className="w-fit" color="blue">
-        <Link to={`config`}>
+
+      {isValid && (
+        <div>
+          <Typography>Primary domain</Typography>
+          <div className="flex flex-col gap-3">
+            <Radio
+              label={watch('domainName')}
+              crossOrigin={undefined}
+              {...register('isWWW')}
+              value="false"
+              type="radio"
+            />
+            <Radio
+              label={`www.${watch('domainName')}`}
+              crossOrigin={undefined}
+              {...register('isWWW')}
+              value="true"
+              type="radio"
+            />
+          </div>
+          <Alert color="blue">
+            <i>^</i> For simplicity, we’ll redirect the www variant to{' '}
+            {watch('domainName')}. Redirect preferences can be changed later.
+          </Alert>
+        </div>
+      )}
+
+      <Button
+        disabled={!isValid}
+        className="w-fit"
+        color={isValid ? 'blue' : 'gray'}
+        type="submit"
+      >
+        <Link to="config">
           <i>^</i> Next
         </Link>
       </Button>
-    </div>
+    </form>
   );
 };
 
