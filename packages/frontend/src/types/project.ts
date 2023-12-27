@@ -35,3 +35,16 @@ export enum Status {
   READY = 'Ready',
   ERROR = 'Error',
 }
+
+export enum Environments {
+  PRODUCTION = 'production',
+  PREVIEW = 'preview',
+  DEVELOPMENT = 'development',
+}
+
+export interface EnvironmentVariable {
+  key: string;
+  value: string;
+  id: number;
+  environments: Environments[];
+}

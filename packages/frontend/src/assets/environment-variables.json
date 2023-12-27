@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["production", "preview"]
+  },
+  {
+    "id": 2,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["preview"]
+  }
+]

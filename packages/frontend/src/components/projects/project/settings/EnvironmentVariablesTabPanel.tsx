@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { Toaster } from 'react-hot-toast';
 
 import {
   Typography,
@@ -9,7 +10,10 @@ import {
   Checkbox,
 } from '@material-tailwind/react';
 
-import EnvironmentVariable from './EnvironmentVariable';
+import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
+import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
+import environmentVariablesData from '../../../../assets/environment-variables.json';
+import { EnvironmentVariable, Environments } from '../../../../types/project';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -43,6 +47,12 @@ export const EnvironmentVariablesTabPanel = () => {
     control,
   });
 
+  const getEnvironmentVariable = useCallback((environment: Environments) => {
+    return (environmentVariablesData as EnvironmentVariable[]).filter((item) =>
+      item.environments.includes(environment),
+    );
+  }, []);
+
   return (
     <>
       <Typography variant="h6">Environment variables</Typography>
@@ -61,13 +71,12 @@ export const EnvironmentVariablesTabPanel = () => {
             <form onSubmit={handleSubmit(() => {})}>
               {fields.map((field, index) => {
                 return (
-                  <div key={field.id}>
-                    <EnvironmentVariable
-                      index={index}
-                      register={register}
-                      onDelete={() => remove(index)}
-                    />
-                  </div>
+                  <AddEnvironmentVariableRow
+                    key={field.id}
+                    index={index}
+                    register={register}
+                    onDelete={() => remove(index)}
+                  />
                 );
               })}
               <div className="flex gap-1 p-2">
@@ -116,6 +125,21 @@ export const EnvironmentVariablesTabPanel = () => {
           </Card>
         </Collapse>
       </div>
+      <div className="p-2">
+        <DisplayEnvironmentVariables
+          environment={Environments.PRODUCTION}
+          variables={getEnvironmentVariable(Environments.PRODUCTION)}
+        />
+        <DisplayEnvironmentVariables
+          environment={Environments.PREVIEW}
+          variables={getEnvironmentVariable(Environments.PREVIEW)}
+        />
+        <DisplayEnvironmentVariables
+          environment={Environments.DEVELOPMENT}
+          variables={getEnvironmentVariable(Environments.DEVELOPMENT)}
+        />
+      </div>
+      <Toaster position="bottom-center" />
     </>
   );
 };

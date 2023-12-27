@@ -93,10 +93,11 @@ const DeploymentDetailsCard = ({
       </div>
       <ConfirmDialog
         dialogTitle="Change to production?"
-        handleOpen={() => setChangeToProduction(!changeToProduction)}
+        handleOpen={() => setChangeToProduction((preVal) => !preVal)}
         open={changeToProduction}
         confirmButtonTitle="Change"
         color="blue"
+        handleConfirm={() => setChangeToProduction((preVal) => !preVal)}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">
@@ -116,10 +117,11 @@ const DeploymentDetailsCard = ({
       </ConfirmDialog>
       <ConfirmDialog
         dialogTitle="Redeploy to production?"
-        handleOpen={() => setRedeployToProduction(!redeployToProduction)}
+        handleOpen={() => setRedeployToProduction((preVal) => !preVal)}
         open={redeployToProduction}
         confirmButtonTitle="Redeploy"
         color="blue"
+        handleConfirm={() => setRedeployToProduction((preVal) => !preVal)}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">
@@ -140,10 +142,11 @@ const DeploymentDetailsCard = ({
       </ConfirmDialog>
       <ConfirmDialog
         dialogTitle="Rollback to this deployment?"
-        handleOpen={() => setRollbackDeployment(!rollbackDeployment)}
+        handleOpen={() => setRollbackDeployment((preVal) => !preVal)}
         open={rollbackDeployment}
         confirmButtonTitle="Rollback"
         color="blue"
+        handleConfirm={() => setRollbackDeployment((preVal) => !preVal)}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">

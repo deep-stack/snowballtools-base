@@ -5,17 +5,17 @@ import { Typography, Input, IconButton } from '@material-tailwind/react';
 
 import { EnvironmentVariablesFormValues } from './EnvironmentVariablesTabPanel';
 
-interface EnvironmentVariableProps {
+interface AddEnvironmentVariableRowProps {
   onDelete: () => void;
   register: UseFormRegister<EnvironmentVariablesFormValues>;
   index: number;
 }
 
-const EnvironmentVariable = ({
+const AddEnvironmentVariableRow = ({
   onDelete,
   register,
   index,
-}: EnvironmentVariableProps) => {
+}: AddEnvironmentVariableRowProps) => {
   return (
     <div className="flex gap-1 p-2">
       <div>
@@ -41,4 +41,4 @@ const EnvironmentVariable = ({
   );
 };
 
-export default EnvironmentVariable;
+export default AddEnvironmentVariableRow;

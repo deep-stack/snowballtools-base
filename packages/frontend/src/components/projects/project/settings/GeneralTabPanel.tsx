@@ -66,7 +66,6 @@ const GeneralTabPanel = () => {
           App name
         </Typography>
         <Input
-          id="input"
           variant="outlined"
           // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
           crossOrigin={undefined}
@@ -77,7 +76,6 @@ const GeneralTabPanel = () => {
           Description (Optional)
         </Typography>
         <Input
-          id="input"
           variant="outlined"
           crossOrigin={undefined}
           size="md"
@@ -87,7 +85,6 @@ const GeneralTabPanel = () => {
           Project ID
         </Typography>
         <Input
-          id="input"
           crossOrigin={undefined}
           variant="outlined"
           value={PROJECT_ID}
