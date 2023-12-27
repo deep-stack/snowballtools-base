@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
@@ -7,13 +7,16 @@ import domainsData from '../../../../assets/domains.json';
 
 const Domains = () => {
   const { id } = useParams();
+
   return (
     <>
-      <div className="flex justify-between p-2 ">
+      <div className="flex justify-between p-2">
         <Typography variant="h2">Domain</Typography>
-        <Button variant="outlined" className="rounded-full">
-          Add domain
-        </Button>
+        <Link to={`domain/add`}>
+          <Button color="blue" variant="outlined" className="rounded-full">
+            <i>^</i> Add domain
+          </Button>
+        </Link>
       </div>
 
       {domainsData
