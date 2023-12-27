@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import {
   Typography,
@@ -8,12 +8,14 @@ import {
   Card,
   Button,
   Checkbox,
+  Chip,
 } from '@material-tailwind/react';
 
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
 import environmentVariablesData from '../../../../assets/environment-variables.json';
 import { EnvironmentVariable, Environments } from '../../../../types/project';
+import HorizontalLine from '../../../HorizontalLine';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -28,30 +30,58 @@ export type EnvironmentVariablesFormValues = {
 };
 
 export const EnvironmentVariablesTabPanel = () => {
-  const { handleSubmit, register, control } =
-    useForm<EnvironmentVariablesFormValues>({
-      defaultValues: {
-        variables: [{ key: '', value: '' }],
-        environment: {
-          development: false,
-          preview: false,
-          production: false,
-        },
+  const {
+    handleSubmit,
+    register,
+    control,
+    reset,
+    formState: { isSubmitSuccessful, errors },
+  } = useForm<EnvironmentVariablesFormValues>({
+    defaultValues: {
+      variables: [{ key: '', value: '' }],
+      environment: {
+        development: false,
+        preview: false,
+        production: false,
       },
-    });
-
+    },
+  });
   const [createNewVariable, setCreateNewVariable] = useState(false);
 
   const { fields, append, remove } = useFieldArray({
     name: 'variables',
     control,
+    rules: {
+      required: 'Add at least 1 environment variables',
+    },
   });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   const getEnvironmentVariable = useCallback((environment: Environments) => {
     return (environmentVariablesData as EnvironmentVariable[]).filter((item) =>
       item.environments.includes(environment),
     );
   }, []);
+
+  const isFieldEmpty = useMemo(() => {
+    if (errors.variables) {
+      return fields.some((_, index) => {
+        if (
+          errors.variables![index]?.value?.type === 'required' ||
+          errors.variables![index]?.key?.type === 'required'
+        ) {
+          return true;
+        }
+      });
+    }
+
+    return false;
+  }, [fields, errors.variables]);
 
   return (
     <>
@@ -67,8 +97,17 @@ export const EnvironmentVariablesTabPanel = () => {
           + Create new variable
         </div>
         <Collapse open={createNewVariable}>
-          <Card className="bg-white">
-            <form onSubmit={handleSubmit(() => {})}>
+          <Card className="bg-white p-2">
+            <form
+              onSubmit={handleSubmit((data) => {
+                toast.success(
+                  data.variables.length > 1
+                    ? `${data.variables.length} variables added`
+                    : `Variable added`,
+                );
+                reset();
+              })}
+            >
               {fields.map((field, index) => {
                 return (
                   <AddEnvironmentVariableRow
@@ -76,6 +115,7 @@ export const EnvironmentVariablesTabPanel = () => {
                     index={index}
                     register={register}
                     onDelete={() => remove(index)}
+                    isDeleteDisabled={fields.length === 1}
                   />
                 );
               })}
@@ -96,6 +136,14 @@ export const EnvironmentVariablesTabPanel = () => {
                   ^ Import .env
                 </Button>
               </div>
+              {isFieldEmpty && (
+                <Chip
+                  value="^ Please ensure no fields are empty before saving."
+                  variant="outlined"
+                  color="red"
+                  size="sm"
+                />
+              )}
               <div>
                 <Checkbox
                   crossOrigin={undefined}
@@ -130,10 +178,12 @@ export const EnvironmentVariablesTabPanel = () => {
           environment={Environments.PRODUCTION}
           variables={getEnvironmentVariable(Environments.PRODUCTION)}
         />
+        <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environments.PREVIEW}
           variables={getEnvironmentVariable(Environments.PREVIEW)}
         />
+        <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environments.DEVELOPMENT}
           variables={getEnvironmentVariable(Environments.DEVELOPMENT)}

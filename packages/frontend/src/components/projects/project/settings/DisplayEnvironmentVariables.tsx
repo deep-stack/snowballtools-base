@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { Card, Collapse, Typography } from '@material-tailwind/react';
 
-import HorizontalLine from '../../../HorizontalLine';
 import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
 import { Environments, EnvironmentVariable } from '../../../../types/project';
 
@@ -26,7 +25,6 @@ const DisplayEnvironmentVariables = ({
         <div>^</div>
         <div className="grow capitalize">{environment}</div>
         <div>{variables.length} variables</div>
-        <HorizontalLine />
       </div>
       <Collapse open={openCollapse}>
         {variables.length === 0 ? (
