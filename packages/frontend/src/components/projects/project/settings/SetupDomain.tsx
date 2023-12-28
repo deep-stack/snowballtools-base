@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import {
@@ -15,12 +15,32 @@ const SetupDomain = () => {
     handleSubmit,
     formState: { isValid },
     watch,
+    setValue,
   } = useForm({
     defaultValues: {
       domainName: '',
       isWWW: 'false',
     },
   });
+
+  const [domainStr, setDomainStr] = useState('');
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'domainName' && value.domainName) {
+        const domainArr = value.domainName.split('www.');
+        setDomainStr(domainArr.length > 1 ? domainArr[1] : domainArr[0]);
+
+        if (value.domainName.startsWith('www.')) {
+          setValue('isWWW', 'true');
+        } else {
+          setValue('isWWW', 'false');
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <form
@@ -53,14 +73,14 @@ const SetupDomain = () => {
           <Typography>Primary domain</Typography>
           <div className="flex flex-col gap-3">
             <Radio
-              label={watch('domainName')}
+              label={domainStr}
               crossOrigin={undefined}
               {...register('isWWW')}
               value="false"
               type="radio"
             />
             <Radio
-              label={`www.${watch('domainName')}`}
+              label={`www.${domainStr}`}
               crossOrigin={undefined}
               {...register('isWWW')}
               value="true"
@@ -68,8 +88,11 @@ const SetupDomain = () => {
             />
           </div>
           <Alert color="blue">
-            <i>^</i> For simplicity, we’ll redirect the www variant to{' '}
-            {watch('domainName')}. Redirect preferences can be changed later.
+            <i>^</i> For simplicity, we’ll redirect the{' '}
+            {watch('isWWW') === 'true'
+              ? `non-www variant to www.${domainStr}`
+              : `www variant to ${domainStr}`}
+            . Redirect preferences can be changed later
           </Alert>
         </div>
       )}
