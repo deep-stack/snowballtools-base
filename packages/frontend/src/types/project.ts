@@ -77,4 +77,5 @@ export interface DomainDetails {
     name: string;
     value: string;
   };
+  isRedirectedto: boolean;
 }

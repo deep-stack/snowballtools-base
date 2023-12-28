@@ -4,34 +4,39 @@
     "title": "project-101",
     "updatedAt": "2023-12-21T08:30:00",
     "user": "bob",
-    "private": false
+    "private": false,
+    "branch": ["main", "prod", "dev"]
   },
   {
     "id": 2,
     "title": "project-102",
     "updatedAt": "2023-12-21T08:30:00",
     "user": "alice",
-    "private": true
+    "private": true,
+    "branch": ["main", "prod", "dev"]
   },
   {
     "id": 3,
     "title": "project-103",
     "updatedAt": "2023-12-21T04:20:00",
     "user": "charlie",
-    "private": false
+    "private": false,
+    "branch": ["main", "prod", "dev"]
   },
   {
     "id": 4,
     "title": "project-104",
     "updatedAt": "2023-12-21T04:27:00",
     "user": "alice",
-    "private": false
+    "private": false,
+    "branch": ["main", "prod", "dev"]
   },
   {
     "id": 5,
     "title": "project-105",
     "updatedAt": "2023-12-21T04:41:00",
     "user": "ivan",
-    "private": false
+    "private": false,
+    "branch": ["main", "prod", "dev"]
   }
 ]

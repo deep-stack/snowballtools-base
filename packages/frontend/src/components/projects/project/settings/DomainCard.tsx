@@ -14,6 +14,7 @@ import {
 import { DomainDetails, DomainStatus } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import projectData from '../../../../assets/projects.json';
+import EditDomainDialog from './EditDomainDialog';
 
 enum RefreshStatus {
   IDLE,
@@ -31,6 +32,8 @@ const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
 const DomainCard = ({ domain }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [openEditDomainDialog, SetOpenEditDomainDialog] = useState(false);
+
   const currProject = projectData.filter(
     (data) => data.id === domain.projectid,
   );
@@ -69,7 +72,14 @@ const DomainCard = ({ domain }: DomainCardProps) => {
               <button className="border-2 rounded-full w-8 h-8">...</button>
             </MenuHandler>
             <MenuList>
-              <MenuItem className="text-black">^ Edit domain</MenuItem>
+              <MenuItem
+                className="text-black"
+                onClick={() => {
+                  SetOpenEditDomainDialog((preVal) => !preVal);
+                }}
+              >
+                ^ Edit domain
+              </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen(true)}
@@ -143,6 +153,13 @@ const DomainCard = ({ domain }: DomainCardProps) => {
           </table>
         </Card>
       )}
+      <EditDomainDialog
+        handleOpen={() => {
+          SetOpenEditDomainDialog((preVal) => !preVal);
+        }}
+        open={openEditDomainDialog}
+        domain={domain}
+      />
     </>
   );
 };
