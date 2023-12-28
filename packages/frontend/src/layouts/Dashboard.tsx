@@ -9,8 +9,8 @@ const Dashboard = () => {
       <div className="h-full">
         <Sidebar />
       </div>
-      <div className="col-span-4 h-full p-3">
-        <div className="bg-white rounded-3xl h-full">
+      <div className="col-span-4 h-full p-3 overflow-y-hidden">
+        <div className="bg-white rounded-3xl h-full overflow-y-auto">
           <Outlet />
         </div>
       </div>
