@@ -61,3 +61,20 @@ export enum GitSelect {
   GITEA = 'gitea',
   NONE = 'none',
 }
+
+export enum DomainStatus {
+  LIVE = 'live',
+  PENDING = 'pending',
+}
+
+export interface DomainDetails {
+  id: number;
+  projectid: number;
+  name: string;
+  status: DomainStatus;
+  record: {
+    type: string;
+    name: string;
+    value: string;
+  };
+}

@@ -1,8 +1,31 @@
 [
   {
-    "domainid": 1,
+    "id": 1,
     "projectid": 1,
-    "domain": "randomurl.snowballtools.xyz",
-    "status": "live"
+    "name": "randomurl.snowballtools.xyz",
+    "status": "live",
+    "record": null
+  },
+  {
+    "id": 2,
+    "projectid": 1,
+    "name": "saugatt.com",
+    "status": "pending",
+    "record": {
+      "type": "A",
+      "name": "@",
+      "value": "56.49.19.21"
+    }
+  },
+  {
+    "id": 3,
+    "projectid": 1,
+    "name": "www.saugatt.com",
+    "status": "pending",
+    "record": {
+      "type": "CNAME",
+      "name": "www",
+      "value": "cname.snowballtools.xyz"
+    }
   }
 ]
