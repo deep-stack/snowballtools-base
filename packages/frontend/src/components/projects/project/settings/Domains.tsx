@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';

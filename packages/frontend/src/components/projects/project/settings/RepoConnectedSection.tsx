@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
+
 import { RepositoryDetails } from '../../../../types/project';
 
 const RepoConnectedSection = ({
