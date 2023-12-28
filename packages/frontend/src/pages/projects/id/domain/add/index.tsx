@@ -1,14 +1,12 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Outlet, Link } from 'react-router-dom';
 import { Typography, IconButton } from '@material-tailwind/react';
 
-import Stepper from '../../../../components/Stepper';
-import SetupDomain from '../../../../components/projects/project/settings/SetupDomain';
+import Stepper from '../../../../../components/Stepper';
 
 const AddDomain = () => {
   const { id } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const stepperValues = [
     {
@@ -33,14 +31,11 @@ const AddDomain = () => {
     <div className="p-4">
       <div className="flex justify-between">
         <Typography variant="h3">Add Domain</Typography>
-
-        <IconButton
-          className="rounded-full"
-          variant="outlined"
-          onClick={() => navigate(-1)}
-        >
-          X
-        </IconButton>
+        <Link to={`/projects/${id}`}>
+          <IconButton className="rounded-full" variant="outlined">
+            X
+          </IconButton>
+        </Link>
       </div>
 
       <div className=" w-2/3 mx-auto">
@@ -55,7 +50,7 @@ const AddDomain = () => {
 
         <div className="flex justify-start gap-3">
           <Stepper activeStep={activeStep} stepperValues={stepperValues} />
-          <SetupDomain />
+          <Outlet />
         </div>
       </div>
     </div>

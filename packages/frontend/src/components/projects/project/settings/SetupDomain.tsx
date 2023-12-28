@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import {
   Radio,
@@ -24,6 +24,7 @@ const SetupDomain = () => {
   });
 
   const [domainStr, setDomainStr] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -44,7 +45,9 @@ const SetupDomain = () => {
 
   return (
     <form
-      onSubmit={handleSubmit(() => {})}
+      onSubmit={handleSubmit(() => {
+        navigate('config');
+      })}
       className="flex flex-col gap-6 w-full"
     >
       <div>
@@ -103,9 +106,7 @@ const SetupDomain = () => {
         color={isValid ? 'blue' : 'gray'}
         type="submit"
       >
-        <Link to="config">
-          <i>^</i> Next
-        </Link>
+        <i>^</i> Next
       </Button>
     </form>
   );
