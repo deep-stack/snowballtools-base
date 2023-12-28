@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import { Collapse, Button, Typography } from '@material-tailwind/react';
 
@@ -81,7 +81,6 @@ const DeployStep = ({
           </div>
         </div>
       </Collapse>
-      <Toaster />
     </div>
   );
 };

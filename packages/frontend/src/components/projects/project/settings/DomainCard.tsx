@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import toast from 'react-hot-toast';
 import {
   Chip,
   Typography,
@@ -11,6 +12,8 @@ import {
 } from '@material-tailwind/react';
 
 import { DomainDetails, DomainStatus } from '../../../../types/project';
+import ConfirmDialog from '../../../shared/ConfirmDialog';
+import projectData from '../../../../assets/projects.json';
 
 enum RefreshStatus {
   IDLE,
@@ -27,6 +30,10 @@ const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
 
 const DomainCard = ({ domain }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const currProject = projectData.filter(
+    (data) => data.id === domain.projectid,
+  );
 
   return (
     <>
@@ -63,11 +70,40 @@ const DomainCard = ({ domain }: DomainCardProps) => {
             </MenuHandler>
             <MenuList>
               <MenuItem className="text-black">^ Edit domain</MenuItem>
-              <MenuItem className="text-red-500">^ Delete domain</MenuItem>
+              <MenuItem
+                className="text-red-500"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                ^ Delete domain
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
+
+        <ConfirmDialog
+          dialogTitle="Delete domain?"
+          handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
+          open={deleteDialogOpen}
+          confirmButtonTitle="Yes, Delete domain"
+          handleConfirm={() => {
+            setDeleteDialogOpen((preVal) => !preVal);
+            toast.success(`Domain "${domain.name}" has been deleted`);
+          }}
+          color="red"
+        >
+          <Typography variant="small">
+            Once deleted, the project{' '}
+            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
+              {currProject[0].title}
+            </span>{' '}
+            will not be accessible from the domain{' '}
+            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
+              {domain.name}.
+            </span>
+          </Typography>
+        </ConfirmDialog>
       </div>
+
       <Typography variant="small">Production</Typography>
       {domain.status === DomainStatus.PENDING && (
         <Card className="bg-gray-200 p-4 text-sm">

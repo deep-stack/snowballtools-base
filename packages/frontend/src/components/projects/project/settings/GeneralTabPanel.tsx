@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import {
   Button,
@@ -175,7 +175,6 @@ const GeneralTabPanel = () => {
           project={{ name: 'Iglootools' }}
         />
       </div>
-      <Toaster />
     </>
   );
 };

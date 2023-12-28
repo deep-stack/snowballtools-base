@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import {
   Typography,
@@ -189,7 +189,6 @@ export const EnvironmentVariablesTabPanel = () => {
           variables={getEnvironmentVariable(Environments.DEVELOPMENT)}
         />
       </div>
-      <Toaster position="bottom-center" />
     </>
   );
 };
