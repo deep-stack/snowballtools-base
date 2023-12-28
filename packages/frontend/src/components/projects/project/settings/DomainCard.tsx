@@ -37,8 +37,8 @@ const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
 
 const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [openEditDomainDialog, SetOpenEditDomainDialog] = useState(false);
 
   return (
     <>
@@ -77,14 +77,14 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
               <MenuItem
                 className="text-black"
                 onClick={() => {
-                  SetOpenEditDomainDialog((preVal) => !preVal);
+                  setEditDialogOpen((preVal) => !preVal);
                 }}
               >
                 ^ Edit domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
-                onClick={() => setEditDialogOpen((preVal) => !preVal)}
+                onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
               >
                 ^ Delete domain
               </MenuItem>
@@ -94,11 +94,11 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
 
         <ConfirmDialog
           dialogTitle="Delete domain?"
-          handleOpen={() => setEditDialogOpen((preVal) => !preVal)}
-          open={editDialogOpen}
+          handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
+          open={deleteDialogOpen}
           confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
-            setEditDialogOpen((preVal) => !preVal);
+            setDeleteDialogOpen((preVal) => !preVal);
             toast.success(`Domain "${domain.name}" has been deleted`);
           }}
           color="red"
@@ -157,9 +157,9 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
       )}
       <EditDomainDialog
         handleOpen={() => {
-          SetOpenEditDomainDialog((preVal) => !preVal);
+          setEditDialogOpen((preVal) => !preVal);
         }}
-        open={openEditDomainDialog}
+        open={editDialogOpen}
         domain={domain}
         repo={repo}
       />
