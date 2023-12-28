@@ -5,11 +5,16 @@ import { Button, Typography, Option, Select } from '@material-tailwind/react';
 import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
 import repositoryDetails from '../../../assets/repositories.json';
+import { RepositoryDetails } from '../../../types/project';
 
 const DEFAULT_SEARCHED_REPO = '';
 const DEFAULT_SELECTED_USER = 'All accounts';
 
-const RepositoryList = () => {
+interface RepositoryListProps {
+  repoSelectionHandler: (repo: RepositoryDetails) => void;
+}
+
+const RepositoryList = ({ repoSelectionHandler }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedUser, setSelectedUser] = useState(DEFAULT_SELECTED_USER);
 
@@ -65,7 +70,15 @@ const RepositoryList = () => {
       </div>
       {Boolean(filteredRepos.length) ? (
         filteredRepos.map((repo, key) => {
-          return <ProjectRepoCard repository={repo} key={key} />;
+          return (
+            <ProjectRepoCard
+              repository={repo}
+              key={key}
+              onClick={() => {
+                repoSelectionHandler(repo);
+              }}
+            />
+          );
         })
       ) : (
         <div className="mt-4 p-6 flex items-center justify-center">

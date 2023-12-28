@@ -48,3 +48,16 @@ export interface EnvironmentVariable {
   id: number;
   environments: Environments[];
 }
+
+export interface RepositoryDetails {
+  title: string;
+  updatedAt: string;
+  user: string;
+  private: boolean;
+}
+
+export enum GitSelect {
+  GITHUB = 'github',
+  GITEA = 'gitea',
+  NONE = 'none',
+}

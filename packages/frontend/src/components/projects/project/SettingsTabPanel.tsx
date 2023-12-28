@@ -10,6 +10,7 @@ import {
 import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';
 import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariablesTabPanel';
+import GitTabPanel from './settings/GitTabPanel';
 
 const Members = () => {
   return <div>Members</div>;
@@ -27,6 +28,12 @@ const tabsData = [
     icon: '^',
     value: 'domains',
     component: Domains,
+  },
+  {
+    label: 'Git',
+    icon: '^',
+    value: 'git',
+    component: GitTabPanel,
   },
   {
     label: 'Environment variables',

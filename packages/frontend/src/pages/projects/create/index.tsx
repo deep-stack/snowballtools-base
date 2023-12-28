@@ -17,7 +17,11 @@ const NewProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      {IS_GIT_AUTH ? <RepositoryList /> : <ConnectAccount />}
+      {IS_GIT_AUTH ? (
+        <RepositoryList repoSelectionHandler={() => {}} />
+      ) : (
+        <ConnectAccount />
+      )}
     </>
   );
 };

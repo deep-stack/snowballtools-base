@@ -1,29 +1,34 @@
 [
   {
+    "id": 1,
     "title": "project-101",
     "updatedAt": "2023-12-21T08:30:00",
     "user": "bob",
     "private": false
   },
   {
+    "id": 2,
     "title": "project-102",
     "updatedAt": "2023-12-21T08:30:00",
     "user": "alice",
     "private": true
   },
   {
+    "id": 3,
     "title": "project-103",
     "updatedAt": "2023-12-21T04:20:00",
     "user": "charlie",
     "private": false
   },
   {
+    "id": 4,
     "title": "project-104",
     "updatedAt": "2023-12-21T04:27:00",
     "user": "alice",
     "private": false
   },
   {
+    "id": 5,
     "title": "project-105",
     "updatedAt": "2023-12-21T04:41:00",
     "user": "ivan",
