@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
 import toast from 'react-hot-toast';
+
 import {
   Chip,
   Typography,
@@ -11,9 +11,13 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import { DomainDetails, DomainStatus } from '../../../../types/project';
+import {
+  DomainDetails,
+  DomainStatus,
+  ProjectDetails,
+  RepositoryDetails,
+} from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
-import projectData from '../../../../assets/projects.json';
 import EditDomainDialog from './EditDomainDialog';
 
 enum RefreshStatus {
@@ -25,18 +29,16 @@ enum RefreshStatus {
 
 interface DomainCardProps {
   domain: DomainDetails;
+  repo: RepositoryDetails;
+  project: ProjectDetails;
 }
 
 const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
 
-const DomainCard = ({ domain }: DomainCardProps) => {
+const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [openEditDomainDialog, SetOpenEditDomainDialog] = useState(false);
-
-  const currProject = projectData.filter(
-    (data) => data.id === domain.projectid,
-  );
 
   return (
     <>
@@ -82,7 +84,7 @@ const DomainCard = ({ domain }: DomainCardProps) => {
               </MenuItem>
               <MenuItem
                 className="text-red-500"
-                onClick={() => setDeleteDialogOpen(true)}
+                onClick={() => setEditDialogOpen((preVal) => !preVal)}
               >
                 ^ Delete domain
               </MenuItem>
@@ -92,11 +94,11 @@ const DomainCard = ({ domain }: DomainCardProps) => {
 
         <ConfirmDialog
           dialogTitle="Delete domain?"
-          handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
-          open={deleteDialogOpen}
+          handleOpen={() => setEditDialogOpen((preVal) => !preVal)}
+          open={editDialogOpen}
           confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
-            setDeleteDialogOpen((preVal) => !preVal);
+            setEditDialogOpen((preVal) => !preVal);
             toast.success(`Domain "${domain.name}" has been deleted`);
           }}
           color="red"
@@ -104,7 +106,7 @@ const DomainCard = ({ domain }: DomainCardProps) => {
           <Typography variant="small">
             Once deleted, the project{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {currProject[0].title}
+              {project.title}
             </span>{' '}
             will not be accessible from the domain{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
@@ -159,6 +161,7 @@ const DomainCard = ({ domain }: DomainCardProps) => {
         }}
         open={openEditDomainDialog}
         domain={domain}
+        repo={repo}
       />
     </>
   );

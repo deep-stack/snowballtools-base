@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 import {
   Button,
@@ -13,11 +14,8 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import { DomainDetails } from '../../../../types/project';
-import projects from '../../../../assets/projects.json';
-import repositories from '../../../../assets/repositories.json';
+import { DomainDetails, RepositoryDetails } from '../../../../types/project';
 import domains from '../../../../assets/domains.json';
-import toast from 'react-hot-toast';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
@@ -25,29 +23,16 @@ interface EditDomainDialogProp {
   open: boolean;
   handleOpen: () => void;
   domain: DomainDetails;
+  repo: RepositoryDetails;
 }
 
 const EditDomainDialog = ({
   open,
   handleOpen,
   domain,
+  repo,
 }: EditDomainDialogProp) => {
-  const getGitBranch = (domain: DomainDetails) => {
-    const project = projects.find((project) => project.id === domain.projectid);
-    if (project) {
-      const repository = repositories.find(
-        (repo) => repo.id === project.repositoryId,
-      );
-      return repository?.branch || [];
-    }
-    return [];
-  };
-
-  const gitBranch = useMemo(() => {
-    return getGitBranch(domain);
-  }, [domain]);
-
-  const getRedirectUrl = () => {
+  const getRedirectUrl = (domain: DomainDetails) => {
     const domainArr = domain.name.split('www.');
     let redirectUrl = '';
     if (domain.name.startsWith('www.')) {
@@ -59,12 +44,12 @@ const EditDomainDialog = ({
   };
 
   const redirectOptions = useMemo(() => {
-    const redirectUrl = getRedirectUrl();
+    const redirectUrl = getRedirectUrl(domain);
     return [...DEFAULT_REDIRECT_OPTIONS, redirectUrl];
   }, [domain]);
 
   const isDisableDropdown = useMemo(() => {
-    const redirectUrl = getRedirectUrl();
+    const redirectUrl = getRedirectUrl(domain);
 
     const domainRedirected = domains.find(
       (domain) => domain.name === redirectUrl,
@@ -82,7 +67,7 @@ const EditDomainDialog = ({
   } = useForm({
     defaultValues: {
       name: domain.name,
-      branch: gitBranch[0],
+      branch: repo.branch[0],
       redirectedTo: !domain.isRedirectedto
         ? redirectOptions[0]
         : redirectOptions[1],
@@ -137,7 +122,7 @@ const EditDomainDialog = ({
           <Input
             crossOrigin={undefined}
             {...register('branch', {
-              validate: (value) => gitBranch.includes(value),
+              validate: (value) => repo.branch.includes(value),
             })}
             disabled={watch('redirectedTo') !== DEFAULT_REDIRECT_OPTIONS[0]}
           />
