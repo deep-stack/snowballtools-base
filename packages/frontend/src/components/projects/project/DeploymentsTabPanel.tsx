@@ -12,7 +12,7 @@ import { DeploymentDetails } from '../../../types/project';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
-  status: 'All status',
+  status: StatusOptions.ALL_STATUS,
 };
 
 const DeploymentsTabPanel = () => {

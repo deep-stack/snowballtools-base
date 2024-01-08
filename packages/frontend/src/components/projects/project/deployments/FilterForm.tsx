@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
-import { Option, Select } from '@material-tailwind/react';
+import { IconButton, Option, Select } from '@material-tailwind/react';
 
 import SearchBar from '../../../SearchBar';
 import DatePicker from '../../../DatePicker';
@@ -15,7 +15,7 @@ export enum StatusOptions {
 
 export interface FilterValue {
   searchedBranch: string;
-  status: string;
+  status: StatusOptions;
   updateAtRange?: DateRange;
 }
 
@@ -55,14 +55,15 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
       <div className="col-span-1">
         <DatePicker mode="range" selected={dateRange} onSelect={setDateRange} />
       </div>
-      <div className="col-span-1">
+      <div className="col-span-1 relative">
         <Select
           value={selectedStatus}
-          onChange={(value) => setSelectedStatus(value!)}
+          onChange={(value) => setSelectedStatus(value as StatusOptions)}
+          placeholder="All status"
         >
           {Object.values(StatusOptions).map((status) => (
             <Option
-              className={status === selectedStatus ? 'hidden' : ''}
+              className={status === StatusOptions.ALL_STATUS ? 'hidden' : ''}
               key={status}
               value={status}
             >
@@ -70,6 +71,17 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
             </Option>
           ))}
         </Select>
+        {selectedStatus !== StatusOptions.ALL_STATUS && (
+          <div className="absolute end-1 inset-y-0 my-auto h-8">
+            <IconButton
+              onClick={() => setSelectedStatus(StatusOptions.ALL_STATUS)}
+              className="rounded-full"
+              size="sm"
+            >
+              X
+            </IconButton>
+          </div>
+        )}
       </div>
     </div>
   );

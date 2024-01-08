@@ -10,7 +10,10 @@ const Config = () => {
       <div>
         <Typography variant="h5">Configure DNS</Typography>
         <Typography variant="small">
-          Add the following records to your domain
+          Add the following records to your domain.&nbsp;
+          <a href="https://www.namecheap.com/" target="_blank" rel="noreferrer">
+            <span className="underline">Go to NameCheap</span> ^
+          </a>
         </Typography>
       </div>
 
