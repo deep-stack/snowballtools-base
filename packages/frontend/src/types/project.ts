@@ -17,6 +17,7 @@ export interface ProjectDetails {
   };
   repositoryId: number;
   members: number[];
+  ownerId: number;
 }
 
 export interface DeploymentDetails {
@@ -83,9 +84,14 @@ export interface DomainDetails {
   isRedirectedto: boolean;
 }
 
+export enum Permission {
+  VIEW = 'view',
+  EDIT = 'edit',
+}
+
 export interface Member {
   name: string;
   email: string;
-  isOwner: boolean;
   id: number;
+  permissions: Permission[];
 }

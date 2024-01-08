@@ -2,19 +2,19 @@
   {
     "name": "Saugat Yadav",
     "email": "saugaty@airfoil.studio",
-    "isOwner": true,
-    "id": 1
+    "id": 1,
+    "permissions": []
   },
   {
     "name": "Gideon Low",
     "email": "gideonl@airfoil.studio",
-    "isOwner": false,
-    "id": 2
+    "id": 2,
+    "permissions": ["view", "edit"]
   },
   {
     "name": "Sushan Yadav",
     "email": "sushany@airfoil.studio",
-    "isOwner": false,
-    "id": 3
+    "id": 3,
+    "permissions": ["view"]
   }
 ]

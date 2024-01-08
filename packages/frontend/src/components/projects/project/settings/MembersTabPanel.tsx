@@ -27,7 +27,7 @@ const MembersTabPanel = () => {
   }, [currProject]);
 
   return (
-    <div className="p-2">
+    <div className="p-2 mb-20">
       <div className="flex justify-between mb-2">
         <div className="flex">
           <Typography variant="h6">Members</Typography>
@@ -49,6 +49,7 @@ const MembersTabPanel = () => {
             member={member}
             key={member.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
+            isOwner={member.id === currProject?.ownerId}
           />
         );
       })}

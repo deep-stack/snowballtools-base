@@ -17,7 +17,8 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1, 2, 3]
+    "members": [1, 2, 3],
+    "ownerId": 1
   },
   {
     "id": 2,
@@ -37,7 +38,8 @@
       "branch": "staging"
     },
     "repositoryId": 1,
-    "members": [2, 3]
+    "members": [2, 3],
+    "ownerId": 2
   },
   {
     "id": 3,
@@ -57,7 +59,8 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1]
+    "members": [1],
+    "ownerId": 1
   },
   {
     "id": 4,
@@ -77,7 +80,8 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1]
+    "members": [1],
+    "ownerId": 1
   },
   {
     "id": 5,
@@ -97,7 +101,8 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1]
+    "members": [1],
+    "ownerId": 1
   },
   {
     "id": 6,
@@ -117,6 +122,7 @@
       "branch": "prod"
     },
     "repositoryId": 1,
-    "members": [1]
+    "members": [1],
+    "ownerId": 1
   }
 ]
