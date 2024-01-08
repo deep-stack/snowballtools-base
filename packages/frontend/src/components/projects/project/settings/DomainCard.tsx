@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
 import toast from 'react-hot-toast';
+
 import {
   Chip,
   Typography,
@@ -11,9 +11,14 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import { DomainDetails, DomainStatus } from '../../../../types/project';
+import {
+  DomainDetails,
+  DomainStatus,
+  ProjectDetails,
+  RepositoryDetails,
+} from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
-import projectData from '../../../../assets/projects.json';
+import EditDomainDialog from './EditDomainDialog';
 
 enum RefreshStatus {
   IDLE,
@@ -24,16 +29,16 @@ enum RefreshStatus {
 
 interface DomainCardProps {
   domain: DomainDetails;
+  repo: RepositoryDetails;
+  project: ProjectDetails;
 }
 
 const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
 
-const DomainCard = ({ domain }: DomainCardProps) => {
+const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const currProject = projectData.filter(
-    (data) => data.id === domain.projectid,
-  );
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   return (
     <>
@@ -69,10 +74,17 @@ const DomainCard = ({ domain }: DomainCardProps) => {
               <button className="border-2 rounded-full w-8 h-8">...</button>
             </MenuHandler>
             <MenuList>
-              <MenuItem className="text-black">^ Edit domain</MenuItem>
+              <MenuItem
+                className="text-black"
+                onClick={() => {
+                  setEditDialogOpen((preVal) => !preVal);
+                }}
+              >
+                ^ Edit domain
+              </MenuItem>
               <MenuItem
                 className="text-red-500"
-                onClick={() => setDeleteDialogOpen(true)}
+                onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
               >
                 ^ Delete domain
               </MenuItem>
@@ -94,7 +106,7 @@ const DomainCard = ({ domain }: DomainCardProps) => {
           <Typography variant="small">
             Once deleted, the project{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {currProject[0].title}
+              {project.title}
             </span>{' '}
             will not be accessible from the domain{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
@@ -143,6 +155,14 @@ const DomainCard = ({ domain }: DomainCardProps) => {
           </table>
         </Card>
       )}
+      <EditDomainDialog
+        handleOpen={() => {
+          setEditDialogOpen((preVal) => !preVal);
+        }}
+        open={editDialogOpen}
+        domain={domain}
+        repo={repo}
+      />
     </>
   );
 };

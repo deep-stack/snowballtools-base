@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
-import domainsData from '../../../../assets/domains.json';
 import { DomainDetails } from '../../../../types/project';
+import domainsData from '../../../../assets/domains.json';
+import repositories from '../../../../assets/repositories.json';
+import projectData from '../../../../assets/projects.json';
 
 const Domains = () => {
   const { id } = useParams();
+
+  const currProject = useMemo(() => {
+    return projectData.find((data) => data.id === Number(id));
+  }, [id]);
+
+  const linkedRepo = useMemo(() => {
+    return repositories.find((repo) => repo.id === currProject?.repositoryId);
+  }, [currProject]);
 
   return (
     <>
@@ -21,13 +31,16 @@ const Domains = () => {
         </Link>
       </div>
 
-      {(domainsData as DomainDetails[])
-        .filter((domain) => {
-          return Number(id) == domain.projectid;
-        })
-        .map((domain) => {
-          return <DomainCard domain={domain} key={domain.id} />;
-        })}
+      {(domainsData as DomainDetails[]).map((domain) => {
+        return (
+          <DomainCard
+            domain={domain}
+            key={domain.id}
+            repo={linkedRepo!}
+            project={currProject!}
+          />
+        );
+      })}
     </>
   );
 };

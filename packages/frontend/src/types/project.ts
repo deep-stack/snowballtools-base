@@ -15,6 +15,7 @@ export interface ProjectDetails {
     createdAt: string;
     branch: string;
   };
+  repositoryId: number;
 }
 
 export interface DeploymentDetails {
@@ -54,6 +55,7 @@ export interface RepositoryDetails {
   updatedAt: string;
   user: string;
   private: boolean;
+  branch: string[];
 }
 
 export enum GitSelect {
@@ -77,4 +79,5 @@ export interface DomainDetails {
     name: string;
     value: string;
   };
+  isRedirectedto: boolean;
 }
