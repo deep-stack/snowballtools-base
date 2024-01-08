@@ -16,7 +16,8 @@
       "createdAt": "2023-12-11T04:20:00",
       "branch": "main"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [1, 2, 3]
   },
   {
     "id": 2,
@@ -35,7 +36,8 @@
       "createdAt": "2023-12-11T04:20:00",
       "branch": "staging"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [2, 3]
   },
   {
     "id": 3,
@@ -54,7 +56,8 @@
       "createdAt": "2023-12-01T04:20:00",
       "branch": "main"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [1]
   },
   {
     "id": 4,
@@ -73,7 +76,8 @@
       "createdAt": "2023-12-01T04:20:00",
       "branch": "main"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [1]
   },
   {
     "id": 5,
@@ -92,7 +96,8 @@
       "createdAt": "2023-12-09T04:20:00",
       "branch": "main"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [1]
   },
   {
     "id": 6,
@@ -111,6 +116,7 @@
       "createdAt": "2023-12-09T04:20:00",
       "branch": "prod"
     },
-    "repositoryId": 1
+    "repositoryId": 1,
+    "members": [1]
   }
 ]

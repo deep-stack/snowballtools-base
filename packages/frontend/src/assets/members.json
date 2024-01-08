@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Saugat Yadav",
+    "email": "saugaty@airfoil.studio",
+    "isOwner": true,
+    "id": 1
+  },
+  {
+    "name": "Gideon Low",
+    "email": "gideonl@airfoil.studio",
+    "isOwner": false,
+    "id": 2
+  },
+  {
+    "name": "Sushan Yadav",
+    "email": "sushany@airfoil.studio",
+    "isOwner": false,
+    "id": 3
+  }
+]

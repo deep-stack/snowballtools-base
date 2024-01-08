@@ -11,10 +11,7 @@ import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';
 import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariablesTabPanel';
 import GitTabPanel from './settings/GitTabPanel';
-
-const Members = () => {
-  return <div>Members</div>;
-};
+import MembersTabPanel from './settings/MembersTabPanel';
 
 const tabsData = [
   {
@@ -45,7 +42,7 @@ const tabsData = [
     label: 'Members',
     icon: '^',
     value: 'members',
-    component: Members,
+    component: MembersTabPanel,
   },
 ];
 

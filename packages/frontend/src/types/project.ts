@@ -16,6 +16,7 @@ export interface ProjectDetails {
     branch: string;
   };
   repositoryId: number;
+  members: number[];
 }
 
 export interface DeploymentDetails {
@@ -80,4 +81,11 @@ export interface DomainDetails {
     value: string;
   };
   isRedirectedto: boolean;
+}
+
+export interface Member {
+  name: string;
+  email: string;
+  isOwner: boolean;
+  id: number;
 }
