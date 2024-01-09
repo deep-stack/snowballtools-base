@@ -1,6 +1,13 @@
 import React, { useCallback, useState } from 'react';
+import toast from 'react-hot-toast';
 
-import { Select, Typography, Option } from '@material-tailwind/react';
+import {
+  Select,
+  Typography,
+  Option,
+  Chip,
+  IconButton,
+} from '@material-tailwind/react';
 
 import { Member } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
@@ -25,11 +32,21 @@ interface MemberCardProps {
   member: Member;
   isFirstCard: boolean;
   isOwner: boolean;
+  isPending: boolean;
+  permissions: string[];
+  handleDeletePendingMember: (id: number) => void;
 }
 
-const MemberCard = ({ member, isFirstCard, isOwner }: MemberCardProps) => {
+const MemberCard = ({
+  member,
+  isFirstCard,
+  isOwner,
+  isPending,
+  permissions,
+  handleDeletePendingMember,
+}: MemberCardProps) => {
   const [selectedPermission, setSelectedPermission] = useState(
-    member.permissions.join('+'),
+    permissions.join('+'),
   );
   const [removeMemberDialogOpen, setRemoveMemberDialogOpen] = useState(false);
 
@@ -53,30 +70,55 @@ const MemberCard = ({ member, isFirstCard, isOwner }: MemberCardProps) => {
       className={`flex p-1 ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
     >
       <div>^</div>
-      <div className="grow">
+      <div className="basis-1/2">
         <Typography variant="small">{member.name}</Typography>
         <Typography variant="small">{member.email}</Typography>
       </div>
-      <div className="grow">
-        <Select
-          size="lg"
-          label={isOwner ? 'Owner' : ''}
-          disabled={isOwner}
-          value={selectedPermission}
-          onChange={(value) => handlePermissionChange(value!)}
-          selected={(_, index) => (
-            <span>{DROPDOWN_OPTIONS[index!]?.label}</span>
-          )}
-        >
-          {DROPDOWN_OPTIONS.map((permission, key) => (
-            <Option key={key} value={permission.value}>
-              ^ {permission.label}
-              {permission.value === selectedPermission && (
-                <p className="float-right">^</p>
-              )}
-            </Option>
-          ))}
-        </Select>
+      <div className="basis-1/2">
+        {!isPending ? (
+          <Select
+            size="lg"
+            label={isOwner ? 'Owner' : ''}
+            disabled={isOwner}
+            value={selectedPermission}
+            onChange={(value) => handlePermissionChange(value!)}
+            selected={(_, index) => (
+              <span>{DROPDOWN_OPTIONS[index!]?.label}</span>
+            )}
+          >
+            {DROPDOWN_OPTIONS.map((permission, key) => (
+              <Option key={key} value={permission.value}>
+                ^ {permission.label}
+                {permission.value === selectedPermission && (
+                  <p className="float-right">^</p>
+                )}
+              </Option>
+            ))}
+          </Select>
+        ) : (
+          <div className="flex justify-end gap-2">
+            <div>
+              <Chip
+                value="Pending"
+                variant="outlined"
+                color="orange"
+                size="sm"
+                icon={'^'}
+              />
+            </div>
+            <div>
+              <IconButton
+                size="sm"
+                className="rounded-full"
+                onClick={() => {
+                  handleDeletePendingMember(member.id);
+                }}
+              >
+                D
+              </IconButton>
+            </div>
+          </div>
+        )}
       </div>
       <ConfirmDialog
         dialogTitle="Remove member?"
@@ -85,6 +127,7 @@ const MemberCard = ({ member, isFirstCard, isOwner }: MemberCardProps) => {
         confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
           setRemoveMemberDialogOpen((preVal) => !preVal);
+          toast.success('Member removed from project');
         }}
         color="red"
       >

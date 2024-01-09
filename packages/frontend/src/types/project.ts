@@ -16,8 +16,13 @@ export interface ProjectDetails {
     branch: string;
   };
   repositoryId: number;
-  members: number[];
+  members: MemberPermission[];
   ownerId: number;
+}
+
+export interface MemberPermission {
+  id: number;
+  permissions: string[];
 }
 
 export interface DeploymentDetails {
@@ -93,5 +98,4 @@ export interface Member {
   name: string;
   email: string;
   id: number;
-  permissions: Permission[];
 }

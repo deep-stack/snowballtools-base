@@ -17,7 +17,20 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1, 2, 3],
+    "members": [
+      {
+        "id": 1,
+        "permissions": []
+      },
+      {
+        "id": 2,
+        "permissions": ["view", "edit"]
+      },
+      {
+        "id": 3,
+        "permissions": ["view"]
+      }
+    ],
     "ownerId": 1
   },
   {
@@ -38,7 +51,16 @@
       "branch": "staging"
     },
     "repositoryId": 1,
-    "members": [2, 3],
+    "members": [
+      {
+        "id": 2,
+        "permissions": []
+      },
+      {
+        "id": 3,
+        "permissions": ["view"]
+      }
+    ],
     "ownerId": 2
   },
   {
@@ -59,7 +81,20 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1],
+    "members": [
+      {
+        "id": 1,
+        "permissions": []
+      },
+      {
+        "id": 2,
+        "permissions": ["view", "edit"]
+      },
+      {
+        "id": 3,
+        "permissions": ["view"]
+      }
+    ],
     "ownerId": 1
   },
   {
@@ -80,7 +115,20 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1],
+    "members": [
+      {
+        "id": 1,
+        "permissions": []
+      },
+      {
+        "id": 2,
+        "permissions": ["view", "edit"]
+      },
+      {
+        "id": 3,
+        "permissions": ["view"]
+      }
+    ],
     "ownerId": 1
   },
   {
@@ -101,8 +149,13 @@
       "branch": "main"
     },
     "repositoryId": 1,
-    "members": [1],
-    "ownerId": 1
+    "members": [
+      {
+        "id": 3,
+        "permissions": []
+      }
+    ],
+    "ownerId": 3
   },
   {
     "id": 6,
@@ -122,7 +175,16 @@
       "branch": "prod"
     },
     "repositoryId": 1,
-    "members": [1],
-    "ownerId": 1
+    "members": [
+      {
+        "id": 2,
+        "permissions": []
+      },
+      {
+        "id": 3,
+        "permissions": ["view"]
+      }
+    ],
+    "ownerId": 2
   }
 ]

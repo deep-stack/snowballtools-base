@@ -2,19 +2,16 @@
   {
     "name": "Saugat Yadav",
     "email": "saugaty@airfoil.studio",
-    "id": 1,
-    "permissions": []
+    "id": 1
   },
   {
     "name": "Gideon Low",
     "email": "gideonl@airfoil.studio",
-    "id": 2,
-    "permissions": ["view", "edit"]
+    "id": 2
   },
   {
     "name": "Sushan Yadav",
     "email": "sushany@airfoil.studio",
-    "id": 3,
-    "permissions": ["view"]
+    "id": 3
   }
 ]

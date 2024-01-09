@@ -131,7 +131,7 @@ const EditEnvironmentVariableRow = ({
         color="red"
       >
         <Typography variant="small">
-          Are you sure you want to delete the variable
+          Are you sure you want to delete the variable&nbsp;
           <span className="bg-blue-100">{variable.key}</span>?
         </Typography>
       </ConfirmDialog>

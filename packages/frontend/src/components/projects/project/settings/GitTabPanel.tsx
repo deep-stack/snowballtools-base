@@ -100,7 +100,11 @@ const GitTabPanel = () => {
           </div>
         )}
         <Typography variant="small">Branch name</Typography>
-        <Input crossOrigin={undefined} disabled value="main" />
+        <Input
+          crossOrigin={undefined}
+          disabled={Boolean(!linkedRepo)}
+          value="main"
+        />
         <Button size="sm" disabled className="mt-1">
           Save
         </Button>
