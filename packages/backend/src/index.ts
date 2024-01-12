@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 
+// TODO: Add db connection setup here
+
 const app = express();
 const port = 8080;
 
