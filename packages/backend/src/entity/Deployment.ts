@@ -30,11 +30,12 @@ export class Deployment {
     id!: number;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
-    projectID!: Project;
+  @JoinColumn({ name: 'projectID' })
+    project!: Project;
 
   @OneToOne(() => Domain)
-  @JoinColumn()
-    domainID!: number;
+  @JoinColumn({ name: 'domainID' })
+    domain!: Domain;
 
   @Column('varchar')
     branch!: string;

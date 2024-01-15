@@ -3,23 +3,26 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
+
+import { User } from './User';
+import { Organization } from './Organization';
 
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-  // TODO: use foreign key user
-  @Column('int')
-    ownerID!: number;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'ownerID' })
+    owner!: User;
 
-  // TODO: use foreign key organization
-  @Column('int', {
-    nullable: true
-  })
-    organizationID!: number | null;
+  @ManyToOne(() => Organization, { nullable: true })
+  @JoinColumn({ name: 'organizationID' })
+    organization!: Organization | null;
 
   @Column('varchar')
     name!: string;
@@ -39,12 +42,10 @@ export class Project {
   @Column('varchar')
     framework!: string;
 
-  // TODO: Figure out to use array
-  // @Column({
-  //   type: 'simple-array',
-  //   default: []
-  // })
-  //   webhooks!: string[];
+  @Column({
+    type: 'simple-array'
+  })
+    webhooks!: string[];
 
   @CreateDateColumn()
     createdAt!: Date;

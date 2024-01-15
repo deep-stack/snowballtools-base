@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
+
 import { Project } from './Project';
 
 @Entity()
@@ -14,14 +16,13 @@ export class EnvironmentVariable {
     id!: number;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
-    projectId!: Project;
+  @JoinColumn({ name: 'projectId' })
+    project!: Project;
 
-  // TODO: Figure out to use array
-  // @Column({
-  //   type: 'simple-array',
-  //   default: []
-  // })
-  //   environments!: string[];
+  @Column({
+    type: 'simple-array'
+  })
+    environments!: string[];
 
   @Column('varchar')
     key!: string;

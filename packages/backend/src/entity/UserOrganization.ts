@@ -4,7 +4,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  JoinColumn
 } from 'typeorm';
 
 import { User } from './User';
@@ -13,7 +14,7 @@ import { Organization } from './Organization';
 enum Role {
   Owner = 'Owner',
   Maintainer = 'Maintainer',
-  Reader = 'Reader'
+  Reader = 'Reader',
 }
 
 @Entity()
@@ -22,9 +23,11 @@ export class UserOrganization {
     id!: number;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userID' })
     user!: User;
 
   @ManyToOne(() => Organization, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'organizationID' })
     organization!: Organization;
 
   @Column({

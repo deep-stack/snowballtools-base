@@ -4,7 +4,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  JoinColumn
 } from 'typeorm';
 
 import { Project } from './Project';
@@ -13,7 +14,7 @@ import { User } from './User';
 enum Permissions {
   Owner = 'Owner',
   Maintainer = 'Maintainer',
-  Reader = 'Reader'
+  Reader = 'Reader',
 }
 
 @Entity()
@@ -22,10 +23,12 @@ export class ProjectMember {
     id!: number;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-    userID!: User;
+  @JoinColumn({ name: 'userID' })
+    user!: User;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
-    projectID!: Project;
+  @JoinColumn({ name: 'projectID' })
+    project!: Project;
 
   @Column({
     enum: Permissions
