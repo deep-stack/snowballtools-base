@@ -1,10 +1,14 @@
 import express, { Request, Response } from 'express';
 import 'reflect-metadata';
+import debug from 'debug';
 
 import { initializeDatabase } from './database';
 
-export const main = async (): Promise<any> => {
-  initializeDatabase();
+const log = debug('snowball:server');
+
+export const main = async (): Promise<void> => {
+  await initializeDatabase();
+
   const app = express();
   const port = 8080;
 
@@ -13,12 +17,14 @@ export const main = async (): Promise<any> => {
   });
 
   app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+    log(`Server is running at http://localhost:${port}`);
   });
 };
 
-main().then(() => {
-  console.log('Starting server...');
-}).catch(err => {
-  console.log(err);
-});
+main()
+  .then(() => {
+    log('Starting server...');
+  })
+  .catch((err) => {
+    log(err);
+  });
