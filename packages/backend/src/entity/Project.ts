@@ -27,7 +27,7 @@ export class Project {
   @Column('varchar')
     repository!: string;
 
-  @Column('varchar', { length: 42, default: 'main' })
+  @Column('varchar', { length: 255, default: 'main' })
     prodBranch!: string;
 
   @Column('text')

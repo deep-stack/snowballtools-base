@@ -16,10 +16,10 @@ export class Domain {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @Column('varchar', { length: 42, default: 'main' })
+  @Column('varchar', { length: 255, default: 'main' })
     branch!: string;
 
-  @Column('varchar', { length: 42 })
+  @Column('varchar', { length: 255 })
     name!: string;
 
   @Column('boolean', { default: false })
