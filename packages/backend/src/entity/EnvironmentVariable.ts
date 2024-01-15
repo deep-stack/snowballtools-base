@@ -14,7 +14,7 @@ export class EnvironmentVariable {
     id!: number;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
-    projectId!: string;
+    projectId!: Project;
 
   // TODO: Figure out to use array
   // @Column({
