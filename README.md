@@ -3,7 +3,7 @@
 - Clone the  `snowballtools` repo
 
   ```bash
-  git clone git@github.com:deep-stack/snowballtools.git
+  git clone git@github.com:snowball-tools/snowballtools-base.git
   ```
 
 - In root of the repo, install depedencies
