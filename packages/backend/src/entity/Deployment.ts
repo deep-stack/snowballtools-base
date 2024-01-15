@@ -46,7 +46,6 @@ export class Deployment {
     title!: string;
 
   @Column({
-    type: 'enum',
     enum: Environment
   })
     environment!: Environment;
@@ -55,7 +54,6 @@ export class Deployment {
     isCurrent!: boolean;
 
   @Column({
-    type: 'enum',
     enum: Status
   })
     status!: Status;

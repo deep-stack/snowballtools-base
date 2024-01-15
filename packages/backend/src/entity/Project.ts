@@ -39,11 +39,12 @@ export class Project {
   @Column('varchar')
     framework!: string;
 
-  @Column({
-    type: 'simple-array',
-    default: []
-  })
-    webhooks!: string[];
+  // TODO: Figure out to use array
+  // @Column({
+  //   type: 'simple-array',
+  //   default: []
+  // })
+  //   webhooks!: string[];
 
   @CreateDateColumn()
     createdAt!: Date;

@@ -16,11 +16,12 @@ export class EnvironmentVariable {
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
     projectId!: string;
 
-  @Column({
-    type: 'simple-array',
-    default: []
-  })
-    environments!: string[];
+  // TODO: Figure out to use array
+  // @Column({
+  //   type: 'simple-array',
+  //   default: []
+  // })
+  //   environments!: string[];
 
   @Column('varchar')
     key!: string;
