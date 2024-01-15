@@ -3,17 +3,18 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToOne
 } from 'typeorm';
+import { Project } from './Project';
 
 @Entity()
 export class EnvironmentVariable {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  // TODO: use foreign key project
-  @Column('int')
-    projectId!: number;
+  @ManyToOne(() => Project, { onDelete: 'CASCADE' })
+    projectId!: string;
 
   @Column({
     type: 'simple-array',
