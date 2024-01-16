@@ -1,5 +1,5 @@
 const user = {
-  id: 2
+  id: 1
 };
 
 export const createResolvers = async (): Promise<any> => {

@@ -15,6 +15,7 @@ import { ServerConfig } from './type';
 const log = debug('snowball:server');
 
 const DEFAULT_GQL_PATH = '/graphql';
+const USER_ID = 1;
 
 export const createAndStartServer = async (
   typeDefs: TypeSource,
@@ -37,6 +38,9 @@ export const createAndStartServer = async (
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
+    context: () => {
+      return { userId: USER_ID };
+    },
     plugins: [
       // Proper shutdown for the HTTP server
       ApolloServerPluginDrainHttpServer({ httpServer }),
