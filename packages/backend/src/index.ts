@@ -5,17 +5,18 @@ import { initializeDatabase } from './database';
 import { createAndStartServer } from './server';
 import { createResolvers } from './resolver';
 import { typeDefs } from './schema';
+import { getConfig } from './utils';
+import { Config } from './type';
 
 const log = debug('snowball:server');
-
-const serverConfig = {
-  host: 'localhost',
-  port: 8000
-};
+const configFilePath = 'environments/local.toml';
 
 export const main = async (): Promise<void> => {
+  // TODO: get config path using cli
+  const { server } = await getConfig<Config>(configFilePath);
+
   await initializeDatabase();
-  await createAndStartServer(typeDefs, createResolvers, serverConfig);
+  await createAndStartServer(typeDefs, createResolvers, server);
 };
 
 main()
