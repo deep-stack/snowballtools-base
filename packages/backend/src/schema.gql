@@ -1,0 +1,124 @@
+# TODO : Add DateTime custom Scalar
+# TODO: Discuss field nullability
+
+enum Role {
+  Owner
+  Maintainer
+  Reader
+}
+
+enum Permission {
+  View
+  Edit
+}
+
+enum Environment {
+  Production
+  Preview
+  Development
+}
+
+enum DeploymentStatus {
+  Building
+  Ready
+  Error
+}
+
+enum DomainStatus {
+  Live
+  Pending
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  organizations: [Organization!]
+  projects: [Project!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Organization {
+  id: String!
+  name: String!
+  projects: [Project!]
+  createdAt: String!
+  updatedAt: String!
+  members: [OrganizationMember!]
+}
+
+type OrganizationMember {
+  id: String!
+  user: User!
+  role: Role!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Project { 
+  id: String!
+  owner: User!
+  deployments: [Deployment!]
+  name: String!
+  repository: String!
+  prodBranch: String!
+  description: String
+  template: String
+  framework: String!
+  webhooks: [String!]
+  members: [ProjectMember!]
+  environmentVariables: [EnvironmentVariable!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type ProjectMember {
+  id: String!
+  user: User!
+  permissions: [Permission!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Deployment {
+  id: String!
+  project: Project!
+  domain: Domain
+  branch: String!
+  commitHash: String!
+  title: String!
+  environment: Environment!
+  isCurrent: Boolean!
+  status: DeploymentStatus!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Domain {
+  id: String!
+  branch: String!
+  name: String!
+  isRedirected: Boolean!
+  status: DomainStatus!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type EnvironmentVariable {
+  id: String!
+  environments: [Environment!]!
+  key: String!
+  value: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  getUser: User
+  orgs: [Organization]
+  projects: [Project]
+  deployments(projectID: String!): [Deployment]
+  domains(projectID: String!): [Domain]
+  environmentVariables(projectID: String!): [EnvironmentVariable]
+}
