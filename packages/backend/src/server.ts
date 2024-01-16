@@ -10,7 +10,7 @@ import {
 import { TypeSource } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
-import { ServerConfig } from './type';
+import { ServerConfig } from './config';
 
 const log = debug('snowball:server');
 
@@ -32,13 +32,14 @@ export const createAndStartServer = async (
   // Create the schema
   const schema = makeExecutableSchema({
     typeDefs,
-    resolvers: await resolvers()
+    resolvers
   });
 
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
     context: () => {
+      // TODO: Use userId derived from auth token
       return { userId: USER_ID };
     },
     plugins: [
