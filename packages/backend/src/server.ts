@@ -1,30 +1,59 @@
-import express, { Request, Response } from 'express';
-import 'reflect-metadata';
 import debug from 'debug';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { createServer } from 'http';
+import {
+  ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginLandingPageLocalDefault
+} from 'apollo-server-core';
 
-import { initializeDatabase } from './database';
+import { TypeSource } from '@graphql-tools/utils';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+
+import { ServerConfig } from './type';
 
 const log = debug('snowball:server');
 
-export const main = async (): Promise<void> => {
-  await initializeDatabase();
+const DEFAULT_GQL_PATH = '/graphql';
+
+export const createAndStartServer = async (
+  typeDefs: TypeSource,
+  resolvers: any,
+  serverConfig: ServerConfig
+): Promise<ApolloServer> => {
+  const { host, port, gqlPath = DEFAULT_GQL_PATH } = serverConfig;
 
   const app = express();
-  const port = 8080;
 
-  app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, TypeScript Express Server!');
+  // Create HTTP server
+  const httpServer = createServer(app);
+
+  // Create the schema
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers: await resolvers()
   });
 
-  app.listen(port, () => {
-    log(`Server is running at http://localhost:${port}`);
+  const server = new ApolloServer({
+    schema,
+    csrfPrevention: true,
+    plugins: [
+      // Proper shutdown for the HTTP server
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginLandingPageLocalDefault({ embed: true })
+    ]
   });
+
+  await server.start();
+
+  server.applyMiddleware({
+    app,
+    path: gqlPath
+  });
+
+  httpServer.listen(port, host, () => {
+    log(`Server is listening on ${host}:${port}${server.graphqlPath}`);
+  });
+
+  return server;
 };
-
-main()
-  .then(() => {
-    log('Starting server...');
-  })
-  .catch((err) => {
-    log(err);
-  });
