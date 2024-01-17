@@ -2,7 +2,6 @@
   "name": "gql-client",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "license": "MIT",
   "scripts": {
     "lint": "eslint .",
     "build": "tsc"
@@ -22,9 +21,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.9",
-    "debug": "^4.3.4",
-    "graphql": "^16.8.1",
-    "ts-node": "^10.9.2"
+    "@apollo/client": "^3.8.9"
   }
 }
