@@ -5,7 +5,7 @@ export interface ServerConfig {
 }
 
 export interface DatabaseConfig {
-  database: string;
+  dbPath: string;
 }
 
 export interface Config {

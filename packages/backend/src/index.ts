@@ -16,7 +16,8 @@ export const main = async (): Promise<void> => {
   // TODO: get config path using cli
   const { server, database } = await getConfig<Config>(configFilePath);
 
-  const db = await Database.init(database);
+  const db = new Database(database);
+  await db.init();
 
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
   const resolvers = await createResolvers(db);

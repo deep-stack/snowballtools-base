@@ -10,24 +10,19 @@ const log = debug('snowball:database');
 export class Database {
   private dataSource: DataSource;
 
-  constructor ({ database }: DatabaseConfig) {
+  constructor ({ dbPath }: DatabaseConfig) {
     this.dataSource = new DataSource({
       type: 'better-sqlite3',
-      database,
+      database: dbPath,
       entities: [path.join(__dirname, '/entity/*')],
       synchronize: true,
       logging: false
     });
-
-    this.dataSource.initialize().then(
-      () => log('database initialized')
-    ).catch(
-      (err) => log(err)
-    );
   }
 
-  static init (dbConfig: DatabaseConfig): Database {
-    return new Database(dbConfig);
+  async init () : Promise<void> {
+    await this.dataSource.initialize();
+    log('database initialized');
   }
 
   async getUser (userId: number) : Promise<User | null> {

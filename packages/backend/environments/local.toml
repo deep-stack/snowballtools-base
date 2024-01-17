@@ -4,4 +4,4 @@
   gqlPath = "/graphql"
 
 [database]
-  database = "db/snowball"
+  dbPath = "db/snowball"
