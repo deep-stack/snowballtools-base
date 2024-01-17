@@ -4,6 +4,11 @@ export interface ServerConfig {
   gqlPath?: string;
 }
 
+export interface DatabaseConfig {
+  dbPath: string;
+}
+
 export interface Config {
   server: ServerConfig;
+  database: DatabaseConfig;
 }

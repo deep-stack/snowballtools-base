@@ -3,22 +3,26 @@ import debug from 'debug';
 import fs from 'fs';
 import path from 'path';
 
-import { initializeDatabase } from './database';
+import { Database } from './database';
 import { createAndStartServer } from './server';
 import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
-import { Config } from './type';
+import { Config } from './config';
 
 const log = debug('snowball:server');
 const configFilePath = 'environments/local.toml';
 
 export const main = async (): Promise<void> => {
   // TODO: get config path using cli
-  const { server } = await getConfig<Config>(configFilePath);
+  const { server, database } = await getConfig<Config>(configFilePath);
 
-  await initializeDatabase();
+  const db = new Database(database);
+  await db.init();
+
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
-  await createAndStartServer(typeDefs, createResolvers, server);
+  const resolvers = await createResolvers(db);
+
+  await createAndStartServer(typeDefs, resolvers, server);
 };
 
 main()
