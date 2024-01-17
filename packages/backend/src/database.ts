@@ -26,7 +26,7 @@ export class Database {
     );
   }
 
-  static async init (dbConfig: DatabaseConfig): Promise<Database> {
+  static init (dbConfig: DatabaseConfig): Database {
     return new Database(dbConfig);
   }
 

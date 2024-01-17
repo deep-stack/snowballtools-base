@@ -11,11 +11,9 @@ import { TypeSource } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
 import { ServerConfig } from './config';
+import { DEFAULT_GQL_PATH, USER_ID } from './constants';
 
 const log = debug('snowball:server');
-
-const DEFAULT_GQL_PATH = '/graphql';
-const USER_ID = 1;
 
 export const createAndStartServer = async (
   typeDefs: TypeSource,
