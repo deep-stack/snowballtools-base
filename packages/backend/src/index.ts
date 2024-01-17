@@ -5,7 +5,7 @@ import path from 'path';
 
 import { initializeDatabase } from './database';
 import { createAndStartServer } from './server';
-import { createResolvers } from './resolver';
+import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
 import { Config } from './type';
 

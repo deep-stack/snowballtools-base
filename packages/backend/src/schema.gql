@@ -1,6 +1,3 @@
-# TODO : Add DateTime custom Scalar
-# TODO: Discuss field nullability
-
 enum Role {
   Owner
   Maintainer
@@ -50,13 +47,13 @@ type Organization {
 
 type OrganizationMember {
   id: String!
-  user: User!
+  member: User!
   role: Role!
   createdAt: String!
   updatedAt: String!
 }
 
-type Project { 
+type Project {
   id: String!
   owner: User!
   deployments: [Deployment!]
@@ -75,7 +72,7 @@ type Project {
 
 type ProjectMember {
   id: String!
-  user: User!
+  member: User!
   permissions: [Permission!]!
   createdAt: String!
   updatedAt: String!
@@ -83,7 +80,6 @@ type ProjectMember {
 
 type Deployment {
   id: String!
-  project: Project!
   domain: Domain
   branch: String!
   commitHash: String!
@@ -114,11 +110,10 @@ type EnvironmentVariable {
   updatedAt: String!
 }
 
+# TODO: Setup required queries
 type Query {
-  getUser: User
-  orgs: [Organization]
-  projects: [Project]
-  deployments(projectID: String!): [Deployment]
-  domains(projectID: String!): [Domain]
-  environmentVariables(projectID: String!): [EnvironmentVariable]
+  user: User!
+  organizations: [Organization!]
+  projects: [Project!]
+  deployments(projectId: String!): [Deployment!]
 }
