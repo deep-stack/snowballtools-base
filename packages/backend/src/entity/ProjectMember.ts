@@ -23,11 +23,11 @@ export class ProjectMember {
     id!: number;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userID' })
+  @JoinColumn({ name: 'userId' })
     user!: User;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'projectID' })
+  @JoinColumn({ name: 'projectId' })
     project!: Project;
 
   @Column({

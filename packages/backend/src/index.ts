@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 import debug from 'debug';
+import fs from 'fs';
+import path from 'path';
 
 import { initializeDatabase } from './database';
 import { createAndStartServer } from './server';
-import { createResolvers } from './resolver';
-import { typeDefs } from './schema';
+import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
 import { Config } from './type';
 
@@ -16,6 +17,7 @@ export const main = async (): Promise<void> => {
   const { server } = await getConfig<Config>(configFilePath);
 
   await initializeDatabase();
+  const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
   await createAndStartServer(typeDefs, createResolvers, server);
 };
 
