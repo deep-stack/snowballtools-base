@@ -4,6 +4,7 @@ import toml from 'toml';
 import debug from 'debug';
 
 import { Project } from './entity/Project';
+import { ProjectMember } from './entity/ProjectMember';
 
 const log = debug('snowball:utils');
 
@@ -22,7 +23,7 @@ export const getConfig = async <ConfigType>(
   return config;
 };
 
-export const projectToGqlType = (dbProject: Project): any => {
+export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMember[]): any => {
   return {
     id: dbProject.id,
     owner: dbProject.owner,
@@ -33,6 +34,7 @@ export const projectToGqlType = (dbProject: Project): any => {
     template: dbProject.template,
     framework: dbProject.framework,
     webhooks: dbProject.webhooks,
+    members: projectMembers,
     createdAt: dbProject.createdAt,
     updatedAt: dbProject.updatedAt
   };

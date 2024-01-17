@@ -8,6 +8,7 @@ import { Organization } from './entity/Organization';
 import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
 import { Deployment } from './entity/Deployment';
+import { ProjectMember } from './entity/ProjectMember';
 
 const log = debug('snowball:database');
 
@@ -43,11 +44,11 @@ export class Database {
 
     const userOrgs = await userOrganizationRepository.find({
       relations: {
-        user: true,
+        member: true,
         organization: true
       },
       where: {
-        user: {
+        member: {
           id: userId
         }
       }
@@ -90,5 +91,23 @@ export class Database {
     });
 
     return deployments;
+  }
+
+  async getProjectMembers (projectId: string): Promise<ProjectMember[]> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
+    const projectMembers = await projectMemberRepository.find({
+      relations: {
+        project: true,
+        member: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return projectMembers;
   }
 }
