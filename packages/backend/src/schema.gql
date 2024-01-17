@@ -110,7 +110,6 @@ type EnvironmentVariable {
   updatedAt: String!
 }
 
-# TODO: Setup required queries
 type Query {
   user: User!
   organizations: [Organization!]
