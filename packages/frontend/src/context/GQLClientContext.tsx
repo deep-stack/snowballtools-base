@@ -1,7 +1,7 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { GQLClient } from 'gql-client';
 
-const GQLClientContext = createContext({});
+const GQLClientContext = createContext({} as GQLClient);
 
 export const GQLClientProvider = ({
   client,
