@@ -10,6 +10,9 @@ export const createResolvers = async (db: Database): Promise<any> => {
         context: any
       ) => {
         return db.getUser(context.userId);
+      },
+      organizations: (_:any, __: any, context: any) => {
+        return db.getOrganizations(context.userId);
       }
     }
   };
