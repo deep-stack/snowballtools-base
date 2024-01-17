@@ -3,6 +3,8 @@ import path from 'path';
 import toml from 'toml';
 import debug from 'debug';
 
+import { Project } from './entity/Project';
+
 const log = debug('snowball:utils');
 
 export const getConfig = async <ConfigType>(
@@ -18,4 +20,20 @@ export const getConfig = async <ConfigType>(
   log('config', JSON.stringify(config, null, 2));
 
   return config;
+};
+
+export const projectToGqlType = (dbProject: Project): any => {
+  return {
+    id: dbProject.id,
+    owner: dbProject.owner,
+    name: dbProject.name,
+    repository: dbProject.repository,
+    prodBranch: dbProject.prodBranch,
+    description: dbProject.description,
+    template: dbProject.template,
+    framework: dbProject.framework,
+    webhooks: dbProject.webhooks,
+    createdAt: dbProject.createdAt,
+    updatedAt: dbProject.updatedAt
+  };
 };
