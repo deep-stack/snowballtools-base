@@ -17,11 +17,11 @@ export class Project {
     id!: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'ownerID' })
+  @JoinColumn({ name: 'ownerId' })
     owner!: User;
 
   @ManyToOne(() => Organization, { nullable: true })
-  @JoinColumn({ name: 'organizationID' })
+  @JoinColumn({ name: 'organizationId' })
     organization!: Organization | null;
 
   @Column('varchar')

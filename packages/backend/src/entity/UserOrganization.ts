@@ -23,11 +23,11 @@ export class UserOrganization {
     id!: number;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userID' })
+  @JoinColumn({ name: 'userId' })
     user!: User;
 
   @ManyToOne(() => Organization, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'organizationID' })
+  @JoinColumn({ name: 'organizationId' })
     organization!: Organization;
 
   @Column({
