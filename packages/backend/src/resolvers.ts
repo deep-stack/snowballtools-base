@@ -1,4 +1,5 @@
 import { Database } from './database';
+import { projectToGqlType } from './utils';
 
 export const createResolvers = async (db: Database): Promise<any> => {
   return {
@@ -15,19 +16,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
           const dbProjects = await db.getProjectsbyOrganizationId(org.id);
 
           const projects = dbProjects.map(dbProject => {
-            return {
-              id: dbProject.id,
-              owner: dbProject.owner,
-              name: dbProject.name,
-              repository: dbProject.repository,
-              prodBranch: dbProject.prodBranch,
-              description: dbProject.description,
-              template: dbProject.template,
-              framework: dbProject.framework,
-              webhooks: dbProject.webhooks,
-              createdAt: dbProject.createdAt,
-              updatedAt: dbProject.updatedAt
-            };
+            return projectToGqlType(dbProject);
           });
 
           return {
@@ -38,6 +27,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
         const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
 
+        // TODO: Populate members field when / if required
         return orgsWithProjects;
       }
     }
