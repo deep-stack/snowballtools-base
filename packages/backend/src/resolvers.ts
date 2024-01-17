@@ -10,10 +10,10 @@ export const createResolvers = async (db: Database): Promise<any> => {
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        const organizations = await db.getOrganizationsbyUserId(context.userId);
+        const organizations = await db.getOrganizationsByUserId(context.userId);
 
         const orgsWithProjectsPromises = organizations.map(async (org) => {
-          const dbProjects = await db.getProjectsbyOrganizationId(org.id);
+          const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
           const projects = dbProjects.map(dbProject => {
             return projectToGqlType(dbProject);
@@ -29,6 +29,10 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
         // TODO: Populate members field when / if required
         return orgsWithProjects;
+      },
+
+      deployments: async (_: any, { projectId }: { projectId: string }) => {
+        return db.getDeploymentsByProjectId(projectId);
       }
     }
   };

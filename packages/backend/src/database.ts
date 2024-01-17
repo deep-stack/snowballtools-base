@@ -7,6 +7,7 @@ import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
+import { Deployment } from './entity/Deployment';
 
 const log = debug('snowball:database');
 
@@ -37,7 +38,7 @@ export class Database {
     return user;
   }
 
-  async getOrganizationsbyUserId (userId: number) : Promise<Organization[]> {
+  async getOrganizationsByUserId (userId: number) : Promise<Organization[]> {
     const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
 
     const userOrgs = await userOrganizationRepository.find({
@@ -56,7 +57,7 @@ export class Database {
     return organizations;
   }
 
-  async getProjectsbyOrganizationId (organizationId: number): Promise<Project[]> {
+  async getProjectsByOrganizationId (organizationId: number): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository.find({
@@ -72,5 +73,22 @@ export class Database {
     });
 
     return projects;
+  }
+
+  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+
+    const deployments = await deploymentRepository.find({
+      relations: {
+        project: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return deployments;
   }
 }
