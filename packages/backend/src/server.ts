@@ -10,11 +10,10 @@ import {
 import { TypeSource } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
-import { ServerConfig } from './type';
+import { ServerConfig } from './config';
+import { DEFAULT_GQL_PATH, USER_ID } from './constants';
 
 const log = debug('snowball:server');
-
-const DEFAULT_GQL_PATH = '/graphql';
 
 export const createAndStartServer = async (
   typeDefs: TypeSource,
@@ -31,12 +30,16 @@ export const createAndStartServer = async (
   // Create the schema
   const schema = makeExecutableSchema({
     typeDefs,
-    resolvers: await resolvers()
+    resolvers
   });
 
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
+    context: () => {
+      // TODO: Use userId derived from auth token
+      return { userId: USER_ID };
+    },
     plugins: [
       // Proper shutdown for the HTTP server
       ApolloServerPluginDrainHttpServer({ httpServer }),
