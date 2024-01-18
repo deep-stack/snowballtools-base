@@ -12,9 +12,8 @@ import { Project } from './Project';
 import { User } from './User';
 
 enum Permissions {
-  Owner = 'Owner',
-  Maintainer = 'Maintainer',
-  Reader = 'Reader',
+  View = 'View',
+  Edit = 'Edit'
 }
 
 @Entity()
@@ -24,16 +23,16 @@ export class ProjectMember {
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-    user!: User;
+    member!: User;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
     project!: Project;
 
   @Column({
-    enum: Permissions
+    type: 'simple-array'
   })
-    role!: Permissions;
+    permissions!: Permissions[];
 
   @CreateDateColumn()
     createdAt!: Date;

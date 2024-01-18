@@ -1,5 +1,5 @@
 import { Database } from './database';
-import { projectToGqlType } from './utils';
+import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType } from './utils';
 
 export const createResolvers = async (db: Database): Promise<any> => {
   return {
@@ -10,14 +10,27 @@ export const createResolvers = async (db: Database): Promise<any> => {
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        const organizations = await db.getOrganizationsbyUserId(context.userId);
+        const organizations = await db.getOrganizationsByUserId(context.userId);
 
         const orgsWithProjectsPromises = organizations.map(async (org) => {
-          const dbProjects = await db.getProjectsbyOrganizationId(org.id);
+          const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
-          const projects = dbProjects.map(dbProject => {
-            return projectToGqlType(dbProject);
+          const projectsWithPromises = dbProjects.map(async (dbProject) => {
+            const dbProjectMembers = await db.getProjectMembers(dbProject.id);
+            const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
+
+            const projectMembers = dbProjectMembers.map(dbProjectMember => {
+              return projectMemberToGqlType(dbProjectMember);
+            });
+
+            const environmentVariables = dbEnvironmentVariables.map(dbEnvironmentVariable => {
+              return environmentVariableToGqlType(dbEnvironmentVariable);
+            });
+
+            return projectToGqlType(dbProject, projectMembers, environmentVariables);
           });
+
+          const projects = await Promise.all(projectsWithPromises);
 
           return {
             ...org,
@@ -25,10 +38,19 @@ export const createResolvers = async (db: Database): Promise<any> => {
           };
         });
 
+        // TODO: Add organizationMembers field when / if required
         const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
-
-        // TODO: Populate members field when / if required
         return orgsWithProjects;
+      },
+
+      deployments: async (_: any, { projectId }: { projectId: string }) => {
+        const dbDeployments = await db.getDeploymentsByProjectId(projectId);
+
+        const deployments = dbDeployments.map(dbDeployment => {
+          return deploymentToGqlType(dbDeployment);
+        });
+
+        return deployments;
       }
     }
   };
