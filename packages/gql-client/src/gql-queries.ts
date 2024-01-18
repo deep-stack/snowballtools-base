@@ -45,3 +45,28 @@ query {
   }
 }
 `;
+
+export const getDeployments = gql`
+query ($projectId: String!)  {
+  deployments(projectId: $projectId) {
+    id
+    domain{
+      branch
+      createdAt
+      isRedirected
+      id
+      name
+      status
+      updatedAt
+    }
+    branch
+    commitHash
+    title
+    environment
+    isCurrent
+    status
+    createdAt
+    updatedAt
+  }
+}
+`;

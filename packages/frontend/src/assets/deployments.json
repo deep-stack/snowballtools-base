@@ -4,6 +4,7 @@
     "title": "nextjs-boilerplate-9t44zbky4dg-bygideon-projects",
     "status": "Building",
     "isProduction": true,
+    "isCurrent": false,
     "branch": "prod",
     "commit": {
       "hash": "9haif19",
@@ -17,6 +18,7 @@
     "title": "nextjs-boilerplate-9232dwky4dg-bygideon-projects",
     "status": "Ready",
     "isProduction": false,
+    "isCurrent": false,
     "branch": "prod",
     "commit": {
       "hash": "43de569",
@@ -30,6 +32,7 @@
     "title": "nextjs-boilerplate-9saa22y4dg-bygideon-projects",
     "status": "Error",
     "isProduction": false,
+    "isCurrent": false,
     "branch": "main",
     "commit": {
       "hash": "4hdsf19",

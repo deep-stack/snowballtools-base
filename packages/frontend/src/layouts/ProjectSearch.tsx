@@ -19,13 +19,16 @@ const ProjectSearch = () => {
       const projects = res.organizations[0].projects;
       const orgName = res.organizations[0].name;
 
-      const updatedProjects = projects.map((project: any) => {
+      const updatedProjectsPromises = projects.map(async (project: any) => {
+        const { deployments } = await client.getDeployments(String(project.id));
+
         return {
           ...project,
           // TODO: populate empty fields
           icon: '',
           title: project.name,
           organization: orgName,
+          deployments,
           url: '',
           domain: null,
           createdBy: project.owner.name,
@@ -40,6 +43,7 @@ const ProjectSearch = () => {
         };
       });
 
+      const updatedProjects = await Promise.all(updatedProjectsPromises);
       setProjects(updatedProjects);
     };
 

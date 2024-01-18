@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useOutletContext } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -7,17 +7,21 @@ import DomainCard from './DomainCard';
 import { DomainDetails } from '../../../../types/project';
 import domainsData from '../../../../assets/domains.json';
 import repositories from '../../../../assets/repositories.json';
-import projectData from '../../../../assets/projects.json';
 
 const Domains = () => {
   const { id } = useParams();
 
+  // @ts-expect-error create context type for projects
+  const { projects } = useOutletContext();
+
   const currProject = useMemo(() => {
-    return projectData.find((data) => data.id === Number(id));
+    return projects.find((data: any) => Number(data.id) === Number(id));
   }, [id]);
 
   const linkedRepo = useMemo(() => {
-    return repositories.find((repo) => repo.id === currProject?.repositoryId);
+    return repositories.find(
+      (repo) => repo.id === Number(currProject?.repositoryId),
+    );
   }, [currProject]);
 
   return (
