@@ -1,5 +1,5 @@
 import { Database } from './database';
-import { projectToGqlType } from './utils';
+import { deploymentToGqlType, projectMembersToGqlType, projectToGqlType } from './utils';
 
 export const createResolvers = async (db: Database): Promise<any> => {
   return {
@@ -15,12 +15,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
         const orgsWithProjectsPromises = organizations.map(async (org) => {
           const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
-          const projects = await Promise.all(dbProjects.map(async (dbProject) => {
-            const projectMembers = await db.getProjectMembers(dbProject.id);
-
-            // TODO: Add projectMembersToGqlType
+          const projectsWithPromises = dbProjects.map(async (dbProject) => {
+            const dbProjectMembers = await db.getProjectMembers(dbProject.id);
+            const projectMembers = dbProjectMembers.map(dbProjectMember => {
+              return projectMembersToGqlType(dbProjectMember);
+            });
             return projectToGqlType(dbProject, projectMembers);
-          }));
+          });
+
+          const projects = await Promise.all(projectsWithPromises);
 
           return {
             ...org,
@@ -29,14 +32,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
-
-        // TODO: Populate members field when / if required
         return orgsWithProjects;
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
-        // TODO: Add deploymentToGqlType
-        return db.getDeploymentsByProjectId(projectId);
+        const dbDeployments = await db.getDeploymentsByProjectId(projectId);
+
+        const deployments = dbDeployments.map(dbDeployment => {
+          return deploymentToGqlType(dbDeployment);
+        });
+
+        return deployments;
       }
     }
   };

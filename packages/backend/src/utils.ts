@@ -5,6 +5,7 @@ import debug from 'debug';
 
 import { Project } from './entity/Project';
 import { ProjectMember } from './entity/ProjectMember';
+import { Deployment } from './entity/Deployment';
 
 const log = debug('snowball:utils');
 
@@ -37,5 +38,30 @@ export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMemb
     members: projectMembers,
     createdAt: dbProject.createdAt,
     updatedAt: dbProject.updatedAt
+  };
+};
+
+// TODO: Add domain field to deployment
+export const deploymentToGqlType = (dbDeployment: Deployment): any => {
+  return {
+    id: dbDeployment.id,
+    branch: dbDeployment.branch,
+    commitHash: dbDeployment.commitHash,
+    title: dbDeployment.title,
+    environment: dbDeployment.environment,
+    isCurrent: dbDeployment.isCurrent,
+    status: dbDeployment.status,
+    createdAt: dbDeployment.createdAt,
+    updatedAt: dbDeployment.updatedAt
+  };
+};
+
+export const projectMembersToGqlType = (dbProjectMember: ProjectMember): any => {
+  return {
+    id: dbProjectMember.id,
+    member: dbProjectMember.member,
+    permissions: dbProjectMember.permissions,
+    createdAt: dbProjectMember.createdAt,
+    updatedAt: dbProjectMember.updatedAt
   };
 };
