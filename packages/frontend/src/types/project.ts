@@ -8,8 +8,6 @@ export interface ProjectDetails {
   id: number;
   createdAt: string;
   createdBy: string;
-  // TODO: remove deployment field
-  deployment: string;
   deployments: DeploymentDetails[];
   source: string;
   latestCommit: {
