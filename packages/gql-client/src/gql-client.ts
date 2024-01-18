@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser } from './gql-queries';
+import { getUser, getOrganizations } from './gql-queries';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -19,6 +19,14 @@ export class GQLClient {
   async getUser () : Promise<any> {
     const { data } = await this.client.query({
       query: getUser
+    });
+
+    return data;
+  }
+
+  async getOrganizations () : Promise<any> {
+    const { data } = await this.client.query({
+      query: getOrganizations
     });
 
     return data;
