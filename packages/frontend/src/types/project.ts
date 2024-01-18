@@ -8,7 +8,7 @@ export interface ProjectDetails {
   id: number;
   createdAt: string;
   createdBy: string;
-  deployment: string;
+  deployments: DeploymentDetails[];
   source: string;
   latestCommit: {
     message: string;
@@ -30,6 +30,7 @@ export interface DeploymentDetails {
   isProduction: boolean;
   status: Status;
   branch: string;
+  isCurrent: boolean;
   commit: {
     hash: string;
     message: string;

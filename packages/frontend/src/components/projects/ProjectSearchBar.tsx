@@ -11,13 +11,13 @@ import {
 
 import SearchBar from '../SearchBar';
 import { ProjectDetails } from '../../types/project';
-import projectsData from '../../assets/projects.json';
 
 interface ProjectsSearchProps {
+  projects: ProjectDetails[];
   onChange?: (data: ProjectDetails) => void;
 }
 
-const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
+const ProjectSearchBar = ({ projects, onChange }: ProjectsSearchProps) => {
   const [items, setItems] = useState<ProjectDetails[]>([]);
   const [selectedItem, setSelectedItem] = useState<ProjectDetails | null>(null);
 
@@ -32,7 +32,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     onInputValueChange({ inputValue }) {
       setItems(
         inputValue
-          ? projectsData.filter((project) =>
+          ? projects.filter((project) =>
               project.title.toLowerCase().includes(inputValue.toLowerCase()),
             )
           : [],
