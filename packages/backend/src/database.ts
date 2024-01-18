@@ -82,7 +82,8 @@ export class Database {
 
     const deployments = await deploymentRepository.find({
       relations: {
-        project: true
+        project: true,
+        domain: true
       },
       where: {
         project: {

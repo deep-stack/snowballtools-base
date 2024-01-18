@@ -38,6 +38,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
           };
         });
 
+        // TODO: Add organizationMembers field when / if required
         const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
         return orgsWithProjects;
       },

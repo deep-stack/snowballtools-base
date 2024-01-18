@@ -30,7 +30,6 @@ export class ProjectMember {
     project!: Project;
 
   @Column({
-    enum: Permissions,
     type: 'simple-array'
   })
     permissions!: Permissions[];

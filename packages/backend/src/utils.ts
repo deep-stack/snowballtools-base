@@ -47,6 +47,7 @@ export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMemb
 export const deploymentToGqlType = (dbDeployment: Deployment): any => {
   return {
     id: dbDeployment.id,
+    domain: dbDeployment.domain,
     branch: dbDeployment.branch,
     commitHash: dbDeployment.commitHash,
     title: dbDeployment.title,
