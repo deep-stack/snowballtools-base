@@ -15,9 +15,6 @@ query {
 export const getOrganizations = gql`
 query {
   organizations {
-    id
-    createdAt
-    updatedAt
     projects {
       id
       owner {
@@ -41,19 +38,6 @@ query {
       }
       createdAt
       updatedAt
-    }
-    members {
-      id
-      role
-      createdAt
-      updatedAt
-      member {
-        id
-        email
-        name
-        createdAt
-        updatedAt
-      }
     }
   }
 }
