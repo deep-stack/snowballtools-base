@@ -6,6 +6,7 @@ import debug from 'debug';
 import { Project } from './entity/Project';
 import { ProjectMember } from './entity/ProjectMember';
 import { Deployment } from './entity/Deployment';
+import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
 const log = debug('snowball:utils');
 
@@ -24,7 +25,7 @@ export const getConfig = async <ConfigType>(
   return config;
 };
 
-export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMember[]): any => {
+export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMember[], environmentVariables: EnvironmentVariable[]): any => {
   return {
     id: dbProject.id,
     owner: dbProject.owner,
@@ -36,6 +37,7 @@ export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMemb
     framework: dbProject.framework,
     webhooks: dbProject.webhooks,
     members: projectMembers,
+    environmentVariables: environmentVariables,
     createdAt: dbProject.createdAt,
     updatedAt: dbProject.updatedAt
   };
@@ -56,12 +58,23 @@ export const deploymentToGqlType = (dbDeployment: Deployment): any => {
   };
 };
 
-export const projectMembersToGqlType = (dbProjectMember: ProjectMember): any => {
+export const projectMemberToGqlType = (dbProjectMember: ProjectMember): any => {
   return {
     id: dbProjectMember.id,
     member: dbProjectMember.member,
     permissions: dbProjectMember.permissions,
     createdAt: dbProjectMember.createdAt,
     updatedAt: dbProjectMember.updatedAt
+  };
+};
+
+export const environmentVariableToGqlType = (dbEnvironmentVariable: EnvironmentVariable): any => {
+  return {
+    id: dbEnvironmentVariable.id,
+    environments: dbEnvironmentVariable.environments,
+    key: dbEnvironmentVariable.key,
+    value: dbEnvironmentVariable.value,
+    createdAt: dbEnvironmentVariable.createdAt,
+    updatedAt: dbEnvironmentVariable.updatedAt
   };
 };

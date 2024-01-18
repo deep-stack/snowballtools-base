@@ -1,5 +1,5 @@
 import { Database } from './database';
-import { deploymentToGqlType, projectMembersToGqlType, projectToGqlType } from './utils';
+import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType } from './utils';
 
 export const createResolvers = async (db: Database): Promise<any> => {
   return {
@@ -17,10 +17,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
           const projectsWithPromises = dbProjects.map(async (dbProject) => {
             const dbProjectMembers = await db.getProjectMembers(dbProject.id);
+            const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
+
             const projectMembers = dbProjectMembers.map(dbProjectMember => {
-              return projectMembersToGqlType(dbProjectMember);
+              return projectMemberToGqlType(dbProjectMember);
             });
-            return projectToGqlType(dbProject, projectMembers);
+
+            const environmentVariables = dbEnvironmentVariables.map(dbEnvironmentVariable => {
+              return environmentVariableToGqlType(dbEnvironmentVariable);
+            });
+
+            return projectToGqlType(dbProject, projectMembers, environmentVariables);
           });
 
           const projects = await Promise.all(projectsWithPromises);

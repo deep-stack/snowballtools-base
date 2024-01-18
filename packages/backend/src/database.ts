@@ -9,6 +9,7 @@ import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
 import { Deployment } from './entity/Deployment';
 import { ProjectMember } from './entity/ProjectMember';
+import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
 const log = debug('snowball:database');
 
@@ -111,5 +112,20 @@ export class Database {
     return projectMembers;
   }
 
-  // TODO: Add getEnvironmentVariablesByProjectId() function
+  async getEnvironmentVariablesByProjectId (projectId: string): Promise<EnvironmentVariable[]> {
+    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+
+    const environmentVariables = await environmentVariableRepository.find({
+      relations: {
+        project: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return environmentVariables;
+  }
 }
