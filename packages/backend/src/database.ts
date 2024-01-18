@@ -7,6 +7,9 @@ import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
+import { Deployment } from './entity/Deployment';
+import { ProjectMember } from './entity/ProjectMember';
+import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
 const log = debug('snowball:database');
 
@@ -37,16 +40,16 @@ export class Database {
     return user;
   }
 
-  async getOrganizationsbyUserId (userId: number) : Promise<Organization[]> {
+  async getOrganizationsByUserId (userId: number) : Promise<Organization[]> {
     const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
 
     const userOrgs = await userOrganizationRepository.find({
       relations: {
-        user: true,
+        member: true,
         organization: true
       },
       where: {
-        user: {
+        member: {
           id: userId
         }
       }
@@ -56,7 +59,7 @@ export class Database {
     return organizations;
   }
 
-  async getProjectsbyOrganizationId (organizationId: number): Promise<Project[]> {
+  async getProjectsByOrganizationId (organizationId: number): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository.find({
@@ -72,5 +75,58 @@ export class Database {
     });
 
     return projects;
+  }
+
+  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+
+    const deployments = await deploymentRepository.find({
+      relations: {
+        project: true,
+        domain: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return deployments;
+  }
+
+  async getProjectMembers (projectId: string): Promise<ProjectMember[]> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
+    const projectMembers = await projectMemberRepository.find({
+      relations: {
+        project: true,
+        member: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return projectMembers;
+  }
+
+  async getEnvironmentVariablesByProjectId (projectId: string): Promise<EnvironmentVariable[]> {
+    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+
+    const environmentVariables = await environmentVariableRepository.find({
+      relations: {
+        project: true
+      },
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return environmentVariables;
   }
 }

@@ -10,6 +10,12 @@ import {
 
 import { Project } from './Project';
 
+enum Environment {
+  Production = 'Production',
+  Preview = 'Preview',
+  Development = 'Development',
+}
+
 @Entity()
 export class EnvironmentVariable {
   @PrimaryGeneratedColumn()
@@ -22,7 +28,7 @@ export class EnvironmentVariable {
   @Column({
     type: 'simple-array'
   })
-    environments!: string[];
+    environments!: Environment[];
 
   @Column('varchar')
     key!: string;

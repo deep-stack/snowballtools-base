@@ -4,6 +4,9 @@ import toml from 'toml';
 import debug from 'debug';
 
 import { Project } from './entity/Project';
+import { ProjectMember } from './entity/ProjectMember';
+import { Deployment } from './entity/Deployment';
+import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
 const log = debug('snowball:utils');
 
@@ -22,7 +25,7 @@ export const getConfig = async <ConfigType>(
   return config;
 };
 
-export const projectToGqlType = (dbProject: Project): any => {
+export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMember[], environmentVariables: EnvironmentVariable[]): any => {
   return {
     id: dbProject.id,
     owner: dbProject.owner,
@@ -33,7 +36,46 @@ export const projectToGqlType = (dbProject: Project): any => {
     template: dbProject.template,
     framework: dbProject.framework,
     webhooks: dbProject.webhooks,
+    members: projectMembers,
+    environmentVariables: environmentVariables,
     createdAt: dbProject.createdAt,
     updatedAt: dbProject.updatedAt
+  };
+};
+
+// TODO: Add domain field to deployment
+export const deploymentToGqlType = (dbDeployment: Deployment): any => {
+  return {
+    id: dbDeployment.id,
+    domain: dbDeployment.domain,
+    branch: dbDeployment.branch,
+    commitHash: dbDeployment.commitHash,
+    title: dbDeployment.title,
+    environment: dbDeployment.environment,
+    isCurrent: dbDeployment.isCurrent,
+    status: dbDeployment.status,
+    createdAt: dbDeployment.createdAt,
+    updatedAt: dbDeployment.updatedAt
+  };
+};
+
+export const projectMemberToGqlType = (dbProjectMember: ProjectMember): any => {
+  return {
+    id: dbProjectMember.id,
+    member: dbProjectMember.member,
+    permissions: dbProjectMember.permissions,
+    createdAt: dbProjectMember.createdAt,
+    updatedAt: dbProjectMember.updatedAt
+  };
+};
+
+export const environmentVariableToGqlType = (dbEnvironmentVariable: EnvironmentVariable): any => {
+  return {
+    id: dbEnvironmentVariable.id,
+    environments: dbEnvironmentVariable.environments,
+    key: dbEnvironmentVariable.key,
+    value: dbEnvironmentVariable.value,
+    createdAt: dbEnvironmentVariable.createdAt,
+    updatedAt: dbEnvironmentVariable.updatedAt
   };
 };
