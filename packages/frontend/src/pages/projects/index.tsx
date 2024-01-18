@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../../components/projects/ProjectCard';
-import projectsDetail from '../../assets/projects.json';
 
 const Projects = () => {
+  // @ts-expect-error create context type for projects
+  const { projects } = useOutletContext();
+
   return (
     <div>
       <div className="flex p-5">
@@ -15,7 +17,7 @@ const Projects = () => {
             <Typography variant="h4">Projects</Typography>
             <Chip
               className="bg-gray-300 rounded-full static"
-              value={projectsDetail.length}
+              value={projects.length}
               size="sm"
             />
           </div>
@@ -29,9 +31,10 @@ const Projects = () => {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-5 p-5">
-        {projectsDetail.map((project, key) => {
-          return <ProjectCard project={project} key={key} />;
-        })}
+        {projects.length !== 0 &&
+          projects.map((project: any, key: number) => {
+            return <ProjectCard project={project} key={key} />;
+          })}
       </div>
     </div>
   );
