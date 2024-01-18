@@ -1,22 +1,28 @@
 import React, { useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
-import projects from '../../assets/projects.json';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
 
-const getProject = (id: number) => {
-  return projects.find((project) => {
-    return project.id === id;
+const getProject = (projects: any, id: number) => {
+  return projects.find((project: any) => {
+    return Number(project.id) === id;
   });
 };
 
 const Project = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const project = useMemo(() => getProject(Number(id)), [id]);
+
+  // @ts-expect-error create context type for projects
+  const { projects } = useOutletContext();
+
+  const project = useMemo(
+    () => getProject(projects, Number(id)),
+    [id, projects],
+  );
 
   return (
     <div className="h-full">

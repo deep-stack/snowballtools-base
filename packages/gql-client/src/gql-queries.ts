@@ -15,10 +15,13 @@ query {
 export const getOrganizations = gql`
 query {
   organizations {
+    id
+    name
     projects {
       id
       owner {
         id
+        name
       }
       deployments {
         id
