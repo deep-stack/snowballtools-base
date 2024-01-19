@@ -44,6 +44,11 @@ query {
       }
       environmentVariables {
         id
+        environments
+        key
+        value
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
