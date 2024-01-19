@@ -35,6 +35,12 @@ query {
       webhooks
       members {
         id
+        permissions
+        member{
+          id
+          name
+          email
+        }
       }
       environmentVariables {
         id
