@@ -8,13 +8,13 @@ import { createAndStartServer } from './server';
 import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
 import { Config } from './config';
+import { DEFAULT_CONFIG_FILE_PATH } from './constants';
 
 const log = debug('snowball:server');
-const configFilePath = 'environments/local.toml';
 
 export const main = async (): Promise<void> => {
   // TODO: get config path using cli
-  const { server, database } = await getConfig<Config>(configFilePath);
+  const { server, database } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
   const db = new Database(database);
   await db.init();

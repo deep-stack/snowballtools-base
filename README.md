@@ -12,6 +12,30 @@
   yarn
   ```
 
+- Build packages
+
+  ```bash
+  yarn build
+  ```
+
+- Change directory to `packages/backend`
+
+  ```bash
+  cd packages/backend
+  ```
+
+- Start the server
+
+  ```bash
+  yarn start
+  ```
+
+- Copy the graphQL endpoint from terminal and add the endpoint in the `.env` file present in `packages/frontend`
+
+  ```
+  REACT_APP_GQL_SERVER_URL = 'http://localhost:8000/graphql'
+  ```
+
 - Change directory to `packages/frontend`
 
   ```bash
