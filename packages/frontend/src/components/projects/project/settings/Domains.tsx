@@ -24,9 +24,11 @@ const Domains = () => {
     );
   }, [currProject]);
 
-  const domains = currProject.deployments.map((deployment: any) => {
-    return deployment.domain;
-  });
+  const domains = currProject.deployments
+    .filter((deployment: any) => {
+      return deployment.domain != null;
+    })
+    .map((deployment: any) => deployment.domain);
 
   return (
     <>
@@ -43,7 +45,7 @@ const Domains = () => {
         return (
           <DomainCard
             domain={domain}
-            key={domain?.id}
+            key={domain.id}
             repo={linkedRepo!}
             project={currProject!}
           />

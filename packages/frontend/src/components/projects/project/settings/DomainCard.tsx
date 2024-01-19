@@ -28,7 +28,7 @@ enum RefreshStatus {
 }
 
 interface DomainCardProps {
-  domain?: DomainDetails;
+  domain: DomainDetails;
   repo: RepositoryDetails;
   project: ProjectDetails;
 }
@@ -45,12 +45,12 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
       <div className="flex justify-between py-3">
         <div className="flex justify-start gap-1">
           <Typography variant="h6">
-            <i>^</i> {domain?.name}
+            <i>^</i> {domain.name}
           </Typography>
           <Chip
             className="w-fit capitalize"
-            value={domain?.status}
-            color={domain?.status === DomainStatus.LIVE ? 'green' : 'orange'}
+            value={domain.status}
+            color={domain.status === DomainStatus.LIVE ? 'green' : 'orange'}
             variant="ghost"
             icon={<i>^</i>}
           />
@@ -99,7 +99,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
           confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
             setDeleteDialogOpen((preVal) => !preVal);
-            toast.success(`Domain "${domain?.name}" has been deleted`);
+            toast.success(`Domain "${domain.name}" has been deleted`);
           }}
           color="red"
         >
@@ -110,14 +110,14 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
             </span>{' '}
             will not be accessible from the domain{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {domain?.name}.
+              {domain.name}.
             </span>
           </Typography>
         </ConfirmDialog>
       </div>
 
       <Typography variant="small">Production</Typography>
-      {domain?.status === DomainStatus.PENDING && (
+      {domain.status === DomainStatus.PENDING && (
         <Card className="bg-gray-200 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
             <Typography variant="small">
@@ -147,24 +147,23 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
             </thead>
             <tbody>
               <tr>
-                <td>{''}</td>
-                <td>{''}</td>
-                <td>{''}</td>
+                <td>{domain.record.type}</td>
+                <td>{domain.record.name}</td>
+                <td>{domain.record.value}</td>
               </tr>
             </tbody>
           </table>
         </Card>
       )}
-      {domain && (
-        <EditDomainDialog
-          handleOpen={() => {
-            setEditDialogOpen((preVal) => !preVal);
-          }}
-          open={editDialogOpen}
-          domain={domain}
-          repo={repo}
-        />
-      )}
+
+      <EditDomainDialog
+        handleOpen={() => {
+          setEditDialogOpen((preVal) => !preVal);
+        }}
+        open={editDialogOpen}
+        domain={domain}
+        repo={repo}
+      />
     </>
   );
 };

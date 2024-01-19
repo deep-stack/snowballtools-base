@@ -30,6 +30,16 @@ const ProjectSearch = () => {
               hash: '',
               message: '',
             },
+            domain: deployment.domain
+              ? {
+                  ...deployment.domain,
+                  record: {
+                    type: '',
+                    name: '',
+                    value: '',
+                  },
+                }
+              : null,
           };
         });
 
