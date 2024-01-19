@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import deploymentData from '../../../assets/deployments.json';
 import DeploymentDetailsCard from './deployments/DeploymentDetailsCard';
 import FilterForm, {
   FilterValue,
@@ -15,17 +14,21 @@ const DEFAULT_FILTER_VALUE: FilterValue = {
   status: StatusOptions.ALL_STATUS,
 };
 
-const DeploymentsTabPanel = () => {
+const DeploymentsTabPanel = ({
+  deployments,
+}: {
+  deployments: DeploymentDetails[];
+}) => {
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
 
   const productionDeployment = useMemo(() => {
-    return deploymentData.find((deployment) => {
+    return deployments.find((deployment) => {
       return deployment.isProduction === true;
     }) as DeploymentDetails;
   }, []);
 
   const filteredDeployments = useMemo<DeploymentDetails[]>(() => {
-    return deploymentData.filter((deployment) => {
+    return deployments.filter((deployment) => {
       // Searched branch filter
       const branchMatch =
         !filterValue.searchedBranch ||
@@ -36,7 +39,8 @@ const DeploymentsTabPanel = () => {
       // Status filter
       const statusMatch =
         filterValue.status === StatusOptions.ALL_STATUS ||
-        deployment.status === filterValue.status;
+        // TODO: match status field types
+        (deployment.status as unknown as StatusOptions) === filterValue.status;
 
       const dateMatch =
         !filterValue.updateAtRange ||
