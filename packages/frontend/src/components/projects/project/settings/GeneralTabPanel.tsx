@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { Link, useOutletContext, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -13,6 +13,7 @@ import {
 
 import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
+import { ProjectsOutletContext } from '../../../../types/project';
 
 const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
 const TEAMS = ['Airfoil'];
@@ -33,6 +34,13 @@ const CopyIcon = ({ value }: { value: string }) => {
 };
 
 const GeneralTabPanel = () => {
+  const { id } = useParams();
+  const { projects } = useOutletContext<ProjectsOutletContext>();
+
+  const currProject = useMemo(() => {
+    return projects.find((project: any) => project.id === id);
+  }, [id]);
+
   const {
     handleSubmit: handleTransfer,
     control,
@@ -53,8 +61,8 @@ const GeneralTabPanel = () => {
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
-      appName: 'iglootools',
-      description: '',
+      appName: currProject?.name,
+      description: currProject?.description,
     },
   });
 

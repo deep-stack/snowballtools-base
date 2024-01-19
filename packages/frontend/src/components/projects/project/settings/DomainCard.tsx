@@ -163,6 +163,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
         open={editDialogOpen}
         domain={domain}
         repo={repo}
+        project={project}
       />
     </>
   );
