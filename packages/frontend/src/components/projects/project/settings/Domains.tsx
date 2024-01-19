@@ -4,27 +4,26 @@ import { useParams, Link, useOutletContext } from 'react-router-dom';
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
-import { DomainDetails } from '../../../../types/project';
+import { DomainDetails, ProjectsOutletContext } from '../../../../types/project';
 
 const Domains = () => {
   const { id } = useParams();
 
-  // @ts-expect-error create context type for projects
-  const { projects } = useOutletContext();
+  const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
-    return projects.find((data: any) => {
+    return projects.find((data) => {
       return Number(data?.id) === Number(id);
     });
   }, [id]);
 
   const linkedRepo = useMemo(() => {
-    return currProject.repositories.find(
+    return currProject?.repositories.find(
       (repo: any) => repo.id === Number(currProject?.repositoryId),
     );
   }, [currProject]);
 
-  const domains = currProject.deployments
+  const domains = currProject?.deployments
     .filter((deployment: any) => {
       return deployment.domain != null;
     })
