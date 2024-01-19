@@ -29,7 +29,6 @@ const DROPDOWN_OPTIONS = [
 ];
 
 interface MemberCardProps {
-  // Update and use Member type
   member: Member;
   isFirstCard: boolean;
   isOwner: boolean;

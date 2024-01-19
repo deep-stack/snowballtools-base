@@ -18,11 +18,9 @@ const MembersTabPanel = () => {
   // @ts-expect-error create context type for projects
   const { projects } = useOutletContext();
 
-  const currProjectArr = useMemo(() => {
-    return projects.filter((project: any) => project.id === id);
+  const currProject = useMemo(() => {
+    return projects.find((project: any) => project.id === id);
   }, [id]);
-
-  const currProject = currProjectArr[0];
 
   const [updatedMembers, setUpdatedMembers] = useState([
     ...currProject?.members,
@@ -61,7 +59,7 @@ const MembersTabPanel = () => {
             member={member.member}
             key={member.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
-            isOwner={member.id === currProject?.owner.id}
+            isOwner={member.member.id === currProject?.owner.id}
             isPending={member.name === ''}
             permissions={member.permissions}
             handleDeletePendingMember={(id: number) => {
