@@ -5,6 +5,7 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
+import { ProjectsOutletContext } from '../../types/project';
 
 const getProject = (projects: any, id: number) => {
   return projects.find((project: any) => {
@@ -16,8 +17,7 @@ const Project = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // @ts-expect-error create context type for projects
-  const { projects } = useOutletContext();
+  const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const project = useMemo(
     () => getProject(projects, Number(id)),

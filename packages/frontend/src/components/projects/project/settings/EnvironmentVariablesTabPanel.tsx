@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import {
   Typography,
@@ -13,9 +14,12 @@ import {
 
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
-import { EnvironmentVariable, Environments } from '../../../../types/project';
+import {
+  EnvironmentVariable,
+  Environments,
+  ProjectsOutletContext,
+} from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
-import { useOutletContext, useParams } from 'react-router-dom';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -32,11 +36,10 @@ export type EnvironmentVariablesFormValues = {
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
 
-  // @ts-expect-error create context type for projects
-  const { projects } = useOutletContext();
+  const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
-    return projects.find((data: any) => Number(data.id) === Number(id));
+    return projects.find((data) => Number(data.id) === Number(id));
   }, [id]);
 
   const {
@@ -72,7 +75,7 @@ export const EnvironmentVariablesTabPanel = () => {
   }, [isSubmitSuccessful, reset]);
 
   const getEnvironmentVariable = useCallback((environment: Environments) => {
-    return (currProject.environmentVariables as EnvironmentVariable[]).filter(
+    return (currProject?.environmentVariables as EnvironmentVariable[]).filter(
       (item) => item.environments.includes(environment),
     );
   }, []);
