@@ -30,6 +30,7 @@ export interface DeploymentDetails {
   isProduction: boolean;
   status: Status;
   branch: string;
+  environment: Environments;
   isCurrent: boolean;
   commit: {
     hash: string;
@@ -46,9 +47,9 @@ export enum Status {
 }
 
 export enum Environments {
-  PRODUCTION = 'production',
-  PREVIEW = 'preview',
-  DEVELOPMENT = 'development',
+  PRODUCTION = 'Production',
+  PREVIEW = 'Preview',
+  DEVELOPMENT = 'Development',
 }
 
 export interface EnvironmentVariable {

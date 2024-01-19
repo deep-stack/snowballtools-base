@@ -10,7 +10,7 @@ import {
   ChipProps,
 } from '@material-tailwind/react';
 
-import { relativeTime } from '../../../../utils/time';
+import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import { DeploymentDetails, Status } from '../../../../types/project';
@@ -58,7 +58,7 @@ const DeploymentDetailsCard = ({
       </div>
       <div className="col-span-1 flex items-center">
         <Typography color="gray" className="grow">
-          {relativeTime(deployment.updatedAt)} ^ {deployment.author}
+          {relativeTimeMs(deployment.updatedAt)} ^ {deployment.author}
         </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>

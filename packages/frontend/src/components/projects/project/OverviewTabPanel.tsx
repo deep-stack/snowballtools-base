@@ -5,7 +5,7 @@ import { Typography, Button, Chip } from '@material-tailwind/react';
 import ActivityCard from './ActivityCard';
 import activityDetails from '../../../assets/activities.json';
 import { ProjectDetails } from '../../../types/project';
-import { relativeTime } from '../../../utils/time';
+import { relativeTimeMs } from '../../../utils/time';
 
 interface OverviewProps {
   project: ProjectDetails;
@@ -63,9 +63,7 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
         <div className="flex justify-between p-2 text-sm">
           <p>^ Created</p>
           <p>
-            {/* TODO: Use following time conversion wherever required */}
-            {relativeTime(new Date(Number(project.createdAt)).toISOString())} by
-            ^ {project.createdBy}
+            {relativeTimeMs(project.createdAt)} by ^ {project.createdBy}
           </p>
         </div>
       </div>
