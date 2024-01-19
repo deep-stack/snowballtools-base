@@ -4,7 +4,10 @@ import { useParams, Link, useOutletContext } from 'react-router-dom';
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
-import { DomainDetails, ProjectsOutletContext } from '../../../../types/project';
+import {
+  DomainDetails,
+  ProjectsOutletContext,
+} from '../../../../types/project';
 
 const Domains = () => {
   const { id } = useParams();
