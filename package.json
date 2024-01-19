@@ -7,10 +7,12 @@
   "dependencies": {},
   "devDependencies": {
     "husky": "^8.0.3",
-    "lerna": "^8.0.0"
+    "lerna": "^8.0.0",
+    "depcheck": "^1.4.2"
   },
   "scripts": {
     "prepare": "husky install",
+    "build": "lerna run build --stream",
     "lint": "lerna run lint --stream -- --max-warnings=0"
   }
 }

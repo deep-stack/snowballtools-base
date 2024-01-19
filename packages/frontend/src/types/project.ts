@@ -3,6 +3,7 @@ export interface ProjectDetails {
   name: string;
   title: string;
   organization: string;
+  description: string;
   url: string;
   domain: string | null;
   id: number;

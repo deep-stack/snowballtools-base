@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments } from './gql-queries';
+import { getUser, getOrganizations, getDeployments } from './queries';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;

@@ -1,1 +1,1 @@
-export * from './src/gql-client';
+export * from './src/client';
