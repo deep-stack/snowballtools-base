@@ -5,7 +5,7 @@ import HorizontalLine from '../components/HorizontalLine';
 import { IconButton, Typography } from '@material-tailwind/react';
 import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 import { useGQLClient } from '../context/GQLClientContext';
-import { ProjectDetails } from '../types/project';
+import { Environments, ProjectDetails } from '../types/project';
 
 const ProjectSearch = () => {
   const client = useGQLClient();
@@ -21,6 +21,17 @@ const ProjectSearch = () => {
 
       const updatedProjectsPromises = projects.map(async (project: any) => {
         const { deployments } = await client.getDeployments(String(project.id));
+        const updatedDeployments = deployments.map((deployment: any) => {
+          return {
+            ...deployment,
+            isProduction: deployment.environment === Environments.PRODUCTION,
+            author: '',
+            commit: {
+              hash: '',
+              message: '',
+            },
+          };
+        });
 
         return {
           ...project,
@@ -28,7 +39,7 @@ const ProjectSearch = () => {
           icon: '',
           title: project.name,
           organization: orgName,
-          deployments,
+          deployments: updatedDeployments,
           url: '',
           domain: null,
           createdBy: project.owner.name,
