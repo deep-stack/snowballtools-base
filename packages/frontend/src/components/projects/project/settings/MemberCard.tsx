@@ -9,17 +9,17 @@ import {
   IconButton,
 } from '@material-tailwind/react';
 
-import { Member } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
+import { Member } from '../../../../types/project';
 
 const PERMISSION_OPTIONS = [
   {
     label: 'View only',
-    value: 'view',
+    value: 'View',
   },
   {
     label: 'View and edit',
-    value: 'view+edit',
+    value: 'View+Edit',
   },
 ];
 

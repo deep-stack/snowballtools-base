@@ -1,12 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
-import membersData from '../../../../assets/members.json';
-import projectData from '../../../../assets/projects.json';
 
 import { Member } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
@@ -17,30 +15,16 @@ const MembersTabPanel = () => {
   const { id } = useParams();
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
+  // @ts-expect-error create context type for projects
+  const { projects } = useOutletContext();
+
   const currProject = useMemo(() => {
-    return projectData.find((data) => data.id === Number(id));
+    return projects.find((project: any) => project.id === id);
   }, [id]);
 
-  const members = useMemo(() => {
-    return membersData.filter(
-      (member) =>
-        currProject?.members.some(
-          (projectMember) => projectMember.id === member.id,
-        ),
-    );
-  }, [currProject]);
-
-  const [updatedMembers, setUpdatedMembers] = useState([...members]);
-
-  const getMemberPermissions = useCallback(
-    (id: number) => {
-      return (
-        currProject?.members.find((projectMember) => projectMember.id === id)
-          ?.permissions || []
-      );
-    },
-    [updatedMembers],
-  );
+  const [updatedMembers, setUpdatedMembers] = useState([
+    ...currProject?.members,
+  ]);
 
   const addMemberHandler = useCallback((member: Member) => {
     setUpdatedMembers((val) => [...val, member]);
@@ -69,15 +53,15 @@ const MembersTabPanel = () => {
           </Button>
         </div>
       </div>
-      {(updatedMembers as Member[]).map((member, index) => {
+      {updatedMembers.map((member, index) => {
         return (
           <MemberCard
-            member={member}
+            member={member.member}
             key={member.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
-            isOwner={member.id === currProject?.ownerId}
+            isOwner={member.member.id === currProject?.owner.id}
             isPending={member.name === ''}
-            permissions={getMemberPermissions(member.id)}
+            permissions={member.permissions}
             handleDeletePendingMember={(id: number) => {
               setUpdatedMembers(
                 updatedMembers.filter((member) => member.id !== id),
