@@ -13,9 +13,9 @@ import {
 
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
-import environmentVariablesData from '../../../../assets/environment-variables.json';
 import { EnvironmentVariable, Environments } from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -30,6 +30,15 @@ export type EnvironmentVariablesFormValues = {
 };
 
 export const EnvironmentVariablesTabPanel = () => {
+  const { id } = useParams();
+
+  // @ts-expect-error create context type for projects
+  const { projects } = useOutletContext();
+
+  const currProject = useMemo(() => {
+    return projects.find((data: any) => Number(data.id) === Number(id));
+  }, [id]);
+
   const {
     handleSubmit,
     register,
@@ -63,8 +72,8 @@ export const EnvironmentVariablesTabPanel = () => {
   }, [isSubmitSuccessful, reset]);
 
   const getEnvironmentVariable = useCallback((environment: Environments) => {
-    return (environmentVariablesData as EnvironmentVariable[]).filter((item) =>
-      item.environments.includes(environment),
+    return (currProject.environmentVariables as EnvironmentVariable[]).filter(
+      (item) => item.environments.includes(environment),
     );
   }, []);
 

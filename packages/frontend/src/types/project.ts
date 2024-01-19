@@ -18,6 +18,7 @@ export interface ProjectDetails {
   repositoryId: number;
   members: MemberPermission[];
   ownerId: number;
+  environmentVariables: EnvironmentVariable[];
 }
 
 export interface MemberPermission {
