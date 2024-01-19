@@ -5,8 +5,6 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
 import { DomainDetails } from '../../../../types/project';
-import domainsData from '../../../../assets/domains.json';
-import repositories from '../../../../assets/repositories.json';
 
 const Domains = () => {
   const { id } = useParams();
@@ -15,14 +13,22 @@ const Domains = () => {
   const { projects } = useOutletContext();
 
   const currProject = useMemo(() => {
-    return projects.find((data: any) => Number(data.id) === Number(id));
+    return projects.find((data: any) => {
+      return Number(data?.id) === Number(id);
+    });
   }, [id]);
 
   const linkedRepo = useMemo(() => {
-    return repositories.find(
-      (repo) => repo.id === Number(currProject?.repositoryId),
+    return currProject.repositories.find(
+      (repo: any) => repo.id === Number(currProject?.repositoryId),
     );
   }, [currProject]);
+
+  const domains = currProject.deployments
+    .filter((deployment: any) => {
+      return deployment.domain != null;
+    })
+    .map((deployment: any) => deployment.domain);
 
   return (
     <>
@@ -35,7 +41,7 @@ const Domains = () => {
         </Link>
       </div>
 
-      {(domainsData as DomainDetails[]).map((domain) => {
+      {(domains as DomainDetails[]).map((domain) => {
         return (
           <DomainCard
             domain={domain}

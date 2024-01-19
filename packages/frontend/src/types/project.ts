@@ -75,8 +75,8 @@ export enum GitSelect {
 }
 
 export enum DomainStatus {
-  LIVE = 'live',
-  PENDING = 'pending',
+  LIVE = 'Live',
+  PENDING = 'Pending',
 }
 
 export interface DomainDetails {
