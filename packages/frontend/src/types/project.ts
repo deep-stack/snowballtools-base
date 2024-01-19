@@ -16,6 +16,7 @@ export interface ProjectDetails {
     branch: string;
   };
   repositoryId: number;
+  repositories: RepositoryDetails[];
   members: MemberPermission[];
   ownerId: number;
   environmentVariables: EnvironmentVariable[];
@@ -101,4 +102,8 @@ export interface Member {
   name: string;
   email: string;
   id: number;
+}
+
+export interface ProjectsOutletContext {
+  projects: ProjectDetails[];
 }
