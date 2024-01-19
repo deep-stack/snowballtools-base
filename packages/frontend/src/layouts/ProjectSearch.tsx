@@ -30,6 +30,16 @@ const ProjectSearch = () => {
               hash: '',
               message: '',
             },
+            domain: deployment.domain
+              ? {
+                  ...deployment.domain,
+                  record: {
+                    type: '',
+                    name: '',
+                    value: '',
+                  },
+                }
+              : null,
           };
         });
 
@@ -44,7 +54,17 @@ const ProjectSearch = () => {
           domain: null,
           createdBy: project.owner.name,
           source: '',
-          repositoryId: project.repository,
+          repositoryId: 0,
+          repositories: [
+            {
+              id: 0,
+              title: project.repository,
+              updatedAt: '',
+              user: '',
+              private: false,
+              branch: [''],
+            },
+          ],
           // TODO: populate from github API
           latestCommit: {
             message: '',

@@ -155,6 +155,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
           </table>
         </Card>
       )}
+
       <EditDomainDialog
         handleOpen={() => {
           setEditDialogOpen((preVal) => !preVal);
