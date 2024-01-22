@@ -55,6 +55,16 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         return deployments;
+      },
+
+      projectMembers: async (_: any, { projectId }: { projectId: string }) => {
+        const dbProjectMembers = await db.getProjectMembersByProjectId(projectId);
+
+        const projectMembers = dbProjectMembers.map(dbProjectMember => {
+          return projectMemberToGqlType(dbProjectMember);
+        });
+
+        return projectMembers;
       }
     },
 

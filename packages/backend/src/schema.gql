@@ -115,6 +115,7 @@ type Query {
   organizations: [Organization!]
   projects: [Project!]
   deployments(projectId: String!): [Deployment!]
+  projectMembers(projectId: String!): [ProjectMember!]
 }
 
 type Mutation {
