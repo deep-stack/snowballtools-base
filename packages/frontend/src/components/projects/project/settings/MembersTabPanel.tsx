@@ -8,11 +8,14 @@ import MemberCard from './MemberCard';
 
 import { Member } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const FIRST_MEMBER_CARD = 0;
 
 const MembersTabPanel = () => {
   const { id } = useParams();
+  const client = useGQLClient();
+
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
   // @ts-expect-error create context type for projects
@@ -29,6 +32,17 @@ const MembersTabPanel = () => {
   const addMemberHandler = useCallback((member: Member) => {
     setUpdatedMembers((val) => [...val, member]);
     toast.success('Invitation sent');
+  }, []);
+
+  const removeMemberHandler = useCallback(async (memberId: number) => {
+    const { removeMember } = await client.removeMember(String(memberId));
+
+    if (removeMember) {
+      toast.success('Member removed from project');
+    } else {
+      // TODO: behaviour on remove failure?
+      toast.error('Not able to remove member');
+    }
   }, []);
 
   return (
@@ -67,6 +81,7 @@ const MembersTabPanel = () => {
                 updatedMembers.filter((member) => member.id !== id),
               );
             }}
+            removeMemberHandler={removeMemberHandler}
           />
         );
       })}

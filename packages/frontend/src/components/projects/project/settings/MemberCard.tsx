@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import toast from 'react-hot-toast';
 
 import {
   Select,
@@ -35,6 +34,7 @@ interface MemberCardProps {
   isPending: boolean;
   permissions: string[];
   handleDeletePendingMember: (id: number) => void;
+  removeMemberHandler: (id: number) => Promise<void>;
 }
 
 const MemberCard = ({
@@ -44,6 +44,7 @@ const MemberCard = ({
   isPending,
   permissions,
   handleDeletePendingMember,
+  removeMemberHandler,
 }: MemberCardProps) => {
   const [selectedPermission, setSelectedPermission] = useState(
     permissions.join('+'),
@@ -126,8 +127,8 @@ const MemberCard = ({
         open={removeMemberDialogOpen}
         confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
+          removeMemberHandler(member.id);
           setRemoveMemberDialogOpen((preVal) => !preVal);
-          toast.success('Member removed from project');
         }}
         color="red"
       >

@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments } from './queries';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, removeMember } from './queries';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -35,6 +35,28 @@ export class GQLClient {
   async getDeployments (projectId: string) : Promise<any> {
     const { data } = await this.client.query({
       query: getDeployments,
+      variables: {
+        projectId
+      }
+    });
+
+    return data;
+  }
+
+  async removeMember (memberId: string): Promise<any> {
+    const { data } = await this.client.mutate({
+      mutation: removeMember,
+      variables: {
+        memberId
+      }
+    });
+
+    return data;
+  }
+
+  async getProjectMembers (projectId: string) : Promise<any> {
+    const { data } = await this.client.query({
+      query: getProjectMembers,
       variables: {
         projectId
       }
