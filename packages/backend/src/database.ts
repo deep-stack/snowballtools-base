@@ -95,7 +95,7 @@ export class Database {
     return deployments;
   }
 
-  async getProjectMembers (projectId: string): Promise<ProjectMember[]> {
+  async getProjectMembersByProjectId (projectId: string): Promise<ProjectMember[]> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
     const projectMembers = await projectMemberRepository.find({
@@ -128,5 +128,17 @@ export class Database {
     });
 
     return environmentVariables;
+  }
+
+  async removeProjectMemberByMemberId (memberId: string): Promise<boolean> {
+    // TODO: Check if user is authorized to delete members
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+    const deleted = await projectMemberRepository.delete(memberId);
+
+    if (deleted.affected) {
+      return deleted.affected > 0;
+    } else {
+      return false;
+    }
   }
 }

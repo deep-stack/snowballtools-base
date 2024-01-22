@@ -1,5 +1,9 @@
+import debug from 'debug';
+
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType } from './utils';
+
+const log = debug('snowball:database');
 
 export const createResolvers = async (db: Database): Promise<any> => {
   return {
@@ -16,7 +20,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
           const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
           const projectsWithPromises = dbProjects.map(async (dbProject) => {
-            const dbProjectMembers = await db.getProjectMembers(dbProject.id);
+            const dbProjectMembers = await db.getProjectMembersByProjectId(dbProject.id);
             const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
 
             const projectMembers = dbProjectMembers.map(dbProjectMember => {
@@ -51,6 +55,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         return deployments;
+      }
+    },
+
+    Mutation: {
+      removeMember: async (_: any, { memberId }:{memberId: string}) => {
+        try {
+          return await db.removeProjectMemberByMemberId(memberId);
+        } catch (error) {
+          log(error);
+          return false;
+        }
       }
     }
   };

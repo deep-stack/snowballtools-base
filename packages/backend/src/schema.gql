@@ -116,3 +116,7 @@ type Query {
   projects: [Project!]
   deployments(projectId: String!): [Deployment!]
 }
+
+type Mutation {
+  removeMember(memberId: String!): Boolean!
+}
