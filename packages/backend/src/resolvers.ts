@@ -69,7 +69,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
     },
 
     Mutation: {
-      removeMember: async (_: any, { memberId }:{memberId: string}) => {
+      removeMember: async (_: any, { memberId }:{ memberId: string }) => {
         try {
           return await db.removeProjectMemberByMemberId(memberId);
         } catch (error) {
