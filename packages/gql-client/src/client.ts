@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, removeMember } from './queries';
 
@@ -6,13 +6,26 @@ export interface GraphQLConfig {
   gqlEndpoint: string;
 }
 
+// TODO: check options
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore'
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all'
+  }
+};
+
 export class GQLClient {
   private client: ApolloClient<NormalizedCacheObject>;
 
   constructor (config: GraphQLConfig) {
     this.client = new ApolloClient({
       uri: config.gqlEndpoint,
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
+      defaultOptions
     });
   }
 

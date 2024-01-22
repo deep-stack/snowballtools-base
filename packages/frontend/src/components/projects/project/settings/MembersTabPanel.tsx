@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -6,7 +6,7 @@ import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
 
-import { Member } from '../../../../types/project';
+import { Member, MemberPermission } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
@@ -17,6 +17,7 @@ const MembersTabPanel = () => {
   const client = useGQLClient();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   // @ts-expect-error create context type for projects
   const { projects } = useOutletContext();
@@ -25,25 +26,41 @@ const MembersTabPanel = () => {
     return projects.find((project: any) => project.id === id);
   }, [id]);
 
-  const [updatedMembers, setUpdatedMembers] = useState([
-    ...currProject?.members,
-  ]);
+  const [updatedMembers, setUpdatedMembers] = useState<MemberPermission[]>([]);
 
   const addMemberHandler = useCallback((member: Member) => {
+    // @ts-expect-error TODO: make types consistent
     setUpdatedMembers((val) => [...val, member]);
     toast.success('Invitation sent');
   }, []);
 
-  const removeMemberHandler = useCallback(async (memberId: number) => {
-    const { removeMember } = await client.removeMember(String(memberId));
+  const removeMemberHandler = async (projectMemberId: string) => {
+    const { removeMember: isMemberRemoved } = await client.removeMember(
+      String(projectMemberId),
+    );
 
-    if (removeMember) {
+    if (isMemberRemoved) {
+      setRefresh(true);
       toast.success('Member removed from project');
     } else {
       // TODO: behaviour on remove failure?
       toast.error('Not able to remove member');
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { projectMembers } = await client.getProjectMembers(
+        String(currProject.id),
+      );
+      setUpdatedMembers(projectMembers || []);
+    };
+    fetch();
+
+    if (refresh) {
+      setRefresh(false);
+    }
+  }, [refresh]);
 
   return (
     <div className="p-2 mb-20">
@@ -74,14 +91,15 @@ const MembersTabPanel = () => {
             key={member.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
             isOwner={member.member.id === currProject?.owner.id}
-            isPending={member.name === ''}
+            isPending={member.member.name === ''}
             permissions={member.permissions}
             handleDeletePendingMember={(id: number) => {
               setUpdatedMembers(
-                updatedMembers.filter((member) => member.id !== id),
+                updatedMembers.filter((member) => member.id !== String(id)),
               );
             }}
             removeMemberHandler={removeMemberHandler}
+            projectMemberId={member.id}
           />
         );
       })}

@@ -24,7 +24,8 @@ export interface ProjectDetails {
 }
 
 export interface MemberPermission {
-  id: number;
+  id: string;
+  member: Member;
   permissions: string[];
 }
 
