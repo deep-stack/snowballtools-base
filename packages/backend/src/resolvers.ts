@@ -19,7 +19,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
         const orgsWithProjectsPromises = organizations.map(async (org) => {
           const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
-          const projectsWithPromises = dbProjects.map(async (dbProject) => {
+          const projectsPromises = dbProjects.map(async (dbProject) => {
             const dbProjectMembers = await db.getProjectMembersByProjectId(dbProject.id);
             const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
 
@@ -34,7 +34,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
             return projectToGqlType(dbProject, projectMembers, environmentVariables);
           });
 
-          const projects = await Promise.all(projectsWithPromises);
+          const projects = await Promise.all(projectsPromises);
 
           return {
             ...org,
@@ -69,9 +69,18 @@ export const createResolvers = async (db: Database): Promise<any> => {
     },
 
     Mutation: {
-      removeMember: async (_: any, { memberId }:{ memberId: string }) => {
+      removeMember: async (_: any, { memberId }: { memberId: string }) => {
         try {
-          return await db.removeProjectMemberByMemberId(memberId);
+          return db.removeProjectMemberByMemberId(memberId);
+        } catch (error) {
+          log(error);
+          return false;
+        }
+      },
+
+      addEnvironmentVariables: async (_: any, { projectId, environmentVariables }: { projectId: string, environmentVariables: any[] }) => {
+        try {
+          return db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
         } catch (error) {
           log(error);
           return false;
