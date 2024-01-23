@@ -29,8 +29,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:load:fixtures": "node --enable-source-maps ./dist/test/initialize-db.js",
-    "db:load:fixtures:dev": "ts-node ./src/test/initialize-db.ts"
+    "db:load:fixtures": "ts-node ./test/initialize-db.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",

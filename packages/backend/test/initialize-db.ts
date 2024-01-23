@@ -2,14 +2,14 @@ import { DataSource } from 'typeorm';
 import * as fs from 'fs/promises';
 import debug from 'debug';
 
-import { User } from '../entity/User';
-import { Organization } from '../entity/Organization';
-import { Project } from '../entity/Project';
-import { UserOrganization } from '../entity/UserOrganization';
-import { EnvironmentVariable } from '../entity/EnvironmentVariable';
-import { Domain } from '../entity/Domain';
-import { ProjectMember } from '../entity/ProjectMember';
-import { Deployment } from '../entity/Deployment';
+import { User } from '../src/entity/User';
+import { Organization } from '../src/entity/Organization';
+import { Project } from '../src/entity/Project';
+import { UserOrganization } from '../src/entity/UserOrganization';
+import { EnvironmentVariable } from '../src/entity/EnvironmentVariable';
+import { Domain } from '../src/entity/Domain';
+import { ProjectMember } from '../src/entity/ProjectMember';
+import { Deployment } from '../src/entity/Deployment';
 
 const log = debug('snowball:initialize-database');
 
