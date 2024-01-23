@@ -12,12 +12,12 @@ import {
   Checkbox,
 } from '@material-tailwind/react';
 
-import { Member, Permission } from '../../../../types/project';
+import { ProjectMember, Permission } from '../../../../types/project';
 
 interface AddMemberDialogProp {
   open: boolean;
   handleOpen: () => void;
-  handleAddMember: (member: Member) => void;
+  handleAddMember: (projectMember: ProjectMember) => void;
 }
 
 interface formData {
@@ -52,13 +52,17 @@ const AddMemberDialog = ({
     reset();
     handleOpen();
 
-    const member: Member = {
-      email: data.emailAddress,
-      id: Math.random(),
-      name: '',
+    const projectMember: ProjectMember = {
+      id: Math.random().toString(),
+      permissions: [],
+      member: {
+        name: '',
+        email: data.emailAddress,
+        id: Math.random().toString(),
+      },
     };
 
-    handleAddMember(member);
+    handleAddMember(projectMember);
   }, []);
 
   return (

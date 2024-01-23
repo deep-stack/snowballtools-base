@@ -2,6 +2,7 @@ export interface ProjectDetails {
   icon: string;
   name: string;
   title: string;
+  owner: Member;
   organization: string;
   description: string;
   url: string;
@@ -18,13 +19,14 @@ export interface ProjectDetails {
   };
   repositoryId: number;
   repositories: RepositoryDetails[];
-  members: MemberPermission[];
+  members: ProjectMember[];
   ownerId: number;
   environmentVariables: EnvironmentVariable[];
 }
 
-export interface MemberPermission {
-  id: number;
+export interface ProjectMember {
+  id: string;
+  member: Member;
   permissions: string[];
 }
 
@@ -103,9 +105,9 @@ export enum Permission {
 export interface Member {
   name: string;
   email: string;
-  id: number;
+  id: string;
 }
 
-export interface ProjectsOutletContext {
+export interface ProjectSearchOutletContext {
   projects: ProjectDetails[];
 }

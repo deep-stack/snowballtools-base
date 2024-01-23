@@ -81,3 +81,19 @@ query ($projectId: String!)  {
   }
 }
 `;
+
+export const getProjectMembers = gql`
+query ($projectId: String!) {
+  projectMembers(projectId: $projectId) {
+    id
+    member {
+      id
+      name
+      email
+    }
+    createdAt
+    updatedAt
+    permissions
+  }
+}
+`;
