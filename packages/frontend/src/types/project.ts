@@ -19,12 +19,12 @@ export interface ProjectDetails {
   };
   repositoryId: number;
   repositories: RepositoryDetails[];
-  members: MemberPermission[];
+  members: ProjectMember[];
   ownerId: number;
   environmentVariables: EnvironmentVariable[];
 }
 
-export interface MemberPermission {
+export interface ProjectMember {
   id: string;
   member: Member;
   permissions: string[];

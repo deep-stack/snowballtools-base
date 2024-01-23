@@ -34,8 +34,7 @@ interface MemberCardProps {
   isPending: boolean;
   permissions: string[];
   handleDeletePendingMember: (id: number) => void;
-  removeMemberHandler: (id: string) => Promise<void>;
-  projectMemberId: string;
+  removeMemberHandler: () => Promise<void>;
 }
 
 const MemberCard = ({
@@ -46,7 +45,6 @@ const MemberCard = ({
   permissions,
   handleDeletePendingMember,
   removeMemberHandler,
-  projectMemberId,
 }: MemberCardProps) => {
   const [selectedPermission, setSelectedPermission] = useState(
     permissions.join('+'),
@@ -129,8 +127,8 @@ const MemberCard = ({
         open={removeMemberDialogOpen}
         confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
-          removeMemberHandler(projectMemberId);
           setRemoveMemberDialogOpen((preVal) => !preVal);
+          removeMemberHandler();
         }}
         color="red"
       >

@@ -7,7 +7,7 @@ import { Chip, Button, Typography } from '@material-tailwind/react';
 import MemberCard from './MemberCard';
 
 import {
-  MemberPermission,
+  ProjectMember,
   ProjectsOutletContext,
 } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
@@ -24,13 +24,13 @@ const MembersTabPanel = () => {
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
-    return projects.find((project: any) => project.id === id);
+    return projects.find((project) => String(project.id) === id);
   }, [id]);
 
-  const [updatedMembers, setUpdatedMembers] = useState<MemberPermission[]>([]);
+  const [updatedMembers, setUpdatedMembers] = useState<ProjectMember[]>([]);
 
-  const addMemberHandler = useCallback((member: MemberPermission) => {
-    setUpdatedMembers((val) => [...val, member]);
+  const addMemberHandler = useCallback((projectMember: ProjectMember) => {
+    setUpdatedMembers((val) => [...val, projectMember]);
     toast.success('Invitation sent');
   }, []);
 
@@ -41,17 +41,19 @@ const MembersTabPanel = () => {
     setUpdatedMembers(projectMembers || []);
   }, []);
 
-  const removeMemberHandler = async (projectMemberId: string) => {
-    const { removeMember: isMemberRemoved } =
-      await client.removeMember(projectMemberId);
+  const removeMemberHandler = (projectMemberId: string) => {
+    return async () => {
+      const { removeMember: isMemberRemoved } =
+        await client.removeMember(projectMemberId);
 
-    if (isMemberRemoved) {
-      toast.success('Member removed from project');
-      await fetchProjectMembers();
-    } else {
-      // TODO: behaviour on remove failure?
-      toast.error('Not able to remove member');
-    }
+      if (isMemberRemoved) {
+        toast.success('Member removed from project');
+        await fetchProjectMembers();
+      } else {
+        // TODO: behaviour on remove failure?
+        toast.error('Not able to remove member');
+      }
+    };
   };
 
   useEffect(() => {
@@ -96,8 +98,7 @@ const MembersTabPanel = () => {
                 ),
               );
             }}
-            removeMemberHandler={removeMemberHandler}
-            projectMemberId={member.id}
+            removeMemberHandler={removeMemberHandler(member.id)}
           />
         );
       })}
