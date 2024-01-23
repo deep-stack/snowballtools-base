@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-
 import { Card, Collapse, Typography } from '@material-tailwind/react';
 
+import { Environment, EnvironmentVariable } from 'gql-client/dist/src/types';
+
 import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
-import { Environment, EnvironmentVariable } from '../../../../types/project';
 
 interface DisplayEnvironmentVariablesProps {
   environment: Environment;
