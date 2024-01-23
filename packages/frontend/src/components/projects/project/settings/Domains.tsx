@@ -6,13 +6,13 @@ import { Button, Typography } from '@material-tailwind/react';
 import DomainCard from './DomainCard';
 import {
   DomainDetails,
-  ProjectsOutletContext,
+  ProjectSearchOutletContext,
 } from '../../../../types/project';
 
 const Domains = () => {
   const { id } = useParams();
 
-  const { projects } = useOutletContext<ProjectsOutletContext>();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   const currProject = useMemo(() => {
     return projects.find((data) => {

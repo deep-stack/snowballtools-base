@@ -1,7 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, removeMember } from './queries';
-import { getDeploymentsResponse, getOrganizationsResponse, getProjectMembersResponse, getUserResponse, removeMemberResponse } from './types';
+import { getUser, getOrganizations, getDeployments, getProjectMembers } from './queries';
+import { GetDeploymentsResponse, GetOrganizationsResponse, GetProjectMembersResponse, GetUserResponse, RemoveMemberResponse } from './types';
+import { removeMember } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -30,7 +31,7 @@ export class GQLClient {
     });
   }
 
-  async getUser () : Promise<getUserResponse> {
+  async getUser () : Promise<GetUserResponse> {
     const { data } = await this.client.query({
       query: getUser
     });
@@ -38,7 +39,7 @@ export class GQLClient {
     return data;
   }
 
-  async getOrganizations () : Promise<getOrganizationsResponse> {
+  async getOrganizations () : Promise<GetOrganizationsResponse> {
     const { data } = await this.client.query({
       query: getOrganizations
     });
@@ -46,7 +47,7 @@ export class GQLClient {
     return data;
   }
 
-  async getDeployments (projectId: string) : Promise<getDeploymentsResponse> {
+  async getDeployments (projectId: string) : Promise<GetDeploymentsResponse> {
     const { data } = await this.client.query({
       query: getDeployments,
       variables: {
@@ -57,7 +58,7 @@ export class GQLClient {
     return data;
   }
 
-  async removeMember (memberId: string): Promise<removeMemberResponse> {
+  async removeMember (memberId: string): Promise<RemoveMemberResponse> {
     const { data } = await this.client.mutate({
       mutation: removeMember,
       variables: {
@@ -68,7 +69,7 @@ export class GQLClient {
     return data;
   }
 
-  async getProjectMembers (projectId: string) : Promise<getProjectMembersResponse> {
+  async getProjectMembers (projectId: string) : Promise<GetProjectMembersResponse> {
     const { data } = await this.client.query({
       query: getProjectMembers,
       variables: {

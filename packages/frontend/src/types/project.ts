@@ -7,7 +7,7 @@ export interface ProjectDetails {
   description: string;
   url: string;
   domain: string | null;
-  id: number;
+  id: string;
   createdAt: string;
   createdBy: string;
   deployments: DeploymentDetails[];
@@ -107,6 +107,6 @@ export interface Member {
   id: string;
 }
 
-export interface ProjectsOutletContext {
+export interface ProjectSearchOutletContext {
   projects: ProjectDetails[];
 }

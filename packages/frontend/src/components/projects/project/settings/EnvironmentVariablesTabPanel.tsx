@@ -17,7 +17,7 @@ import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
 import {
   EnvironmentVariable,
   Environments,
-  ProjectsOutletContext,
+  ProjectSearchOutletContext,
 } from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
 
@@ -36,7 +36,7 @@ export type EnvironmentVariablesFormValues = {
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
 
-  const { projects } = useOutletContext<ProjectsOutletContext>();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   const currProject = useMemo(() => {
     return projects.find((data) => Number(data.id) === Number(id));

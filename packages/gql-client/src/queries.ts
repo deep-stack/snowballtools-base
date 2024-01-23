@@ -82,12 +82,6 @@ query ($projectId: String!)  {
 }
 `;
 
-export const removeMember = gql`
-mutation ($memberId: String!) {
-  removeMember(memberId: $memberId)
-}
-`;
-
 export const getProjectMembers = gql`
 query ($projectId: String!) {
   projectMembers(projectId: $projectId) {

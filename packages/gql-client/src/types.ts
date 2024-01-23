@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 // Note: equivalent to types present in GQL schema
 
 export enum Role {
@@ -65,8 +64,6 @@ export type User = {
   id: string
   name: string
   email: string
-  organizations: Organization[]
-  projects: Project[]
   createdAt: string
   updatedAt: string
 }
@@ -113,22 +110,22 @@ export type Organization = {
   members: OrganizationMember[]
 }
 
-export type getProjectMembersResponse = {
+export type GetProjectMembersResponse = {
   projectMembers: ProjectMember[]
 }
 
-export type removeMemberResponse = {
+export type RemoveMemberResponse = {
   removeMember: boolean;
 }
 
-export type getDeploymentsResponse = {
+export type GetDeploymentsResponse = {
   deployments: Deployment[]
 }
 
-export type getOrganizationsResponse = {
+export type GetOrganizationsResponse = {
   organizations: Organization[]
 }
 
-export type getUserResponse = {
+export type GetUserResponse = {
   user: User
 }
