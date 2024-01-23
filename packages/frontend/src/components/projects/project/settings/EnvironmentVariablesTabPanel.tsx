@@ -20,6 +20,7 @@ import {
   ProjectSearchOutletContext,
 } from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -35,6 +36,7 @@ export type EnvironmentVariablesFormValues = {
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
+  const client = useGQLClient();
 
   const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
@@ -113,13 +115,38 @@ export const EnvironmentVariablesTabPanel = () => {
         <Collapse open={createNewVariable}>
           <Card className="bg-white p-2">
             <form
-              onSubmit={handleSubmit((data) => {
-                toast.success(
-                  data.variables.length > 1
-                    ? `${data.variables.length} variables added`
-                    : `Variable added`,
+              onSubmit={handleSubmit(async (createFormData) => {
+                const environmentVariables = createFormData.variables.map(
+                  (variable) => {
+                    return {
+                      key: variable.key,
+                      value: variable.value,
+                      environments: Object.entries(createFormData.environment)
+                        .filter(([, value]) => value === true)
+                        .map(
+                          ([key]) => key.charAt(0).toUpperCase() + key.slice(1),
+                        ),
+                    };
+                  },
                 );
-                reset();
+
+                const { addEnvironmentVariables: isEnvironmentVariablesAdded } =
+                  await client.addEnvironmentVariables(
+                    currProject!.id,
+                    environmentVariables,
+                  );
+
+                if (isEnvironmentVariablesAdded) {
+                  toast.success(
+                    createFormData.variables.length > 1
+                      ? `${createFormData.variables.length} variables added`
+                      : `Variable added`,
+                  );
+
+                  reset();
+                } else {
+                  toast.error('Environment variables not added');
+                }
               })}
             >
               {fields.map((field, index) => {

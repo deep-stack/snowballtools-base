@@ -151,3 +151,13 @@ export type GetUserResponse = {
 export type SearchProjectsResponse = {
   searchProjects: Project[]
 }
+
+export type AddEnvironmentVariablesResponse = {
+  addEnvironmentVariables: boolean;
+}
+
+export type AddEnvironmentVariableInput = {
+  environments: string[];
+  key: string;
+  value: string;
+}
