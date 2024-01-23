@@ -25,7 +25,8 @@
     "build": "tsc",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:load:fixtures": "ts-node ./src/test/initialize-db.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
