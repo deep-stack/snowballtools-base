@@ -2,6 +2,7 @@ export interface ProjectDetails {
   icon: string;
   name: string;
   title: string;
+  owner: Member;
   organization: string;
   description: string;
   url: string;

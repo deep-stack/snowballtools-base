@@ -6,7 +6,10 @@ import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
 
-import { Member, MemberPermission } from '../../../../types/project';
+import {
+  MemberPermission,
+  ProjectsOutletContext,
+} from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
@@ -17,10 +20,8 @@ const MembersTabPanel = () => {
   const client = useGQLClient();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
-  // @ts-expect-error create context type for projects
-  const { projects } = useOutletContext();
+  const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
     return projects.find((project: any) => project.id === id);
@@ -28,20 +29,25 @@ const MembersTabPanel = () => {
 
   const [updatedMembers, setUpdatedMembers] = useState<MemberPermission[]>([]);
 
-  const addMemberHandler = useCallback((member: Member) => {
-    // @ts-expect-error TODO: make types consistent
+  const addMemberHandler = useCallback((member: MemberPermission) => {
     setUpdatedMembers((val) => [...val, member]);
     toast.success('Invitation sent');
   }, []);
 
-  const removeMemberHandler = async (projectMemberId: string) => {
-    const { removeMember: isMemberRemoved } = await client.removeMember(
-      String(projectMemberId),
+  const fetchProjectMembers = useCallback(async () => {
+    const { projectMembers } = await client.getProjectMembers(
+      String(currProject?.id),
     );
+    setUpdatedMembers(projectMembers || []);
+  }, []);
+
+  const removeMemberHandler = async (projectMemberId: string) => {
+    const { removeMember: isMemberRemoved } =
+      await client.removeMember(projectMemberId);
 
     if (isMemberRemoved) {
-      setRefresh(true);
       toast.success('Member removed from project');
+      await fetchProjectMembers();
     } else {
       // TODO: behaviour on remove failure?
       toast.error('Not able to remove member');
@@ -49,18 +55,8 @@ const MembersTabPanel = () => {
   };
 
   useEffect(() => {
-    const fetch = async () => {
-      const { projectMembers } = await client.getProjectMembers(
-        String(currProject.id),
-      );
-      setUpdatedMembers(projectMembers || []);
-    };
-    fetch();
-
-    if (refresh) {
-      setRefresh(false);
-    }
-  }, [refresh]);
+    fetchProjectMembers();
+  }, []);
 
   return (
     <div className="p-2 mb-20">
@@ -95,7 +91,9 @@ const MembersTabPanel = () => {
             permissions={member.permissions}
             handleDeletePendingMember={(id: number) => {
               setUpdatedMembers(
-                updatedMembers.filter((member) => member.id !== String(id)),
+                updatedMembers.filter(
+                  (projectMember) => projectMember.member.id !== id,
+                ),
               );
             }}
             removeMemberHandler={removeMemberHandler}
