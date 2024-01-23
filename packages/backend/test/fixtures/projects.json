@@ -1,0 +1,24 @@
+[
+  {
+    "ownerIndex":0,
+    "organizationIndex":0,
+    "name": "testProject",
+    "repository": "test",
+    "prodBranch": "main",
+    "description": "test",
+    "template": "test",
+    "framework": "test",
+    "webhooks": []
+  },
+  {
+    "ownerIndex":1,
+    "organizationIndex":0,
+    "name": "testProject-2",
+    "repository": "test-2",
+    "prodBranch": "main",
+    "description": "test-2",
+    "template": "test-2",
+    "framework": "test-2",
+    "webhooks": []
+  }
+]
