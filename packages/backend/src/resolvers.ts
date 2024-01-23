@@ -58,6 +58,16 @@ export const createResolvers = async (db: Database): Promise<any> => {
         return deployments;
       },
 
+      environmentVariables: async (_: any, { projectId }: { projectId: string }) => {
+        const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(projectId);
+
+        const environmentVariables = dbEnvironmentVariables.map(dbEnvironmentVariable => {
+          return environmentVariableToGqlType(dbEnvironmentVariable);
+        });
+
+        return environmentVariables;
+      },
+
       projectMembers: async (_: any, { projectId }: { projectId: string }) => {
         const dbProjectMembers = await db.getProjectMembersByProjectId(projectId);
 

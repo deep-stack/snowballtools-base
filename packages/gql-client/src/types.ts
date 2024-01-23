@@ -140,6 +140,10 @@ export type GetDeploymentsResponse = {
   deployments: Deployment[]
 }
 
+export type GetEnvironmentVariablesResponse = {
+  environmentVariables: EnvironmentVariable[]
+}
+
 export type GetOrganizationsResponse = {
   organizations: Organization[]
 }

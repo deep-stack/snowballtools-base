@@ -116,6 +116,7 @@ type Query {
   organizations: [Organization!]
   projects: [Project!]
   deployments(projectId: String!): [Deployment!]
+  environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
 }
