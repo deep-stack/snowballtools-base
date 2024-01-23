@@ -16,7 +16,7 @@ import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
 import {
   EnvironmentVariable,
-  Environments,
+  Environment,
   ProjectSearchOutletContext,
 } from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
@@ -39,6 +39,9 @@ export const EnvironmentVariablesTabPanel = () => {
   const client = useGQLClient();
 
   const { projects } = useOutletContext<ProjectSearchOutletContext>();
+  const [environmentVariables, setEnvironmentVariables] = useState<
+    EnvironmentVariable[]
+  >([]);
 
   const currentProject = useMemo(() => {
     return projects.find((project) => {
@@ -78,11 +81,14 @@ export const EnvironmentVariablesTabPanel = () => {
     }
   }, [isSubmitSuccessful, reset]);
 
-  const getEnvironmentVariable = useCallback((environment: Environments) => {
-    return (
-      currentProject?.environmentVariables as EnvironmentVariable[]
-    ).filter((item) => item.environments.includes(environment));
-  }, []);
+  const getEnvironmentVariable = useCallback(
+    (environment: Environment) => {
+      return environmentVariables.filter((item) =>
+        item.environments.includes(environment),
+      );
+    },
+    [environmentVariables],
+  );
 
   const isFieldEmpty = useMemo(() => {
     if (errors.variables) {
@@ -98,6 +104,17 @@ export const EnvironmentVariablesTabPanel = () => {
 
     return false;
   }, [fields, errors.variables]);
+
+  const fetchEnvironmentVariables = useCallback(async () => {
+    const { environmentVariables } = await client.getEnvironmentVariables(id!);
+    console.log('environmentVariables', environmentVariables);
+
+    setEnvironmentVariables(environmentVariables);
+  }, [id]);
+
+  useEffect(() => {
+    fetchEnvironmentVariables();
+  }, []);
 
   return (
     <>
@@ -132,18 +149,21 @@ export const EnvironmentVariablesTabPanel = () => {
 
                 const { addEnvironmentVariables: isEnvironmentVariablesAdded } =
                   await client.addEnvironmentVariables(
-                    currProject!.id,
+                    currentProject!.id,
                     environmentVariables,
                   );
 
                 if (isEnvironmentVariablesAdded) {
+                  reset();
+                  setCreateNewVariable((cur) => !cur);
+
+                  fetchEnvironmentVariables();
+
                   toast.success(
                     createFormData.variables.length > 1
                       ? `${createFormData.variables.length} variables added`
                       : `Variable added`,
                   );
-
-                  reset();
                 } else {
                   toast.error('Environment variables not added');
                 }
@@ -216,18 +236,18 @@ export const EnvironmentVariablesTabPanel = () => {
       </div>
       <div className="p-2">
         <DisplayEnvironmentVariables
-          environment={Environments.PRODUCTION}
-          variables={getEnvironmentVariable(Environments.PRODUCTION)}
+          environment={Environment.Production}
+          variables={getEnvironmentVariable(Environment.Production)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
-          environment={Environments.PREVIEW}
-          variables={getEnvironmentVariable(Environments.PREVIEW)}
+          environment={Environment.Preview}
+          variables={getEnvironmentVariable(Environment.Preview)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
-          environment={Environments.DEVELOPMENT}
-          variables={getEnvironmentVariable(Environments.DEVELOPMENT)}
+          environment={Environment.Development}
+          variables={getEnvironmentVariable(Environment.Development)}
         />
       </div>
     </>

@@ -5,7 +5,7 @@ import HorizontalLine from '../components/HorizontalLine';
 import { IconButton, Typography } from '@material-tailwind/react';
 import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 import { useGQLClient } from '../context/GQLClientContext';
-import { Environments, ProjectDetails } from '../types/project';
+import { Environment, ProjectDetails } from '../types/project';
 
 const ProjectSearch = () => {
   const client = useGQLClient();
@@ -25,7 +25,7 @@ const ProjectSearch = () => {
         const updatedDeployments = deployments.map((deployment: any) => {
           return {
             ...deployment,
-            isProduction: deployment.environment === Environments.PRODUCTION,
+            isProduction: deployment.environment === Environment.Production,
             author: '',
             commit: {
               hash: '',

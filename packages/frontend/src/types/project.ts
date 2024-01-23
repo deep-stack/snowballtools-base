@@ -36,7 +36,7 @@ export interface DeploymentDetails {
   domain: DomainDetails;
   status: Status;
   branch: string;
-  environment: Environments;
+  environment: Environment;
   isCurrent: boolean;
   commit: {
     hash: string;
@@ -52,17 +52,19 @@ export enum Status {
   ERROR = 'Error',
 }
 
-export enum Environments {
-  PRODUCTION = 'Production',
-  PREVIEW = 'Preview',
-  DEVELOPMENT = 'Development',
+export enum Environment {
+  Production = 'Production',
+  Preview = 'Preview',
+  Development = 'Development',
 }
 
 export interface EnvironmentVariable {
   key: string;
   value: string;
-  id: number;
-  environments: Environments[];
+  id: string;
+  environments: Environment[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RepositoryDetails {

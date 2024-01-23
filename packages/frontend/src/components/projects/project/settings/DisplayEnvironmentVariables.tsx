@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Card, Collapse, Typography } from '@material-tailwind/react';
 
 import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
-import { Environments, EnvironmentVariable } from '../../../../types/project';
+import { Environment, EnvironmentVariable } from '../../../../types/project';
 
 interface DisplayEnvironmentVariablesProps {
-  environment: Environments;
+  environment: Environment;
   variables: EnvironmentVariable[];
 }
 
