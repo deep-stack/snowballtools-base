@@ -91,7 +91,7 @@ const MembersTabPanel = () => {
             isOwner={member.member.id === currProject?.owner.id}
             isPending={member.member.name === ''}
             permissions={member.permissions}
-            handleDeletePendingMember={(id: number) => {
+            handleDeletePendingMember={(id: string) => {
               setUpdatedMembers(
                 updatedMembers.filter(
                   (projectMember) => projectMember.member.id !== id,

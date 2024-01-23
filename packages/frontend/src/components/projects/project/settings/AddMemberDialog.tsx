@@ -58,7 +58,7 @@ const AddMemberDialog = ({
       member: {
         name: '',
         email: data.emailAddress,
-        id: Math.random(),
+        id: Math.random().toString(),
       },
     };
 

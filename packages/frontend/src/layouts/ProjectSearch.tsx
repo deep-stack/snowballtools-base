@@ -13,11 +13,11 @@ const ProjectSearch = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await client.getOrganizations();
+      const { organizations } = await client.getOrganizations();
 
       // Note: select first organization as organization switching not yet implemented
-      const projects = res.organizations[0].projects;
-      const orgName = res.organizations[0].name;
+      const projects = organizations[0].projects;
+      const orgName = organizations[0].name;
 
       const updatedProjectsPromises = projects.map(async (project: any) => {
         const { deployments } = await client.getDeployments(String(project.id));

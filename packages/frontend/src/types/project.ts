@@ -104,7 +104,7 @@ export enum Permission {
 export interface Member {
   name: string;
   email: string;
-  id: number;
+  id: string;
 }
 
 export interface ProjectsOutletContext {

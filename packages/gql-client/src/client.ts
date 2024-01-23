@@ -1,6 +1,7 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, removeMember } from './queries';
+import { getDeploymentsResponse, getOrganizationsResponse, getProjectMembersResponse, getUserResponse, removeMemberResponse } from './types';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -29,7 +30,7 @@ export class GQLClient {
     });
   }
 
-  async getUser () : Promise<any> {
+  async getUser () : Promise<getUserResponse> {
     const { data } = await this.client.query({
       query: getUser
     });
@@ -37,7 +38,7 @@ export class GQLClient {
     return data;
   }
 
-  async getOrganizations () : Promise<any> {
+  async getOrganizations () : Promise<getOrganizationsResponse> {
     const { data } = await this.client.query({
       query: getOrganizations
     });
@@ -45,7 +46,7 @@ export class GQLClient {
     return data;
   }
 
-  async getDeployments (projectId: string) : Promise<any> {
+  async getDeployments (projectId: string) : Promise<getDeploymentsResponse> {
     const { data } = await this.client.query({
       query: getDeployments,
       variables: {
@@ -56,7 +57,7 @@ export class GQLClient {
     return data;
   }
 
-  async removeMember (memberId: string): Promise<any> {
+  async removeMember (memberId: string): Promise<removeMemberResponse> {
     const { data } = await this.client.mutate({
       mutation: removeMember,
       variables: {
@@ -67,7 +68,7 @@ export class GQLClient {
     return data;
   }
 
-  async getProjectMembers (projectId: string) : Promise<any> {
+  async getProjectMembers (projectId: string) : Promise<getProjectMembersResponse> {
     const { data } = await this.client.query({
       query: getProjectMembers,
       variables: {

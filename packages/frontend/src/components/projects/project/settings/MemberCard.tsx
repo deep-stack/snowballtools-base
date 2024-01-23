@@ -33,7 +33,7 @@ interface MemberCardProps {
   isOwner: boolean;
   isPending: boolean;
   permissions: string[];
-  handleDeletePendingMember: (id: number) => void;
+  handleDeletePendingMember: (id: string) => void;
   removeMemberHandler: () => Promise<void>;
 }
 
