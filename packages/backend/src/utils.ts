@@ -79,3 +79,7 @@ export const environmentVariableToGqlType = (dbEnvironmentVariable: EnvironmentV
     updatedAt: dbEnvironmentVariable.updatedAt
   };
 };
+
+export const isUserOwner = (userId: string, projectOwnerId: string): boolean => {
+  return userId === projectOwnerId;
+};

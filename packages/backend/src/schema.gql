@@ -120,10 +120,10 @@ type Query {
 
 type Mutation {
   removeMember(memberId: String!): Boolean!
-  addEnvironmentVariables(projectId: String!, environmentVariables: [addEnvironmentVariableInput!]): Boolean!
+  addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
 }
 
-input addEnvironmentVariableInput {
+input AddEnvironmentVariableInput {
   environments: [Environment!]!
   key: String!
   value: String!

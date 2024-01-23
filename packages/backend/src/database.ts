@@ -134,6 +134,7 @@ export class Database {
   async removeProjectMemberByMemberId (memberId: string): Promise<boolean> {
     // TODO: Check if user is authorized to delete members
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
     const deleted = await projectMemberRepository.delete(memberId);
 
     if (deleted.affected) {
@@ -165,5 +166,28 @@ export class Database {
 
     const savedEnvironmentVariables = await Promise.all(environmentVariablesPromises);
     return savedEnvironmentVariables.length > 0;
+  }
+
+  async getProjectMemberByMemberId (memberId: string): Promise<ProjectMember> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
+    const projectMemberWithProject = await projectMemberRepository.find({
+      relations: {
+        project: {
+          owner: true
+        },
+        member: true
+      },
+      where: {
+        id: Number(memberId)
+      }
+    }
+    );
+
+    if (projectMemberWithProject.length === 0) {
+      throw new Error('Member does not exist');
+    }
+
+    return projectMemberWithProject[0];
   }
 }
