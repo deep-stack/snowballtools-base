@@ -13,7 +13,7 @@ import {
 
 import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { ProjectsOutletContext } from '../../../../types/project';
+import { ProjectSearchOutletContext } from '../../../../types/project';
 
 const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
 const TEAMS = ['Airfoil'];
@@ -35,7 +35,7 @@ const CopyIcon = ({ value }: { value: string }) => {
 
 const GeneralTabPanel = () => {
   const { id } = useParams();
-  const { projects } = useOutletContext<ProjectsOutletContext>();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   const currProject = useMemo(() => {
     return projects.find((project: any) => project.id === id);

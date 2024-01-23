@@ -5,7 +5,7 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
-import { ProjectsOutletContext } from '../../types/project';
+import { ProjectSearchOutletContext } from '../../types/project';
 
 const getProject = (projects: any, id: number) => {
   return projects.find((project: any) => {
@@ -17,7 +17,7 @@ const Project = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { projects } = useOutletContext<ProjectsOutletContext>();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   const project = useMemo(
     () => getProject(projects, Number(id)),
