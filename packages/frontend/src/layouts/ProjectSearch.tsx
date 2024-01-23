@@ -16,8 +16,8 @@ const ProjectSearch = () => {
       const res = await client.getOrganizations();
 
       // Note: select first organization as organization switching not yet implemented
-      const projects = res.organizations[0].projects;
-      const orgName = res.organizations[0].name;
+      const projects = res.organizations[0]?.projects || [];
+      const orgName = res.organizations[0]?.name || '';
 
       const updatedProjectsPromises = projects.map(async (project: any) => {
         const { deployments } = await client.getDeployments(String(project.id));
