@@ -1,4 +1,4 @@
-import { DataSource, DeepPartial } from 'typeorm';
+import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
 import * as fs from 'fs/promises';
 import debug from 'debug';
 
@@ -13,67 +13,30 @@ import { Deployment } from '../src/entity/Deployment';
 
 const log = debug('snowball:initialize-database');
 
-const loadAndSaveUsersData = async (dataSource: DataSource, filePath: string) => {
-  // Read JSON files
-  const usersData = await fs.readFile(filePath, 'utf-8');
+const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, filePath: string) => {
+  const entitiesData = await fs.readFile(filePath, 'utf-8');
+  const entities = JSON.parse(entitiesData) as DeepPartial<Entity>[];
+  const entityRepository = dataSource.getRepository(entityType);
 
-  // Parse JSON data
-  const users = JSON.parse(usersData) as DeepPartial<User>[];
+  const savedEntity:Entity[] = [];
 
-  // Get entity repositories
-  const userRepository = dataSource.getRepository(User);
-
-  const savedUsers: User[] = [];
-
-  // Save data
-  for (const userData of users) {
-    const user = userRepository.create(userData);
-    // asse
-    const dbUser = await userRepository.save(user);
-    savedUsers.push(dbUser);
+  for (const entityData of entities) {
+    const entity = entityRepository.create(entityData);
+    const dbEntity = await entityRepository.save(entity);
+    savedEntity.push(dbEntity);
   }
 
-  return savedUsers;
-};
-
-const loadAndSaveOrganizationData = async (dataSource: DataSource, filePath: string) => {
-  // Read JSON files
-  const organizationsData = await fs.readFile(filePath, 'utf-8');
-
-  // Parse JSON data
-  const organizations = JSON.parse(organizationsData) as DeepPartial<Organization>[];
-
-  // Get entity repositories
-  const organizationRepository = dataSource.getRepository(Organization);
-
-  const savedOrgs:Organization[] = [];
-
-  // Save data
-  for (const organizationData of organizations) {
-    const organization = organizationRepository.create(organizationData);
-    const dbOrganization = await organizationRepository.save(organization);
-    savedOrgs.push(dbOrganization);
-  }
-
-  return savedOrgs;
+  return savedEntity;
 };
 
 const loadAndSaveProjectsData = async (dataSource: DataSource, filePath: string) => {
-  const savedUsers = await loadAndSaveUsersData(dataSource, 'test/fixtures/users.json');
-  const savedOrgs = await loadAndSaveOrganizationData(dataSource, 'test/fixtures/organizations.json');
+  const savedUsers = await loadAndSaveData(User, dataSource, 'test/fixtures/users.json');
+  const savedOrgs = await loadAndSaveData(Organization, dataSource, 'test/fixtures/organizations.json');
 
-  // Read JSON files
   const projectsData = await fs.readFile(filePath, 'utf-8');
-
-  // Parse JSON data
   const projects = JSON.parse(projectsData);
-
-  console.log(projects);
-
-  // Get entity repositories
   const projectRepository = dataSource.getRepository(Project);
 
-  // Save data
   for (const projectData of projects) {
     const project = projectRepository.create(projectData as DeepPartial<Project>);
     project.owner = savedUsers[projectData.ownerIndex];
