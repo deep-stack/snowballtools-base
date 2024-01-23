@@ -11,48 +11,47 @@ import { Domain } from '../entity/Domain';
 import { ProjectMember } from '../entity/ProjectMember';
 import { Deployment } from '../entity/Deployment';
 
-const log = debug('snowball:initialize database');
+const log = debug('snowball:initialize-database');
 
-async function loadData () {
-  try {
-    const dataSource = new DataSource({
-      type: 'better-sqlite3',
-      database: 'db/snowball',
-      synchronize: true,
-      logging: true,
-      entities: [
-        User,
-        Organization,
-        Project,
-        UserOrganization,
-        EnvironmentVariable,
-        Domain,
-        ProjectMember,
-        Deployment
-      ]
-    });
+const loadData = async () => {
+  const dataSource = new DataSource({
+    type: 'better-sqlite3',
+    database: 'db/snowball',
+    synchronize: true,
+    logging: true,
+    entities: [
+      User,
+      Organization,
+      Project,
+      UserOrganization,
+      EnvironmentVariable,
+      Domain,
+      ProjectMember,
+      Deployment
+    ]
+  });
 
-    await dataSource.initialize();
+  await dataSource.initialize();
 
-    // Read JSON files
-    const userData = await fs.readFile('../fixtures/users.json', 'utf-8');
+  // Read JSON files
+  const userData = await fs.readFile('../fixtures/users.json', 'utf-8');
 
-    // Parse JSON data
-    const users = JSON.parse(userData);
+  // Parse JSON data
+  const users = JSON.parse(userData);
 
-    // Get entity repositories
-    const userRepository = dataSource.getRepository(User);
+  // Get entity repositories
+  const userRepository = dataSource.getRepository(User);
 
-    // Save Users
-    for (const userData of users) {
-      const user = userRepository.create(userData);
-      await userRepository.save(user);
-    }
-
-    log('Data loaded successfully!');
-  } catch (err) {
-    log('Error loading data:', err);
+  // Save Users
+  for (const userData of users) {
+    const user = userRepository.create(userData);
+    await userRepository.save(user);
   }
-}
+};
 
-loadData();
+loadData().then(() => {
+  log('Data loaded successfully');
+})
+  .catch((err) => {
+    log(err);
+  });
