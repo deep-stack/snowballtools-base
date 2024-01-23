@@ -4,10 +4,10 @@ import { Link, useOutletContext } from 'react-router-dom';
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../../components/projects/ProjectCard';
-import { ProjectsOutletContext } from '../../types/project';
+import { ProjectSearchOutletContext } from '../../types/project';
 
 const Projects = () => {
-  const { projects } = useOutletContext<ProjectsOutletContext>();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   return (
     <div>

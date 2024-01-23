@@ -1,10 +1,24 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments } from './queries';
+import { getUser, getOrganizations, getDeployments, getProjectMembers } from './queries';
+import { GetDeploymentsResponse, GetOrganizationsResponse, GetProjectMembersResponse, GetUserResponse, RemoveMemberResponse } from './types';
+import { removeMember } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
 }
+
+// TODO: check options
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore'
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all'
+  }
+};
 
 export class GQLClient {
   private client: ApolloClient<NormalizedCacheObject>;
@@ -12,11 +26,12 @@ export class GQLClient {
   constructor (config: GraphQLConfig) {
     this.client = new ApolloClient({
       uri: config.gqlEndpoint,
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
+      defaultOptions
     });
   }
 
-  async getUser () : Promise<any> {
+  async getUser () : Promise<GetUserResponse> {
     const { data } = await this.client.query({
       query: getUser
     });
@@ -24,7 +39,7 @@ export class GQLClient {
     return data;
   }
 
-  async getOrganizations () : Promise<any> {
+  async getOrganizations () : Promise<GetOrganizationsResponse> {
     const { data } = await this.client.query({
       query: getOrganizations
     });
@@ -32,9 +47,31 @@ export class GQLClient {
     return data;
   }
 
-  async getDeployments (projectId: string) : Promise<any> {
+  async getDeployments (projectId: string) : Promise<GetDeploymentsResponse> {
     const { data } = await this.client.query({
       query: getDeployments,
+      variables: {
+        projectId
+      }
+    });
+
+    return data;
+  }
+
+  async removeMember (memberId: string): Promise<RemoveMemberResponse> {
+    const { data } = await this.client.mutate({
+      mutation: removeMember,
+      variables: {
+        memberId
+      }
+    });
+
+    return data;
+  }
+
+  async getProjectMembers (projectId: string) : Promise<GetProjectMembersResponse> {
+    const { data } = await this.client.query({
+      query: getProjectMembers,
       variables: {
         projectId
       }

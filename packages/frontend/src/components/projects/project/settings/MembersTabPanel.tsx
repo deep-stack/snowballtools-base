@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -6,29 +6,58 @@ import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
 
-import { Member } from '../../../../types/project';
+import {
+  ProjectMember,
+  ProjectSearchOutletContext,
+} from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const FIRST_MEMBER_CARD = 0;
 
 const MembersTabPanel = () => {
   const { id } = useParams();
+  const client = useGQLClient();
+
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
-  // @ts-expect-error create context type for projects
-  const { projects } = useOutletContext();
+  const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
   const currentProject = useMemo(() => {
-    return projects.find((project: any) => project.id === id);
+    return projects.find((project) => project.id === id);
   }, [id]);
 
-  const [updatedMembers, setUpdatedMembers] = useState([
-    ...currentProject?.members,
-  ]);
+  const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
 
-  const addMemberHandler = useCallback((member: Member) => {
-    setUpdatedMembers((val) => [...val, member]);
+  const addMemberHandler = useCallback((projectMember: ProjectMember) => {
+    setProjectMembers((val) => [...val, projectMember]);
     toast.success('Invitation sent');
+  }, []);
+
+  const fetchProjectMembers = useCallback(async () => {
+    if (currentProject) {
+      const { projectMembers } = await client.getProjectMembers(
+        currentProject.id,
+      );
+
+      setProjectMembers(projectMembers);
+    }
+  }, [currentProject]);
+
+  const removeMemberHandler = async (projectMemberId: string) => {
+    const { removeMember: isMemberRemoved } =
+      await client.removeMember(projectMemberId);
+
+    if (isMemberRemoved) {
+      toast.success('Member removed from project');
+      await fetchProjectMembers();
+    } else {
+      toast.error('Not able to remove member');
+    }
+  };
+
+  useEffect(() => {
+    fetchProjectMembers();
   }, []);
 
   return (
@@ -40,7 +69,7 @@ const MembersTabPanel = () => {
             <Chip
               className="normal-case ml-3 font-normal"
               size="sm"
-              value={updatedMembers.length}
+              value={projectMembers.length}
             />
           </div>
         </div>
@@ -53,20 +82,23 @@ const MembersTabPanel = () => {
           </Button>
         </div>
       </div>
-      {updatedMembers.map((member, index) => {
+      {projectMembers.map((projectMember, index) => {
         return (
           <MemberCard
-            member={member.member}
-            key={member.id}
+            member={projectMember.member}
+            key={projectMember.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
-            isOwner={member.member.id === currentProject?.owner.id}
-            isPending={member.name === ''}
-            permissions={member.permissions}
-            handleDeletePendingMember={(id: number) => {
-              setUpdatedMembers(
-                updatedMembers.filter((member) => member.id !== id),
+            isOwner={projectMember.member.id === currentProject?.owner.id}
+            isPending={projectMember.member.name === ''}
+            permissions={projectMember.permissions}
+            handleDeletePendingMember={(id: string) => {
+              setProjectMembers(
+                projectMembers.filter(
+                  (projectMember) => projectMember.member.id !== id,
+                ),
               );
             }}
+            removeMemberHandler={() => removeMemberHandler(projectMember.id)}
           />
         );
       })}
