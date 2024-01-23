@@ -1,7 +1,8 @@
 import debug from 'debug';
+import assert from 'assert';
 
 import { Database } from './database';
-import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType } from './utils';
+import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 
 const log = debug('snowball:database');
 
@@ -19,7 +20,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
         const orgsWithProjectsPromises = organizations.map(async (org) => {
           const dbProjects = await db.getProjectsByOrganizationId(org.id);
 
-          const projectsWithPromises = dbProjects.map(async (dbProject) => {
+          const projectsPromises = dbProjects.map(async (dbProject) => {
             const dbProjectMembers = await db.getProjectMembersByProjectId(dbProject.id);
             const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
 
@@ -34,7 +35,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
             return projectToGqlType(dbProject, projectMembers, environmentVariables);
           });
 
-          const projects = await Promise.all(projectsWithPromises);
+          const projects = await Promise.all(projectsPromises);
 
           return {
             ...org,
@@ -69,11 +70,33 @@ export const createResolvers = async (db: Database): Promise<any> => {
     },
 
     Mutation: {
-      removeMember: async (_: any, { memberId }:{ memberId: string }) => {
+      removeMember: async (_: any, { memberId }: { memberId: string }, context: any) => {
         try {
-          return await db.removeProjectMemberByMemberId(memberId);
-        } catch (error) {
-          log(error);
+          const member = await db.getProjectMemberByMemberId(memberId);
+
+          if (member.member.id === context.userId) {
+            throw new Error('Invalid operation: cannot remove self');
+          }
+
+          const memberProject = member.project;
+          assert(memberProject);
+
+          if (isUserOwner(String(context.userId), String(memberProject.owner.id))) {
+            return db.removeProjectMemberByMemberId(memberId);
+          } else {
+            throw new Error('Invalid operation: not authorized');
+          }
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      addEnvironmentVariables: async (_: any, { projectId, environmentVariables }: { projectId: string, environmentVariables: { environments: string[], key: string, value: string}[] }) => {
+        try {
+          return db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
+        } catch (err) {
+          log(err);
           return false;
         }
       }

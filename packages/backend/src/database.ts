@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
+import assert from 'assert';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
@@ -133,6 +134,7 @@ export class Database {
   async removeProjectMemberByMemberId (memberId: string): Promise<boolean> {
     // TODO: Check if user is authorized to delete members
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
     const deleted = await projectMemberRepository.delete(memberId);
 
     if (deleted.affected) {
@@ -140,5 +142,52 @@ export class Database {
     } else {
       return false;
     }
+  }
+
+  async addEnvironmentVariablesByProjectId (projectId: string, environmentVariables: any[]): Promise<boolean> {
+    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const project = await projectRepository.findOneBy({
+      id: projectId
+    });
+    assert(project);
+
+    const environmentVariablesPromises = environmentVariables.map(async environmentVariable => {
+      const envVar = new EnvironmentVariable();
+
+      envVar.key = environmentVariable.key;
+      envVar.value = environmentVariable.value;
+      envVar.environments = environmentVariable.environments;
+      envVar.project = project;
+
+      return environmentVariableRepository.save(envVar);
+    });
+
+    const savedEnvironmentVariables = await Promise.all(environmentVariablesPromises);
+    return savedEnvironmentVariables.length > 0;
+  }
+
+  async getProjectMemberByMemberId (memberId: string): Promise<ProjectMember> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
+    const projectMemberWithProject = await projectMemberRepository.find({
+      relations: {
+        project: {
+          owner: true
+        },
+        member: true
+      },
+      where: {
+        id: Number(memberId)
+      }
+    }
+    );
+
+    if (projectMemberWithProject.length === 0) {
+      throw new Error('Member does not exist');
+    }
+
+    return projectMemberWithProject[0];
   }
 }
