@@ -1,0 +1,92 @@
+[
+  {
+    "projectIndex": 0,
+    "domainIndex":0,
+    "title": "nextjs-boilerplate-1",
+    "status": "Building",
+    "environment": "Production",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 0,
+    "domainIndex":1,
+    "title": "nextjs-boilerplate-2",
+    "status": "Ready",
+    "environment": "Preview",
+    "isCurrent": true,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 0,
+    "domainIndex":2,
+    "title": "nextjs-boilerplate-3",
+    "status": "Error",
+    "environment": "Development",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 1,
+    "domainIndex":3,
+    "title": "nextjs-boilerplate-1",
+    "status": "Building",
+    "environment": "Production",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 1,
+    "domainIndex":4,
+    "title": "nextjs-boilerplate-2",
+    "status": "Ready",
+    "environment": "Preview",
+    "isCurrent": true,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 1,
+    "domainIndex":5,
+    "title": "nextjs-boilerplate-3",
+    "status": "Error",
+    "environment": "Development",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 2,
+    "domainIndex":6,
+    "title": "nextjs-boilerplate-1",
+    "status": "Building",
+    "environment": "Production",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 2,
+    "domainIndex":7,
+    "title": "nextjs-boilerplate-2",
+    "status": "Ready",
+    "environment": "Preview",
+    "isCurrent": true,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
+    "projectIndex": 2,
+    "domainIndex":8,
+    "title": "nextjs-boilerplate-3",
+    "status": "Error",
+    "environment": "Development",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  }
+]

@@ -38,7 +38,7 @@ export const EnvironmentVariablesTabPanel = () => {
 
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
-  const currProject = useMemo(() => {
+  const currentProject = useMemo(() => {
     return projects.find((project) => {
       return project.id === id;
     });
@@ -77,9 +77,9 @@ export const EnvironmentVariablesTabPanel = () => {
   }, [isSubmitSuccessful, reset]);
 
   const getEnvironmentVariable = useCallback((environment: Environments) => {
-    return (currProject?.environmentVariables as EnvironmentVariable[]).filter(
-      (item) => item.environments.includes(environment),
-    );
+    return (
+      currentProject?.environmentVariables as EnvironmentVariable[]
+    ).filter((item) => item.environments.includes(environment));
   }, []);
 
   const isFieldEmpty = useMemo(() => {

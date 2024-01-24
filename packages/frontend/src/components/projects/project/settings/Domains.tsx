@@ -14,19 +14,19 @@ const Domains = () => {
 
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
-  const currProject = useMemo(() => {
+  const currentProject = useMemo(() => {
     return projects.find((project) => {
       return project.id === id;
     });
   }, [id, projects]);
 
   const linkedRepo = useMemo(() => {
-    return currProject?.repositories.find(
-      (repo: any) => repo.id === Number(currProject?.repositoryId),
+    return currentProject?.repositories.find(
+      (repo: any) => repo.id === Number(currentProject?.repositoryId),
     );
-  }, [currProject]);
+  }, [currentProject]);
 
-  const domains = currProject?.deployments
+  const domains = currentProject?.deployments
     .filter((deployment) => {
       return deployment.domain != null;
     })
@@ -49,7 +49,7 @@ const Domains = () => {
             domain={domain}
             key={domain.id}
             repo={linkedRepo!}
-            project={currProject!}
+            project={currentProject!}
           />
         );
       })}

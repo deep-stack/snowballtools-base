@@ -1,0 +1,62 @@
+[
+  {
+    "projectIndex": 0,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["Production", "Preview"]
+  },
+  {
+    "projectIndex": 0,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["Preview"]
+  },
+  {
+    "projectIndex": 1,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["Production", "Preview"]
+  },
+  {
+    "projectIndex": 1,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["Preview"]
+  },
+  {
+    "projectIndex": 2,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["Production", "Preview"]
+  },
+  {
+    "projectIndex": 2,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["Preview"]
+  },
+  {
+    "projectIndex": 3,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["Production", "Preview"]
+  },
+  {
+    "projectIndex": 3,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["Preview"]
+  },
+  {
+    "projectIndex": 4,
+    "key": "ABC",
+    "value": "ABC",
+    "environments": ["Production", "Preview"]
+  },
+  {
+    "projectIndex": 4,
+    "key": "XYZ",
+    "value": "abc3",
+    "environments": ["Preview"]
+  }
+]
