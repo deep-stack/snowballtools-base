@@ -15,7 +15,6 @@ import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import { ProjectsOutletContext } from '../../../../types/project';
 
-const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
 const TEAMS = ['Airfoil'];
 const DEFAULT_SELECT_TEAM = undefined;
 
@@ -37,7 +36,7 @@ const GeneralTabPanel = () => {
   const { id } = useParams();
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
-  const currProject = useMemo(() => {
+  const currentProject = useMemo(() => {
     return projects.find((project: any) => project.id === id);
   }, [id]);
 
@@ -61,128 +60,132 @@ const GeneralTabPanel = () => {
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
-      appName: currProject?.name,
-      description: currProject?.description,
+      appName: currentProject?.name,
+      description: currentProject?.description,
     },
   });
 
   return (
     <>
-      <form onSubmit={handleSubmit(() => {})}>
-        <Typography variant="h6">Project info</Typography>
-        <Typography variant="small" className="font-medium text-gray-800">
-          App name
-        </Typography>
-        <Input
-          variant="outlined"
-          // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
-          crossOrigin={undefined}
-          size="md"
-          {...register('appName')}
-        />
-        <Typography variant="small" className="font-medium text-gray-800">
-          Description (Optional)
-        </Typography>
-        <Input
-          variant="outlined"
-          crossOrigin={undefined}
-          size="md"
-          {...register('description')}
-        />
-        <Typography variant="small" className="font-medium text-gray-800">
-          Project ID
-        </Typography>
-        <Input
-          crossOrigin={undefined}
-          variant="outlined"
-          value={PROJECT_ID}
-          size="md"
-          disabled
-          icon={<CopyIcon value={PROJECT_ID} />}
-        />
-        <Button type="submit" variant="gradient" size="sm" className="mt-1">
-          Save
-        </Button>
-      </form>
-      <div className="mb-1">
-        <Typography variant="h6">Transfer project</Typography>
-        <Typography variant="small">
-          Transfer this app to your personal account or a team you are a member
-          of.
-          <Link to="" className="text-blue-500">
-            Learn more
-          </Link>
-        </Typography>
-        <form
-          onSubmit={handleTransfer(() => {
-            handleTransferProjectDialog();
-          })}
-        >
-          <Typography variant="small" className="font-medium text-gray-800">
-            Choose team
-          </Typography>
-          <Controller
-            name="team"
-            rules={{ required: 'This field is required' }}
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                // TODO: Implement placeholder for select
-                label={!field.value ? 'Select an account / team' : ''}
+      {currentProject && (
+        <>
+          <form onSubmit={handleSubmit(() => {})}>
+            <Typography variant="h6">Project info</Typography>
+            <Typography variant="small" className="font-medium text-gray-800">
+              App name
+            </Typography>
+            <Input
+              variant="outlined"
+              // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
+              crossOrigin={undefined}
+              size="md"
+              {...register('appName')}
+            />
+            <Typography variant="small" className="font-medium text-gray-800">
+              Description (Optional)
+            </Typography>
+            <Input
+              variant="outlined"
+              crossOrigin={undefined}
+              size="md"
+              {...register('description')}
+            />
+            <Typography variant="small" className="font-medium text-gray-800">
+              Project ID
+            </Typography>
+            <Input
+              crossOrigin={undefined}
+              variant="outlined"
+              value={currentProject.id}
+              size="md"
+              disabled
+              icon={<CopyIcon value={currentProject.id} />}
+            />
+            <Button type="submit" variant="gradient" size="sm" className="mt-1">
+              Save
+            </Button>
+          </form>
+          <div className="mb-1">
+            <Typography variant="h6">Transfer project</Typography>
+            <Typography variant="small">
+              Transfer this app to your personal account or a team you are a
+              member of.
+              <Link to="" className="text-blue-500">
+                Learn more
+              </Link>
+            </Typography>
+            <form
+              onSubmit={handleTransfer(() => {
+                handleTransferProjectDialog();
+              })}
+            >
+              <Typography variant="small" className="font-medium text-gray-800">
+                Choose team
+              </Typography>
+              <Controller
+                name="team"
+                rules={{ required: 'This field is required' }}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    // TODO: Implement placeholder for select
+                    label={!field.value ? 'Select an account / team' : ''}
+                  >
+                    {TEAMS.map((team, key) => (
+                      <Option key={key} value={team}>
+                        ^ {team}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              />
+              <Button
+                variant="gradient"
+                size="sm"
+                className="mt-1"
+                disabled={!formState.isValid}
+                type="submit"
               >
-                {TEAMS.map((team, key) => (
-                  <Option key={key} value={team}>
-                    ^ {team}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          />
-          <Button
-            variant="gradient"
-            size="sm"
-            className="mt-1"
-            disabled={!formState.isValid}
-            type="submit"
-          >
-            Transfer
-          </Button>
-        </form>
-        <ConfirmDialog
-          dialogTitle="Transfer project"
-          handleOpen={handleTransferProjectDialog}
-          open={openTransferDialog}
-          confirmButtonTitle="Yes, Confirm transfer"
-          handleConfirm={handleTransferProjectDialog}
-          color="blue"
-        >
-          <Typography variant="small">
-            Upon confirmation, your project nextjs-boilerplate will be
-            transferred from saugat to Airfoil.
-          </Typography>
-        </ConfirmDialog>
-      </div>
-      <div className="mb-1">
-        <Typography variant="h6">Delete project</Typography>
-        <Typography variant="small">
-          The project will be permanently deleted, including its deployments and
-          domains. This action is irreversible and can not be undone.
-        </Typography>
-        <Button
-          variant="gradient"
-          size="sm"
-          color="red"
-          onClick={handleDeleteProjectDialog}
-        >
-          ^ Delete project
-        </Button>
-        <DeleteProjectDialog
-          handleOpen={handleDeleteProjectDialog}
-          open={openDeleteDialog}
-          project={{ name: 'Iglootools' }}
-        />
-      </div>
+                Transfer
+              </Button>
+            </form>
+            <ConfirmDialog
+              dialogTitle="Transfer project"
+              handleOpen={handleTransferProjectDialog}
+              open={openTransferDialog}
+              confirmButtonTitle="Yes, Confirm transfer"
+              handleConfirm={handleTransferProjectDialog}
+              color="blue"
+            >
+              <Typography variant="small">
+                Upon confirmation, your project nextjs-boilerplate will be
+                transferred from saugat to Airfoil.
+              </Typography>
+            </ConfirmDialog>
+          </div>
+          <div className="mb-1">
+            <Typography variant="h6">Delete project</Typography>
+            <Typography variant="small">
+              The project will be permanently deleted, including its deployments
+              and domains. This action is irreversible and can not be undone.
+            </Typography>
+            <Button
+              variant="gradient"
+              size="sm"
+              color="red"
+              onClick={handleDeleteProjectDialog}
+            >
+              ^ Delete project
+            </Button>
+            <DeleteProjectDialog
+              handleOpen={handleDeleteProjectDialog}
+              open={openDeleteDialog}
+              project={{ name: 'Iglootools' }}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -18,12 +18,12 @@ const MembersTabPanel = () => {
   // @ts-expect-error create context type for projects
   const { projects } = useOutletContext();
 
-  const currProject = useMemo(() => {
+  const currentProject = useMemo(() => {
     return projects.find((project: any) => project.id === id);
   }, [id]);
 
   const [updatedMembers, setUpdatedMembers] = useState([
-    ...currProject?.members,
+    ...currentProject?.members,
   ]);
 
   const addMemberHandler = useCallback((member: Member) => {
@@ -59,7 +59,7 @@ const MembersTabPanel = () => {
             member={member.member}
             key={member.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
-            isOwner={member.member.id === currProject?.owner.id}
+            isOwner={member.member.id === currentProject?.owner.id}
             isPending={member.name === ''}
             permissions={member.permissions}
             handleDeletePendingMember={(id: number) => {
