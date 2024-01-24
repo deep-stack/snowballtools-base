@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from 'typeorm';
 
 import { User } from './User';
 import { Organization } from './Organization';
+import { ProjectMember } from './ProjectMember';
 
 @Entity()
 export class Project {
@@ -52,4 +54,7 @@ export class Project {
 
   @UpdateDateColumn()
     updatedAt!: Date;
+
+  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
+    projectMembers!: ProjectMember[];
 }

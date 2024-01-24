@@ -2,8 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn
+  CreateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { ProjectMember } from './ProjectMember';
 
 @Entity()
 export class User {
@@ -21,4 +23,7 @@ export class User {
 
   @CreateDateColumn()
     updatedAt!: Date;
+
+  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
+    projectMembers!: ProjectMember[];
 }
