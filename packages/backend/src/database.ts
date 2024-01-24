@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
@@ -189,5 +189,28 @@ export class Database {
     }
 
     return projectMemberWithProject[0];
+  }
+
+  async getProjectsBySearchText (userId: number, searchText: string): Promise<ProjectMember[]> {
+    // TODO: query it from project entity
+
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+
+    const projectMembers = await projectMemberRepository.find({
+      relations: {
+        project: true
+      },
+      where: {
+        member: {
+          id: Number(userId)
+        },
+        project: {
+          name: Like(`%${searchText}%`)
+        }
+      }
+    }
+    );
+
+    return projectMembers;
   }
 }
