@@ -111,16 +111,7 @@ const main = async () => {
       database: 'db/snowball',
       synchronize: true,
       logging: true,
-      entities: [
-        User,
-        Organization,
-        Project,
-        UserOrganization,
-        EnvironmentVariable,
-        Domain,
-        ProjectMember,
-        Deployment
-      ]
+      entities: [path.join(__dirname, '../src/entity/*')]
     });
 
     await dataSource.initialize();
