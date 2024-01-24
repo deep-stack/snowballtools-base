@@ -191,27 +191,23 @@ export class Database {
     return projectMemberWithProject[0];
   }
 
-  async getProjectsBySearchText (userId: number, searchText: string): Promise<ProjectMember[]> {
-    // TODO: Query Project entity instead of ProjectMember
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+  async getProjectsBySearchText (userId: number, searchText: string): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
 
-    const projectMembers = await projectMemberRepository.find({
+    const projects = await projectRepository.find({
       relations: {
-        project: {
-          organization: true
-        }
+        organization: true
       },
       where: {
-        member: {
-          id: Number(userId)
-        },
-        project: {
-          name: Like(`%${searchText}%`)
+        name: Like(`%${searchText}%`),
+        projectMembers: {
+          member: {
+            id: Number(userId)
+          }
         }
       }
-    }
-    );
+    });
 
-    return projectMembers;
+    return projects;
   }
 }

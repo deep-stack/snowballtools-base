@@ -63,7 +63,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
         ),
       );
     },
-    [inputValue],
+    [client],
   );
 
   return (
