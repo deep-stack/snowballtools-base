@@ -39,8 +39,10 @@ export const EnvironmentVariablesTabPanel = () => {
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
-    return projects.find((data) => Number(data.id) === Number(id));
-  }, [id]);
+    return projects.find((project) => {
+      return project.id === id;
+    });
+  }, [id, projects]);
 
   const {
     handleSubmit,

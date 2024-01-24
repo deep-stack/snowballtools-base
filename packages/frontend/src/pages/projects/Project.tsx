@@ -7,22 +7,17 @@ import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
 import { ProjectsOutletContext } from '../../types/project';
 
-const getProject = (projects: any, id: number) => {
-  return projects.find((project: any) => {
-    return Number(project.id) === id;
-  });
-};
-
 const Project = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
-  const project = useMemo(
-    () => getProject(projects, Number(id)),
-    [id, projects],
-  );
+  const project = useMemo(() => {
+    return projects.find((project) => {
+      return project.id === id;
+    });
+  }, [id, projects]);
 
   return (
     <div className="h-full">
