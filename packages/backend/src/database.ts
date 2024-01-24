@@ -131,7 +131,7 @@ export class Database {
     return environmentVariables;
   }
 
-  async removeProjectMemberByMemberId (memberId: string): Promise<boolean> {
+  async removeProjectMemberById (memberId: string): Promise<boolean> {
     // TODO: Check if user is authorized to delete members
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
@@ -205,5 +205,20 @@ export class Database {
       .getMany();
 
     return projects;
+  }
+
+  async updateDeploymentById (deploymentId: string, updates: object): Promise<boolean> {
+    const updatedDeployment = await this.dataSource
+      .createQueryBuilder()
+      .update(Deployment)
+      .set(updates)
+      .where('id = :id', { id: Number(deploymentId) })
+      .execute();
+
+    if (updatedDeployment.affected) {
+      return updatedDeployment.affected > 0;
+    } else {
+      return false;
+    }
   }
 }
