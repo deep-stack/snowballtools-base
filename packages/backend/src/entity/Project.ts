@@ -5,11 +5,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from 'typeorm';
 
 import { User } from './User';
 import { Organization } from './Organization';
+import { ProjectMember } from './ProjectMember';
+import { EnvironmentVariable } from './EnvironmentVariable';
 
 @Entity()
 export class Project {
@@ -46,6 +49,12 @@ export class Project {
     type: 'simple-array'
   })
     webhooks!: string[];
+
+  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
+    members!: ProjectMember[];
+
+  @OneToMany(() => EnvironmentVariable, (environmentVariable) => environmentVariable.project)
+    environmentVariables!: EnvironmentVariable[];
 
   @CreateDateColumn()
     createdAt!: Date;

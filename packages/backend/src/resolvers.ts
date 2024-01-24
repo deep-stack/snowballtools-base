@@ -1,51 +1,23 @@
 import debug from 'debug';
 import assert from 'assert';
 
+import { deploymentToGqlType, projectMemberToGqlType, isUserOwner } from './utils';
+import { Service } from './service';
 import { Database } from './database';
-import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 
 const log = debug('snowball:database');
 
-export const createResolvers = async (db: Database): Promise<any> => {
+// TODO: Remove Database argument and refactor code to Service
+export const createResolvers = async (service: Service, db: Database): Promise<any> => {
   return {
     Query: {
       // TODO: add custom type for context
       user: (_: any, __: any, context: any) => {
-        return db.getUser(context.userId);
+        return service.getUser(context.userId);
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        const organizations = await db.getOrganizationsByUserId(context.userId);
-
-        const orgsWithProjectsPromises = organizations.map(async (org) => {
-          const dbProjects = await db.getProjectsByOrganizationId(org.id);
-
-          const projectsPromises = dbProjects.map(async (dbProject) => {
-            const dbProjectMembers = await db.getProjectMembersByProjectId(dbProject.id);
-            const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
-
-            const projectMembers = dbProjectMembers.map(dbProjectMember => {
-              return projectMemberToGqlType(dbProjectMember);
-            });
-
-            const environmentVariables = dbEnvironmentVariables.map(dbEnvironmentVariable => {
-              return environmentVariableToGqlType(dbEnvironmentVariable);
-            });
-
-            return projectToGqlType(dbProject, projectMembers, environmentVariables);
-          });
-
-          const projects = await Promise.all(projectsPromises);
-
-          return {
-            ...org,
-            projects
-          };
-        });
-
-        // TODO: Add organizationMembers field when / if required
-        const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
-        return orgsWithProjects;
+        return service.getOrganizationsByUserId(context.userId);
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
