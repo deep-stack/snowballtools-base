@@ -113,6 +113,12 @@ query ($searchText: String!) {
     updatedAt
     template
     repository
+    organization {
+      id
+      name
+      createdAt
+      updatedAt
+    }
   }
 }
 `;

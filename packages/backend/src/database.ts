@@ -197,7 +197,9 @@ export class Database {
 
     const projectMembers = await projectMemberRepository.find({
       relations: {
-        project: true
+        project: {
+          organization: true
+        }
       },
       where: {
         member: {

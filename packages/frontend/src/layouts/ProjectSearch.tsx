@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import HorizontalLine from '../components/HorizontalLine';
 import { IconButton, Typography } from '@material-tailwind/react';
@@ -9,6 +9,7 @@ import { Environments, ProjectDetails } from '../types/project';
 
 const ProjectSearch = () => {
   const client = useGQLClient();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
   useEffect(() => {
@@ -87,7 +88,11 @@ const ProjectSearch = () => {
       <div className="sticky top-0 bg-white z-30">
         <div className="flex p-5">
           <div className="grow mr-2">
-            <ProjectSearchBar onChange={() => {}} />
+            <ProjectSearchBar
+              onChange={(project) => {
+                navigate(`/projects/${project.id}`);
+              }}
+            />
           </div>
           <IconButton color="blue" className="rounded-full mr-2">
             <Typography variant="h5">+</Typography>

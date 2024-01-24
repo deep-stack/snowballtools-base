@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useCombobox } from 'downshift';
 
 import {
@@ -9,19 +9,19 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
+import { Project } from 'gql-client';
+
 import SearchBar from '../SearchBar';
-import { ProjectDetails } from '../../types/project';
 import { useGQLClient } from '../../context/GQLClientContext';
 
 interface ProjectsSearchProps {
-  onChange?: (data: ProjectDetails) => void;
+  onChange?: (data: Project) => void;
 }
 
 const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
-  const [items, setItems] = useState<ProjectDetails[]>([]);
-  const [selectedItem, setSelectedItem] = useState<ProjectDetails | null>(null);
+  const [items, setItems] = useState<Project[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Project | null>(null);
   const client = useGQLClient();
-  const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
   const {
     isOpen,
@@ -32,13 +32,10 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     inputValue,
   } = useCombobox({
     onInputValueChange({ inputValue }) {
-      setItems(
-        inputValue
-          ? projects.filter((project) =>
-              project.name.toLowerCase().includes(inputValue.toLowerCase()),
-            )
-          : [],
-      );
+      if (inputValue) {
+        // TODO: Use debounce
+        fetchProjects(inputValue);
+      }
     },
     items,
     itemToString(item) {
@@ -56,15 +53,18 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     },
   });
 
-  const fetchProjects = useCallback(async () => {
-    const searchProjects = (await client.getSearchProjects(inputValue))
-      .searchProjects as unknown as ProjectDetails[];
-    setProjects(searchProjects);
-  }, [inputValue]);
+  const fetchProjects = useCallback(
+    async (inputValue: string) => {
+      const { searchProjects } = await client.getSearchProjects(inputValue);
 
-  useEffect(() => {
-    fetchProjects();
-  }, [inputValue]);
+      setItems(
+        searchProjects.filter((project) =>
+          project.name.toLowerCase().includes(inputValue.toLowerCase()),
+        ),
+      );
+    },
+    [inputValue],
+  );
 
   return (
     <div className="relative">
@@ -100,7 +100,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
                       color="gray"
                       className="font-normal"
                     >
-                      {item.organization}
+                      {item.organization.name}
                     </Typography>
                   </div>
                 </ListItem>
