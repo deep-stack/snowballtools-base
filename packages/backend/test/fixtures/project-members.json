@@ -1,0 +1,12 @@
+[
+  {
+    "memberIndex": 1,
+    "projectIndex": 0,
+    "permissions": ["View", "Edit"]
+  },
+  {
+    "memberIndex": 2,
+    "projectIndex": 0,
+    "permissions": ["View", "Edit"]
+  }
+]
