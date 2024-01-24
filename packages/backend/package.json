@@ -21,16 +21,21 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "start": "DEBUG=snowball:* ts-node ./src/index.ts",
-    "build": "tsc",
+    "start": "DEBUG=snowball:* node --enable-source-maps ./dist/index.js",
+    "start:dev": "DEBUG=snowball:* ts-node ./src/index.ts",
+    "copy-assets": "copyfiles -u 1 src/**/*.gql dist/",
+    "clean": "rm -rf ./dist",
+    "build": "yarn clean && tsc && yarn copy-assets",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:load:fixtures": "ts-node ./test/initialize-db.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
+    "copyfiles": "^2.4.1",
     "better-sqlite3": "^9.2.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",

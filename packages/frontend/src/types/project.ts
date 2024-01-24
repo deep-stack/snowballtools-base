@@ -6,7 +6,7 @@ export interface ProjectDetails {
   description: string;
   url: string;
   domain: string | null;
-  id: number;
+  id: string;
   createdAt: string;
   createdBy: string;
   deployments: DeploymentDetails[];
@@ -31,6 +31,7 @@ export interface MemberPermission {
 export interface DeploymentDetails {
   title: string;
   isProduction: boolean;
+  domain: DomainDetails;
   status: Status;
   branch: string;
   environment: Environments;
