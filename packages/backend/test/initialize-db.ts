@@ -39,11 +39,10 @@ const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityT
       for (const field in relations) {
         const valueIndex = String(field + 'Index');
 
-        const addedRelations = {
+        entity = {
+          ...entity,
           [field]: relations[field][entityData[valueIndex]]
         };
-
-        entity = { ...entity, ...addedRelations };
       }
     }
     const dbEntity = await entityRepository.save(entity);
