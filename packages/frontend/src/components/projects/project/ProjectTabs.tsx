@@ -46,7 +46,7 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         <OverviewTabPanel project={project} />
       </TabPanel>
       <TabPanel>
-        <DeploymentsTabPanel deployments={project.deployments} />
+        <DeploymentsTabPanel projectId={project.id} />
       </TabPanel>
       <TabPanel>
         <Database />

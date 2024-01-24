@@ -123,8 +123,14 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
       updateDeploymentToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
         try {
+          enum Environment {
+            Production = 'Production',
+            Preview = 'Preview',
+            Development = 'Development'
+          }
+
           return db.updateDeploymentById(deploymentId, {
-            environment: 'Production'
+            environment: Environment.Production
           });
         } catch (err) {
           log(err);

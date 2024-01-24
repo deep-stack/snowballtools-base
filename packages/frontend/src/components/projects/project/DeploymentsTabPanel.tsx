@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -8,18 +8,49 @@ import FilterForm, {
   StatusOptions,
 } from './deployments/FilterForm';
 import { DeploymentDetails } from '../../../types/project';
+import { useGQLClient } from '../../../context/GQLClientContext';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
   status: StatusOptions.ALL_STATUS,
 };
 
-const DeploymentsTabPanel = ({
-  deployments,
-}: {
-  deployments: DeploymentDetails[];
-}) => {
+const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
+  const client = useGQLClient();
+
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
+  const [deployments, setDeployments] = useState<DeploymentDetails[]>([]);
+
+  const fetchDeployments = async () => {
+    const { deployments } = await client.getDeployments(projectId);
+    const updatedDeployments = deployments.map((deployment: any) => {
+      return {
+        ...deployment,
+        isProduction: deployment.environment === 'Production',
+        author: '',
+        commit: {
+          hash: '',
+          message: '',
+        },
+        domain: deployment.domain
+          ? {
+              ...deployment.domain,
+              record: {
+                type: '',
+                name: '',
+                value: '',
+              },
+              isRedirectedto: deployment.domain.isRedirected,
+            }
+          : null,
+      };
+    });
+    setDeployments(updatedDeployments);
+  };
+
+  useEffect(() => {
+    fetchDeployments();
+  }, []);
 
   const productionDeployment = useMemo(() => {
     return deployments.find((deployment) => {
@@ -49,11 +80,15 @@ const DeploymentsTabPanel = ({
 
       return branchMatch && statusMatch && dateMatch;
     }) as DeploymentDetails[];
-  }, [filterValue]);
+  }, [filterValue, deployments]);
 
   const handleResetFilters = useCallback(() => {
     setFilterValue(DEFAULT_FILTER_VALUE);
   }, []);
+
+  const onUpdateDeploymenToProd = async () => {
+    await fetchDeployments();
+  };
 
   return (
     <div className="p-4">
@@ -69,6 +104,7 @@ const DeploymentsTabPanel = ({
                 deployment={deployment}
                 key={key}
                 productionDeployment={productionDeployment}
+                onUpdate={onUpdateDeploymenToProd}
               />
             );
           })

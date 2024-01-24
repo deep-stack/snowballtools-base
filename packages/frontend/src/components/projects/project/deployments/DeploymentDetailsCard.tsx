@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Menu,
@@ -14,10 +14,12 @@ import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import { DeploymentDetails, Status } from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
   productionDeployment: DeploymentDetails;
+  onUpdate: () => Promise<void>;
 }
 
 const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
@@ -29,10 +31,28 @@ const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
 const DeploymentDetailsCard = ({
   deployment,
   productionDeployment,
+  onUpdate,
 }: DeployDetailsCardProps) => {
+  const client = useGQLClient();
+
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
+  const [updateToProd, setUpdateToProd] = useState(false);
+
+  useEffect(() => {
+    const updateDeployment = async () => {
+      const isUpdated = await client.updateDeploymentToProd(deployment.id);
+      if (isUpdated) {
+        await onUpdate();
+      }
+    };
+
+    if (updateToProd) {
+      updateDeployment();
+      setUpdateToProd(false);
+    }
+  }, [updateToProd]);
 
   return (
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
@@ -97,7 +117,10 @@ const DeploymentDetailsCard = ({
         open={changeToProduction}
         confirmButtonTitle="Change"
         color="blue"
-        handleConfirm={() => setChangeToProduction((preVal) => !preVal)}
+        handleConfirm={() => {
+          setUpdateToProd(true);
+          setChangeToProduction((preVal) => !preVal);
+        }}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">

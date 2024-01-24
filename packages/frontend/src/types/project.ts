@@ -33,6 +33,7 @@ export interface ProjectMember {
 }
 
 export interface DeploymentDetails {
+  id: string;
   title: string;
   isProduction: boolean;
   domain: DomainDetails;

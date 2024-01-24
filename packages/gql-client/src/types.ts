@@ -165,3 +165,7 @@ export type AddEnvironmentVariableInput = {
   key: string;
   value: string;
 }
+
+export type UpdateDeploymentToProdResponse = {
+  updateDeploymentToProd: boolean;
+}
