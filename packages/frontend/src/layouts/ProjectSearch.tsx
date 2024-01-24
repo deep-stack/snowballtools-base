@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { Environment } from 'gql-client';
+
 import HorizontalLine from '../components/HorizontalLine';
 import { IconButton, Typography } from '@material-tailwind/react';
 import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 import { useGQLClient } from '../context/GQLClientContext';
-import { Environment, ProjectDetails } from '../types/project';
+import { ProjectDetails } from '../types/project';
 
 const ProjectSearch = () => {
   const client = useGQLClient();

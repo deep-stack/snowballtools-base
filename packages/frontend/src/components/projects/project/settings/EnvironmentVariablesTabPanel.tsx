@@ -12,7 +12,7 @@ import {
   Chip,
 } from '@material-tailwind/react';
 
-import { Environment, EnvironmentVariable } from 'gql-client/dist/src/types';
+import { Environment, EnvironmentVariable } from 'gql-client';
 
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
