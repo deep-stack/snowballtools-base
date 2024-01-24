@@ -84,7 +84,7 @@ export type ProjectMember = {
   updatedAt: string
 }
 
-export type Project = {
+export type OrganizationProject = {
   id: string
   owner: User
   deployments: Deployment[]
@@ -104,10 +104,28 @@ export type Project = {
 export type Organization = {
   id: string
   name: string
-  projects: Project[]
+  projects: OrganizationProject[]
   createdAt: string
   updatedAt: string
   members: OrganizationMember[]
+}
+
+export type Project = {
+  id: string
+  owner: User
+  deployments: Deployment[]
+  name: string
+  repository: string
+  prodBranch: string
+  description: string
+  template: string
+  framework: string
+  webhooks: string[]
+  members: ProjectMember[]
+  environmentVariables: EnvironmentVariable[]
+  createdAt: string
+  updatedAt: string
+  organization: Organization
 }
 
 export type GetProjectMembersResponse = {
@@ -128,4 +146,8 @@ export type GetOrganizationsResponse = {
 
 export type GetUserResponse = {
   user: User
+}
+
+export type SearchProjectsResponse = {
+  searchProjects: Project[]
 }

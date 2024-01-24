@@ -68,6 +68,7 @@ type Project {
   environmentVariables: [EnvironmentVariable!]
   createdAt: String!
   updatedAt: String!
+  organization: Organization!
 }
 
 type ProjectMember {
@@ -116,6 +117,7 @@ type Query {
   projects: [Project!]
   deployments(projectId: String!): [Deployment!]
   projectMembers(projectId: String!): [ProjectMember!]
+  searchProjects(searchText: String!): [Project!]
 }
 
 type Mutation {
