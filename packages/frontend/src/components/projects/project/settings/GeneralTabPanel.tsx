@@ -15,15 +15,14 @@ import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import { ProjectsOutletContext } from '../../../../types/project';
 
-const PROJECT_ID = '62f87575-7a2b-4951-8156-9f9821j380d';
 const TEAMS = ['Airfoil'];
 const DEFAULT_SELECT_TEAM = undefined;
 
-const CopyIcon = ({ value }: { value: string }) => {
+const CopyIcon = ({ value }: { value: string | undefined }) => {
   return (
     <span
       onClick={() => {
-        navigator.clipboard.writeText(value);
+        value && navigator.clipboard.writeText(value);
         toast.success('Project ID copied');
       }}
       className="cursor-pointer"
@@ -95,10 +94,10 @@ const GeneralTabPanel = () => {
         <Input
           crossOrigin={undefined}
           variant="outlined"
-          value={PROJECT_ID}
+          value={currProject?.id}
           size="md"
           disabled
-          icon={<CopyIcon value={PROJECT_ID} />}
+          icon={<CopyIcon value={currProject?.id} />}
         />
         <Button type="submit" variant="gradient" size="sm" className="mt-1">
           Save

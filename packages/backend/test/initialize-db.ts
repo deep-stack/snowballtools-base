@@ -14,20 +14,38 @@ import { Deployment } from '../src/entity/Deployment';
 
 const log = debug('snowball:initialize-database');
 
+const DB_PATH = '../db/snowball';
+
 const USER_DATA_PATH = './fixtures/users.json';
 const PROJECT_DATA_PATH = './fixtures/projects.json';
 const ORGANIZATION_DATA_PATH = './fixtures/organizations.json';
 const USER_ORGANIZATION_DATA_PATH = './fixtures/user-orgnizations.json';
+const PROJECT_MEMBER_DATA_PATH = './fixtures/project-members.json';
+const DOMAIN_DATA_PATH = './fixtures/domains.json';
+const DEPLOYMENT_DATA_PATH = './fixtures/deployments.json';
+const ENVIRONMENT_VARIABLE_DATA_PATH = './fixtures/environment-variables.json';
 
-const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, filePath: string) => {
+const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, filePath: string, relations?: any | undefined) => {
   const entitiesData = await fs.readFile(filePath, 'utf-8');
-  const entities = JSON.parse(entitiesData) as DeepPartial<Entity>[];
+  const entities = JSON.parse(entitiesData);
   const entityRepository = dataSource.getRepository(entityType);
 
   const savedEntity:Entity[] = [];
 
   for (const entityData of entities) {
-    const entity = entityRepository.create(entityData);
+    let entity = entityRepository.create(entityData as DeepPartial<Entity>);
+
+    if (relations) {
+      for (const field in relations) {
+        const valueIndex = String(field + 'Index');
+
+        const addedRelations = {
+          [field]: relations[field][entityData[valueIndex]]
+        };
+
+        entity = { ...entity, ...addedRelations };
+      }
+    }
     const dbEntity = await entityRepository.save(entity);
     savedEntity.push(dbEntity);
   }
@@ -38,52 +56,78 @@ const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityT
 const generateTestData = async (dataSource: DataSource) => {
   const savedUsers = await loadAndSaveData(User, dataSource, path.resolve(__dirname, USER_DATA_PATH));
   const savedOrgs = await loadAndSaveData(Organization, dataSource, path.resolve(__dirname, ORGANIZATION_DATA_PATH));
+  const savedDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, DOMAIN_DATA_PATH));
 
-  const projectsData = await fs.readFile(path.resolve(__dirname, PROJECT_DATA_PATH), 'utf-8');
-  const projects = JSON.parse(projectsData);
-  const projectRepository = dataSource.getRepository(Project);
+  const projectRelations = {
+    owner: savedUsers,
+    organization: savedOrgs
+  };
 
-  for (const projectData of projects) {
-    const project = projectRepository.create(projectData as DeepPartial<Project>);
-    project.owner = savedUsers[projectData.ownerIndex];
-    project.organization = savedOrgs[projectData.organizationIndex];
-    await projectRepository.save(project);
-  }
+  const savedProjects = await loadAndSaveData(Project, dataSource, path.resolve(__dirname, PROJECT_DATA_PATH), projectRelations);
 
-  const userOrgData = await fs.readFile(path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH), 'utf-8');
-  const userOrgs = JSON.parse(userOrgData);
-  const userOrgRepository = dataSource.getRepository(UserOrganization);
+  const userOrganizationRelations = {
+    member: savedUsers,
+    organization: savedOrgs
+  };
 
-  for (const userOrgData of userOrgs) {
-    const userOrg = userOrgRepository.create(userOrgData as DeepPartial<UserOrganization>);
-    userOrg.member = savedUsers[userOrgData.memberIndex];
-    userOrg.organization = savedOrgs[userOrgData.organizationIndex];
+  await loadAndSaveData(UserOrganization, dataSource, path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH), userOrganizationRelations);
 
-    await userOrgRepository.save(userOrg);
+  const projectMemberRelations = {
+    member: savedUsers,
+    project: savedProjects
+  };
+
+  await loadAndSaveData(ProjectMember, dataSource, path.resolve(__dirname, PROJECT_MEMBER_DATA_PATH), projectMemberRelations);
+
+  const deploymentRelations = {
+    project: savedProjects,
+    domain: savedDomains
+  };
+
+  await loadAndSaveData(Deployment, dataSource, path.resolve(__dirname, DEPLOYMENT_DATA_PATH), deploymentRelations);
+
+  const environmentVariableRelations = {
+    project: savedProjects
+  };
+
+  await loadAndSaveData(EnvironmentVariable, dataSource, path.resolve(__dirname, ENVIRONMENT_VARIABLE_DATA_PATH), environmentVariableRelations);
+};
+
+const checkFileExists = async (filePath: string) => {
+  try {
+    await fs.access(filePath, fs.constants.F_OK);
+    return true;
+  } catch (err) {
+    log(err);
+    return false;
   }
 };
 
 const main = async () => {
-  const dataSource = new DataSource({
-    type: 'better-sqlite3',
-    database: 'db/snowball',
-    synchronize: true,
-    logging: true,
-    entities: [
-      User,
-      Organization,
-      Project,
-      UserOrganization,
-      EnvironmentVariable,
-      Domain,
-      ProjectMember,
-      Deployment
-    ]
-  });
+  const isDbPresent = await checkFileExists(path.resolve(__dirname, DB_PATH));
 
-  await dataSource.initialize();
+  if (!isDbPresent) {
+    const dataSource = new DataSource({
+      type: 'better-sqlite3',
+      database: 'db/snowball',
+      synchronize: true,
+      logging: true,
+      entities: [
+        User,
+        Organization,
+        Project,
+        UserOrganization,
+        EnvironmentVariable,
+        Domain,
+        ProjectMember,
+        Deployment
+      ]
+    });
 
-  await generateTestData(dataSource);
+    await dataSource.initialize();
+
+    await generateTestData(dataSource);
+  }
 };
 
 main().then(() => {

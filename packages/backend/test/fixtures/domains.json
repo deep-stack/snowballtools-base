@@ -1,0 +1,56 @@
+[
+  {
+    "name": "randomurl.snowballtools.xyz",
+    "status": "Live",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "saugatt.com",
+    "status": "Pending",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "www.saugatt.com",
+    "status": "Pending",
+    "isRedirected": true,
+    "branch": "test"
+  },
+  {
+    "name": "randomurl.snowballtools.xyz",
+    "status": "Live",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "saugatt.com",
+    "status": "Pending",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "www.saugatt.com",
+    "status": "Pending",
+    "isRedirected": true,
+    "branch": "test"
+  },
+  {
+    "name": "randomurl.snowballtools.xyz",
+    "status": "Live",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "saugatt.com",
+    "status": "Pending",
+    "isRedirected": false,
+    "branch": "test"
+  },
+  {
+    "name": "www.saugatt.com",
+    "status": "Pending",
+    "isRedirected": true,
+    "branch": "test"
+  }
+]
