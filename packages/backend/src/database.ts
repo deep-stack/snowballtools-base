@@ -192,8 +192,7 @@ export class Database {
   }
 
   async getProjectsBySearchText (userId: number, searchText: string): Promise<ProjectMember[]> {
-    // TODO: query it from project entity
-
+    // TODO: Query Project entity instead of ProjectMember
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
     const projectMembers = await projectMemberRepository.find({

@@ -87,7 +87,7 @@ const ProjectSearch = () => {
       <div className="sticky top-0 bg-white z-30">
         <div className="flex p-5">
           <div className="grow mr-2">
-            <ProjectSearchBar onChange={() => {}} projects={projects} />
+            <ProjectSearchBar onChange={() => {}} />
           </div>
           <IconButton color="blue" className="rounded-full mr-2">
             <Typography variant="h5">+</Typography>

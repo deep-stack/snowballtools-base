@@ -68,7 +68,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
         return projectMembers;
       },
 
-      projectsSearch: async (_: any, { searchText }: { searchText: string }, context: any) => {
+      searchProjects: async (_: any, { searchText }: { searchText: string }, context: any) => {
         const dbProjectMembers = await db.getProjectsBySearchText(context.userId, searchText);
 
         const projectsPromise = dbProjectMembers.map(async (projectMember) => {
@@ -76,7 +76,6 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         const projects = await Promise.all(projectsPromise);
-
         return projects;
       }
     },

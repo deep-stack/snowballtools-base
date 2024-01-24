@@ -129,3 +129,7 @@ export type GetOrganizationsResponse = {
 export type GetUserResponse = {
   user: User
 }
+
+export type GetSearchProjectsResponse = {
+  searchProjects: Project[]
+}

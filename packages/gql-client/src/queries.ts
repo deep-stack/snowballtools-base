@@ -97,3 +97,22 @@ query ($projectId: String!) {
   }
 }
 `;
+
+export const getSearchProjects = gql`
+query ($searchText: String!) {
+  searchProjects(searchText: $searchText) {
+    id
+    name
+    prodBranch
+    repository
+    createdAt
+    description
+    framework
+    prodBranch
+    webhooks
+    updatedAt
+    template
+    repository
+  }
+}
+`;

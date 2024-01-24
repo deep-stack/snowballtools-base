@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCombobox } from 'downshift';
 
 import {
@@ -11,15 +11,17 @@ import {
 
 import SearchBar from '../SearchBar';
 import { ProjectDetails } from '../../types/project';
+import { useGQLClient } from '../../context/GQLClientContext';
 
 interface ProjectsSearchProps {
-  projects: ProjectDetails[];
   onChange?: (data: ProjectDetails) => void;
 }
 
-const ProjectSearchBar = ({ projects, onChange }: ProjectsSearchProps) => {
+const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
   const [items, setItems] = useState<ProjectDetails[]>([]);
   const [selectedItem, setSelectedItem] = useState<ProjectDetails | null>(null);
+  const client = useGQLClient();
+  const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
   const {
     isOpen,
@@ -33,14 +35,14 @@ const ProjectSearchBar = ({ projects, onChange }: ProjectsSearchProps) => {
       setItems(
         inputValue
           ? projects.filter((project) =>
-              project.title.toLowerCase().includes(inputValue.toLowerCase()),
+              project.name.toLowerCase().includes(inputValue.toLowerCase()),
             )
           : [],
       );
     },
     items,
     itemToString(item) {
-      return item ? item.title : '';
+      return item ? item.name : '';
     },
     selectedItem,
     onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
@@ -53,6 +55,16 @@ const ProjectSearchBar = ({ projects, onChange }: ProjectsSearchProps) => {
       }
     },
   });
+
+  const fetchProjects = useCallback(async () => {
+    const searchProjects = (await client.getSearchProjects(inputValue))
+      .searchProjects as unknown as ProjectDetails[];
+    setProjects(searchProjects);
+  }, [inputValue]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [inputValue]);
 
   return (
     <div className="relative">
@@ -81,7 +93,7 @@ const ProjectSearchBar = ({ projects, onChange }: ProjectsSearchProps) => {
                   </ListItemPrefix>
                   <div>
                     <Typography variant="h6" color="blue-gray">
-                      {item.title}
+                      {item.name}
                     </Typography>
                     <Typography
                       variant="small"
