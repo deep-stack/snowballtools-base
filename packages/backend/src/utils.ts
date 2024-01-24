@@ -39,7 +39,8 @@ export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMemb
     members: projectMembers,
     environmentVariables: environmentVariables,
     createdAt: dbProject.createdAt,
-    updatedAt: dbProject.updatedAt
+    updatedAt: dbProject.updatedAt,
+    organization: dbProject.organization
   };
 };
 

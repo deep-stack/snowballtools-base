@@ -190,4 +190,20 @@ export class Database {
 
     return projectMemberWithProject[0];
   }
+
+  async getProjectsBySearchText (userId: number, searchText: string): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.organization', 'organization')
+      .leftJoin('project.projectMembers', 'projectMembers')
+      .where('(project.owner = :userId OR projectMembers.member.id = :userId) AND project.name LIKE :searchText', {
+        userId,
+        searchText: `%${searchText}%`
+      })
+      .getMany();
+
+    return projects;
+  }
 }

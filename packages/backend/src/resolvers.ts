@@ -66,6 +66,16 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         return projectMembers;
+      },
+
+      searchProjects: async (_: any, { searchText }: { searchText: string }, context: any) => {
+        const dbProjects = await db.getProjectsBySearchText(context.userId, searchText);
+
+        const projects = dbProjects.map((project) => {
+          return projectToGqlType(project, [], []);
+        });
+
+        return projects;
       }
     },
 
