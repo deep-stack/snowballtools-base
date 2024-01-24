@@ -55,13 +55,8 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
 
   const fetchProjects = useCallback(
     async (inputValue: string) => {
-      const { searchProjects } = await client.getSearchProjects(inputValue);
-
-      setItems(
-        searchProjects.filter((project) =>
-          project.name.toLowerCase().includes(inputValue.toLowerCase()),
-        ),
-      );
+      const { searchProjects } = await client.searchProjects(inputValue);
+      setItems(searchProjects);
     },
     [client],
   );

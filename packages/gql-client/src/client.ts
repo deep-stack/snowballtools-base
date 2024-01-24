@@ -1,7 +1,7 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, getSearchProjects } from './queries';
-import { GetDeploymentsResponse, GetOrganizationsResponse, GetProjectMembersResponse, GetSearchProjectsResponse, GetUserResponse, RemoveMemberResponse } from './types';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects } from './queries';
+import { GetDeploymentsResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse } from './types';
 import { removeMember } from './mutations';
 
 export interface GraphQLConfig {
@@ -80,9 +80,9 @@ export class GQLClient {
     return data;
   }
 
-  async getSearchProjects (searchText: string) : Promise<GetSearchProjectsResponse> {
+  async searchProjects (searchText: string) : Promise<SearchProjectsResponse> {
     const { data } = await this.client.query({
-      query: getSearchProjects,
+      query: searchProjects,
       variables: {
         searchText
       }

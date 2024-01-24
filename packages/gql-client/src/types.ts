@@ -148,6 +148,6 @@ export type GetUserResponse = {
   user: User
 }
 
-export type GetSearchProjectsResponse = {
+export type SearchProjectsResponse = {
   searchProjects: Project[]
 }

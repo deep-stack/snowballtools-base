@@ -98,7 +98,7 @@ query ($projectId: String!) {
 }
 `;
 
-export const getSearchProjects = gql`
+export const searchProjects = gql`
 query ($searchText: String!) {
   searchProjects(searchText: $searchText) {
     id
