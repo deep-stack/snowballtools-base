@@ -1,4 +1,4 @@
-import { DataSource, Like } from 'typeorm';
+import { DataSource } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
@@ -194,19 +194,15 @@ export class Database {
   async getProjectsBySearchText (userId: number, searchText: string): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
-    const projects = await projectRepository.find({
-      relations: {
-        organization: true
-      },
-      where: {
-        name: Like(`%${searchText}%`),
-        projectMembers: {
-          member: {
-            id: Number(userId)
-          }
-        }
-      }
-    });
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.organization', 'organization')
+      .leftJoin('project.projectMembers', 'projectMembers')
+      .where('(project.owner = :userId OR projectMembers.member.id = :userId) AND project.name LIKE :searchText', {
+        userId,
+        searchText: `%${searchText}%`
+      })
+      .getMany();
 
     return projects;
   }
