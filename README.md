@@ -15,13 +15,19 @@
 - Build packages
 
   ```bash
-  yarn build
+  yarn build --ignore frontend
   ```
 
 - Change directory to `packages/backend`
 
   ```bash
   cd packages/backend
+  ```
+
+- Load fixtures in database
+
+  ```bash
+  yarn db:load:fixtures
   ```
 
 - Start the server
