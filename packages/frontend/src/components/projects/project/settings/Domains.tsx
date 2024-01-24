@@ -15,10 +15,10 @@ const Domains = () => {
   const { projects } = useOutletContext<ProjectsOutletContext>();
 
   const currProject = useMemo(() => {
-    return projects.find((data) => {
-      return Number(data?.id) === Number(id);
+    return projects.find((project) => {
+      return project.id === id;
     });
-  }, [id]);
+  }, [id, projects]);
 
   const linkedRepo = useMemo(() => {
     return currProject?.repositories.find(
@@ -27,10 +27,10 @@ const Domains = () => {
   }, [currProject]);
 
   const domains = currProject?.deployments
-    .filter((deployment: any) => {
+    .filter((deployment) => {
       return deployment.domain != null;
     })
-    .map((deployment: any) => deployment.domain);
+    .map((deployment) => deployment.domain);
 
   return (
     <>

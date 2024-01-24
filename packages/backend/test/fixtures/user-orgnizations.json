@@ -1,0 +1,22 @@
+[
+  {
+    "role": "Owner",
+    "memberIndex": 0,
+    "organizationIndex": 0
+  },
+  {
+    "role": "Maintainer",
+    "memberIndex": 1,
+    "organizationIndex": 0
+  },
+  {
+    "role": "Owner",
+    "memberIndex": 2,
+    "organizationIndex": 0
+  },
+  {
+    "role": "Owner",
+    "memberIndex": 0,
+    "organizationIndex": 1
+  }
+]
