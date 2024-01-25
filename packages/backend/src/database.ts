@@ -224,10 +224,10 @@ export class Database {
 
   async updateDeploymentById (deploymentId: string, updates: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const updatedDeployment = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
+    const updateResult = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
 
-    if (updatedDeployment.affected) {
-      return updatedDeployment.affected > 0;
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
     } else {
       return false;
     }
@@ -235,10 +235,10 @@ export class Database {
 
   async updateProjectById (projectId: string, updates: DeepPartial<Project>): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
-    const updatedProject = await projectRepository.update({ id: projectId }, updates);
+    const updateResult = await projectRepository.update({ id: projectId }, updates);
 
-    if (updatedProject.affected) {
-      return updatedProject.affected > 0;
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
     } else {
       return false;
     }
