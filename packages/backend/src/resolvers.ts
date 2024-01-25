@@ -49,6 +49,12 @@ export const createResolvers = async (db: Database): Promise<any> => {
         return orgsWithProjects;
       },
 
+      project: async (_: any, { projectId }: { projectId: string }) => {
+        const dbProject = await db.getProjectByProjectId(projectId);
+
+        return dbProject ? projectToGqlType(dbProject, [], []) : null;
+      },
+
       deployments: async (_: any, { projectId }: { projectId: string }) => {
         const dbDeployments = await db.getDeploymentsByProjectId(projectId);
 
@@ -127,6 +133,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
           return db.updateDeploymentById(deploymentId, {
             environment: Environment.Production
           });
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      updateProject: async (_: any, { projectId, updateProject }: { projectId: string, updateProject: { name: string, description: string } }) => {
+        try {
+          return db.updateProjectById(projectId, updateProject);
         } catch (err) {
           log(err);
           return false;
