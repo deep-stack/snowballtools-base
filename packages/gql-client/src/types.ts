@@ -140,6 +140,10 @@ export type GetDeploymentsResponse = {
   deployments: Deployment[]
 }
 
+export type GetEnvironmentVariablesResponse = {
+  environmentVariables: EnvironmentVariable[]
+}
+
 export type GetOrganizationsResponse = {
   organizations: Organization[]
 }
@@ -150,4 +154,14 @@ export type GetUserResponse = {
 
 export type SearchProjectsResponse = {
   searchProjects: Project[]
+}
+
+export type AddEnvironmentVariablesResponse = {
+  addEnvironmentVariables: boolean;
+}
+
+export type AddEnvironmentVariableInput = {
+  environments: string[];
+  key: string;
+  value: string;
 }
