@@ -206,7 +206,7 @@ const GeneralTabPanel = ({
         <DeleteProjectDialog
           handleOpen={handleDeleteProjectDialog}
           open={openDeleteDialog}
-          project={{ name: 'Iglootools' }}
+          project={project}
         />
       </div>
     </>

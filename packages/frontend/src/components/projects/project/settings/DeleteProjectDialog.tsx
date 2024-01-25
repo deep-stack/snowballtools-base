@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { Project } from 'gql-client';
 
 import {
   Button,
@@ -11,13 +13,12 @@ import {
   Input,
   Typography,
 } from '@material-tailwind/react';
-
-import { ProjectDetails } from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeleteProjectDialogProp {
   open: boolean;
   handleOpen: () => void;
-  project: Partial<ProjectDetails>;
+  project: Project;
 }
 
 const DeleteProjectDialog = ({
@@ -26,6 +27,7 @@ const DeleteProjectDialog = ({
   project,
 }: DeleteProjectDialogProp) => {
   const navigate = useNavigate();
+  const client = useGQLClient();
 
   const {
     handleSubmit,
@@ -36,6 +38,18 @@ const DeleteProjectDialog = ({
       projectName: '',
     },
   });
+
+  const deleteProjectHandler = useCallback(async () => {
+    const { deleteProject } = await client.deleteProject(project.id);
+
+    if (deleteProject) {
+      navigate('/');
+    } else {
+      toast.error('Project not deleted');
+    }
+
+    handleOpen();
+  }, [client, project, handleOpen]);
 
   return (
     <Dialog open={open} handler={handleOpen}>
@@ -49,12 +63,7 @@ const DeleteProjectDialog = ({
           X
         </Button>
       </DialogHeader>
-      <form
-        onSubmit={handleSubmit(() => {
-          handleOpen();
-          navigate('/');
-        })}
-      >
+      <form onSubmit={handleSubmit(deleteProjectHandler)}>
         <DialogBody className="flex flex-col gap-2">
           <Typography variant="paragraph">
             Deleting your project is irreversible. Enter your project’s
