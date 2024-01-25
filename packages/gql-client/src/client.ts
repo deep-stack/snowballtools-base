@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects } from './queries';
-import { GetDeploymentsResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse } from './types';
-import { removeMember } from './mutations';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables } from './queries';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse } from './types';
+import { removeMember, addEnvironmentVariables } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -58,6 +58,17 @@ export class GQLClient {
     return data;
   }
 
+  async getEnvironmentVariables (projectId: string) : Promise<GetEnvironmentVariablesResponse> {
+    const { data } = await this.client.query({
+      query: getEnvironmentVariables,
+      variables: {
+        projectId
+      }
+    });
+
+    return data;
+  }
+
   async removeMember (memberId: string): Promise<RemoveMemberResponse> {
     const { data } = await this.client.mutate({
       mutation: removeMember,
@@ -85,6 +96,18 @@ export class GQLClient {
       query: searchProjects,
       variables: {
         searchText
+      }
+    });
+
+    return data;
+  }
+
+  async addEnvironmentVariables (projectId: string, environmentVariables: AddEnvironmentVariableInput[]): Promise<AddEnvironmentVariablesResponse> {
+    const { data } = await this.client.mutate({
+      mutation: addEnvironmentVariables,
+      variables: {
+        projectId,
+        environmentVariables
       }
     });
 

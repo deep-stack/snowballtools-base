@@ -1,3 +1,5 @@
+import { Environment, EnvironmentVariable } from 'gql-client';
+
 export interface ProjectDetails {
   icon: string;
   name: string;
@@ -36,7 +38,7 @@ export interface DeploymentDetails {
   domain: DomainDetails;
   status: Status;
   branch: string;
-  environment: Environments;
+  environment: Environment;
   isCurrent: boolean;
   commit: {
     hash: string;
@@ -50,19 +52,6 @@ export enum Status {
   BUILDING = 'Building',
   READY = 'Ready',
   ERROR = 'Error',
-}
-
-export enum Environments {
-  PRODUCTION = 'Production',
-  PREVIEW = 'Preview',
-  DEVELOPMENT = 'Development',
-}
-
-export interface EnvironmentVariable {
-  key: string;
-  value: string;
-  id: number;
-  environments: Environments[];
 }
 
 export interface RepositoryDetails {

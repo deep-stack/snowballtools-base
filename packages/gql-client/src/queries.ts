@@ -82,6 +82,19 @@ query ($projectId: String!)  {
 }
 `;
 
+export const getEnvironmentVariables = gql`
+query ($projectId: String!)  {
+  environmentVariables(projectId: $projectId) {
+    createdAt
+    environments
+    id
+    key
+    updatedAt
+    value
+  }
+}
+`;
+
 export const getProjectMembers = gql`
 query ($projectId: String!) {
   projectMembers(projectId: $projectId) {
