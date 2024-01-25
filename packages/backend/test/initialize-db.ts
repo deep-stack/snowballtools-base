@@ -117,14 +117,12 @@ const main = async () => {
     await dataSource.initialize();
 
     await generateTestData(dataSource);
+    log('Data loaded successfully');
   } else {
-    throw new Error('Database already exists');
+    log('WARNING: Database already exists');
   }
 };
 
-main().then(() => {
-  log('Data loaded successfully');
-})
-  .catch((err) => {
-    log(err);
-  });
+main().catch((err) => {
+  log(err);
+});

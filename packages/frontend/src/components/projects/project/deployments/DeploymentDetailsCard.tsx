@@ -63,7 +63,9 @@ const DeploymentDetailsCard = ({
           />
         </div>
         <Typography color="gray">
-          {deployment.isProduction ? 'Production (Current)' : 'Preview'}
+          {deployment.isProduction
+            ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
+            : 'Preview'}
         </Typography>
       </div>
       <div className="col-span-1">
