@@ -60,7 +60,12 @@ const GeneralTabPanel = ({
   const handleDeleteProjectDialog = () =>
     setOpenDeleteDialog(!openDeleteDialog);
 
-  const { handleSubmit, register, reset } = useForm({
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: updateProjectFormState,
+  } = useForm({
     defaultValues: {
       appName: project.name,
       description: project.description,
@@ -115,7 +120,13 @@ const GeneralTabPanel = ({
           disabled
           icon={<CopyIcon value={project.id} />}
         />
-        <Button type="submit" variant="gradient" size="sm" className="mt-1">
+        <Button
+          type="submit"
+          variant="gradient"
+          size="sm"
+          className="mt-1"
+          disabled={!updateProjectFormState.isDirty}
+        >
           Save
         </Button>
       </form>
