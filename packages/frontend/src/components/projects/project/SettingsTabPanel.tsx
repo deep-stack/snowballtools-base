@@ -7,6 +7,8 @@ import {
   TabPanel,
 } from '@material-tailwind/react';
 
+import { Project } from 'gql-client';
+
 import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';
 import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariablesTabPanel';
@@ -46,7 +48,13 @@ const tabsData = [
   },
 ];
 
-const SettingsTabPanel = () => {
+const SettingsTabPanel = ({
+  project,
+  onUpdate,
+}: {
+  project: Project;
+  onUpdate: () => Promise<void>;
+}) => {
   return (
     <>
       <Tabs
@@ -72,7 +80,10 @@ const SettingsTabPanel = () => {
         <TabsBody className="col-span-2">
           {tabsData.map(({ value, component }) => (
             <TabPanel key={value} value={value} className="p-2">
-              {createElement(component)}
+              {createElement(component, {
+                project: project,
+                onUpdate: onUpdate,
+              })}
             </TabPanel>
           ))}
         </TabsBody>

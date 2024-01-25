@@ -1,27 +1,49 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-
 import { Button, Typography } from '@material-tailwind/react';
+
+import { Project as ProjectType } from 'gql-client';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
+import { useGQLClient } from '../../context/GQLClientContext';
 import { ProjectSearchOutletContext } from '../../types/project';
 
 const Project = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const client = useGQLClient();
 
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
+  const [project, setProject] = useState<ProjectType | null>(null);
 
-  const project = useMemo(() => {
-    return projects.find((project) => {
+  const fetchProject = useCallback(async (id: string | undefined) => {
+    if (id) {
+      const { project } = await client.getProject(id);
+      setProject(project);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProject(id);
+  }, [id]);
+
+  const onUpdate = async () => {
+    await fetchProject(id);
+  };
+
+  // TODO: Remove organization projects
+  const { projects: organizationProjects } =
+    useOutletContext<ProjectSearchOutletContext>();
+
+  const organizationProject = useMemo(() => {
+    return organizationProjects.find((project) => {
       return project.id === id;
     });
-  }, [id, projects]);
+  }, [id, organizationProjects]);
 
   return (
     <div className="h-full">
-      {project ? (
+      {project && organizationProject ? (
         <>
           <div className="flex p-4 gap-4 items-center">
             <Button
@@ -32,7 +54,7 @@ const Project = () => {
               {'<'}
             </Button>
             <Typography variant="h3" className="grow">
-              {project?.title}
+              {project?.name}
             </Typography>
             <Button className="rounded-full" variant="outlined">
               Open Repo
@@ -43,7 +65,11 @@ const Project = () => {
           </div>
           <HorizontalLine />
           <div className="p-4">
-            <ProjectTabs project={project} />
+            <ProjectTabs
+              project={project}
+              organizationProject={organizationProject}
+              onUpdate={onUpdate}
+            />
           </div>
         </>
       ) : (

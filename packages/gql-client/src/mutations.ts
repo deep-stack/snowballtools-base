@@ -17,3 +17,9 @@ mutation ($deploymentId: String!) {
   updateDeploymentToProd(deploymentId: $deploymentId)
 }
 `;
+
+export const updateProjectMutation = gql`
+mutation ($projectId: String!, $updateProject: UpdateProjectInput) {
+  updateProject(projectId: $projectId, updateProject: $updateProject)
+}
+`;

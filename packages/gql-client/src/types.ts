@@ -152,6 +152,10 @@ export type GetUserResponse = {
   user: User
 }
 
+export type GetProjectResponse = {
+  project: Project | null
+}
+
 export type SearchProjectsResponse = {
   searchProjects: Project[]
 }
@@ -168,4 +172,13 @@ export type AddEnvironmentVariableInput = {
 
 export type UpdateDeploymentToProdResponse = {
   updateDeploymentToProd: boolean;
+}
+
+export type UpdateProjectResponse = {
+  updateProject: boolean;
+}
+
+export type UpdateProjectInput = {
+  name: string
+  description: string
 }

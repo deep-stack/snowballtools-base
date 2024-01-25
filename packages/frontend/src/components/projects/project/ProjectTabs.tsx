@@ -1,13 +1,17 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
+import { Project } from 'gql-client';
+
 import OverviewTabPanel from './OverviewTabPanel';
 import DeploymentsTabPanel from './DeploymentsTabPanel';
 import { ProjectDetails } from '../../../types/project';
 import SettingsTabPanel from './SettingsTabPanel';
 
 interface ProjectTabsProps {
-  project: ProjectDetails;
+  project: Project;
+  organizationProject: ProjectDetails;
+  onUpdate: () => Promise<void>;
 }
 
 const Database = () => (
@@ -28,7 +32,11 @@ const Integrations = () => (
   </div>
 );
 
-const ProjectTabs = ({ project }: ProjectTabsProps) => {
+const ProjectTabs = ({
+  project,
+  onUpdate,
+  organizationProject,
+}: ProjectTabsProps) => {
   return (
     <Tabs
       selectedTabClassName={
@@ -43,7 +51,10 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         <Tab className={'p-2 cursor-pointer'}>Settings</Tab>
       </TabList>
       <TabPanel>
-        <OverviewTabPanel project={project} />
+        <OverviewTabPanel
+          project={project}
+          organizationProject={organizationProject}
+        />
       </TabPanel>
       <TabPanel>
         <DeploymentsTabPanel projectId={project.id} />
@@ -55,7 +66,7 @@ const ProjectTabs = ({ project }: ProjectTabsProps) => {
         <Integrations />
       </TabPanel>
       <TabPanel>
-        <SettingsTabPanel />
+        <SettingsTabPanel project={project} onUpdate={onUpdate} />
       </TabPanel>
     </Tabs>
   );
