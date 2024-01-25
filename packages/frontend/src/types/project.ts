@@ -46,6 +46,7 @@ export interface DeploymentDetails {
     message: string;
   };
   author: string;
+  createdAt: string;
   updatedAt: string;
 }
 
