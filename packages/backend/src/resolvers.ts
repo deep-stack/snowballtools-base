@@ -155,6 +155,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
           log(err);
           return false;
         }
+      },
+
+      deleteProject: async (_: any, { projectId }: { projectId: string }) => {
+        try {
+          return db.deleteProjectById(projectId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     }
   };

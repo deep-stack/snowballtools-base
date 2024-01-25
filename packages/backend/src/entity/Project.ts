@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany
+  OneToMany,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { User } from './User';
@@ -57,4 +58,7 @@ export class Project {
 
   @OneToMany(() => ProjectMember, projectMember => projectMember.project)
     projectMembers!: ProjectMember[];
+
+  @DeleteDateColumn()
+    deletedAt?: Date;
 }

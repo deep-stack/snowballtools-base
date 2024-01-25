@@ -178,6 +178,10 @@ export type UpdateProjectResponse = {
   updateProject: boolean;
 }
 
+export type DeleteProjectResponse = {
+  deleteProject: boolean;
+}
+
 export type UpdateProjectInput = {
   name: string
   description: string

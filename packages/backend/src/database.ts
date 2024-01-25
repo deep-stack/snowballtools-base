@@ -275,4 +275,15 @@ export class Database {
       return false;
     }
   }
+
+  async deleteProjectById (projectId: string): Promise<boolean> {
+    const projectRepository = this.dataSource.getRepository(Project);
+    const deleteResult = await projectRepository.softDelete({ id: projectId });
+
+    if (deleteResult.affected) {
+      return deleteResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
 }
