@@ -95,14 +95,19 @@ export const EnvironmentVariablesTabPanel = () => {
     return false;
   }, [fields, errors.variables, id]);
 
-  const fetchEnvironmentVariables = useCallback(async () => {
-    const { environmentVariables } = await client.getEnvironmentVariables(id!);
-
-    setEnvironmentVariables(environmentVariables);
-  }, [id]);
+  const fetchEnvironmentVariables = useCallback(
+    async (id: string | undefined) => {
+      if (id) {
+        const { environmentVariables } =
+          await client.getEnvironmentVariables(id);
+        setEnvironmentVariables(environmentVariables);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
-    fetchEnvironmentVariables();
+    fetchEnvironmentVariables(id);
   }, [id]);
 
   const createEnvironmentVariablesHandler = useCallback(
@@ -124,7 +129,7 @@ export const EnvironmentVariablesTabPanel = () => {
         reset();
         setCreateNewVariable((cur) => !cur);
 
-        fetchEnvironmentVariables();
+        fetchEnvironmentVariables(id);
 
         toast.success(
           createFormData.variables.length > 1
@@ -135,7 +140,7 @@ export const EnvironmentVariablesTabPanel = () => {
         toast.error('Environment variables not added');
       }
     },
-    [id],
+    [id, client],
   );
 
   return (
