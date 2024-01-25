@@ -50,6 +50,16 @@ const DeploymentDetailsCard = ({
     }
   };
 
+  const redeployToProd = async () => {
+    const isRedeployed = await client.redeployToProd(deployment.id);
+    if (isRedeployed) {
+      await onUpdate();
+      toast.success('Redeployed to production');
+    } else {
+      toast.error('Unable to redeploy to production');
+    }
+  };
+
   return (
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
       <div className="col-span-2">
@@ -63,7 +73,9 @@ const DeploymentDetailsCard = ({
           />
         </div>
         <Typography color="gray">
-          {deployment.isProduction ? 'Production (Current)' : 'Preview'}
+          {deployment.isProduction
+            ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
+            : 'Preview'}
         </Typography>
       </div>
       <div className="col-span-1">
@@ -94,6 +106,7 @@ const DeploymentDetailsCard = ({
             <hr className="my-3" />
             <MenuItem
               onClick={() => setRedeployToProduction(!redeployToProduction)}
+              disabled={!(deployment.isProduction && deployment.isCurrent)}
             >
               ^ Redeploy to production
             </MenuItem>
@@ -113,8 +126,8 @@ const DeploymentDetailsCard = ({
         open={changeToProduction}
         confirmButtonTitle="Change"
         color="blue"
-        handleConfirm={() => {
-          updateDeployment();
+        handleConfirm={async () => {
+          await updateDeployment();
           setChangeToProduction((preVal) => !preVal);
         }}
       >
@@ -140,7 +153,10 @@ const DeploymentDetailsCard = ({
         open={redeployToProduction}
         confirmButtonTitle="Redeploy"
         color="blue"
-        handleConfirm={() => setRedeployToProduction((preVal) => !preVal)}
+        handleConfirm={async () => {
+          await redeployToProd();
+          setRedeployToProduction((preVal) => !preVal);
+        }}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">

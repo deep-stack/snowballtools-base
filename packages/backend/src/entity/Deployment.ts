@@ -35,7 +35,7 @@ export class Deployment {
 
   @OneToOne(() => Domain)
   @JoinColumn({ name: 'domainId' })
-    domain!: Domain;
+    domain!: Domain | null;
 
   @Column('varchar')
     branch!: string;

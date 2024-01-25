@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation } from './mutations';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse } from './types';
+import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -142,6 +142,17 @@ export class GQLClient {
       variables: {
         projectId,
         updateProject
+      }
+    });
+
+    return data;
+  }
+
+  async redeployToProd (deploymentId: string): Promise<RedeployToProdResponse> {
+    const { data } = await this.client.mutate({
+      mutation: redeployToProd,
+      variables: {
+        deploymentId
       }
     });
 
