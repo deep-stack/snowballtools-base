@@ -1,18 +1,21 @@
 import * as fs from 'fs/promises';
-import path from 'path';
 import debug from 'debug';
+
+import { getConfig } from '../src/utils';
+import { Config } from '../src/config';
+import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 
 const log = debug('snowball:delete-database');
 
-const DB_PATH = '../db/snowball';
-
 const deleteFile = async (filePath: string) => {
-  try {
-    await fs.unlink(filePath);
-    log(`File ${filePath} has been deleted.`);
-  } catch (err) {
-    log(err);
-  }
+  await fs.unlink(filePath);
+  log(`File ${filePath} has been deleted.`);
 };
 
-deleteFile(path.resolve(__dirname, DB_PATH));
+const main = async () => {
+  const config = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+
+  deleteFile(config.database.dbPath);
+};
+
+main().catch(err => log(err));

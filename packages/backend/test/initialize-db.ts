@@ -11,10 +11,11 @@ import { EnvironmentVariable } from '../src/entity/EnvironmentVariable';
 import { Domain } from '../src/entity/Domain';
 import { ProjectMember } from '../src/entity/ProjectMember';
 import { Deployment } from '../src/entity/Deployment';
+import { getConfig } from '../src/utils';
+import { Config } from '../src/config';
+import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 
 const log = debug('snowball:initialize-database');
-
-const DB_PATH = '../db/snowball';
 
 const USER_DATA_PATH = './fixtures/users.json';
 const PROJECT_DATA_PATH = './fixtures/projects.json';
@@ -103,12 +104,13 @@ const checkFileExists = async (filePath: string) => {
 };
 
 const main = async () => {
-  const isDbPresent = await checkFileExists(path.resolve(__dirname, DB_PATH));
+  const config = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const isDbPresent = await checkFileExists(config.database.dbPath);
 
   if (!isDbPresent) {
     const dataSource = new DataSource({
       type: 'better-sqlite3',
-      database: 'db/snowball',
+      database: config.database.dbPath,
       synchronize: true,
       logging: true,
       entities: [path.join(__dirname, '../src/entity/*')]
