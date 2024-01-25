@@ -3,6 +3,7 @@ import assert from 'assert';
 
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
+import { Environment } from './entity/Deployment';
 
 const log = debug('snowball:database');
 
@@ -123,12 +124,6 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
       updateDeploymentToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
         try {
-          enum Environment {
-            Production = 'Production',
-            Preview = 'Preview',
-            Development = 'Development'
-          }
-
           return db.updateDeploymentById(deploymentId, {
             environment: Environment.Production
           });

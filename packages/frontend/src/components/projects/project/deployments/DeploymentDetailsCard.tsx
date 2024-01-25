@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Menu,
@@ -9,6 +9,7 @@ import {
   Chip,
   ChipProps,
 } from '@material-tailwind/react';
+import toast from 'react-hot-toast';
 
 import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
@@ -38,21 +39,16 @@ const DeploymentDetailsCard = ({
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
-  const [updateToProd, setUpdateToProd] = useState(false);
 
-  useEffect(() => {
-    const updateDeployment = async () => {
-      const isUpdated = await client.updateDeploymentToProd(deployment.id);
-      if (isUpdated) {
-        await onUpdate();
-      }
-    };
-
-    if (updateToProd) {
-      updateDeployment();
-      setUpdateToProd(false);
+  const updateDeployment = async () => {
+    const isUpdated = await client.updateDeploymentToProd(deployment.id);
+    if (isUpdated) {
+      await onUpdate();
+      toast.success('Deployment changed to production');
+    } else {
+      toast.error('Unable to change deployment to production');
     }
-  }, [updateToProd]);
+  };
 
   return (
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
@@ -118,7 +114,7 @@ const DeploymentDetailsCard = ({
         confirmButtonTitle="Change"
         color="blue"
         handleConfirm={() => {
-          setUpdateToProd(true);
+          updateDeployment();
           setChangeToProduction((preVal) => !preVal);
         }}
       >
