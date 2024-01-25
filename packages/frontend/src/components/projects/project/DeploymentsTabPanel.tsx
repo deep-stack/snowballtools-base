@@ -9,7 +9,6 @@ import FilterForm, {
 } from './deployments/FilterForm';
 import { DeploymentDetails } from '../../../types/project';
 import { useGQLClient } from '../../../context/GQLClientContext';
-import { Toaster } from 'react-hot-toast';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
@@ -126,7 +125,6 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
           </div>
         )}
       </div>
-      <Toaster />
     </div>
   );
 };
