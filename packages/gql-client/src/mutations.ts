@@ -11,3 +11,9 @@ mutation ($projectId: String!, $environmentVariables: [AddEnvironmentVariableInp
   addEnvironmentVariables(projectId: $projectId, environmentVariables: $environmentVariables)
 }
 `;
+
+export const updateDeploymentToProd = gql`
+mutation ($deploymentId: String!) {
+  updateDeploymentToProd(deploymentId: $deploymentId)
+}
+`;

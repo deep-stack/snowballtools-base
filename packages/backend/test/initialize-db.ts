@@ -117,6 +117,8 @@ const main = async () => {
     await dataSource.initialize();
 
     await generateTestData(dataSource);
+  } else {
+    throw new Error('Database already exists');
   }
 };
 
