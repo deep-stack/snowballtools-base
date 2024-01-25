@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { IconButton, Input, Typography } from '@material-tailwind/react';
-
 import { EnvironmentVariable } from 'gql-client';
+
+import { IconButton, Input, Typography } from '@material-tailwind/react';
 
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 

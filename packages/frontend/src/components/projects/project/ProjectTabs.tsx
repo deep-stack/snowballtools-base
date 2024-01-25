@@ -1,6 +1,5 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 import { Project } from 'gql-client';
 
 import OverviewTabPanel from './OverviewTabPanel';

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { Typography, Button, Chip } from '@material-tailwind/react';
-
 import { Project } from 'gql-client';
+
+import { Typography, Button, Chip } from '@material-tailwind/react';
 
 import ActivityCard from './ActivityCard';
 import activityDetails from '../../../assets/activities.json';

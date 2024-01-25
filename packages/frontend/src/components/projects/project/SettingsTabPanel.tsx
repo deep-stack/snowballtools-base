@@ -1,4 +1,6 @@
 import React, { createElement } from 'react';
+import { Project } from 'gql-client';
+
 import {
   Tabs,
   TabsHeader,
@@ -6,8 +8,6 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react';
-
-import { Project } from 'gql-client';
 
 import Domains from './settings/Domains';
 import GeneralTabPanel from './settings/GeneralTabPanel';

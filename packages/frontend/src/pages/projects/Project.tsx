@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import { Button, Typography } from '@material-tailwind/react';
-
 import { Project as ProjectType } from 'gql-client';
+
+import { Button, Typography } from '@material-tailwind/react';
 
 import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';

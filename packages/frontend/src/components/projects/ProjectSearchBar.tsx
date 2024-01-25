@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useCombobox } from 'downshift';
+import { Project } from 'gql-client';
 
 import {
   List,
@@ -8,8 +9,6 @@ import {
   Card,
   Typography,
 } from '@material-tailwind/react';
-
-import { Project } from 'gql-client';
 
 import SearchBar from '../SearchBar';
 import { useGQLClient } from '../../context/GQLClientContext';

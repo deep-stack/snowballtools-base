@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { Project } from 'gql-client';
+
 import {
   Button,
   Typography,
@@ -9,8 +11,6 @@ import {
   Select,
   Option,
 } from '@material-tailwind/react';
-
-import { Project } from 'gql-client';
 
 import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
