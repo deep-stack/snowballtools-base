@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-
 import { Environment } from 'gql-client';
 
-import HorizontalLine from '../components/HorizontalLine';
 import { IconButton, Typography } from '@material-tailwind/react';
+
+import HorizontalLine from '../components/HorizontalLine';
 import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 import { useGQLClient } from '../context/GQLClientContext';
 import { ProjectDetails } from '../types/project';

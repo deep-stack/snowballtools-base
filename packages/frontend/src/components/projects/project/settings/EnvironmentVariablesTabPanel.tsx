@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
+import { Environment, EnvironmentVariable } from 'gql-client';
 
 import {
   Typography,
@@ -11,8 +12,6 @@ import {
   Checkbox,
   Chip,
 } from '@material-tailwind/react';
-
-import { Environment, EnvironmentVariable } from 'gql-client';
 
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
