@@ -5,9 +5,11 @@ import TemplateCard from '../../../components/projects/create/TemplateCard';
 import RepositoryList from '../../../components/projects/create/RepositoryList';
 import ConnectAccount from '../../../components/projects/create/ConnectAccount';
 
-const IS_GIT_AUTH = true;
+const IS_GIT_AUTH = false;
 
 const NewProject = () => {
+  // TODO: Get user details for checking if already authenticated to Github
+
   return (
     <>
       <h5 className="mt-4 ml-4">Start with template</h5>
