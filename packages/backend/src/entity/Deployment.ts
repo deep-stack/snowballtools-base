@@ -12,7 +12,7 @@ import {
 import { Project } from './Project';
 import { Domain } from './Domain';
 
-enum Environment {
+export enum Environment {
   Production = 'Production',
   Preview = 'Preview',
   Development = 'Development',

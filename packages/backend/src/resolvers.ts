@@ -3,6 +3,7 @@ import assert from 'assert';
 
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
+import { Environment } from './entity/Deployment';
 
 const log = debug('snowball:database');
 
@@ -102,7 +103,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
           assert(memberProject);
 
           if (isUserOwner(String(context.userId), String(memberProject.owner.id))) {
-            return db.removeProjectMemberByMemberId(memberId);
+            return db.removeProjectMemberById(memberId);
           } else {
             throw new Error('Invalid operation: not authorized');
           }
@@ -115,6 +116,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
       addEnvironmentVariables: async (_: any, { projectId, environmentVariables }: { projectId: string, environmentVariables: { environments: string[], key: string, value: string}[] }) => {
         try {
           return db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      updateDeploymentToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
+        try {
+          return db.updateDeploymentById(deploymentId, {
+            environment: Environment.Production
+          });
         } catch (err) {
           log(err);
           return false;

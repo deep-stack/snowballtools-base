@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, DeepPartial } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
@@ -131,8 +131,7 @@ export class Database {
     return environmentVariables;
   }
 
-  async removeProjectMemberByMemberId (memberId: string): Promise<boolean> {
-    // TODO: Check if user is authorized to delete members
+  async removeProjectMemberById (memberId: string): Promise<boolean> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
     const deleted = await projectMemberRepository.delete(memberId);
@@ -205,5 +204,16 @@ export class Database {
       .getMany();
 
     return projects;
+  }
+
+  async updateDeploymentById (deploymentId: string, updates: DeepPartial<Deployment>): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const updatedDeployment = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
+
+    if (updatedDeployment.affected) {
+      return updatedDeployment.affected > 0;
+    } else {
+      return false;
+    }
   }
 }
