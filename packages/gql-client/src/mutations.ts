@@ -5,3 +5,9 @@ mutation ($memberId: String!) {
   removeMember(memberId: $memberId)
 }
 `;
+
+export const addEnvironmentVariables = gql`
+mutation ($projectId: String!, $environmentVariables: [AddEnvironmentVariableInput!]) {
+  addEnvironmentVariables(projectId: $projectId, environmentVariables: $environmentVariables)
+}
+`;

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import {
   Typography,
@@ -12,14 +12,12 @@ import {
   Chip,
 } from '@material-tailwind/react';
 
+import { Environment, EnvironmentVariable } from 'gql-client';
+
 import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
-import {
-  EnvironmentVariable,
-  Environments,
-  ProjectSearchOutletContext,
-} from '../../../../types/project';
 import HorizontalLine from '../../../HorizontalLine';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 export type EnvironmentVariablesFormValues = {
   variables: {
@@ -35,14 +33,11 @@ export type EnvironmentVariablesFormValues = {
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
+  const client = useGQLClient();
 
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
-
-  const currentProject = useMemo(() => {
-    return projects.find((project) => {
-      return project.id === id;
-    });
-  }, [id, projects]);
+  const [environmentVariables, setEnvironmentVariables] = useState<
+    EnvironmentVariable[]
+  >([]);
 
   const {
     handleSubmit,
@@ -74,13 +69,16 @@ export const EnvironmentVariablesTabPanel = () => {
     if (isSubmitSuccessful) {
       reset();
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [isSubmitSuccessful, reset, id]);
 
-  const getEnvironmentVariable = useCallback((environment: Environments) => {
-    return (
-      currentProject?.environmentVariables as EnvironmentVariable[]
-    ).filter((item) => item.environments.includes(environment));
-  }, []);
+  const getEnvironmentVariable = useCallback(
+    (environment: Environment) => {
+      return environmentVariables.filter((item) =>
+        item.environments.includes(environment),
+      );
+    },
+    [environmentVariables, id],
+  );
 
   const isFieldEmpty = useMemo(() => {
     if (errors.variables) {
@@ -95,7 +93,55 @@ export const EnvironmentVariablesTabPanel = () => {
     }
 
     return false;
-  }, [fields, errors.variables]);
+  }, [fields, errors.variables, id]);
+
+  const fetchEnvironmentVariables = useCallback(
+    async (id: string | undefined) => {
+      if (id) {
+        const { environmentVariables } =
+          await client.getEnvironmentVariables(id);
+        setEnvironmentVariables(environmentVariables);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    fetchEnvironmentVariables(id);
+  }, [id]);
+
+  const createEnvironmentVariablesHandler = useCallback(
+    async (createFormData: EnvironmentVariablesFormValues) => {
+      const environmentVariables = createFormData.variables.map((variable) => {
+        return {
+          key: variable.key,
+          value: variable.value,
+          environments: Object.entries(createFormData.environment)
+            .filter(([, value]) => value === true)
+            .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
+        };
+      });
+
+      const { addEnvironmentVariables: isEnvironmentVariablesAdded } =
+        await client.addEnvironmentVariables(id!, environmentVariables);
+
+      if (isEnvironmentVariablesAdded) {
+        reset();
+        setCreateNewVariable((cur) => !cur);
+
+        fetchEnvironmentVariables(id);
+
+        toast.success(
+          createFormData.variables.length > 1
+            ? `${createFormData.variables.length} variables added`
+            : `Variable added`,
+        );
+      } else {
+        toast.error('Environment variables not added');
+      }
+    },
+    [id, client],
+  );
 
   return (
     <>
@@ -112,16 +158,7 @@ export const EnvironmentVariablesTabPanel = () => {
         </div>
         <Collapse open={createNewVariable}>
           <Card className="bg-white p-2">
-            <form
-              onSubmit={handleSubmit((data) => {
-                toast.success(
-                  data.variables.length > 1
-                    ? `${data.variables.length} variables added`
-                    : `Variable added`,
-                );
-                reset();
-              })}
-            >
+            <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
               {fields.map((field, index) => {
                 return (
                   <AddEnvironmentVariableRow
@@ -189,18 +226,18 @@ export const EnvironmentVariablesTabPanel = () => {
       </div>
       <div className="p-2">
         <DisplayEnvironmentVariables
-          environment={Environments.PRODUCTION}
-          variables={getEnvironmentVariable(Environments.PRODUCTION)}
+          environment={Environment.Production}
+          variables={getEnvironmentVariable(Environment.Production)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
-          environment={Environments.PREVIEW}
-          variables={getEnvironmentVariable(Environments.PREVIEW)}
+          environment={Environment.Preview}
+          variables={getEnvironmentVariable(Environment.Preview)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
-          environment={Environments.DEVELOPMENT}
-          variables={getEnvironmentVariable(Environments.DEVELOPMENT)}
+          environment={Environment.Development}
+          variables={getEnvironmentVariable(Environment.Development)}
         />
       </div>
     </>
