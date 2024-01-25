@@ -13,7 +13,6 @@ import { User } from './User';
 import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 
-// TODO: Put isCurrent field in project
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')

@@ -21,5 +21,10 @@ mutation ($deploymentId: String!) {
 export const updateProjectMutation = gql`
 mutation ($projectId: String!, $updateProject: UpdateProjectInput) {
   updateProject(projectId: $projectId, updateProject: $updateProject)
+}`;
+
+export const redeployToProd = gql`
+mutation ($deploymentId: String!) {
+  redeployToProd(deploymentId: $deploymentId)
 }
 `;

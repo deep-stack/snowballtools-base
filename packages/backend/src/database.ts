@@ -244,7 +244,7 @@ export class Database {
     }
   }
 
-  async redeployToProdById (deploymentId: string): Promise<Deployment> {
+  async redeployToProdById (deploymentId: string): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOne({
       relations: {
@@ -256,20 +256,23 @@ export class Database {
       }
     });
 
-    log(deployment);
-
     if (deployment === null) {
       throw new Error('Deployment not found');
     }
     const { id, createdAt, updatedAt, ...updatedDeployment } = deployment;
 
     if (updatedDeployment.environment === Environment.Production) {
+      // TODO: Put isCurrent field in project
       updatedDeployment.isCurrent = true;
     }
 
     await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
     const savedUpdatedDeployment = await deploymentRepository.save(updatedDeployment);
 
-    return savedUpdatedDeployment;
+    if (savedUpdatedDeployment) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

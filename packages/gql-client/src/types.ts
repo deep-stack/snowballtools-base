@@ -182,3 +182,7 @@ export type UpdateProjectInput = {
   name: string
   description: string
 }
+
+export type RedeployToProdResponse = {
+  redeployToProd: boolean
+}
