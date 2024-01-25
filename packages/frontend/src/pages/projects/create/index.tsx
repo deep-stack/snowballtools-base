@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import templateDetails from '../../../assets/templates.json';
 import TemplateCard from '../../../components/projects/create/TemplateCard';
 import RepositoryList from '../../../components/projects/create/RepositoryList';
 import ConnectAccount from '../../../components/projects/create/ConnectAccount';
 
-const IS_GIT_AUTH = false;
-
 const NewProject = () => {
-  // TODO: Get user details for checking if already authenticated to Github
+  const [isGitAuth, setIsGitAuth] = useState(false);
+  const [gitToken, setGitToken] = useState('');
+  // TODO: Get DB user details for checking if already authenticated to Github
+
+  const handleToken = useCallback((token: string) => {
+    setGitToken(token);
+    setIsGitAuth(true);
+  }, []);
 
   return (
     <>
@@ -19,10 +24,10 @@ const NewProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      {IS_GIT_AUTH ? (
-        <RepositoryList repoSelectionHandler={() => {}} />
+      {isGitAuth ? (
+        <RepositoryList token={gitToken} repoSelectionHandler={() => {}} />
       ) : (
-        <ConnectAccount />
+        <ConnectAccount onToken={handleToken} />
       )}
     </>
   );

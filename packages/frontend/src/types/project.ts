@@ -25,12 +25,25 @@ export enum Status {
   ERROR = 'Error',
 }
 
+// TODO: Use GitRepositoryDetails
 export interface RepositoryDetails {
   title: string;
   updatedAt: string;
   user: string;
   private: boolean;
   branch: string[];
+}
+
+export interface GitRepositoryDetails {
+  id: number;
+  name: string;
+  full_name: string;
+  owner: {
+    id: number;
+    login: string;
+  };
+  visibility?: string;
+  updated_at: string | null;
 }
 
 export enum GitSelect {

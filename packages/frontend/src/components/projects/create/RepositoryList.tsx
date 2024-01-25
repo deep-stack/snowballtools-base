@@ -1,33 +1,56 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Octokit } from 'octokit';
 
 import { Button, Typography, Option, Select } from '@material-tailwind/react';
 
 import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
-import repositoryDetails from '../../../assets/repositories.json';
-import { RepositoryDetails } from '../../../types/project';
+import { GitRepositoryDetails } from '../../../types/project';
 
 const DEFAULT_SEARCHED_REPO = '';
 const DEFAULT_SELECTED_USER = 'All accounts';
 
 interface RepositoryListProps {
-  repoSelectionHandler: (repo: RepositoryDetails) => void;
+  repoSelectionHandler: (repo: GitRepositoryDetails) => void;
+  token: string;
 }
 
-const RepositoryList = ({ repoSelectionHandler }: RepositoryListProps) => {
+const RepositoryList = ({
+  repoSelectionHandler,
+  token,
+}: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedUser, setSelectedUser] = useState(DEFAULT_SELECTED_USER);
+  const [repositoryDetails, setRepositoryDetails] = useState<
+    GitRepositoryDetails[]
+  >([]);
+
+  useEffect(() => {
+    const fetchRepos = async () => {
+      // TODO: Create github/octokit context
+      const octokit = new Octokit({ auth: token });
+
+      const result = await octokit.rest.repos.listForAuthenticatedUser();
+      setRepositoryDetails(result.data);
+    };
+
+    if (token) {
+      fetchRepos();
+    }
+  }, [token]);
 
   const filteredRepos = useMemo(() => {
     return repositoryDetails.filter((repo) => {
       const titleMatch =
         !searchedRepo ||
-        repo.title.toLowerCase().includes(searchedRepo.toLowerCase());
+        repo.name.toLowerCase().includes(searchedRepo.toLowerCase());
       const userMatch =
-        selectedUser === DEFAULT_SELECTED_USER || selectedUser === repo.user;
+        selectedUser === DEFAULT_SELECTED_USER ||
+        selectedUser === repo.owner.login;
+
       return titleMatch && userMatch;
     });
-  }, [searchedRepo, selectedUser]);
+  }, [searchedRepo, selectedUser, repositoryDetails]);
 
   const handleResetFilters = useCallback(() => {
     setSearchedRepo(DEFAULT_SEARCHED_REPO);
@@ -35,10 +58,8 @@ const RepositoryList = ({ repoSelectionHandler }: RepositoryListProps) => {
   }, []);
 
   const users = useMemo(() => {
-    return [
-      DEFAULT_SELECTED_USER,
-      ...Array.from(new Set(repositoryDetails.map((repo) => repo.user))),
-    ];
+    // TODO: Get list of accounts from GitHub
+    return [DEFAULT_SELECTED_USER];
   }, []);
 
   return (

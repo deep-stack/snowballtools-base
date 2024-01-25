@@ -222,3 +222,9 @@ export type AddDomainInput = {
 export type AddDomainResponse = {
   addDomain: true
 }
+
+export type AuthenticateGithubResponse = {
+  authenticateGithub: {
+    token: string
+  }
+}

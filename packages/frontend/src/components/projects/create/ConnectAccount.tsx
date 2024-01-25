@@ -1,14 +1,24 @@
+import { Button } from '@material-tailwind/react';
 import React from 'react';
 import OauthPopup from 'react-oauth-popup';
 
+import { useGQLClient } from '../../../context/GQLClientContext';
+
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&scope=user`;
 
-const ConnectAccount = () => {
-  const handleCode = (code: string, params: URLSearchParams) => {
-    console.log('code', code);
-    console.log('params', params);
+interface ConnectAccountInterface {
+  onToken: (token: string) => void;
+}
 
-    // TODO: Pass code to backend and get access token
+const ConnectAccount = ({ onToken }: ConnectAccountInterface) => {
+  const client = useGQLClient();
+
+  const handleCode = async (code: string) => {
+    // Pass code to backend and get access token
+    const {
+      authenticateGithub: { token },
+    } = await client.authenticateGithub(code);
+    onToken(token);
   };
 
   return (
@@ -21,7 +31,7 @@ const ConnectAccount = () => {
           under the account
         </p>
       </div>
-      <div>
+      <div className="mt-2 flex">
         <OauthPopup
           url={GITHUB_OAUTH_URL}
           onCode={handleCode}
@@ -30,13 +40,9 @@ const ConnectAccount = () => {
           width={1000}
           height={1000}
         >
-          <button className="bg-gray-300 rounded-full mx-2">
-            Connect to Github
-          </button>
+          <Button className="rounded-full mx-2">Connect to Github</Button>
         </OauthPopup>
-        <button className="bg-gray-300 rounded-full mx-2">
-          Connect to Gitea
-        </button>
+        <Button className="rounded-full mx-2">Connect to Gitea</Button>
       </div>
     </div>
   );

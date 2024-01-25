@@ -17,6 +17,7 @@
     "eslint-config-react-app": "^7.0.1",
     "gql-client": "^1.0.0",
     "luxon": "^3.4.4",
+    "octokit": "^3.1.2",
     "react": "^18.2.0",
     "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",

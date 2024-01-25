@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import { RepositoryDetails } from '../../../../types/project';
+import { GitRepositoryDetails } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 
 const RepoConnectedSection = ({
   linkedRepo,
 }: {
-  linkedRepo: RepositoryDetails;
+  linkedRepo: GitRepositoryDetails;
 }) => {
   const [disconnectRepoDialogOpen, setDisconnectRepoDialogOpen] =
     useState(false);
@@ -17,9 +17,7 @@ const RepoConnectedSection = ({
     <div className="flex gap-4">
       <div>^</div>
       <div className="grow">
-        <Typography variant="small">
-          {linkedRepo.user}/{linkedRepo.title}
-        </Typography>
+        <Typography variant="small">{linkedRepo.full_name}</Typography>
         <Typography variant="small">Connected just now</Typography>
       </div>
       <div>
