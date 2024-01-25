@@ -12,6 +12,28 @@ query {
 }
 `;
 
+export const getProject = gql`
+query ($projectId: String!) {
+  project(projectId: $projectId) {
+    createdAt
+    description
+    id
+    name
+    template
+    updatedAt
+    prodBranch
+    framework
+    repository
+    webhooks
+    owner {
+      id
+      name
+      email
+    }
+  }
+}
+`;
+
 export const getOrganizations = gql`
 query {
   organizations {

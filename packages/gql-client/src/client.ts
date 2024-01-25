@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd } from './mutations';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject } from './queries';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput } from './types';
+import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -34,6 +34,17 @@ export class GQLClient {
   async getUser () : Promise<GetUserResponse> {
     const { data } = await this.client.query({
       query: getUser
+    });
+
+    return data;
+  }
+
+  async getProject (projectId: string) : Promise<GetProjectResponse> {
+    const { data } = await this.client.query({
+      query: getProject,
+      variables: {
+        projectId
+      }
     });
 
     return data;
@@ -119,6 +130,18 @@ export class GQLClient {
       mutation: updateDeploymentToProd,
       variables: {
         deploymentId
+      }
+    });
+
+    return data;
+  }
+
+  async updateProject (projectId: string, updateProject: UpdateProjectInput): Promise<UpdateProjectResponse> {
+    const { data } = await this.client.mutate({
+      mutation: updateProjectMutation,
+      variables: {
+        projectId,
+        updateProject
       }
     });
 
