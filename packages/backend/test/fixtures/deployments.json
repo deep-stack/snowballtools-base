@@ -5,7 +5,7 @@
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
-    "isCurrent": false,
+    "isCurrent": true,
     "branch": "prod",
     "commitHash": "testXyz"
   },
@@ -15,7 +15,7 @@
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
-    "isCurrent": true,
+    "isCurrent": false,
     "branch": "prod",
     "commitHash": "testXyz"
   },
@@ -35,7 +35,7 @@
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
-    "isCurrent": false,
+    "isCurrent": true,
     "branch": "prod",
     "commitHash": "testXyz"
   },
@@ -45,7 +45,7 @@
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
-    "isCurrent": true,
+    "isCurrent": false,
     "branch": "prod",
     "commitHash": "testXyz"
   },
@@ -65,7 +65,7 @@
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
-    "isCurrent": false,
+    "isCurrent": true,
     "branch": "prod",
     "commitHash": "testXyz"
   },
@@ -75,7 +75,7 @@
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
-    "isCurrent": true,
+    "isCurrent": false,
     "branch": "prod",
     "commitHash": "testXyz"
   },

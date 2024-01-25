@@ -8,7 +8,7 @@ import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
-import { Deployment } from './entity/Deployment';
+import { Deployment, Environment } from './entity/Deployment';
 import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
@@ -239,6 +239,38 @@ export class Database {
 
     if (updateResult.affected) {
       return updateResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
+  async redeployToProdById (deploymentId: string): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployment = await deploymentRepository.findOne({
+      relations: {
+        project: true,
+        domain: true
+      },
+      where: {
+        id: Number(deploymentId)
+      }
+    });
+
+    if (deployment === null) {
+      throw new Error('Deployment not found');
+    }
+    const { id, createdAt, updatedAt, ...updatedDeployment } = deployment;
+
+    if (updatedDeployment.environment === Environment.Production) {
+      // TODO: Put isCurrent field in project
+      updatedDeployment.isCurrent = true;
+    }
+
+    await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
+    const savedUpdatedDeployment = await deploymentRepository.save(updatedDeployment);
+
+    if (savedUpdatedDeployment) {
+      return true;
     } else {
       return false;
     }

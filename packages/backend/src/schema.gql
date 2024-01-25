@@ -127,6 +127,7 @@ type Mutation {
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
   updateProject(projectId: String!, updateProject: UpdateProjectInput): Boolean!
+  redeployToProd(deploymentId: String!): Boolean!
 }
 
 input AddEnvironmentVariableInput {

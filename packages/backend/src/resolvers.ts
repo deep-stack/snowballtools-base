@@ -146,6 +146,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
           log(err);
           return false;
         }
+      },
+
+      redeployToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
+        try {
+          return db.redeployToProdById(deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     }
   };
