@@ -78,6 +78,22 @@ export class Database {
     return projects;
   }
 
+  async getProjectByProjectId (projectId: string): Promise<Project | null> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const project = await projectRepository.findOne({
+      relations: {
+        organization: true,
+        owner: true
+      },
+      where: {
+        id: projectId
+      }
+    });
+
+    return project;
+  }
+
   async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
@@ -208,10 +224,21 @@ export class Database {
 
   async updateDeploymentById (deploymentId: string, updates: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const updatedDeployment = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
+    const updateResult = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
 
-    if (updatedDeployment.affected) {
-      return updatedDeployment.affected > 0;
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
+  async updateProjectById (projectId: string, updates: DeepPartial<Project>): Promise<boolean> {
+    const projectRepository = this.dataSource.getRepository(Project);
+    const updateResult = await projectRepository.update({ id: projectId }, updates);
+
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
     } else {
       return false;
     }

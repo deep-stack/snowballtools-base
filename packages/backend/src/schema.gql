@@ -115,6 +115,7 @@ type Query {
   user: User!
   organizations: [Organization!]
   projects: [Project!]
+  project(projectId: String!): Project
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
@@ -125,10 +126,16 @@ type Mutation {
   removeMember(memberId: String!): Boolean!
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
+  updateProject(projectId: String!, updateProject: UpdateProjectInput): Boolean!
 }
 
 input AddEnvironmentVariableInput {
   environments: [Environment!]!
   key: String!
   value: String!
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
 }
