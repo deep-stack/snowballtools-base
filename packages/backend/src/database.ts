@@ -303,4 +303,18 @@ export class Database {
       return false;
     }
   }
+
+  async rollbackDeploymentById (projectId: string, deploymentId: string): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+
+    // TODO: Implement transactions
+    const oldLiveDeployment = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false });
+    const newLiveDeployment = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true });
+
+    if (oldLiveDeployment.affected && newLiveDeployment.affected) {
+      return oldLiveDeployment.affected > 0 && newLiveDeployment.affected > 0;
+    } else {
+      return false;
+    }
+  }
 }
