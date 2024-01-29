@@ -25,10 +25,31 @@ query ($projectId: String!) {
     framework
     repository
     webhooks
+    icon
     owner {
       id
       name
       email
+    }
+    deployments {
+      id
+      branch
+      isCurrent
+      status
+      title
+      updatedAt
+      commitHash
+      createdAt
+      environment
+      domain {
+        status
+        branch
+        createdAt
+        updatedAt
+        id
+        name
+        isRedirected
+      }
     }
   }
 }
@@ -46,9 +67,26 @@ query ($organizationId: String!) {
     webhooks
     repository
     updatedAt
-    organization {
+    icon
+    deployments {
       id
-      name
+      branch
+      isCurrent
+      status
+      title
+      updatedAt
+      commitHash
+      createdAt
+      environment
+      domain {
+        status
+        branch
+        createdAt
+        updatedAt
+        id
+        name
+        isRedirected
+      }
     }
   }
 }

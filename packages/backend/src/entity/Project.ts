@@ -13,6 +13,7 @@ import {
 import { User } from './User';
 import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
+import { Deployment } from './Deployment';
 
 @Entity()
 export class Project {
@@ -61,4 +62,10 @@ export class Project {
 
   @DeleteDateColumn()
     deletedAt?: Date;
+
+  @OneToMany(() => Deployment, (deployment) => deployment.project)
+    deployments!: Deployment[];
+
+  @Column('varchar')
+    icon!: string;
 }

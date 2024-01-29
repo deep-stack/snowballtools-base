@@ -21,7 +21,7 @@ const Domains = () => {
   }, [id, projects]);
 
   const linkedRepo = useMemo(() => {
-    return currentProject?.repositories.find(
+    return currentProject?.repositories?.find(
       (repo: any) => repo.id === Number(currentProject?.repositoryId),
     );
   }, [currentProject]);
@@ -43,7 +43,7 @@ const Domains = () => {
         </Link>
       </div>
 
-      {(domains as DomainDetails[]).map((domain) => {
+      {(domains as unknown as DomainDetails[]).map((domain) => {
         return (
           <DomainCard
             domain={domain}

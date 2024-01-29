@@ -126,6 +126,7 @@ export type Project = {
   createdAt: string
   updatedAt: string
   organization: Organization
+  icon: string
 }
 
 export type GetProjectMembersResponse = {

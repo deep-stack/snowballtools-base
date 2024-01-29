@@ -106,7 +106,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
           <Typography variant="small">
             Once deleted, the project{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {project.title}
+              {project.name}
             </span>{' '}
             will not be accessible from the domain{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">

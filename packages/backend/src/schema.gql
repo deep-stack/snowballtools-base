@@ -69,6 +69,7 @@ type Project {
   createdAt: String!
   updatedAt: String!
   organization: Organization!
+  icon: String
 }
 
 type ProjectMember {

@@ -1,29 +1,15 @@
-import { Environment, EnvironmentVariable } from 'gql-client';
+import { Environment, Project } from 'gql-client';
 
-export interface ProjectDetails {
-  icon: string;
-  name: string;
-  title: string;
-  owner: Member;
-  organization: string;
-  description: string;
-  url: string;
-  domain: string | null;
-  id: string;
-  createdAt: string;
-  createdBy: string;
-  deployments: DeploymentDetails[];
-  source: string;
+export interface ProjectDetails extends Project {
+  domain?: string | null;
+  source?: string;
   latestCommit: {
     message: string;
     createdAt: string;
     branch: string;
   };
-  repositoryId: number;
-  repositories: RepositoryDetails[];
-  members: ProjectMember[];
-  ownerId: number;
-  environmentVariables: EnvironmentVariable[];
+  repositories?: RepositoryDetails[];
+  repositoryId?: number;
 }
 
 export interface ProjectMember {

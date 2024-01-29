@@ -81,15 +81,15 @@ export class Database {
   async getProjectByProjectId (projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 
-    const project = await projectRepository.findOne({
-      relations: {
-        organization: true,
-        owner: true
-      },
-      where: {
-        id: projectId
-      }
-    });
+    const project = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect('deployments.domain', 'domain')
+      .leftJoinAndSelect('project.owner', 'owner')
+      .where('project.id = :projectId', {
+        projectId
+      })
+      .getOne();
 
     return project;
   }
@@ -99,7 +99,8 @@ export class Database {
 
     const projects = await projectRepository
       .createQueryBuilder('project')
-      .leftJoinAndSelect('project.organization', 'organization')
+      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoin('project.projectMembers', 'projectMembers')
       .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND project.organizationId = :organizationId', {
         userId,

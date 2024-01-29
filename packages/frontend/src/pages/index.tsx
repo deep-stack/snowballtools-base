@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { Project } from 'gql-client';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../components/projects/ProjectCard';
 import { useGQLClient } from '../context/GQLClientContext';
+import { ProjectDetails } from '../types/project';
 
 // TODO: Implement organization switcher
 const USER_ORGANIZATION_ID = '1';
@@ -14,9 +14,9 @@ const USER_ORGANIZATION_ID = '1';
 const Projects = () => {
   const client = useGQLClient();
   const { id } = useParams();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
-  const fetchProject = useCallback(async () => {
+  const fetchProjects = useCallback(async () => {
     const { projectsInOrganization } =
       await client.getProjectsInOrganization(USER_ORGANIZATION_ID);
 
@@ -36,7 +36,7 @@ const Projects = () => {
   }, [id]);
 
   useEffect(() => {
-    fetchProject();
+    fetchProjects();
   }, [id]);
 
   return (
@@ -62,7 +62,7 @@ const Projects = () => {
       </div>
       <div className="grid grid-cols-3 gap-5 p-5">
         {projects.length !== 0 &&
-          projects.map((project: any, key: number) => {
+          projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;
           })}
       </div>
