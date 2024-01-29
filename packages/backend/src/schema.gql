@@ -115,6 +115,7 @@ type Query {
   user: User!
   organizations: [Organization!]
   projects: [Project!]
+  projectsInOrganization(organizationId: String!): [Project!]
   project(projectId: String!): Project
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]

@@ -55,6 +55,11 @@ export const createResolvers = async (db: Database): Promise<any> => {
         return dbProject ? projectToGqlType(dbProject, [], []) : null;
       },
 
+      projectsInOrganization: async (_: any, { organizationId }: {organizationId: string }, context: any) => {
+        const dbProject = await db.getProjectsInOrganization(context.userId, organizationId);
+        return dbProject;
+      },
+
       deployments: async (_: any, { projectId }: { projectId: string }) => {
         const dbDeployments = await db.getDeploymentsByProjectId(projectId);
 

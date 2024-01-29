@@ -34,6 +34,26 @@ query ($projectId: String!) {
 }
 `;
 
+export const getProjectsInOrganization = gql`
+query ($organizationId: String!) {
+  projectsInOrganization(organizationId: $organizationId) {
+    id
+    name
+    createdAt
+    description
+    framework
+    prodBranch
+    webhooks
+    repository
+    updatedAt
+    organization {
+      id
+      name
+    }
+  }
+}
+`;
+
 export const getOrganizations = gql`
 query {
   organizations {

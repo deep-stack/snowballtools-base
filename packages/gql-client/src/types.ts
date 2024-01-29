@@ -156,6 +156,10 @@ export type GetProjectResponse = {
   project: Project | null
 }
 
+export type GetProjectsInOrganizationResponse = {
+  projectsInOrganization: Project[]
+}
+
 export type SearchProjectsResponse = {
   searchProjects: Project[]
 }

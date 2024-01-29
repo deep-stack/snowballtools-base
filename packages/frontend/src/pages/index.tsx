@@ -1,14 +1,43 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { Project } from 'gql-client';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../components/projects/ProjectCard';
-import { ProjectSearchOutletContext } from '../types/project';
+import { useGQLClient } from '../context/GQLClientContext';
+
+// TODO: Implement organization switcher
+const USER_ORGANIZATION_ID = '1';
 
 const Projects = () => {
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
+  const client = useGQLClient();
+  const { id } = useParams();
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  const fetchProject = useCallback(async () => {
+    const { projectsInOrganization } =
+      await client.getProjectsInOrganization(USER_ORGANIZATION_ID);
+
+    const updatedProjects = projectsInOrganization.map((project) => {
+      return {
+        ...project,
+        // TODO: Populate from github API
+        latestCommit: {
+          message: 'subscription added',
+          createdAt: '2023-12-11T04:20:00',
+          branch: 'main',
+        },
+      };
+    });
+
+    setProjects(updatedProjects);
+  }, [id]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [id]);
 
   return (
     <div>

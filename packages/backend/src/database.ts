@@ -94,6 +94,22 @@ export class Database {
     return project;
   }
 
+  async getProjectsInOrganization (userId: string, organizationId: string): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.organization', 'organization')
+      .leftJoin('project.projectMembers', 'projectMembers')
+      .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND project.organizationId = :organizationId', {
+        userId,
+        organizationId
+      })
+      .getMany();
+
+    return projects;
+  }
+
   async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
