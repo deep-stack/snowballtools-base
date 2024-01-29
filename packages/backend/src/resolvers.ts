@@ -180,7 +180,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { isRedirected: boolean, name: string }[] }) => {
+      addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
         try {
           return db.addDomainByProjectId(projectId, domainDetails);
         } catch (err) {

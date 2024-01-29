@@ -319,11 +319,9 @@ export class Database {
     }
   }
 
-  async addDomainByProjectId (projectId: string, domainDetails: any[]): Promise<boolean> {
+  async addDomainByProjectId (projectId: string, domainDetails: { name: string }): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const projectRepository = this.dataSource.getRepository(Project);
-
-    const newDomain = domainRepository.create(domainDetails as DeepPartial<Domain>);
 
     const currentProject = await projectRepository.findOneBy({
       id: projectId
@@ -333,12 +331,36 @@ export class Database {
       throw new Error('Project not found');
     }
 
-    newDomain.branch = currentProject.prodBranch;
-    newDomain.project = currentProject;
+    const primaryDomainDetails = {
+      ...domainDetails,
+      isRedirected: true,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
 
-    const savedDomain = await domainRepository.save(newDomain);
+    const domainArr = domainDetails.name.split('www.');
 
-    if (savedDomain) {
+    const redirectedDomainDetails = {
+      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
+      isRedirected: false,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
+
+    const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
+    const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
+
+    const savedPrimaryDomain = await domainRepository.save(primaryDomain);
+    if (!savedPrimaryDomain) {
+      throw new Error('Could not save primary domain');
+    }
+
+    const savedRedirectedDomain = await domainRepository.save(redirectedDomain);
+    if (!savedRedirectedDomain) {
+      throw new Error('Could not save redirected domain');
+    }
+
+    if (savedPrimaryDomain && savedRedirectedDomain) {
       return true;
     } else {
       return false;

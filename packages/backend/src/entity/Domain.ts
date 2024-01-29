@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Project } from './Project';
 
-enum Status {
+export enum Status {
   Live = 'Live',
   Pending = 'Pending',
 }
@@ -33,7 +33,8 @@ export class Domain {
     isRedirected!: boolean;
 
   @Column({
-    enum: Status
+    enum: Status,
+    default: Status.Pending
   })
     status!: Status;
 
