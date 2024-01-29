@@ -98,6 +98,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         return projects;
+      },
+
+      domains: async (_:any, { projectId }: { projectId: string }) => {
+        try {
+          return db.getDomainsByProjectId(projectId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     },
 

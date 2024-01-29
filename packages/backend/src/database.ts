@@ -351,4 +351,18 @@ export class Database {
 
     return [savedPrimaryDomain, savedRedirectedDomain];
   }
+
+  async getDomainsByProjectId (projectId: string): Promise<Domain[]> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+
+    const domains = await domainRepository.find({
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return domains;
+  }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { DomainStatus, getDomainsResponse } from 'gql-client';
 
 import {
   Chip,
@@ -14,7 +15,6 @@ import {
 import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
-import { Domain, DomainStatus } from 'gql-client';
 
 enum RefreshStatus {
   IDLE,
@@ -24,7 +24,7 @@ enum RefreshStatus {
 }
 
 interface DomainCardProps {
-  domain: Domain;
+  domain: getDomainsResponse;
   repo: RepositoryDetails;
   project: ProjectDetails;
 }

@@ -122,6 +122,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
+  domains(projectId: String!): [Domain!]
 }
 
 type Mutation {

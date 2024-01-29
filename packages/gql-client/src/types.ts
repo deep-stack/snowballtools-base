@@ -207,3 +207,11 @@ export type AddDomainInput = {
 export type AddDomainResponse = {
   addDomain: true
 }
+
+export type getDomainsResponse = {
+  branch: string
+  id: string
+  isRedirected: boolean
+  name: string
+  status: DomainStatus
+}
