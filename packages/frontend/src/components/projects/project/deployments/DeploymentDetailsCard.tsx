@@ -70,7 +70,7 @@ const DeploymentDetailsCard = ({
     );
     if (isRollbacked) {
       await onUpdate();
-      toast.success('Deployment rollbacked');
+      toast.success('Deployment rolled back');
     } else {
       toast.error('Unable to rollback deployment');
     }
