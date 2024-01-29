@@ -215,3 +215,17 @@ query ($searchText: String!) {
   }
 }
 `;
+
+export const getDomains = gql`
+query ($projectId: String!) {
+  domains(projectId: $projectId) {
+    branch
+    createdAt
+    isRedirected
+    id
+    name
+    status
+    updatedAt
+  }
+}
+`;

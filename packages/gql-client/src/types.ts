@@ -161,6 +161,10 @@ export type GetProjectsInOrganizationResponse = {
   projectsInOrganization: Project[]
 }
 
+export type GetDomainsResponse = {
+  domains: Domain[]
+}
+
 export type SearchProjectsResponse = {
   searchProjects: Project[]
 }
@@ -198,4 +202,12 @@ export type RedeployToProdResponse = {
 
 export type RollbackDeploymentResponse = {
   rollbackDeployment: boolean
+}
+
+export type AddDomainInput = {
+  name: string
+}
+
+export type AddDomainResponse = {
+  addDomain: true
 }

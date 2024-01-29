@@ -98,6 +98,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
         });
 
         return projects;
+      },
+
+      domains: async (_:any, { projectId }: { projectId: string }) => {
+        try {
+          return db.getDomainsByProjectId(projectId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     },
 
@@ -133,7 +142,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      updateDeploymentToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
+      updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
         try {
           return db.updateDeploymentById(deploymentId, {
             environment: Environment.Production
@@ -153,9 +162,10 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      redeployToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
+      redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
         try {
-          return db.redeployToProdById(deploymentId);
+          await db.redeployToProdById(deploymentId);
+          return true;
         } catch (err) {
           log(err);
           return false;
@@ -174,6 +184,16 @@ export const createResolvers = async (db: Database): Promise<any> => {
       rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
         try {
           return db.rollbackDeploymentById(projectId, deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
+        try {
+          await db.addDomainByProjectId(projectId, domainDetails);
+          return true;
         } catch (err) {
           log(err);
           return false;

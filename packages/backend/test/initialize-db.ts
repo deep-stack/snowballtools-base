@@ -56,7 +56,6 @@ const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityT
 const generateTestData = async (dataSource: DataSource) => {
   const savedUsers = await loadAndSaveData(User, dataSource, path.resolve(__dirname, USER_DATA_PATH));
   const savedOrgs = await loadAndSaveData(Organization, dataSource, path.resolve(__dirname, ORGANIZATION_DATA_PATH));
-  const savedDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, DOMAIN_DATA_PATH));
 
   const projectRelations = {
     owner: savedUsers,
@@ -64,6 +63,12 @@ const generateTestData = async (dataSource: DataSource) => {
   };
 
   const savedProjects = await loadAndSaveData(Project, dataSource, path.resolve(__dirname, PROJECT_DATA_PATH), projectRelations);
+
+  const domainRelations = {
+    project: savedProjects
+  };
+
+  const savedDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, DOMAIN_DATA_PATH), domainRelations);
 
   const userOrganizationRelations = {
     member: savedUsers,
