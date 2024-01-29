@@ -70,7 +70,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
             <Chip
               className="normal-case ml-3 font-normal"
               size="sm"
-              value={projectMembers.length}
+              value={projectMembers.length + 1}
             />
           </div>
         </div>
@@ -84,7 +84,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
         </div>
       </div>
       <MemberCard
-        member={{ ...project.owner }}
+        member={project.owner}
         isFirstCard={true}
         isOwner={true}
         isPending={false}

@@ -308,11 +308,11 @@ export class Database {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     // TODO: Implement transactions
-    const oldLiveDeployment = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false });
-    const newLiveDeployment = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true });
+    const oldCurrentDeploymentUpdate = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false });
+    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true });
 
-    if (oldLiveDeployment.affected && newLiveDeployment.affected) {
-      return oldLiveDeployment.affected > 0 && newLiveDeployment.affected > 0;
+    if (oldCurrentDeploymentUpdate.affected && newCurrentDeploymentUpdate.affected) {
+      return oldCurrentDeploymentUpdate.affected > 0 && newCurrentDeploymentUpdate.affected > 0;
     } else {
       return false;
     }
