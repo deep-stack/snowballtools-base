@@ -285,9 +285,8 @@ export class Database {
     }
 
     await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
-    const savedUpdatedDeployment = await deploymentRepository.save(updatedDeployment);
 
-    return savedUpdatedDeployment;
+    return deploymentRepository.save(updatedDeployment);
   }
 
   async deleteProjectById (projectId: string): Promise<boolean> {
@@ -324,26 +323,27 @@ export class Database {
     });
 
     if (currentProject === null) {
-      throw new Error('Project not found');
+      throw new Error(`Project with ${projectId} not found`);
     }
 
     const primaryDomainDetails = {
       ...domainDetails,
-      isRedirected: true,
-      branch: currentProject.prodBranch,
-      project: currentProject
-    };
-
-    const domainArr = domainDetails.name.split('www.');
-
-    const redirectedDomainDetails = {
-      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
       isRedirected: false,
       branch: currentProject.prodBranch,
       project: currentProject
     };
 
     const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
+
+    const domainArr = domainDetails.name.split('www.');
+
+    const redirectedDomainDetails = {
+      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
+      isRedirected: true,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
+
     const savedPrimaryDomain = await domainRepository.save(primaryDomain);
 
     const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);

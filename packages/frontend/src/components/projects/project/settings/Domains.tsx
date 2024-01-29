@@ -6,13 +6,13 @@ import { Button, Typography } from '@material-tailwind/react';
 import DomainCard from './DomainCard';
 import { ProjectSearchOutletContext } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
-import { getDomainsResponse } from 'gql-client';
+import { Domain } from 'gql-client';
 
 const Domains = () => {
   const { id } = useParams();
   const client = useGQLClient();
 
-  const [domains, setDomains] = useState<getDomainsResponse[]>([]);
+  const [domains, setDomains] = useState<Domain[]>([]);
 
   const { projects } = useOutletContext<ProjectSearchOutletContext>();
 
@@ -34,7 +34,7 @@ const Domains = () => {
     }
 
     const fetchedDomains = await client.getDomains(currentProject.id);
-    setDomains(fetchedDomains);
+    setDomains(fetchedDomains.domains);
   };
 
   useEffect(() => {

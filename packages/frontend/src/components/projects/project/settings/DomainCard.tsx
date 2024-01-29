@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { DomainStatus, getDomainsResponse } from 'gql-client';
+import { Domain, DomainStatus } from 'gql-client';
 
 import {
   Chip,
@@ -24,7 +24,7 @@ enum RefreshStatus {
 }
 
 interface DomainCardProps {
-  domain: getDomainsResponse;
+  domain: Domain;
   repo: RepositoryDetails;
   project: ProjectDetails;
 }

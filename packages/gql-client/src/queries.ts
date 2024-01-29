@@ -220,10 +220,12 @@ export const getDomains = gql`
 query ($projectId: String!) {
   domains(projectId: $projectId) {
     branch
-    id
+    createdAt
     isRedirected
+    id
     name
     status
+    updatedAt
   }
 }
 `;

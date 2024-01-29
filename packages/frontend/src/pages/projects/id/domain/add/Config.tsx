@@ -1,9 +1,9 @@
 import React from 'react';
 
 import toast from 'react-hot-toast';
-
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Typography, Alert, Button } from '@material-tailwind/react';
+
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 
 const Config = () => {
