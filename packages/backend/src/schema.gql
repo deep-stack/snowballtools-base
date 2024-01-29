@@ -134,6 +134,7 @@ type Mutation {
   deleteProject(projectId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
   addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
+  updateDomain(domainId: String!, updateDomain: UpdateDomainInput!): Boolean!
 }
 
 input AddEnvironmentVariableInput {
@@ -149,4 +150,10 @@ input UpdateProjectInput {
 
 input AddDomainInput {
   name: String!
+}
+
+input UpdateDomainInput {
+  name: String
+  isRedirected: Boolean
+  branch: String
 }

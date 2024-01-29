@@ -198,6 +198,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
           log(err);
           return false;
         }
+      },
+
+      updateDomain: async (_: any, { domainId, updateDomain }: { domainId: string, updateDomain: {name?: string, isRedirected?: boolean, branch?: string }}) => {
+        try {
+          log(updateDomain);
+          await db.updateDomainById(domainId, updateDomain);
+          return true;
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     }
   };
