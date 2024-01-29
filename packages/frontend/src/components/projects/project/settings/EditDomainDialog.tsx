@@ -15,24 +15,24 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
+import { RepositoryDetails } from '../../../../types/project';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
 interface EditDomainDialogProp {
+  domains: Domain[];
   open: boolean;
   handleOpen: () => void;
   domain: Domain;
   repo: RepositoryDetails;
-  project: ProjectDetails;
 }
 
 const EditDomainDialog = ({
+  domains,
   open,
   handleOpen,
   domain,
   repo,
-  project,
 }: EditDomainDialogProp) => {
   const getRedirectUrl = (domain: Domain) => {
     const domainArr = domain.name.split('www.');
@@ -44,12 +44,6 @@ const EditDomainDialog = ({
     }
     return redirectUrl;
   };
-
-  const domains = project.deployments
-    .filter((deployment: any) => {
-      return deployment.domain != null;
-    })
-    .map((deployment: any) => deployment.domain);
 
   const redirectOptions = useMemo(() => {
     const redirectUrl = getRedirectUrl(domain);
@@ -63,7 +57,7 @@ const EditDomainDialog = ({
       (domain) => domain.name === redirectUrl,
     );
 
-    return domainRedirected?.isRedirectedto;
+    return domainRedirected?.isRedirected;
   }, [domain]);
 
   const {

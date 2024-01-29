@@ -55,6 +55,7 @@ const Domains = () => {
       {domains.map((domain) => {
         return (
           <DomainCard
+            domains={domains}
             domain={domain}
             key={domain.id}
             repo={linkedRepo!}

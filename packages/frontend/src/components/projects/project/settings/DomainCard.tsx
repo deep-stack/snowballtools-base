@@ -24,6 +24,7 @@ enum RefreshStatus {
 }
 
 interface DomainCardProps {
+  domains: Domain[];
   domain: Domain;
   repo: RepositoryDetails;
   project: ProjectDetails;
@@ -38,7 +39,7 @@ const DOMAIN_RECORD = {
   value: '56.49.19.21',
 };
 
-const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
+const DomainCard = ({ domains, domain, repo, project }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -163,10 +164,10 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
         handleOpen={() => {
           setEditDialogOpen((preVal) => !preVal);
         }}
+        domains={domains}
         open={editDialogOpen}
         domain={domain}
         repo={repo}
-        project={project}
       />
     </>
   );
