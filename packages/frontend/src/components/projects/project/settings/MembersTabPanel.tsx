@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { Project } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
@@ -15,7 +16,7 @@ import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const FIRST_MEMBER_CARD = 0;
 
-const MembersTabPanel = () => {
+const MembersTabPanel = ({ project }: { project: Project }) => {
   const { id } = useParams();
   const client = useGQLClient();
 
@@ -69,7 +70,7 @@ const MembersTabPanel = () => {
             <Chip
               className="normal-case ml-3 font-normal"
               size="sm"
-              value={projectMembers.length}
+              value={projectMembers.length + 1}
             />
           </div>
         </div>
@@ -82,6 +83,15 @@ const MembersTabPanel = () => {
           </Button>
         </div>
       </div>
+      <MemberCard
+        member={project.owner}
+        isFirstCard={true}
+        isOwner={true}
+        isPending={false}
+        permissions={[]}
+        handleDeletePendingMember={() => {}}
+        removeMemberHandler={async () => {}}
+      />
       {projectMembers.map((projectMember, index) => {
         return (
           <MemberCard

@@ -195,3 +195,7 @@ export type UpdateProjectInput = {
 export type RedeployToProdResponse = {
   redeployToProd: boolean
 }
+
+export type RollbackDeploymentResponse = {
+  rollbackDeployment: boolean
+}

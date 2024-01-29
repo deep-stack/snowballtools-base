@@ -30,6 +30,16 @@
     "commitHash": "testXyz"
   },
   {
+    "projectIndex": 0,
+    "domainIndex": null,
+    "title": "nextjs-boilerplate-4",
+    "status": "Ready",
+    "environment": "Production",
+    "isCurrent": false,
+    "branch": "prod",
+    "commitHash": "testXyz"
+  },
+  {
     "projectIndex": 1,
     "domainIndex":3,
     "title": "nextjs-boilerplate-1",

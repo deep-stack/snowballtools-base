@@ -169,6 +169,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
           log(err);
           return false;
         }
+      },
+
+      rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
+        try {
+          return db.rollbackDeploymentById(projectId, deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     }
   };
