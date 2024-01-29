@@ -3,8 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
+import { Project } from './Project';
 
 enum Status {
   Live = 'Live',
@@ -15,6 +18,10 @@ enum Status {
 export class Domain {
   @PrimaryGeneratedColumn()
     id!: number;
+
+  @ManyToOne(() => Project, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'projectId' })
+    project!: Project;
 
   @Column('varchar', { length: 255, default: 'main' })
     branch!: string;

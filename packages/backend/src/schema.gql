@@ -132,6 +132,7 @@ type Mutation {
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
+  addDomain(projectId: String!, domainDetails: [AddDomainInput!]): Boolean!
 }
 
 input AddEnvironmentVariableInput {
@@ -143,4 +144,10 @@ input AddEnvironmentVariableInput {
 input UpdateProjectInput {
   name: String
   description: String
+}
+
+input AddDomainInput {
+  isRedirected: Boolean!
+  name: String!
+  status: DomainStatus
 }

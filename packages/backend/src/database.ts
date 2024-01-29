@@ -11,6 +11,7 @@ import { Project } from './entity/Project';
 import { Deployment, Environment } from './entity/Deployment';
 import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
+import { Domain } from './entity/Domain';
 
 const log = debug('snowball:database');
 
@@ -313,6 +314,32 @@ export class Database {
 
     if (oldCurrentDeploymentUpdate.affected && newCurrentDeploymentUpdate.affected) {
       return oldCurrentDeploymentUpdate.affected > 0 && newCurrentDeploymentUpdate.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
+  async addDomainByProjectId (projectId: string, domainDetails: any[]): Promise<boolean> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const newDomain = domainRepository.create(domainDetails as DeepPartial<Domain>);
+
+    const currentProject = await projectRepository.findOneBy({
+      id: projectId
+    });
+
+    if (currentProject === null) {
+      throw new Error('Project not found');
+    }
+
+    newDomain.branch = currentProject.prodBranch;
+    newDomain.project = currentProject;
+
+    const savedDomain = await domainRepository.save(newDomain);
+
+    if (savedDomain) {
+      return true;
     } else {
       return false;
     }
