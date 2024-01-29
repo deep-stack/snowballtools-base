@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany
+  OneToMany,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { User } from './User';
 import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
+import { Deployment } from './Deployment';
 
 @Entity()
 export class Project {
@@ -49,12 +51,21 @@ export class Project {
   })
     webhooks!: string[];
 
+  @Column('varchar')
+    icon!: string;
+
   @CreateDateColumn()
     createdAt!: Date;
 
   @UpdateDateColumn()
     updatedAt!: Date;
 
+  @DeleteDateColumn()
+    deletedAt?: Date;
+
   @OneToMany(() => ProjectMember, projectMember => projectMember.project)
     projectMembers!: ProjectMember[];
+
+  @OneToMany(() => Deployment, (deployment) => deployment.project)
+    deployments!: Deployment[];
 }

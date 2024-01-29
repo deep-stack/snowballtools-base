@@ -31,7 +31,9 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
           <div className="grow">
             <Typography>{project.name}</Typography>
             <Typography variant="small" color="gray">
-              {organizationProject.url}
+              {project.deployments[0]?.domain.name
+                ? project.deployments[0]?.domain.name
+                : ''}
             </Typography>
           </div>
         </div>

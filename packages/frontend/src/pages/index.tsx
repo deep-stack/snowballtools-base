@@ -1,14 +1,41 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../components/projects/ProjectCard';
-import { ProjectSearchOutletContext } from '../types/project';
+import { useGQLClient } from '../context/GQLClientContext';
+import { ProjectDetails } from '../types/project';
+
+// TODO: Implement organization switcher
+const USER_ORGANIZATION_ID = '1';
 
 const Projects = () => {
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
+  const client = useGQLClient();
+  const [projects, setProjects] = useState<ProjectDetails[]>([]);
+
+  const fetchProjects = useCallback(async () => {
+    const { projectsInOrganization } =
+      await client.getProjectsInOrganization(USER_ORGANIZATION_ID);
+
+    const updatedProjects = projectsInOrganization.map((project) => {
+      return {
+        ...project,
+        // TODO: Populate from github API
+        latestCommit: {
+          message: 'subscription added',
+          createdAt: '2023-12-11T04:20:00',
+          branch: 'main',
+        },
+      };
+    });
+
+    setProjects(updatedProjects);
+  }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   return (
     <div>
@@ -33,7 +60,7 @@ const Projects = () => {
       </div>
       <div className="grid grid-cols-3 gap-5 p-5">
         {projects.length !== 0 &&
-          projects.map((project: any, key: number) => {
+          projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;
           })}
       </div>

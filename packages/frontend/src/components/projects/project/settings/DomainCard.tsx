@@ -11,14 +11,10 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import {
-  DomainDetails,
-  DomainStatus,
-  ProjectDetails,
-  RepositoryDetails,
-} from '../../../../types/project';
+import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
+import { Domain, DomainStatus } from 'gql-client';
 
 enum RefreshStatus {
   IDLE,
@@ -28,12 +24,19 @@ enum RefreshStatus {
 }
 
 interface DomainCardProps {
-  domain: DomainDetails;
+  domain: Domain;
   repo: RepositoryDetails;
   project: ProjectDetails;
 }
 
 const CHECK_FAIL_TIMEOUT = 5000; // In milliseconds
+
+// TODO: Get domain record
+const DOMAIN_RECORD = {
+  type: 'A',
+  name: '@',
+  value: '56.49.19.21',
+};
 
 const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
@@ -50,7 +53,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
           <Chip
             className="w-fit capitalize"
             value={domain.status}
-            color={domain.status === DomainStatus.LIVE ? 'green' : 'orange'}
+            color={domain.status === DomainStatus.Live ? 'green' : 'orange'}
             variant="ghost"
             icon={<i>^</i>}
           />
@@ -106,7 +109,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
           <Typography variant="small">
             Once deleted, the project{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {project.title}
+              {project.name}
             </span>{' '}
             will not be accessible from the domain{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
@@ -117,7 +120,7 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
       </div>
 
       <Typography variant="small">Production</Typography>
-      {domain.status === DomainStatus.PENDING && (
+      {domain.status === DomainStatus.Pending && (
         <Card className="bg-gray-200 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
             <Typography variant="small">
@@ -147,9 +150,9 @@ const DomainCard = ({ domain, repo, project }: DomainCardProps) => {
             </thead>
             <tbody>
               <tr>
-                <td>{domain.record.type}</td>
-                <td>{domain.record.name}</td>
-                <td>{domain.record.value}</td>
+                <td>{DOMAIN_RECORD.type}</td>
+                <td>{DOMAIN_RECORD.name}</td>
+                <td>{DOMAIN_RECORD.value}</td>
               </tr>
             </tbody>
           </table>

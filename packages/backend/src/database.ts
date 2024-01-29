@@ -78,20 +78,37 @@ export class Database {
     return projects;
   }
 
-  async getProjectByProjectId (projectId: string): Promise<Project | null> {
+  async getProjectById (projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 
-    const project = await projectRepository.findOne({
-      relations: {
-        organization: true,
-        owner: true
-      },
-      where: {
-        id: projectId
-      }
-    });
+    const project = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect('deployments.domain', 'domain')
+      .leftJoinAndSelect('project.owner', 'owner')
+      .where('project.id = :projectId', {
+        projectId
+      })
+      .getOne();
 
     return project;
+  }
+
+  async getProjectsInOrganization (userId: string, organizationId: string): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect('deployments.domain', 'domain')
+      .leftJoin('project.projectMembers', 'projectMembers')
+      .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND project.organizationId = :organizationId', {
+        userId,
+        organizationId
+      })
+      .getMany();
+
+    return projects;
   }
 
   async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
@@ -271,6 +288,17 @@ export class Database {
 
     if (savedUpdatedDeployment) {
       return true;
+    } else {
+      return false;
+    }
+  }
+
+  async deleteProjectById (projectId: string): Promise<boolean> {
+    const projectRepository = this.dataSource.getRepository(Project);
+    const deleteResult = await projectRepository.softDelete({ id: projectId });
+
+    if (deleteResult.affected) {
+      return deleteResult.affected > 0;
     } else {
       return false;
     }

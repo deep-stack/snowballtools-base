@@ -1,57 +1,62 @@
 [
   {
-    "ownerIndex":0,
-    "organizationIndex":0,
+    "ownerIndex": 0,
+    "organizationIndex": 0,
     "name": "testProject",
     "repository": "test",
     "prodBranch": "main",
     "description": "test",
     "template": "test",
     "framework": "test",
-    "webhooks": []
+    "webhooks": [],
+    "icon": ""
   },
   {
-    "ownerIndex":1,
-    "organizationIndex":0,
+    "ownerIndex": 1,
+    "organizationIndex": 0,
     "name": "testProject-2",
     "repository": "test-2",
     "prodBranch": "main",
     "description": "test-2",
     "template": "test-2",
     "framework": "test-2",
-    "webhooks": []
+    "webhooks": [],
+    "icon": ""
   },
   {
-    "ownerIndex":2,
-    "organizationIndex":0,
+    "ownerIndex": 2,
+    "organizationIndex": 0,
     "name": "iglootools",
     "repository": "test-3",
     "prodBranch": "main",
     "description": "test-3",
     "template": "test-3",
     "framework": "test-3",
-    "webhooks": []
+    "webhooks": [],
+    "icon": ""
   },
   {
-    "ownerIndex":1,
-    "organizationIndex":0,
+    "ownerIndex": 1,
+    "organizationIndex": 0,
     "name": "iglootools-2",
     "repository": "test-4",
     "prodBranch": "main",
     "description": "test-4",
     "template": "test-4",
     "framework": "test-4",
-    "webhooks": []
+    "webhooks": [],
+    "icon": ""
   },
   {
-    "ownerIndex":0,
-    "organizationIndex":1,
+    "ownerIndex": 0,
+    "organizationIndex": 1,
     "name": "snowball-2",
     "repository": "test-5",
     "prodBranch": "main",
     "description": "test-5",
     "template": "test-5",
     "framework": "test-5",
-    "webhooks": []
+    "webhooks": [],
+    "icon": ""
   }
 ]

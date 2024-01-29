@@ -25,10 +25,68 @@ query ($projectId: String!) {
     framework
     repository
     webhooks
+    icon
     owner {
       id
       name
       email
+    }
+    deployments {
+      id
+      branch
+      isCurrent
+      status
+      title
+      updatedAt
+      commitHash
+      createdAt
+      environment
+      domain {
+        status
+        branch
+        createdAt
+        updatedAt
+        id
+        name
+        isRedirected
+      }
+    }
+  }
+}
+`;
+
+export const getProjectsInOrganization = gql`
+query ($organizationId: String!) {
+  projectsInOrganization(organizationId: $organizationId) {
+    id
+    name
+    createdAt
+    description
+    framework
+    prodBranch
+    webhooks
+    repository
+    updatedAt
+    icon
+    deployments {
+      id
+      branch
+      isCurrent
+      status
+      title
+      updatedAt
+      commitHash
+      createdAt
+      environment
+      domain {
+        status
+        branch
+        createdAt
+        updatedAt
+        id
+        name
+        isRedirected
+      }
     }
   }
 }

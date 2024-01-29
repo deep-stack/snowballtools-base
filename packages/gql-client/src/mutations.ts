@@ -28,3 +28,9 @@ mutation ($deploymentId: String!) {
   redeployToProd(deploymentId: $deploymentId)
 }
 `;
+
+export const deleteProject = gql`
+mutation ($projectId: String!) {
+  deleteProject(projectId: $projectId)
+}
+`;

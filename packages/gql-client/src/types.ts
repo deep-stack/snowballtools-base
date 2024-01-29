@@ -126,6 +126,7 @@ export type Project = {
   createdAt: string
   updatedAt: string
   organization: Organization
+  icon: string
 }
 
 export type GetProjectMembersResponse = {
@@ -156,6 +157,10 @@ export type GetProjectResponse = {
   project: Project | null
 }
 
+export type GetProjectsInOrganizationResponse = {
+  projectsInOrganization: Project[]
+}
+
 export type SearchProjectsResponse = {
   searchProjects: Project[]
 }
@@ -176,6 +181,10 @@ export type UpdateDeploymentToProdResponse = {
 
 export type UpdateProjectResponse = {
   updateProject: boolean;
+}
+
+export type DeleteProjectResponse = {
+  deleteProject: boolean;
 }
 
 export type UpdateProjectInput = {
