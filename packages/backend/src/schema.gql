@@ -122,6 +122,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
+  domains(projectId: String!): [Domain!]
 }
 
 type Mutation {
@@ -132,6 +133,7 @@ type Mutation {
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
+  addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
 }
 
 input AddEnvironmentVariableInput {
@@ -143,4 +145,8 @@ input AddEnvironmentVariableInput {
 input UpdateProjectInput {
   name: String
   description: String
+}
+
+input AddDomainInput {
+  name: String!
 }

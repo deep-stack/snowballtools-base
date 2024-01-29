@@ -3,10 +3,14 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
 
-enum Status {
+import { Project } from './Project';
+
+export enum Status {
   Live = 'Live',
   Pending = 'Pending',
 }
@@ -15,6 +19,10 @@ enum Status {
 export class Domain {
   @PrimaryGeneratedColumn()
     id!: number;
+
+  @ManyToOne(() => Project, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'projectId' })
+    project!: Project;
 
   @Column('varchar', { length: 255, default: 'main' })
     branch!: string;
@@ -26,7 +34,8 @@ export class Domain {
     isRedirected!: boolean;
 
   @Column({
-    enum: Status
+    enum: Status,
+    default: Status.Pending
   })
     status!: Status;
 

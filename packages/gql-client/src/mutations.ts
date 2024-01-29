@@ -40,3 +40,9 @@ mutation ($projectId: String! ,$deploymentId: String!) {
   rollbackDeployment(proejctId: $projectId, deploymentId: $deploymentId)
 }
 `;
+
+export const addDomain = gql`
+mutation ($projectId: String!, $domainDetails: AddDomainInput!) {
+  addDomain(projectId: $projectId, domainDetails: $domainDetails)
+}
+`;

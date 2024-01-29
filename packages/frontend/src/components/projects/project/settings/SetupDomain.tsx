@@ -47,7 +47,9 @@ const SetupDomain = () => {
   return (
     <form
       onSubmit={handleSubmit(() => {
-        navigate('config');
+        watch('isWWW') === 'true'
+          ? navigate(`config?name=www.${domainStr}`)
+          : navigate(`config?name=${domainStr}`);
       })}
       className="flex flex-col gap-6 w-full"
     >

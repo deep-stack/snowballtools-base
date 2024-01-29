@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getProjectsInOrganization } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, rollbackDeployment } from './mutations';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getDomains, getProjectsInOrganization } from './queries';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse } from './types';
+import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -187,6 +187,29 @@ export class GQLClient {
       variables: {
         projectId,
         deploymentId
+      }
+    });
+
+    return data;
+  }
+
+  async addDomain (projectId: string, domainDetails: AddDomainInput): Promise<AddDomainResponse> {
+    const { data } = await this.client.mutate({
+      mutation: addDomain,
+      variables: {
+        projectId,
+        domainDetails
+      }
+    });
+
+    return data;
+  }
+
+  async getDomains (projectId: string): Promise<GetDomainsResponse> {
+    const { data } = await this.client.query({
+      query: getDomains,
+      variables: {
+        projectId
       }
     });
 

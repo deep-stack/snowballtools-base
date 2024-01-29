@@ -11,6 +11,7 @@ import { Project } from './entity/Project';
 import { Deployment, Environment } from './entity/Deployment';
 import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
+import { Domain } from './entity/Domain';
 
 const log = debug('snowball:database');
 
@@ -261,7 +262,7 @@ export class Database {
     }
   }
 
-  async redeployToProdById (deploymentId: string): Promise<boolean> {
+  async redeployToProdById (deploymentId: string): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOne({
       relations: {
@@ -284,13 +285,8 @@ export class Database {
     }
 
     await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
-    const savedUpdatedDeployment = await deploymentRepository.save(updatedDeployment);
 
-    if (savedUpdatedDeployment) {
-      return true;
-    } else {
-      return false;
-    }
+    return deploymentRepository.save(updatedDeployment);
   }
 
   async deleteProjectById (projectId: string): Promise<boolean> {
@@ -316,5 +312,57 @@ export class Database {
     } else {
       return false;
     }
+  }
+
+  async addDomainByProjectId (projectId: string, domainDetails: { name: string }): Promise<Domain[]> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const currentProject = await projectRepository.findOneBy({
+      id: projectId
+    });
+
+    if (currentProject === null) {
+      throw new Error(`Project with ${projectId} not found`);
+    }
+
+    const primaryDomainDetails = {
+      ...domainDetails,
+      isRedirected: false,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
+
+    const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
+
+    const domainArr = domainDetails.name.split('www.');
+
+    const redirectedDomainDetails = {
+      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
+      isRedirected: true,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
+
+    const savedPrimaryDomain = await domainRepository.save(primaryDomain);
+
+    const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
+    const savedRedirectedDomain = await domainRepository.save(redirectedDomain);
+
+    return [savedPrimaryDomain, savedRedirectedDomain];
+  }
+
+  async getDomainsByProjectId (projectId: string): Promise<Domain[]> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+
+    const domains = await domainRepository.find({
+      where: {
+        project: {
+          id: projectId
+        }
+      }
+    });
+
+    return domains;
   }
 }
