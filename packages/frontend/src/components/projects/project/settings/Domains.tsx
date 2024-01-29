@@ -4,10 +4,7 @@ import { useParams, Link, useOutletContext } from 'react-router-dom';
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
-import {
-  DomainDetails,
-  ProjectSearchOutletContext,
-} from '../../../../types/project';
+import { ProjectSearchOutletContext } from '../../../../types/project';
 
 const Domains = () => {
   const { id } = useParams();
@@ -21,7 +18,7 @@ const Domains = () => {
   }, [id, projects]);
 
   const linkedRepo = useMemo(() => {
-    return currentProject?.repositories.find(
+    return currentProject?.repositories?.find(
       (repo: any) => repo.id === Number(currentProject?.repositoryId),
     );
   }, [currentProject]);
@@ -43,7 +40,7 @@ const Domains = () => {
         </Link>
       </div>
 
-      {(domains as DomainDetails[]).map((domain) => {
+      {domains?.map((domain) => {
         return (
           <DomainCard
             domain={domain}

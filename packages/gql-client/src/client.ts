@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd } from './mutations';
+import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getProjectsInOrganization } from './queries';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse } from './types';
+import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -44,6 +44,17 @@ export class GQLClient {
       query: getProject,
       variables: {
         projectId
+      }
+    });
+
+    return data;
+  }
+
+  async getProjectsInOrganization (organizationId: string) : Promise<GetProjectsInOrganizationResponse> {
+    const { data } = await this.client.query({
+      query: getProjectsInOrganization,
+      variables: {
+        organizationId
       }
     });
 
@@ -153,6 +164,17 @@ export class GQLClient {
       mutation: redeployToProd,
       variables: {
         deploymentId
+      }
+    });
+
+    return data;
+  }
+
+  async deleteProject (projectId: string): Promise<DeleteProjectResponse> {
+    const { data } = await this.client.mutate({
+      mutation: deleteProject,
+      variables: {
+        projectId
       }
     });
 

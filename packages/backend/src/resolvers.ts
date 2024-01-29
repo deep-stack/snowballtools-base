@@ -50,9 +50,14 @@ export const createResolvers = async (db: Database): Promise<any> => {
       },
 
       project: async (_: any, { projectId }: { projectId: string }) => {
-        const dbProject = await db.getProjectByProjectId(projectId);
+        const dbProject = await db.getProjectById(projectId);
 
-        return dbProject ? projectToGqlType(dbProject, [], []) : null;
+        return dbProject || null;
+      },
+
+      projectsInOrganization: async (_: any, { organizationId }: {organizationId: string }, context: any) => {
+        const dbProject = await db.getProjectsInOrganization(context.userId, organizationId);
+        return dbProject;
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
@@ -151,6 +156,15 @@ export const createResolvers = async (db: Database): Promise<any> => {
       redeployToProd: async (_: any, { deploymentId }: {deploymentId: string }) => {
         try {
           return db.redeployToProdById(deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      deleteProject: async (_: any, { projectId }: { projectId: string }) => {
+        try {
+          return db.deleteProjectById(projectId);
         } catch (err) {
           log(err);
           return false;

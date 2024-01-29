@@ -69,6 +69,7 @@ type Project {
   createdAt: String!
   updatedAt: String!
   organization: Organization!
+  icon: String
 }
 
 type ProjectMember {
@@ -115,6 +116,7 @@ type Query {
   user: User!
   organizations: [Organization!]
   projects: [Project!]
+  projectsInOrganization(organizationId: String!): [Project!]
   project(projectId: String!): Project
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]
@@ -128,6 +130,7 @@ type Mutation {
   updateDeploymentToProd(deploymentId: String!): Boolean!
   updateProject(projectId: String!, updateProject: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
+  deleteProject(projectId: String!): Boolean!
 }
 
 input AddEnvironmentVariableInput {
