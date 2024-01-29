@@ -262,7 +262,7 @@ export class Database {
     }
   }
 
-  async redeployToProdById (deploymentId: string): Promise<boolean> {
+  async redeployToProdById (deploymentId: string): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOne({
       relations: {
@@ -287,11 +287,7 @@ export class Database {
     await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
     const savedUpdatedDeployment = await deploymentRepository.save(updatedDeployment);
 
-    if (savedUpdatedDeployment) {
-      return true;
-    } else {
-      return false;
-    }
+    return savedUpdatedDeployment;
   }
 
   async deleteProjectById (projectId: string): Promise<boolean> {
@@ -319,7 +315,7 @@ export class Database {
     }
   }
 
-  async addDomainByProjectId (projectId: string, domainDetails: { name: string }): Promise<boolean> {
+  async addDomainByProjectId (projectId: string, domainDetails: { name: string }): Promise<Domain[]> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const projectRepository = this.dataSource.getRepository(Project);
 
@@ -348,22 +344,11 @@ export class Database {
     };
 
     const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
-    const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
-
     const savedPrimaryDomain = await domainRepository.save(primaryDomain);
-    if (!savedPrimaryDomain) {
-      throw new Error('Could not save primary domain');
-    }
 
+    const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
     const savedRedirectedDomain = await domainRepository.save(redirectedDomain);
-    if (!savedRedirectedDomain) {
-      throw new Error('Could not save redirected domain');
-    }
 
-    if (savedPrimaryDomain && savedRedirectedDomain) {
-      return true;
-    } else {
-      return false;
-    }
+    return [savedPrimaryDomain, savedRedirectedDomain];
   }
 }

@@ -199,3 +199,11 @@ export type RedeployToProdResponse = {
 export type RollbackDeploymentResponse = {
   rollbackDeployment: boolean
 }
+
+export type AddDomainInput = {
+  name: string
+}
+
+export type AddDomainResponse = {
+  addDomain: true
+}

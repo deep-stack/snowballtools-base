@@ -155,7 +155,8 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
         try {
-          return db.redeployToProdById(deploymentId);
+          await db.redeployToProdById(deploymentId);
+          return true;
         } catch (err) {
           log(err);
           return false;
@@ -182,7 +183,8 @@ export const createResolvers = async (db: Database): Promise<any> => {
 
       addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
         try {
-          return db.addDomainByProjectId(projectId, domainDetails);
+          await db.addDomainByProjectId(projectId, domainDetails);
+          return true;
         } catch (err) {
           log(err);
           return false;

@@ -1,9 +1,38 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+
+import toast from 'react-hot-toast';
+
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Typography, Alert, Button } from '@material-tailwind/react';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
 
 const Config = () => {
   const { id } = useParams();
+  const client = useGQLClient();
+  const [searchParams] = useSearchParams();
+  const primaryDomainName = searchParams.get('name');
+
+  const handleSubmitDomain = async () => {
+    if (primaryDomainName === null) {
+      toast.error('Cannot resolve domain name');
+      return;
+    }
+
+    if (id === undefined) {
+      toast.error('Cannot find project');
+      return;
+    }
+
+    const isAdded = await client.addDomain(id, {
+      name: primaryDomainName,
+    });
+
+    if (isAdded) {
+      toast.success('Domain added successfully');
+    } else {
+      toast.error('Error adding domain');
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -43,7 +72,11 @@ const Config = () => {
       </Alert>
 
       <Link to={`/projects/${id}`}>
-        <Button className="w-fit" color="blue">
+        <Button
+          className="w-fit"
+          color="blue"
+          onClick={async () => await handleSubmitDomain()}
+        >
           Finish <i>{'>'}</i>
         </Button>
       </Link>
