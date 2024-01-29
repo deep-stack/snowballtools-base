@@ -6,6 +6,7 @@ import { Button, Typography, Chip } from '@material-tailwind/react';
 import ProjectCard from '../components/projects/ProjectCard';
 import { useGQLClient } from '../context/GQLClientContext';
 import { ProjectDetails } from '../types/project';
+import { COMMIT_DETAILS } from '../constants';
 
 // TODO: Implement organization switcher
 const USER_ORGANIZATION_ID = '1';
@@ -23,9 +24,9 @@ const Projects = () => {
         ...project,
         // TODO: Populate from github API
         latestCommit: {
-          message: 'subscription added',
-          createdAt: '2023-12-11T04:20:00',
-          branch: 'main',
+          message: COMMIT_DETAILS.message,
+          createdAt: COMMIT_DETAILS.createdAt,
+          branch: COMMIT_DETAILS.branch,
         },
       };
     });

@@ -9,6 +9,7 @@ import FilterForm, {
 } from './deployments/FilterForm';
 import { DeploymentDetails } from '../../../types/project';
 import { useGQLClient } from '../../../context/GQLClientContext';
+import { COMMIT_DETAILS } from '../../../constants';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
@@ -23,25 +24,13 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
 
   const fetchDeployments = async () => {
     const { deployments } = await client.getDeployments(projectId);
-    const updatedDeployments = deployments.map((deployment: any) => {
+    const updatedDeployments = deployments.map((deployment) => {
       return {
         ...deployment,
-        isProduction: deployment.environment === 'Production',
-        author: '',
+        author: COMMIT_DETAILS.createdBy,
         commit: {
-          hash: '',
-          message: '',
+          message: COMMIT_DETAILS.message,
         },
-        domain: deployment.domain
-          ? {
-              ...deployment.domain,
-              record: {
-                type: '',
-                name: '',
-                value: '',
-              },
-            }
-          : null,
       };
     });
     setDeployments(updatedDeployments);
@@ -53,9 +42,9 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
 
   const productionDeployment = useMemo(() => {
     return deployments.find((deployment) => {
-      return deployment.isProduction === true;
-    }) as DeploymentDetails;
-  }, []);
+      return deployment.isCurrent === true;
+    });
+  }, [deployments]);
 
   const filteredDeployments = useMemo<DeploymentDetails[]>(() => {
     return deployments.filter((deployment) => {
@@ -102,8 +91,9 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
               <DeploymentDetailsCard
                 deployment={deployment}
                 key={key}
-                productionDeployment={productionDeployment}
+                productionDeployment={productionDeployment!}
                 onUpdate={onUpdateDeploymenToProd}
+                projectId={projectId}
               />
             );
           })

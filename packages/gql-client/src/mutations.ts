@@ -37,7 +37,7 @@ mutation ($projectId: String!) {
 
 export const rollbackDeployment = gql`
 mutation ($projectId: String! ,$deploymentId: String!) {
-  rollbackDeployment(proejctId: $projectId, deploymentId: $deploymentId)
+  rollbackDeployment(projectId: $projectId, deploymentId: $deploymentId)
 }
 `;
 

@@ -1,4 +1,4 @@
-import { Environment, Project } from 'gql-client';
+import { Project, Deployment } from 'gql-client';
 
 export interface ProjectDetails extends Project {
   // TODO: isDomain flag
@@ -22,22 +22,11 @@ export interface ProjectMember {
   permissions: string[];
 }
 
-export interface DeploymentDetails {
-  id: string;
-  title: string;
-  isProduction: boolean;
-  domain: DomainDetails;
-  status: Status;
-  branch: string;
-  environment: Environment;
-  isCurrent: boolean;
+export interface DeploymentDetails extends Deployment {
   commit: {
-    hash: string;
     message: string;
   };
   author: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export enum Status {
