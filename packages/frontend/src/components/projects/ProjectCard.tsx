@@ -25,8 +25,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           <Link to={`projects/${project.id}`}>
             <Typography>{project.name}</Typography>
             <Typography color="gray" variant="small">
-              {project.deployments[0]?.domain.name
-                ? project.deployments[0]?.domain.name
+              {project.deployments[0]?.domain?.name
+                ? project.deployments[0]?.domain?.name
                 : ''}
             </Typography>
           </Link>
