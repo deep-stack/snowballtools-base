@@ -51,21 +51,21 @@ export class Project {
   })
     webhooks!: string[];
 
+  @Column('varchar')
+    icon!: string;
+
   @CreateDateColumn()
     createdAt!: Date;
 
   @UpdateDateColumn()
     updatedAt!: Date;
 
-  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
-    projectMembers!: ProjectMember[];
-
   @DeleteDateColumn()
     deletedAt?: Date;
 
+  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
+    projectMembers!: ProjectMember[];
+
   @OneToMany(() => Deployment, (deployment) => deployment.project)
     deployments!: Deployment[];
-
-  @Column('varchar')
-    icon!: string;
 }

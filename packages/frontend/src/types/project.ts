@@ -1,13 +1,17 @@
 import { Environment, Project } from 'gql-client';
 
 export interface ProjectDetails extends Project {
+  // TODO: isDomain flag
   domain?: string | null;
+  // TODO: Use deployment branch
   source?: string;
   latestCommit: {
     message: string;
     createdAt: string;
     branch: string;
   };
+
+  // TODO: Move out of project
   repositories?: RepositoryDetails[];
   repositoryId?: number;
 }

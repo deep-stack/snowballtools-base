@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { Domain } from 'gql-client';
 
 import {
   Button,
@@ -14,18 +15,14 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import {
-  DomainDetails,
-  ProjectDetails,
-  RepositoryDetails,
-} from '../../../../types/project';
+import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
 interface EditDomainDialogProp {
   open: boolean;
   handleOpen: () => void;
-  domain: DomainDetails;
+  domain: Domain;
   repo: RepositoryDetails;
   project: ProjectDetails;
 }
@@ -37,7 +34,7 @@ const EditDomainDialog = ({
   repo,
   project,
 }: EditDomainDialogProp) => {
-  const getRedirectUrl = (domain: DomainDetails) => {
+  const getRedirectUrl = (domain: Domain) => {
     const domainArr = domain.name.split('www.');
     let redirectUrl = '';
     if (domain.name.startsWith('www.')) {
@@ -79,7 +76,7 @@ const EditDomainDialog = ({
     defaultValues: {
       name: domain.name,
       branch: repo.branch[0],
-      redirectedTo: !domain.isRedirectedto
+      redirectedTo: !domain.isRedirected
         ? redirectOptions[0]
         : redirectOptions[1],
     },

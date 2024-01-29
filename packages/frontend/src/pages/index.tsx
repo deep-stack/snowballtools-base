@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
@@ -13,7 +12,6 @@ const USER_ORGANIZATION_ID = '1';
 
 const Projects = () => {
   const client = useGQLClient();
-  const { id } = useParams();
   const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
   const fetchProjects = useCallback(async () => {
@@ -33,11 +31,11 @@ const Projects = () => {
     });
 
     setProjects(updatedProjects);
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, [id]);
+  }, []);
 
   return (
     <div>

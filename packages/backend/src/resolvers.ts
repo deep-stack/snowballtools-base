@@ -50,7 +50,7 @@ export const createResolvers = async (db: Database): Promise<any> => {
       },
 
       project: async (_: any, { projectId }: { projectId: string }) => {
-        const dbProject = await db.getProjectByProjectId(projectId);
+        const dbProject = await db.getProjectById(projectId);
 
         return dbProject || null;
       },

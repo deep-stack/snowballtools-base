@@ -78,7 +78,7 @@ export class Database {
     return projects;
   }
 
-  async getProjectByProjectId (projectId: string): Promise<Project | null> {
+  async getProjectById (projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const project = await projectRepository
