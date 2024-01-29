@@ -131,6 +131,7 @@ type Mutation {
   updateProject(projectId: String!, updateProject: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
+  rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
 }
 
 input AddEnvironmentVariableInput {

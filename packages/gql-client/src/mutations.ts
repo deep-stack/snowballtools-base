@@ -34,3 +34,9 @@ mutation ($projectId: String!) {
   deleteProject(projectId: $projectId)
 }
 `;
+
+export const rollbackDeployment = gql`
+mutation ($projectId: String! ,$deploymentId: String!) {
+  rollbackDeployment(proejctId: $projectId, deploymentId: $deploymentId)
+}
+`;
