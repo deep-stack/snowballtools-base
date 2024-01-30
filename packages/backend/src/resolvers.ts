@@ -233,7 +233,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
-      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: {name?: string, isRedirected?: boolean, branch?: string }}) => {
+      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: {name?: string, isRedirected?: boolean, branch?: string, redirectTo?: number }}) => {
         try {
           await db.updateDomainById(domainId, domainDetails);
           return true;

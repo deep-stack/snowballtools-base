@@ -384,6 +384,7 @@ export class Database {
     };
 
     const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
+    const savedPrimaryDomain = await domainRepository.save(primaryDomain);
 
     const domainArr = domainDetails.name.split('www.');
 
@@ -391,10 +392,9 @@ export class Database {
       name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
       isRedirected: true,
       branch: currentProject.prodBranch,
-      project: currentProject
+      project: currentProject,
+      redirectTo: savedPrimaryDomain.id
     };
-
-    const savedPrimaryDomain = await domainRepository.save(primaryDomain);
 
     const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
     const savedRedirectedDomain = await domainRepository.save(redirectedDomain);

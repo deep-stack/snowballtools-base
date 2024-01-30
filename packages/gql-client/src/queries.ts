@@ -219,6 +219,7 @@ query ($projectId: String!) {
     branch
     createdAt
     isRedirected
+    redirectTo
     id
     name
     status

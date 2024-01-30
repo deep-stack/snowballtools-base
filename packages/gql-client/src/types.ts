@@ -43,6 +43,7 @@ export type Domain = {
   name: string
   isRedirected: boolean
   status: DomainStatus
+  redirectTo?: string
   createdAt: string
   updatedAt: string
 }
@@ -226,6 +227,7 @@ export type UpdateDomainInput = {
   name?: string;
   isRedirected?: boolean;
   branch?: string;
+  redirectTo?: string;
 }
 
 export type RedeployToProdResponse = {

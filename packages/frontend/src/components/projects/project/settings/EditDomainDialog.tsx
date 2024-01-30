@@ -40,37 +40,57 @@ const EditDomainDialog = ({
   const client = useGQLClient();
 
   const getRedirectUrl = (domain: Domain) => {
-    const domainArr = domain.name.split('www.');
-    let redirectUrl = '';
-    if (domain.name.startsWith('www.')) {
-      redirectUrl = domainArr[1];
+    const redirectDomain = domains.find((domainData) => {
+      if (domain.redirectTo !== null) {
+        return Number(domainData.id) === Number(domain.redirectTo);
+      }
+    });
+    if (redirectDomain !== undefined) {
+      return redirectDomain.name;
     } else {
-      redirectUrl = `www.${domainArr[0]}`;
+      return 'none';
     }
-    return redirectUrl;
   };
 
   const redirectOptions = useMemo(() => {
     const redirectUrl = getRedirectUrl(domain);
-    return [...DEFAULT_REDIRECT_OPTIONS, redirectUrl];
+
+    const domainNames = domains
+      .filter(
+        (domainData) =>
+          domainData.name !== redirectUrl && domainData !== domain,
+      )
+      .map((domain) => domain.name);
+    return ['none', ...domainNames, redirectUrl];
   }, [domain]);
 
   const isDisableDropdown = useMemo(() => {
-    const redirectUrl = getRedirectUrl(domain);
-
-    const domainRedirected = domains.find(
-      (domain) => domain.name === redirectUrl,
-    );
+    const domainRedirected = domains.find((domainData) => {
+      return Number(domainData.redirectTo) === Number(domain.id);
+    });
 
     return domainRedirected?.isRedirected;
   }, [domain]);
 
+  const getRedirectedTo = () => {
+    const domainRedirected = domains.find((domainData) => {
+      return Number(domainData.redirectTo) === Number(domain.id);
+    });
+
+    return domainRedirected ? domainRedirected.name : '';
+  };
+
   const onSubmit = useCallback(
     async (data: any) => {
+      const domainRedirectTo = domains.find(
+        (domainData) => data.redirectedTo === domainData.name,
+      );
+
       const updates = {
         name: data.name,
         branch: data.branch,
         isRedirected: data.redirectedTo !== 'none',
+        redirectTo: domainRedirectTo ? domainRedirectTo.id : undefined,
       };
 
       const { updateDomain } = await client.updateDomain(domain.id, updates);
@@ -84,7 +104,7 @@ const EditDomainDialog = ({
 
       handleOpen();
     },
-    [client],
+    [client, domains],
   );
 
   const {
@@ -98,8 +118,8 @@ const EditDomainDialog = ({
       name: domain.name,
       branch: repo.branch[0],
       redirectedTo: !domain.isRedirected
-        ? redirectOptions[0]
-        : redirectOptions[1],
+        ? 'none'
+        : redirectOptions[redirectOptions.length - 1],
     },
   });
 
@@ -137,8 +157,8 @@ const EditDomainDialog = ({
             <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
               <div>^</div>
               <Typography variant="small">
-                Domain “{redirectOptions[1]}” redirects to this domain so you
-                can not redirect this doman further.
+                Domain “{getRedirectedTo()}” redirects to this domain so you can
+                not redirect this doman further.
               </Typography>
             </div>
           )}

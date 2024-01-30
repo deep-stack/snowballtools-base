@@ -33,6 +33,9 @@ export class Domain {
   @Column('boolean', { default: false })
     isRedirected!: boolean;
 
+  @Column('varchar', { default: null })
+    redirectTo!: number | null;
+
   @Column({
     enum: Status,
     default: Status.Pending
