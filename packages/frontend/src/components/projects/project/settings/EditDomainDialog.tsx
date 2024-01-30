@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
@@ -15,25 +15,30 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
+import { RepositoryDetails } from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
 interface EditDomainDialogProp {
+  domains: Domain[];
   open: boolean;
   handleOpen: () => void;
   domain: Domain;
   repo: RepositoryDetails;
-  project: ProjectDetails;
+  onUpdate: () => Promise<void>;
 }
 
 const EditDomainDialog = ({
+  domains,
   open,
   handleOpen,
   domain,
   repo,
-  project,
+  onUpdate,
 }: EditDomainDialogProp) => {
+  const client = useGQLClient();
+
   const getRedirectUrl = (domain: Domain) => {
     const domainArr = domain.name.split('www.');
     let redirectUrl = '';
@@ -44,12 +49,6 @@ const EditDomainDialog = ({
     }
     return redirectUrl;
   };
-
-  const domains = project.deployments
-    .filter((deployment: any) => {
-      return deployment.domain != null;
-    })
-    .map((deployment: any) => deployment.domain);
 
   const redirectOptions = useMemo(() => {
     const redirectUrl = getRedirectUrl(domain);
@@ -63,8 +62,30 @@ const EditDomainDialog = ({
       (domain) => domain.name === redirectUrl,
     );
 
-    return domainRedirected?.isRedirectedto;
+    return domainRedirected?.isRedirected;
   }, [domain]);
+
+  const onSubmit = useCallback(
+    async (data: any) => {
+      const updates = {
+        name: data.name,
+        branch: data.branch,
+        isRedirected: data.redirectedTo !== 'none',
+      };
+
+      const { updateDomain } = await client.updateDomain(domain.id, updates);
+
+      if (updateDomain) {
+        await onUpdate();
+        toast.success(`Domain ${domain.name} has been updated`);
+      } else {
+        toast.error(`Error updating domain ${domain.name}`);
+      }
+
+      handleOpen();
+    },
+    [client],
+  );
 
   const {
     handleSubmit,
@@ -94,12 +115,7 @@ const EditDomainDialog = ({
           X
         </Button>
       </DialogHeader>
-      <form
-        onSubmit={handleSubmit(() => {
-          handleOpen();
-          toast.success(`Domain ${domain.name} has been updated`);
-        })}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogBody className="flex flex-col gap-2 p-4">
           <Typography variant="small">Domain name</Typography>
           <Input crossOrigin={undefined} {...register('name')} />

@@ -365,4 +365,16 @@ export class Database {
 
     return domains;
   }
+
+  async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+
+    const updateResult = await domainRepository.update({ id: Number(domainId) }, updates);
+
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
 }
