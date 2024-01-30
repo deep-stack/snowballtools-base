@@ -127,7 +127,7 @@ export class Database {
         }
       },
       order: {
-        updatedAt: 'DESC'
+        createdAt: 'DESC'
       }
     });
 

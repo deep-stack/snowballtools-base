@@ -102,7 +102,7 @@ const DeploymentDetailsCard = ({
       </div>
       <div className="col-span-1 flex items-center">
         <Typography color="gray" className="grow">
-          {relativeTimeMs(deployment.createdAt)} ^ {deployment.author}
+          {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
         </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>
