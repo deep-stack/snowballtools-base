@@ -28,12 +28,12 @@ export class Database {
     });
   }
 
-  async init () : Promise<void> {
+  async init (): Promise<void> {
     await this.dataSource.initialize();
     log('database initialized');
   }
 
-  async getUser (userId: number) : Promise<User | null> {
+  async getUser (userId: number): Promise<User | null> {
     const userRepository = this.dataSource.getRepository(User);
     const user = await userRepository.findOneBy({
       id: userId
@@ -42,7 +42,7 @@ export class Database {
     return user;
   }
 
-  async getOrganizationsByUserId (userId: number) : Promise<Organization[]> {
+  async getOrganizationsByUserId (userId: number): Promise<Organization[]> {
     const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
 
     const userOrgs = await userOrganizationRepository.find({
@@ -118,12 +118,16 @@ export class Database {
     const deployments = await deploymentRepository.find({
       relations: {
         project: true,
-        domain: true
+        domain: true,
+        createdBy: true
       },
       where: {
         project: {
           id: projectId
         }
+      },
+      order: {
+        createdAt: 'DESC'
       }
     });
 
@@ -262,12 +266,13 @@ export class Database {
     }
   }
 
-  async redeployToProdById (deploymentId: string): Promise<Deployment> {
+  async redeployToProdById (userId: string, deploymentId: string): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOne({
       relations: {
         project: true,
-        domain: true
+        domain: true,
+        createdBy: true
       },
       where: {
         id: Number(deploymentId)
@@ -282,6 +287,9 @@ export class Database {
     if (updatedDeployment.environment === Environment.Production) {
       // TODO: Put isCurrent field in project
       updatedDeployment.isCurrent = true;
+      updatedDeployment.createdBy = Object.assign(new User(), {
+        id: Number(userId)
+      });
     }
 
     await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });

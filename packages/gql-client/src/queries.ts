@@ -158,6 +158,11 @@ query ($projectId: String!)  {
     status
     createdAt
     updatedAt
+    createdBy {
+      id
+      name
+      email
+    }
   }
 }
 `;

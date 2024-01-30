@@ -11,6 +11,7 @@ import {
 
 import { Project } from './Project';
 import { Domain } from './Domain';
+import { User } from './User';
 
 export enum Environment {
   Production = 'Production',
@@ -58,6 +59,10 @@ export class Deployment {
     enum: Status
   })
     status!: Status;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'createdBy' })
+    createdBy!: User;
 
   @CreateDateColumn()
     createdAt!: Date;
