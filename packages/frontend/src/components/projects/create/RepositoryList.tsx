@@ -1,61 +1,133 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Octokit } from 'octokit';
+import assert from 'assert';
+import { useDebounce } from 'usehooks-ts';
 
 import { Button, Typography, Option, Select } from '@material-tailwind/react';
 
 import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
-import repositoryDetails from '../../../assets/repositories.json';
-import { RepositoryDetails } from '../../../types/project';
+import { GitOrgDetails, GitRepositoryDetails } from '../../../types/project';
 
 const DEFAULT_SEARCHED_REPO = '';
-const DEFAULT_SELECTED_USER = 'All accounts';
+const REPOS_PER_PAGE = 5;
 
 interface RepositoryListProps {
-  repoSelectionHandler: (repo: RepositoryDetails) => void;
+  repoSelectionHandler: (repo: GitRepositoryDetails) => void;
+  token: string;
 }
 
-const RepositoryList = ({ repoSelectionHandler }: RepositoryListProps) => {
+const RepositoryList = ({
+  repoSelectionHandler,
+  token,
+}: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
-  const [selectedUser, setSelectedUser] = useState(DEFAULT_SELECTED_USER);
+  const [selectedAccount, setSelectedAccount] = useState('');
+  const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
+  // TODO: Add new type for Git user when required
+  const [gitUser, setGitUser] = useState<GitOrgDetails>();
 
-  const filteredRepos = useMemo(() => {
-    return repositoryDetails.filter((repo) => {
-      const titleMatch =
-        !searchedRepo ||
-        repo.title.toLowerCase().includes(searchedRepo.toLowerCase());
-      const userMatch =
-        selectedUser === DEFAULT_SELECTED_USER || selectedUser === repo.user;
-      return titleMatch && userMatch;
-    });
-  }, [searchedRepo, selectedUser]);
+  const [repositoryDetails, setRepositoryDetails] = useState<
+    GitRepositoryDetails[]
+  >([]);
+
+  const octokit = useMemo(() => {
+    // TODO: Create github/octokit context
+    return new Octokit({ auth: token });
+  }, [token]);
+
+  useEffect(() => {
+    const fetchUserAndOrgs = async () => {
+      const user = await octokit.rest.users.getAuthenticated();
+      const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
+      setOrgs(orgs.data);
+      setGitUser(user.data);
+      setSelectedAccount(user.data.login);
+    };
+
+    if (token) {
+      fetchUserAndOrgs();
+    }
+  }, [octokit]);
+
+  const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
+
+  useEffect(() => {
+    const fetchRepos = async () => {
+      if (!selectedAccount || !gitUser) {
+        return;
+      }
+
+      // Check search input and use GitHub search API
+      if (debouncedSearchedRepo) {
+        let query = `${debouncedSearchedRepo} in:name fork:true`;
+
+        // Check if selected account is an organization
+        if (selectedAccount === gitUser.login) {
+          query = query + ` user:${selectedAccount}`;
+        } else {
+          query = query + ` org:${selectedAccount}`;
+        }
+
+        const result = await octokit.rest.search.repos({
+          q: query,
+          per_page: REPOS_PER_PAGE,
+        });
+
+        setRepositoryDetails(result.data.items);
+        return;
+      }
+
+      if (selectedAccount === gitUser.login) {
+        const result = await octokit.rest.repos.listForAuthenticatedUser({
+          per_page: REPOS_PER_PAGE,
+          affiliation: 'owner',
+        });
+        setRepositoryDetails(result.data);
+        return;
+      }
+
+      const selectedOrg = orgs.find((org) => org.login === selectedAccount);
+      assert(selectedOrg, 'Selected org not found in list');
+
+      const result = await octokit.rest.repos.listForOrg({
+        org: selectedOrg.login,
+        per_page: REPOS_PER_PAGE,
+        type: 'all',
+      });
+
+      setRepositoryDetails(result.data);
+    };
+
+    fetchRepos();
+  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo]);
 
   const handleResetFilters = useCallback(() => {
+    assert(gitUser, 'Git user is not available');
     setSearchedRepo(DEFAULT_SEARCHED_REPO);
-    setSelectedUser(DEFAULT_SELECTED_USER);
-  }, []);
+    setSelectedAccount(gitUser.login);
+  }, [gitUser]);
 
-  const users = useMemo(() => {
-    return [
-      DEFAULT_SELECTED_USER,
-      ...Array.from(new Set(repositoryDetails.map((repo) => repo.user))),
-    ];
-  }, []);
+  const accounts = useMemo(() => {
+    if (!octokit || !gitUser) {
+      return [];
+    }
+
+    return [gitUser, ...orgs];
+  }, [octokit, orgs, gitUser]);
 
   return (
     <div className="p-4">
       <div className="flex gap-2 mb-2">
         <div className="basis-1/3">
+          {/* TODO: Fix selection of Git user at start */}
           <Select
-            value={selectedUser}
-            onChange={(value) => setSelectedUser(value!)}
+            value={selectedAccount}
+            onChange={(value) => setSelectedAccount(value!)}
           >
-            {users.map((user, key) => (
-              <Option
-                className={user === selectedUser ? 'hidden' : ''}
-                key={key}
-                value={user}
-              >
-                ^ {user}
+            {accounts.map((account) => (
+              <Option key={account.id} value={account.login}>
+                ^ {account.login}
               </Option>
             ))}
           </Select>
@@ -68,8 +140,8 @@ const RepositoryList = ({ repoSelectionHandler }: RepositoryListProps) => {
           />
         </div>
       </div>
-      {Boolean(filteredRepos.length) ? (
-        filteredRepos.map((repo, key) => {
+      {Boolean(repositoryDetails.length) ? (
+        repositoryDetails.map((repo, key) => {
           return (
             <ProjectRepoCard
               repository={repo}
