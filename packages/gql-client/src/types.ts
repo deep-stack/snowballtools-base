@@ -30,7 +30,7 @@ export enum DomainStatus {
 
 export type EnvironmentVariable = {
   id: string
-  environments: Environment[]
+  environment: Environment
   key: string
   value: string
   createdAt: string

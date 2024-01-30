@@ -106,7 +106,7 @@ type Domain {
 
 type EnvironmentVariable {
   id: String!
-  environments: [Environment!]!
+  environment: Environment!
   key: String!
   value: String!
   createdAt: String!

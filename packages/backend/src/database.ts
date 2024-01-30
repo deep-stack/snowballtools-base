@@ -155,9 +155,6 @@ export class Database {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
 
     const environmentVariables = await environmentVariableRepository.find({
-      relations: {
-        project: true
-      },
       where: {
         project: {
           id: projectId
