@@ -26,9 +26,9 @@ export class EnvironmentVariable {
     project!: Project;
 
   @Column({
-    type: 'simple-array'
+    enum: Environment
   })
-    environments!: Environment[];
+    environment!: Environment;
 
   @Column('varchar')
     key!: string;

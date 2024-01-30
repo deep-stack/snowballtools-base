@@ -74,7 +74,7 @@ export const projectMemberToGqlType = (dbProjectMember: ProjectMember): any => {
 export const environmentVariableToGqlType = (dbEnvironmentVariable: EnvironmentVariable): any => {
   return {
     id: dbEnvironmentVariable.id,
-    environments: dbEnvironmentVariable.environments,
+    environments: dbEnvironmentVariable.environment,
     key: dbEnvironmentVariable.key,
     value: dbEnvironmentVariable.value,
     createdAt: dbEnvironmentVariable.createdAt,
