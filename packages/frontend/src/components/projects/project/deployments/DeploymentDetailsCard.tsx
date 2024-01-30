@@ -20,7 +20,7 @@ import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
-  productionDeployment: DeploymentDetails;
+  currentDeployment: DeploymentDetails;
   onUpdate: () => Promise<void>;
   projectId: string;
 }
@@ -33,7 +33,7 @@ const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
 
 const DeploymentDetailsCard = ({
   deployment,
-  productionDeployment,
+  currentDeployment,
   onUpdate,
   projectId,
 }: DeployDetailsCardProps) => {
@@ -214,7 +214,7 @@ const DeploymentDetailsCard = ({
             deployment
           </Typography>
           <DeploymentDialogBodyCard
-            deployment={productionDeployment}
+            deployment={currentDeployment}
             chip={{
               value: 'Live Deployment',
               color: 'green',

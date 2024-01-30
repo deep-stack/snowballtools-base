@@ -27,10 +27,8 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
     const updatedDeployments = deployments.map((deployment) => {
       return {
         ...deployment,
-        author: COMMIT_DETAILS.createdBy,
-        commit: {
-          message: COMMIT_DETAILS.message,
-        },
+        author: '',
+        commit: COMMIT_DETAILS,
       };
     });
     setDeployments(updatedDeployments);
@@ -40,7 +38,7 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
     fetchDeployments();
   }, []);
 
-  const productionDeployment = useMemo(() => {
+  const currentDeployment = useMemo(() => {
     return deployments.find((deployment) => {
       return deployment.isCurrent === true;
     });
@@ -91,7 +89,7 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
               <DeploymentDetailsCard
                 deployment={deployment}
                 key={key}
-                productionDeployment={productionDeployment!}
+                currentDeployment={currentDeployment!}
                 onUpdate={onUpdateDeploymenToProd}
                 projectId={projectId}
               />

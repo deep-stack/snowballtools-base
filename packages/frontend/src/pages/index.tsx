@@ -23,11 +23,7 @@ const Projects = () => {
       return {
         ...project,
         // TODO: Populate from github API
-        latestCommit: {
-          message: COMMIT_DETAILS.message,
-          createdAt: COMMIT_DETAILS.createdAt,
-          branch: COMMIT_DETAILS.branch,
-        },
+        latestCommit: COMMIT_DETAILS,
       };
     });
 

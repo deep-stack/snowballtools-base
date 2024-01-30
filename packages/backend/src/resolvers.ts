@@ -56,8 +56,8 @@ export const createResolvers = async (db: Database): Promise<any> => {
       },
 
       projectsInOrganization: async (_: any, { organizationId }: {organizationId: string }, context: any) => {
-        const dbProject = await db.getProjectsInOrganization(context.userId, organizationId);
-        return dbProject;
+        const dbProjects = await db.getProjectsInOrganization(context.userId, organizationId);
+        return dbProjects;
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {

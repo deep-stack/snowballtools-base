@@ -5,11 +5,7 @@ export interface ProjectDetails extends Project {
   domain?: string | null;
   // TODO: Use deployment branch
   source?: string;
-  latestCommit: {
-    message: string;
-    createdAt: string;
-    branch: string;
-  };
+  latestCommit: Commit;
 
   // TODO: Move out of project
   repositories?: RepositoryDetails[];
@@ -23,9 +19,7 @@ export interface ProjectMember {
 }
 
 export interface DeploymentDetails extends Deployment {
-  commit: {
-    message: string;
-  };
+  commit: Commit;
   author: string;
 }
 
@@ -80,4 +74,10 @@ export interface Member {
 
 export interface ProjectSearchOutletContext {
   projects: ProjectDetails[];
+}
+
+export interface Commit {
+  message: string;
+  createdAt: string;
+  branch: string;
 }
