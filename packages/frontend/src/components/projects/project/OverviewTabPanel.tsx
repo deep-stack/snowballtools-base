@@ -1,28 +1,20 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Project } from 'gql-client';
 
 import { Typography, Button, Chip } from '@material-tailwind/react';
 
 import ActivityCard from './ActivityCard';
 import activityDetails from '../../../assets/activities.json';
-import { ProjectDetails } from '../../../types/project';
 import { relativeTimeMs } from '../../../utils/time';
 
 interface OverviewProps {
   project: Project;
-  organizationProject: ProjectDetails;
 }
 
-const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
-  // TODO: Fetch current deployment
-  const currentDeploymentTitle = useMemo(() => {
-    const deployment = organizationProject?.deployments.find((deployment) => {
-      return deployment.isCurrent === true;
-    });
+// TODO: Check any live domain is set for production branch
+const IS_DOMAIN_SETUP = true;
 
-    return deployment?.title;
-  }, [organizationProject]);
-
+const OverviewTabPanel = ({ project }: OverviewProps) => {
   return (
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
@@ -39,17 +31,24 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
         <div className="flex justify-between p-2 text-sm items-center">
           <div>
             ^ Domain
-            {!organizationProject.domain && (
+            {!IS_DOMAIN_SETUP && (
               <Chip
-                className="normal-case ml-6 bg-[#FED7AA] text-[#EA580C] inline font-normal"
+                className="normal-case ml-6 inline font-normal"
                 size="sm"
                 value="Not connected"
                 icon="^"
+                color="orange"
               />
             )}
           </div>
-          {organizationProject.domain ? (
-            <p>{organizationProject.domain}</p>
+          {IS_DOMAIN_SETUP ? (
+            <Chip
+              className="normal-case ml-6 inline font-normal"
+              size="sm"
+              value="Connected"
+              icon="^"
+              color="green"
+            />
           ) : (
             <Button className="normal-case rounded-full" color="blue" size="sm">
               Setup
@@ -58,11 +57,13 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Source</p>
-          <p>{organizationProject.source}</p>
+          <p>{project.deployments[0]?.branch}</p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Deployment</p>
-          <p className="text-blue-600">{currentDeploymentTitle}</p>
+          <p className="text-blue-600">
+            {project.deployments[0]?.domain?.name}
+          </p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Created</p>

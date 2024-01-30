@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Project as ProjectType } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
@@ -7,7 +7,6 @@ import { Button, Typography } from '@material-tailwind/react';
 import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
 import { useGQLClient } from '../../context/GQLClientContext';
-import { ProjectSearchOutletContext } from '../../types/project';
 
 const Project = () => {
   const { id } = useParams();
@@ -31,19 +30,9 @@ const Project = () => {
     await fetchProject(id);
   };
 
-  // TODO: Remove organization projects
-  const { projects: organizationProjects } =
-    useOutletContext<ProjectSearchOutletContext>();
-
-  const organizationProject = useMemo(() => {
-    return organizationProjects.find((project) => {
-      return project.id === id;
-    });
-  }, [id, organizationProjects]);
-
   return (
     <div className="h-full">
-      {project && organizationProject ? (
+      {project ? (
         <>
           <div className="flex p-4 gap-4 items-center">
             <Button
@@ -65,11 +54,7 @@ const Project = () => {
           </div>
           <HorizontalLine />
           <div className="p-4">
-            <ProjectTabs
-              project={project}
-              organizationProject={organizationProject}
-              onUpdate={onUpdate}
-            />
+            <ProjectTabs project={project} onUpdate={onUpdate} />
           </div>
         </>
       ) : (
