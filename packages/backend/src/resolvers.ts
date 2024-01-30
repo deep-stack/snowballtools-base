@@ -162,9 +162,9 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
+      redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          await db.redeployToProdById(deploymentId);
+          await db.redeployToProdById(context.userId, deploymentId);
           return true;
         } catch (err) {
           log(err);

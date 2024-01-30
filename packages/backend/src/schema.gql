@@ -91,6 +91,7 @@ type Deployment {
   status: DeploymentStatus!
   createdAt: String!
   updatedAt: String!
+  createdBy: User!
 }
 
 type Domain {
