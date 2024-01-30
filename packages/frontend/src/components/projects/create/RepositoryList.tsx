@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Octokit } from 'octokit';
 import assert from 'assert';
+import { useDebounce } from 'usehooks-ts';
 
 import { Button, Typography, Option, Select } from '@material-tailwind/react';
 
@@ -49,6 +50,8 @@ const RepositoryList = ({
     }
   }, [octokit]);
 
+  const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
+
   useEffect(() => {
     const fetchRepos = async () => {
       if (!selectedAccount || !gitUser) {
@@ -56,8 +59,8 @@ const RepositoryList = ({
       }
 
       // Check search input and use GitHub search API
-      if (searchedRepo) {
-        let query = `${searchedRepo} in:name fork:true`;
+      if (debouncedSearchedRepo) {
+        let query = `${debouncedSearchedRepo} in:name fork:true`;
 
         // Check if selected account is an organization
         if (selectedAccount === gitUser.login) {
@@ -97,7 +100,7 @@ const RepositoryList = ({
     };
 
     fetchRepos();
-  }, [selectedAccount, gitUser, orgs, searchedRepo]);
+  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo]);
 
   const handleResetFilters = useCallback(() => {
     assert(gitUser, 'Git user is not available');

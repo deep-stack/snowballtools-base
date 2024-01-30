@@ -30,6 +30,7 @@
     "react-tabs": "^6.0.2",
     "react-timer-hook": "^3.0.7",
     "typescript": "^4.9.5",
+    "usehooks-ts": "^2.10.0",
     "vertical-stepper-nav": "^1.0.2",
     "web-vitals": "^2.1.4"
   },
