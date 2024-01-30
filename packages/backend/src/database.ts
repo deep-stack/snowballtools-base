@@ -304,8 +304,21 @@ export class Database {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     // TODO: Implement transactions
-    const oldCurrentDeploymentUpdate = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false });
-    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true });
+    const oldCurrentDeployment = await deploymentRepository.findOne({
+      relations: {
+        domain: true
+      },
+      where: {
+        project: {
+          id: projectId
+        },
+        isCurrent: true
+      }
+    });
+
+    const oldCurrentDeploymentUpdate = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false, domain: null });
+
+    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true, domain: oldCurrentDeployment?.domain });
 
     if (oldCurrentDeploymentUpdate.affected && newCurrentDeploymentUpdate.affected) {
       return oldCurrentDeploymentUpdate.affected > 0 && newCurrentDeploymentUpdate.affected > 0;
