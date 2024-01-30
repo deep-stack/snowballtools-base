@@ -31,7 +31,7 @@ const DeploymentDialogBodyCard = ({
         {deployment.title}
       </Typography>
       <Typography variant="small">
-        ^ {deployment.branch} ^ {deployment.commit.hash}{' '}
+        ^ {deployment.branch} ^ {deployment.commitHash}{' '}
         {deployment.commit.message}
       </Typography>
       <Typography variant="small">

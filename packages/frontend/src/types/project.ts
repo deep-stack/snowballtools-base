@@ -1,15 +1,11 @@
-import { Environment, Project } from 'gql-client';
+import { Project, Deployment } from 'gql-client';
 
 export interface ProjectDetails extends Project {
   // TODO: isDomain flag
   domain?: string | null;
   // TODO: Use deployment branch
   source?: string;
-  latestCommit: {
-    message: string;
-    createdAt: string;
-    branch: string;
-  };
+  latestCommit: Commit;
 
   // TODO: Move out of project
   repositories?: RepositoryDetails[];
@@ -22,22 +18,9 @@ export interface ProjectMember {
   permissions: string[];
 }
 
-export interface DeploymentDetails {
-  id: string;
-  title: string;
-  isProduction: boolean;
-  domain: DomainDetails;
-  status: Status;
-  branch: string;
-  environment: Environment;
-  isCurrent: boolean;
-  commit: {
-    hash: string;
-    message: string;
-  };
+export interface DeploymentDetails extends Deployment {
+  commit: Commit;
   author: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export enum Status {
@@ -91,4 +74,10 @@ export interface Member {
 
 export interface ProjectSearchOutletContext {
   projects: ProjectDetails[];
+}
+
+export interface Commit {
+  message: string;
+  createdAt: string;
+  branch: string;
 }

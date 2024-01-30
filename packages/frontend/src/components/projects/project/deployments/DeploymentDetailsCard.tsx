@@ -10,6 +10,7 @@ import {
   ChipProps,
 } from '@material-tailwind/react';
 import toast from 'react-hot-toast';
+import { Environment } from 'gql-client';
 
 import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
@@ -19,8 +20,9 @@ import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
-  productionDeployment: DeploymentDetails;
+  currentDeployment: DeploymentDetails;
   onUpdate: () => Promise<void>;
+  projectId: string;
 }
 
 const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
@@ -31,8 +33,9 @@ const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
 
 const DeploymentDetailsCard = ({
   deployment,
-  productionDeployment,
+  currentDeployment,
   onUpdate,
+  projectId,
 }: DeployDetailsCardProps) => {
   const client = useGQLClient();
 
@@ -60,6 +63,19 @@ const DeploymentDetailsCard = ({
     }
   };
 
+  const rollbackDeploymentHandler = async () => {
+    const isRollbacked = await client.rollbackDeployment(
+      projectId,
+      deployment.id,
+    );
+    if (isRollbacked) {
+      await onUpdate();
+      toast.success('Deployment rolled back');
+    } else {
+      toast.error('Unable to rollback deployment');
+    }
+  };
+
   return (
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
       <div className="col-span-2">
@@ -73,7 +89,7 @@ const DeploymentDetailsCard = ({
           />
         </div>
         <Typography color="gray">
-          {deployment.isProduction
+          {deployment.environment === Environment.Production
             ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
             : 'Preview'}
         </Typography>
@@ -81,7 +97,7 @@ const DeploymentDetailsCard = ({
       <div className="col-span-1">
         <Typography color="gray">^ {deployment.branch}</Typography>
         <Typography color="gray">
-          ^ {deployment.commit.hash} {deployment.commit.message}
+          ^ {deployment.commitHash} {deployment.commit.message}
         </Typography>
       </div>
       <div className="col-span-1 flex items-center">
@@ -95,7 +111,7 @@ const DeploymentDetailsCard = ({
           <MenuList>
             <MenuItem>^ Visit</MenuItem>
             <MenuItem>^ Assign domain</MenuItem>
-            {!deployment.isProduction && (
+            {!(deployment.environment === Environment.Production) && (
               <MenuItem
                 onClick={() => setChangeToProduction(!changeToProduction)}
               >
@@ -106,13 +122,19 @@ const DeploymentDetailsCard = ({
             <hr className="my-3" />
             <MenuItem
               onClick={() => setRedeployToProduction(!redeployToProduction)}
-              disabled={!(deployment.isProduction && deployment.isCurrent)}
+              disabled={
+                !(
+                  deployment.environment === Environment.Production &&
+                  deployment.isCurrent
+                )
+              }
             >
               ^ Redeploy to production
             </MenuItem>
-            {!deployment.isProduction && (
+            {deployment.environment === Environment.Production && (
               <MenuItem
                 onClick={() => setRollbackDeployment(!rollbackDeployment)}
+                disabled={deployment.isCurrent}
               >
                 ^ Rollback to this version
               </MenuItem>
@@ -181,7 +203,10 @@ const DeploymentDetailsCard = ({
         open={rollbackDeployment}
         confirmButtonTitle="Rollback"
         color="blue"
-        handleConfirm={() => setRollbackDeployment((preVal) => !preVal)}
+        handleConfirm={async () => {
+          await rollbackDeploymentHandler();
+          setRollbackDeployment((preVal) => !preVal);
+        }}
       >
         <div className="flex flex-col gap-2">
           <Typography variant="small">
@@ -189,7 +214,7 @@ const DeploymentDetailsCard = ({
             deployment
           </Typography>
           <DeploymentDialogBodyCard
-            deployment={productionDeployment}
+            deployment={currentDeployment}
             chip={{
               value: 'Live Deployment',
               color: 'green',
@@ -206,10 +231,7 @@ const DeploymentDetailsCard = ({
             These domains will point to your new deployment:
           </Typography>
           <Typography variant="small" color="blue">
-            ^ saugatt.com
-          </Typography>
-          <Typography variant="small" color="blue">
-            ^ www.saugatt.com
+            ^ {currentDeployment.domain?.name}
           </Typography>
         </div>
       </ConfirmDialog>
