@@ -5,23 +5,23 @@ import { Typography, Button, Chip } from '@material-tailwind/react';
 
 import ActivityCard from './ActivityCard';
 import activityDetails from '../../../assets/activities.json';
-import { ProjectDetails } from '../../../types/project';
 import { relativeTimeMs } from '../../../utils/time';
 
 interface OverviewProps {
   project: Project;
-  organizationProject: ProjectDetails;
 }
 
-const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
-  // TODO: Fetch current deployment
-  const currentDeploymentTitle = useMemo(() => {
-    const deployment = organizationProject?.deployments.find((deployment) => {
+// TODO: Get isDomain flag
+const IS_DOMAIN = true;
+
+const OverviewTabPanel = ({ project }: OverviewProps) => {
+  const currentDeployment = useMemo(() => {
+    const deployment = project.deployments.find((deployment) => {
       return deployment.isCurrent === true;
     });
 
-    return deployment?.title;
-  }, [organizationProject]);
+    return deployment;
+  }, []);
 
   return (
     <div className="grid grid-cols-5">
@@ -39,7 +39,7 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
         <div className="flex justify-between p-2 text-sm items-center">
           <div>
             ^ Domain
-            {!organizationProject.domain && (
+            {!IS_DOMAIN && (
               <Chip
                 className="normal-case ml-6 bg-[#FED7AA] text-[#EA580C] inline font-normal"
                 size="sm"
@@ -48,8 +48,14 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
               />
             )}
           </div>
-          {organizationProject.domain ? (
-            <p>{organizationProject.domain}</p>
+          {IS_DOMAIN ? (
+            <Chip
+              className="normal-case ml-6 inline font-normal"
+              size="sm"
+              value="Connected"
+              icon="^"
+              color="green"
+            />
           ) : (
             <Button className="normal-case rounded-full" color="blue" size="sm">
               Setup
@@ -58,11 +64,11 @@ const OverviewTabPanel = ({ project, organizationProject }: OverviewProps) => {
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Source</p>
-          <p>{organizationProject.source}</p>
+          <p>{currentDeployment?.branch}</p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Deployment</p>
-          <p className="text-blue-600">{currentDeploymentTitle}</p>
+          <p className="text-blue-600">{currentDeployment?.domain?.name}</p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Created</p>
