@@ -7,19 +7,19 @@ import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 import RepositoryList from '../../create/RepositoryList';
 import RepoConnectedSection from './RepoConnectedSection';
 import GitSelectionSection from './GitSelectionSection';
-import { GitSelect, RepositoryDetails } from '../../../../types/project';
+import { GitRepositoryDetails, GitSelect } from '../../../../types/project';
 import WebhookCard from './WebhookCard';
 
 const GitTabPanel = () => {
   const [gitSelect, setGitSelect] = useState('none');
-  const [linkedRepo, setLinkedRepo] = useState<RepositoryDetails>();
+  const [linkedRepo, setLinkedRepo] = useState<GitRepositoryDetails>();
   const [webhooksArray, setWebhooksArray] = useState<Array<string>>([]);
 
   const gitSelectionHandler = (git: GitSelect) => {
     setGitSelect(git);
   };
 
-  const repoSelectionHandler = (repoDetails: RepositoryDetails) => {
+  const repoSelectionHandler = (repoDetails: GitRepositoryDetails) => {
     setLinkedRepo(repoDetails);
   };
 
@@ -54,7 +54,11 @@ const GitTabPanel = () => {
           (GitSelect.NONE === gitSelect ? (
             <GitSelectionSection gitSelectionHandler={gitSelectionHandler} />
           ) : (
-            <RepositoryList repoSelectionHandler={repoSelectionHandler} />
+            <RepositoryList
+              repoSelectionHandler={repoSelectionHandler}
+              // TODO: Pass Github access token after authentication
+              token=""
+            />
           ))}
 
         <div className="flex justify-between mt-4">

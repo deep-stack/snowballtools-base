@@ -30,6 +30,10 @@
   yarn db:load:fixtures
   ```
 
+- Set `githubOauth.clientId` and `githubOauth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
+  - Client id and secret will be available after creating Github OAuth app
+  - https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
+
 - Start the server
 
   ```bash

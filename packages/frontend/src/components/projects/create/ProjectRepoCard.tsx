@@ -3,10 +3,10 @@ import React from 'react';
 import { Chip, IconButton } from '@material-tailwind/react';
 
 import { relativeTime } from '../../../utils/time';
-import { RepositoryDetails } from '../../../types/project';
+import { GitRepositoryDetails } from '../../../types/project';
 
 interface ProjectRepoCardProps {
-  repository: RepositoryDetails;
+  repository: GitRepositoryDetails;
   onClick: () => void;
 }
 
@@ -22,10 +22,8 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
       <div>^</div>
       <div className="grow">
         <div>
-          <span className="text-black">
-            {repository.user}/{repository.title}
-          </span>
-          {repository.private ? (
+          <span className="text-black">{repository.full_name}</span>
+          {repository.visibility === 'private' ? (
             <Chip
               className="normal-case inline ml-6 bg-[#FED7AA] text-[#EA580C] font-normal"
               size="sm"
@@ -36,7 +34,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
             ''
           )}
         </div>
-        <p>{relativeTime(repository.updatedAt)}</p>
+        <p>{repository.updated_at && relativeTime(repository.updated_at)}</p>
       </div>
       <div className="hidden group-hover:block">
         <IconButton size="sm">{'>'}</IconButton>

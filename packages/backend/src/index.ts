@@ -3,6 +3,8 @@ import debug from 'debug';
 import fs from 'fs';
 import path from 'path';
 
+import { OAuthApp } from '@octokit/oauth-app';
+
 import { Database } from './database';
 import { createAndStartServer } from './server';
 import { createResolvers } from './resolvers';
@@ -14,13 +16,20 @@ const log = debug('snowball:server');
 
 export const main = async (): Promise<void> => {
   // TODO: get config path using cli
-  const { server, database } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { server, database, githubOauth } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
   const db = new Database(database);
   await db.init();
 
+  // TODO: Move to Service class
+  const app = new OAuthApp({
+    clientType: 'oauth-app',
+    clientId: githubOauth.clientId,
+    clientSecret: githubOauth.clientSecret
+  });
+
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
-  const resolvers = await createResolvers(db);
+  const resolvers = await createResolvers(db, app);
 
   await createAndStartServer(typeDefs, resolvers, server);
 };

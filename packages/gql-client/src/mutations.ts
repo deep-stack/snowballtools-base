@@ -51,3 +51,10 @@ mutation ($projectId: String!, $domainDetails: AddDomainInput!) {
   addDomain(projectId: $projectId, domainDetails: $domainDetails)
 }
 `;
+
+export const authenticateGithub = gql`
+mutation ($code: String!) {
+  authenticateGithub(code: $code) {
+    token
+  }
+}`;

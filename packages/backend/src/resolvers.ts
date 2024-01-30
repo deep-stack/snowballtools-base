@@ -1,13 +1,15 @@
 import debug from 'debug';
 import assert from 'assert';
 
+import { OAuthApp } from '@octokit/oauth-app';
+
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
 
 const log = debug('snowball:database');
 
-export const createResolvers = async (db: Database): Promise<any> => {
+export const createResolvers = async (db: Database, app: OAuthApp): Promise<any> => {
   return {
     Query: {
       // TODO: add custom type for context
@@ -203,6 +205,17 @@ export const createResolvers = async (db: Database): Promise<any> => {
           log(err);
           return false;
         }
+      },
+
+      authenticateGithub: async (_: any, { code }: { code: string }) => {
+        // TOO: Move to Service class
+        const { authentication: { token } } = await app.createToken({
+          code
+        });
+
+        // TODO: Save bearer token in DB for user
+
+        return { token };
       }
     }
   };

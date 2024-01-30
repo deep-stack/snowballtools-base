@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCombobox } from 'downshift';
 import { Project } from 'gql-client';
+import { useDebounce } from 'usehooks-ts';
 
 import {
   List,
@@ -30,12 +31,6 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     highlightedIndex,
     inputValue,
   } = useCombobox({
-    onInputValueChange({ inputValue }) {
-      if (inputValue) {
-        // TODO: Use debounce
-        fetchProjects(inputValue);
-      }
-    },
     items,
     itemToString(item) {
       return item ? item.name : '';
@@ -52,6 +47,8 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     },
   });
 
+  const debouncedInputValue = useDebounce<string>(inputValue, 500);
+
   const fetchProjects = useCallback(
     async (inputValue: string) => {
       const { searchProjects } = await client.searchProjects(inputValue);
@@ -59,6 +56,12 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
     },
     [client],
   );
+
+  useEffect(() => {
+    if (debouncedInputValue) {
+      fetchProjects(debouncedInputValue);
+    }
+  }, [fetchProjects, debouncedInputValue]);
 
   return (
     <div className="relative">

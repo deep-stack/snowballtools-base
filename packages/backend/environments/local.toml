@@ -5,3 +5,7 @@
 
 [database]
   dbPath = "db/snowball"
+
+[githubOauth]
+  clientId = ""
+  clientSecret = ""

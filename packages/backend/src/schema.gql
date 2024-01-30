@@ -126,6 +126,10 @@ type Query {
   domains(projectId: String!): [Domain!]
 }
 
+type AuthResult {
+  token: String!
+}
+
 type Mutation {
   removeMember(memberId: String!): Boolean!
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
@@ -136,6 +140,7 @@ type Mutation {
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
   addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
   updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!
+  authenticateGithub(code: String!): AuthResult!
 }
 
 input AddEnvironmentVariableInput {
