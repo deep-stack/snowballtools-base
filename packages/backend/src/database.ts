@@ -419,6 +419,49 @@ export class Database {
   async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
+    const domain = await domainRepository.findOne({
+      relations: {
+        project: true
+      },
+      where: {
+        id: Number(domainId)
+      }
+    });
+
+    if (domain === null) {
+      throw new Error(`Error finding domain with id ${domainId}`);
+    }
+
+    const domains = await domainRepository.find({
+      where: {
+        project: {
+          id: domain?.project.id
+        }
+      }
+    });
+
+    const domainRedirected = domains.find((domainData) => {
+      return Number(domainData.redirectTo) === Number(domain.id);
+    });
+
+    if (domainRedirected !== undefined) {
+      throw new Error('Remove all redirects to this domain before updating');
+    }
+
+    if (updates.redirectTo) {
+      const redirectedDomain = await domainRepository.findOne({
+        where: {
+          id: Number(updates.redirectTo)
+        }
+      });
+
+      console.log(redirectedDomain);
+
+      if (redirectedDomain?.redirectTo) {
+        throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
+      }
+    }
+
     const updateResult = await domainRepository.update({ id: Number(domainId) }, updates);
 
     if (updateResult.affected) {
