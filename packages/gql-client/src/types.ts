@@ -188,7 +188,7 @@ export type UpdateProjectResponse = {
 }
 
 export type UpdateDomainResponse = {
-  updateDomain: true;
+  updateDomain: boolean;
 }
 
 export type DeleteProjectResponse = {

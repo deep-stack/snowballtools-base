@@ -147,24 +147,24 @@ export class GQLClient {
     return data;
   }
 
-  async updateProject (projectId: string, updateProject: UpdateProjectInput): Promise<UpdateProjectResponse> {
+  async updateProject (projectId: string, projectDetails: UpdateProjectInput): Promise<UpdateProjectResponse> {
     const { data } = await this.client.mutate({
       mutation: updateProjectMutation,
       variables: {
         projectId,
-        updateProject
+        projectDetails
       }
     });
 
     return data;
   }
 
-  async updateDomain (domainId: string, updateDomain: UpdateDomainInput): Promise<UpdateDomainResponse> {
+  async updateDomain (domainId: string, domainDetails: UpdateDomainInput): Promise<UpdateDomainResponse> {
     const { data } = await this.client.mutate({
       mutation: updateDomainMutation,
       variables: {
         domainId,
-        updateDomain
+        domainDetails
       }
     });
 

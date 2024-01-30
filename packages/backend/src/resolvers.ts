@@ -153,9 +153,9 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      updateProject: async (_: any, { projectId, updateProject }: { projectId: string, updateProject: { name: string, description: string } }) => {
+      updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: { name: string, description: string } }) => {
         try {
-          return db.updateProjectById(projectId, updateProject);
+          return db.updateProjectById(projectId, projectDetails);
         } catch (err) {
           log(err);
           return false;
@@ -200,10 +200,9 @@ export const createResolvers = async (db: Database): Promise<any> => {
         }
       },
 
-      updateDomain: async (_: any, { domainId, updateDomain }: { domainId: string, updateDomain: {name?: string, isRedirected?: boolean, branch?: string }}) => {
+      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: {name?: string, isRedirected?: boolean, branch?: string }}) => {
         try {
-          log(updateDomain);
-          await db.updateDomainById(domainId, updateDomain);
+          await db.updateDomainById(domainId, domainDetails);
           return true;
         } catch (err) {
           log(err);

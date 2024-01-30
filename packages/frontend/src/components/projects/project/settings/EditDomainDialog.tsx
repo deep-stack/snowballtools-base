@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
@@ -65,6 +65,28 @@ const EditDomainDialog = ({
     return domainRedirected?.isRedirected;
   }, [domain]);
 
+  const onSubmit = useCallback(
+    async (data: any) => {
+      const updates = {
+        name: data.name,
+        branch: data.branch,
+        isRedirected: data.redirectedTo !== 'none',
+      };
+
+      const { updateDomain } = await client.updateDomain(domain.id, updates);
+
+      if (updateDomain) {
+        await onUpdate();
+        toast.success(`Domain ${domain.name} has been updated`);
+      } else {
+        toast.error(`Error updating domain ${domain.name}`);
+      }
+
+      handleOpen();
+    },
+    [client],
+  );
+
   const {
     handleSubmit,
     register,
@@ -93,24 +115,7 @@ const EditDomainDialog = ({
           X
         </Button>
       </DialogHeader>
-      <form
-        onSubmit={handleSubmit(async (data) => {
-          const updates = {
-            name: data.name,
-            branch: data.branch,
-            isRedirected: data.redirectedTo !== 'none',
-          };
-
-          const isUpdated = await client.updateDomain(domain.id, updates);
-          if (isUpdated) {
-            await onUpdate();
-            toast.success(`Domain ${domain.name} has been updated`);
-          } else {
-            toast.error(`Error updating domain ${domain.name}`);
-          }
-          handleOpen();
-        })}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogBody className="flex flex-col gap-2 p-4">
           <Typography variant="small">Domain name</Typography>
           <Input crossOrigin={undefined} {...register('name')} />
