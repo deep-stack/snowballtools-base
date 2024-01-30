@@ -23,6 +23,11 @@ mutation ($projectId: String!, $updateProject: UpdateProjectInput) {
   updateProject(projectId: $projectId, updateProject: $updateProject)
 }`;
 
+export const updateDomainMutation = gql`
+mutation ($domainId: String!, $updateDomain: UpdateDomainInput!) {
+  updateDomain(domainId: $domainId, updateDomain: $updateDomain)
+}`;
+
 export const redeployToProd = gql`
 mutation ($deploymentId: String!) {
   redeployToProd(deploymentId: $deploymentId)

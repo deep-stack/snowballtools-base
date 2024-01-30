@@ -16,6 +16,7 @@ import {
 } from '@material-tailwind/react';
 
 import { RepositoryDetails } from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
@@ -25,6 +26,7 @@ interface EditDomainDialogProp {
   handleOpen: () => void;
   domain: Domain;
   repo: RepositoryDetails;
+  onUpdate: () => Promise<void>;
 }
 
 const EditDomainDialog = ({
@@ -33,7 +35,10 @@ const EditDomainDialog = ({
   handleOpen,
   domain,
   repo,
+  onUpdate,
 }: EditDomainDialogProp) => {
+  const client = useGQLClient();
+
   const getRedirectUrl = (domain: Domain) => {
     const domainArr = domain.name.split('www.');
     let redirectUrl = '';
@@ -89,9 +94,21 @@ const EditDomainDialog = ({
         </Button>
       </DialogHeader>
       <form
-        onSubmit={handleSubmit(() => {
+        onSubmit={handleSubmit(async (data) => {
+          const updates = {
+            name: data.name,
+            branch: data.branch,
+            isRedirected: data.redirectedTo !== 'none',
+          };
+
+          const isUpdated = await client.updateDomain(domain.id, updates);
+          if (isUpdated) {
+            await onUpdate();
+            toast.success(`Domain ${domain.name} has been updated`);
+          } else {
+            toast.error(`Error updating domain ${domain.name}`);
+          }
           handleOpen();
-          toast.success(`Domain ${domain.name} has been updated`);
         })}
       >
         <DialogBody className="flex flex-col gap-2 p-4">

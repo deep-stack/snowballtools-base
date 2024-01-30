@@ -60,6 +60,7 @@ const Domains = () => {
             key={domain.id}
             repo={linkedRepo!}
             project={currentProject!}
+            onUpdate={fetchDomains}
           />
         );
       })}

@@ -187,6 +187,10 @@ export type UpdateProjectResponse = {
   updateProject: boolean;
 }
 
+export type UpdateDomainResponse = {
+  updateDomain: true;
+}
+
 export type DeleteProjectResponse = {
   deleteProject: boolean;
 }
@@ -194,6 +198,12 @@ export type DeleteProjectResponse = {
 export type UpdateProjectInput = {
   name: string
   description: string
+}
+
+export type UpdateDomainInput = {
+  name?: string;
+  isRedirected?: boolean;
+  branch?: string;
 }
 
 export type RedeployToProdResponse = {
