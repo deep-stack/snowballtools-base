@@ -47,6 +47,14 @@ export type Domain = {
   updatedAt: string
 }
 
+export type User = {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type Deployment = {
   id: string
   domain: Domain
@@ -56,14 +64,7 @@ export type Deployment = {
   environment: Environment
   isCurrent: boolean
   status: DeploymentStatus
-  createdAt: string
-  updatedAt: string
-}
-
-export type User = {
-  id: string
-  name: string
-  email: string
+  createdBy: User
   createdAt: string
   updatedAt: string
 }

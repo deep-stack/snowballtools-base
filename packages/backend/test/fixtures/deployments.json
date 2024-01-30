@@ -2,6 +2,7 @@
   {
     "projectIndex": 0,
     "domainIndex":0,
+    "createdByIndex": 0,
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
@@ -12,6 +13,7 @@
   {
     "projectIndex": 0,
     "domainIndex":1,
+    "createdByIndex": 0,
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
@@ -22,6 +24,7 @@
   {
     "projectIndex": 0,
     "domainIndex":2,
+    "createdByIndex": 0,
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",
@@ -32,6 +35,7 @@
   {
     "projectIndex": 0,
     "domainIndex": null,
+    "createdByIndex": 0,
     "title": "nextjs-boilerplate-4",
     "status": "Ready",
     "environment": "Production",
@@ -42,6 +46,7 @@
   {
     "projectIndex": 1,
     "domainIndex":3,
+    "createdByIndex": 1,
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
@@ -52,6 +57,7 @@
   {
     "projectIndex": 1,
     "domainIndex":4,
+    "createdByIndex": 1,
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
@@ -62,6 +68,7 @@
   {
     "projectIndex": 1,
     "domainIndex":5,
+    "createdByIndex": 1,
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",
@@ -72,6 +79,7 @@
   {
     "projectIndex": 2,
     "domainIndex":6,
+    "createdByIndex": 2,
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
@@ -82,6 +90,7 @@
   {
     "projectIndex": 2,
     "domainIndex":7,
+    "createdByIndex": 2,
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
@@ -92,6 +101,7 @@
   {
     "projectIndex": 2,
     "domainIndex":8,
+    "createdByIndex": 2,
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",

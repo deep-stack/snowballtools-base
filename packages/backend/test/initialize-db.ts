@@ -86,7 +86,8 @@ const generateTestData = async (dataSource: DataSource) => {
 
   const deploymentRelations = {
     project: savedProjects,
-    domain: savedDomains
+    domain: savedDomains,
+    createdBy: savedUsers
   };
 
   await loadAndSaveData(Deployment, dataSource, path.resolve(__dirname, DEPLOYMENT_DATA_PATH), deploymentRelations);

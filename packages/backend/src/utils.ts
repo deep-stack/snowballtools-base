@@ -55,6 +55,7 @@ export const deploymentToGqlType = (dbDeployment: Deployment): any => {
     environment: dbDeployment.environment,
     isCurrent: dbDeployment.isCurrent,
     status: dbDeployment.status,
+    createdBy: dbDeployment.createdBy,
     createdAt: dbDeployment.createdAt,
     updatedAt: dbDeployment.updatedAt
   };
