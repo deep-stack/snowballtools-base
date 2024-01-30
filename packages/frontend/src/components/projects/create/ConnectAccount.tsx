@@ -4,7 +4,10 @@ import OauthPopup from 'react-oauth-popup';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
 
-const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&scope=user`;
+const SCOPES = 'repo user';
+const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
+  process.env.REACT_APP_GITHUB_CLIENT_ID
+}&scope=${encodeURIComponent(SCOPES)}`;
 
 interface ConnectAccountInterface {
   onToken: (token: string) => void;
