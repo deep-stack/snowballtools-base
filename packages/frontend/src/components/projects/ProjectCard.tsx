@@ -45,7 +45,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           {project.latestCommit.message}
         </Typography>
         <Typography variant="small" color="gray">
-          {relativeTime(project.latestCommit.createdAt!)} on{' '}
+          {relativeTime(project.latestCommit.createdAt)} on{' '}
           {project.latestCommit.branch}
         </Typography>
       </div>

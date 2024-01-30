@@ -231,10 +231,7 @@ const DeploymentDetailsCard = ({
             These domains will point to your new deployment:
           </Typography>
           <Typography variant="small" color="blue">
-            ^ saugatt.com
-          </Typography>
-          <Typography variant="small" color="blue">
-            ^ www.saugatt.com
+            ^ {currentDeployment.domain?.name}
           </Typography>
         </div>
       </ConfirmDialog>
