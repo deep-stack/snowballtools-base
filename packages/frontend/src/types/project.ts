@@ -1,7 +1,6 @@
 import { Project, Deployment } from 'gql-client';
 
 export interface ProjectDetails extends Project {
-  isDomain?: boolean;
   latestCommit: Commit;
 
   // TODO: Move out of project

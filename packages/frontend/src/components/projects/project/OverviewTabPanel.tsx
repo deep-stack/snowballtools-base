@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Project } from 'gql-client';
 
 import { Typography, Button, Chip } from '@material-tailwind/react';
@@ -11,18 +11,10 @@ interface OverviewProps {
   project: Project;
 }
 
-// TODO: Get isDomain flag
-const IS_DOMAIN = true;
+// TODO: Check any live domain is set for production branch
+const IS_DOMAIN_SETUP = true;
 
 const OverviewTabPanel = ({ project }: OverviewProps) => {
-  const currentDeployment = useMemo(() => {
-    const deployment = project.deployments.find((deployment) => {
-      return deployment.isCurrent === true;
-    });
-
-    return deployment;
-  }, []);
-
   return (
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
@@ -39,16 +31,17 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
         <div className="flex justify-between p-2 text-sm items-center">
           <div>
             ^ Domain
-            {!IS_DOMAIN && (
+            {!IS_DOMAIN_SETUP && (
               <Chip
-                className="normal-case ml-6 bg-[#FED7AA] text-[#EA580C] inline font-normal"
+                className="normal-case ml-6 inline font-normal"
                 size="sm"
                 value="Not connected"
                 icon="^"
+                color="orange"
               />
             )}
           </div>
-          {IS_DOMAIN ? (
+          {IS_DOMAIN_SETUP ? (
             <Chip
               className="normal-case ml-6 inline font-normal"
               size="sm"
@@ -64,11 +57,13 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Source</p>
-          <p>{currentDeployment?.branch}</p>
+          <p>{project.deployments[0]?.branch}</p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Deployment</p>
-          <p className="text-blue-600">{currentDeployment?.domain?.name}</p>
+          <p className="text-blue-600">
+            {project.deployments[0]?.domain?.name}
+          </p>
         </div>
         <div className="flex justify-between p-2 text-sm">
           <p>^ Created</p>

@@ -27,7 +27,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
     const { projectMembers } = await client.getProjectMembers(project.id);
 
     setProjectMembers(projectMembers);
-  }, []);
+  }, [project.id]);
 
   const removeMemberHandler = async (projectMemberId: string) => {
     const { removeMember: isMemberRemoved } =
@@ -43,7 +43,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
 
   useEffect(() => {
     fetchProjectMembers();
-  }, []);
+  }, [project.id]);
 
   return (
     <div className="p-2 mb-20">
