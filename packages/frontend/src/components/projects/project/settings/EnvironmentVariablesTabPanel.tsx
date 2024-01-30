@@ -72,8 +72,8 @@ export const EnvironmentVariablesTabPanel = () => {
 
   const getEnvironmentVariable = useCallback(
     (environment: Environment) => {
-      return environmentVariables.filter((item) =>
-        item.environments.includes(environment),
+      return environmentVariables.filter(
+        (item) => item.environment === environment,
       );
     },
     [environmentVariables, id],

@@ -43,7 +43,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
 
   useEffect(() => {
     fetchProjectMembers();
-  }, [project.id]);
+  }, [project.id, fetchProjectMembers]);
 
   return (
     <div className="p-2 mb-20">

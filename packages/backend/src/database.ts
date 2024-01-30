@@ -1,7 +1,6 @@
 import { DataSource, DeepPartial } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
-import assert from 'assert';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
@@ -156,9 +155,6 @@ export class Database {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
 
     const environmentVariables = await environmentVariableRepository.find({
-      relations: {
-        project: true
-      },
       where: {
         project: {
           id: projectId
@@ -181,27 +177,27 @@ export class Database {
     }
   }
 
-  async addEnvironmentVariablesByProjectId (projectId: string, environmentVariables: any[]): Promise<boolean> {
+  async addEnvironmentVariablesByProjectId (projectId: string, environmentVariables: {
+    environments: string[];
+    key: string;
+    value: string;
+  }[]): Promise<boolean> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const projectRepository = this.dataSource.getRepository(Project);
 
-    const project = await projectRepository.findOneBy({
-      id: projectId
-    });
-    assert(project);
+    const formattedEnvironmentVariables = environmentVariables.map((environmentVariable) => {
+      return environmentVariable.environments.map((environment) => {
+        return ({
+          key: environmentVariable.key,
+          value: environmentVariable.value,
+          environment: environment as Environment,
+          project: Object.assign(new Project(), {
+            id: projectId
+          })
+        });
+      });
+    }).flat();
 
-    const environmentVariablesPromises = environmentVariables.map(async environmentVariable => {
-      const envVar = new EnvironmentVariable();
-
-      envVar.key = environmentVariable.key;
-      envVar.value = environmentVariable.value;
-      envVar.environments = environmentVariable.environments;
-      envVar.project = project;
-
-      return environmentVariableRepository.save(envVar);
-    });
-
-    const savedEnvironmentVariables = await Promise.all(environmentVariablesPromises);
+    const savedEnvironmentVariables = await environmentVariableRepository.save(formattedEnvironmentVariables);
     return savedEnvironmentVariables.length > 0;
   }
 
