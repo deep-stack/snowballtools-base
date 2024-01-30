@@ -1,32 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Project } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
-
-import {
-  ProjectMember,
-  ProjectSearchOutletContext,
-} from '../../../../types/project';
+import { ProjectMember } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const FIRST_MEMBER_CARD = 0;
 
 const MembersTabPanel = ({ project }: { project: Project }) => {
-  const { id } = useParams();
   const client = useGQLClient();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
-
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
-
-  const currentProject = useMemo(() => {
-    return projects.find((project) => project.id === id);
-  }, [id]);
 
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
 
@@ -36,14 +24,10 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
   }, []);
 
   const fetchProjectMembers = useCallback(async () => {
-    if (currentProject) {
-      const { projectMembers } = await client.getProjectMembers(
-        currentProject.id,
-      );
+    const { projectMembers } = await client.getProjectMembers(project.id);
 
-      setProjectMembers(projectMembers);
-    }
-  }, [currentProject]);
+    setProjectMembers(projectMembers);
+  }, [project.id]);
 
   const removeMemberHandler = async (projectMemberId: string) => {
     const { removeMember: isMemberRemoved } =
@@ -59,7 +43,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
 
   useEffect(() => {
     fetchProjectMembers();
-  }, []);
+  }, [project.id]);
 
   return (
     <div className="p-2 mb-20">
@@ -98,7 +82,7 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
             member={projectMember.member}
             key={projectMember.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
-            isOwner={projectMember.member.id === currentProject?.owner.id}
+            isOwner={projectMember.member.id === project.owner.id}
             isPending={projectMember.member.name === ''}
             permissions={projectMember.permissions}
             handleDeletePendingMember={(id: string) => {

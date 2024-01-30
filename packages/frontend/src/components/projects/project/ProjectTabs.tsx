@@ -4,12 +4,10 @@ import { Project } from 'gql-client';
 
 import OverviewTabPanel from './OverviewTabPanel';
 import DeploymentsTabPanel from './DeploymentsTabPanel';
-import { ProjectDetails } from '../../../types/project';
 import SettingsTabPanel from './SettingsTabPanel';
 
 interface ProjectTabsProps {
   project: Project;
-  organizationProject: ProjectDetails;
   onUpdate: () => Promise<void>;
 }
 
@@ -31,11 +29,7 @@ const Integrations = () => (
   </div>
 );
 
-const ProjectTabs = ({
-  project,
-  onUpdate,
-  organizationProject,
-}: ProjectTabsProps) => {
+const ProjectTabs = ({ project, onUpdate }: ProjectTabsProps) => {
   return (
     <Tabs
       selectedTabClassName={
@@ -50,10 +44,7 @@ const ProjectTabs = ({
         <Tab className={'p-2 cursor-pointer'}>Settings</Tab>
       </TabList>
       <TabPanel>
-        <OverviewTabPanel
-          project={project}
-          organizationProject={organizationProject}
-        />
+        <OverviewTabPanel project={project} />
       </TabPanel>
       <TabPanel>
         <DeploymentsTabPanel projectId={project.id} />
