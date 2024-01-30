@@ -11,7 +11,7 @@ interface OverviewProps {
   project: Project;
 }
 
-// TODO: Check any live domain is set for production branch
+// TODO: Check if any live domain is set for production branch
 const IS_DOMAIN_SETUP = true;
 
 const OverviewTabPanel = ({ project }: OverviewProps) => {

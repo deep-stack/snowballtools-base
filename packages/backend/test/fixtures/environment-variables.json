@@ -3,60 +3,90 @@
     "projectIndex": 0,
     "key": "ABC",
     "value": "ABC",
-    "environments": ["Production", "Preview"]
+    "environment": "Production"
+  },
+  {
+    "projectIndex": 0,
+    "key": "ABC",
+    "value": "ABC",
+    "environment": "Preview"
   },
   {
     "projectIndex": 0,
     "key": "XYZ",
     "value": "abc3",
-    "environments": ["Preview"]
+    "environment": "Preview"
   },
   {
     "projectIndex": 1,
     "key": "ABC",
     "value": "ABC",
-    "environments": ["Production", "Preview"]
+    "environment": "Production"
+  },
+  {
+    "projectIndex": 1,
+    "key": "ABC",
+    "value": "ABC",
+    "environment": "Preview"
   },
   {
     "projectIndex": 1,
     "key": "XYZ",
     "value": "abc3",
-    "environments": ["Preview"]
+    "environment": "Preview"
   },
   {
     "projectIndex": 2,
     "key": "ABC",
     "value": "ABC",
-    "environments": ["Production", "Preview"]
+    "environment": "Production"
+  },
+  {
+    "projectIndex": 2,
+    "key": "ABC",
+    "value": "ABC",
+    "environment": "Preview"
   },
   {
     "projectIndex": 2,
     "key": "XYZ",
     "value": "abc3",
-    "environments": ["Preview"]
+    "environment": "Preview"
   },
   {
     "projectIndex": 3,
     "key": "ABC",
     "value": "ABC",
-    "environments": ["Production", "Preview"]
+    "environment": "Production"
+  },
+  {
+    "projectIndex": 3,
+    "key": "ABC",
+    "value": "ABC",
+    "environment": "Preview"
   },
   {
     "projectIndex": 3,
     "key": "XYZ",
     "value": "abc3",
-    "environments": ["Preview"]
+    "environment": "Preview"
   },
   {
     "projectIndex": 4,
     "key": "ABC",
     "value": "ABC",
-    "environments": ["Production", "Preview"]
+    "environment": "Production"
+  },
+  {
+    "projectIndex": 4,
+    "key": "ABC",
+    "value": "ABC",
+    "environment": "Preview"
   },
   {
     "projectIndex": 4,
     "key": "XYZ",
     "value": "abc3",
-    "environments": ["Preview"]
+    "environment": "Preview"
   }
 ]

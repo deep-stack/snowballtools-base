@@ -122,14 +122,6 @@ query {
           email
         }
       }
-      environmentVariables {
-        id
-        environments
-        key
-        value
-        createdAt
-        updatedAt
-      }
       createdAt
       updatedAt
     }
@@ -171,7 +163,7 @@ export const getEnvironmentVariables = gql`
 query ($projectId: String!)  {
   environmentVariables(projectId: $projectId) {
     createdAt
-    environments
+    environment
     id
     key
     updatedAt
