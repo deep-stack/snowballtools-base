@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Project } from 'gql-client';
+import { Permission, Project } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
@@ -30,16 +30,31 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
   }, [project.id]);
 
   const removeMemberHandler = async (projectMemberId: string) => {
-    const { removeMember: isMemberRemoved } =
-      await client.removeMember(projectMemberId);
+    const { removeProjectMember: isMemberRemoved } =
+      await client.removeProjectMember(projectMemberId);
 
     if (isMemberRemoved) {
-      toast.success('Member removed from project');
       await fetchProjectMembers();
+      toast.success('Member removed from project');
     } else {
       toast.error('Not able to remove member');
     }
   };
+
+  const updateProjectMemberHandler = useCallback(
+    async (projectMemberId: string, data: { permissions: Permission[] }) => {
+      const { updateProjectMember: isProjectMemberUpdated } =
+        await client.updateProjectMember(projectMemberId, data);
+
+      if (isProjectMemberUpdated) {
+        await fetchProjectMembers();
+        toast.success('Project member permission updated');
+      } else {
+        toast.error('Project member permission not updated');
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     fetchProjectMembers();
@@ -73,8 +88,6 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
         isOwner={true}
         isPending={false}
         permissions={[]}
-        handleDeletePendingMember={() => {}}
-        removeMemberHandler={async () => {}}
       />
       {projectMembers.map((projectMember, index) => {
         return (
@@ -92,7 +105,12 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
                 ),
               );
             }}
-            removeMemberHandler={() => removeMemberHandler(projectMember.id)}
+            onRemoveProjectMember={async () =>
+              await removeMemberHandler(projectMember.id)
+            }
+            onUpdateProjectMember={async (data) => {
+              await updateProjectMemberHandler(projectMember.id, data);
+            }}
           />
         );
       })}

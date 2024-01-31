@@ -131,7 +131,8 @@ type AuthResult {
 }
 
 type Mutation {
-  removeMember(memberId: String!): Boolean!
+  removeProjectMember(projectMemberId: String!): Boolean!
+  updateProjectMember(projectMemberId: String!, data: UpdateProjectMemberInput): Boolean!
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
@@ -169,4 +170,8 @@ input UpdateDomainInput {
 input UpdateEnvironmentVariableInput {
   key: String
   value: String
+}
+
+input UpdateProjectMemberInput {
+  permissions: [Permission]
 }

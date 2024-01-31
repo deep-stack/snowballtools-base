@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { Permission } from 'gql-client';
 
 import {
   Select,
@@ -33,8 +34,11 @@ interface MemberCardProps {
   isOwner: boolean;
   isPending: boolean;
   permissions: string[];
-  handleDeletePendingMember: (id: string) => void;
-  removeMemberHandler: () => Promise<void>;
+  handleDeletePendingMember?: (id: string) => void;
+  onRemoveProjectMember?: () => Promise<void>;
+  onUpdateProjectMember?: (data: {
+    permissions: Permission[];
+  }) => Promise<void>;
 }
 
 const MemberCard = ({
@@ -44,7 +48,8 @@ const MemberCard = ({
   isPending,
   permissions,
   handleDeletePendingMember,
-  removeMemberHandler,
+  onRemoveProjectMember,
+  onUpdateProjectMember,
 }: MemberCardProps) => {
   const [selectedPermission, setSelectedPermission] = useState(
     permissions.join('+'),
@@ -52,7 +57,7 @@ const MemberCard = ({
   const [removeMemberDialogOpen, setRemoveMemberDialogOpen] = useState(false);
 
   const handlePermissionChange = useCallback(
-    (value: string) => {
+    async (value: string) => {
       setSelectedPermission(value);
 
       if (value === 'remove') {
@@ -61,6 +66,11 @@ const MemberCard = ({
         setTimeout(() => {
           setSelectedPermission(selectedPermission);
         });
+      } else {
+        if (onUpdateProjectMember) {
+          const permissions = value.split('+') as Permission[];
+          await onUpdateProjectMember({ permissions });
+        }
       }
     },
     [removeMemberDialogOpen, selectedPermission],
@@ -112,7 +122,9 @@ const MemberCard = ({
                 size="sm"
                 className="rounded-full"
                 onClick={() => {
-                  handleDeletePendingMember(member.id);
+                  if (handleDeletePendingMember) {
+                    handleDeletePendingMember(member.id);
+                  }
                 }}
               >
                 D
@@ -128,7 +140,9 @@ const MemberCard = ({
         confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
           setRemoveMemberDialogOpen((preVal) => !preVal);
-          removeMemberHandler();
+          if (onRemoveProjectMember) {
+            onRemoveProjectMember();
+          }
         }}
         color="red"
       >

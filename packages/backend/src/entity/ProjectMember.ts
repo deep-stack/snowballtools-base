@@ -11,7 +11,7 @@ import {
 import { Project } from './Project';
 import { User } from './User';
 
-enum Permissions {
+export enum Permission {
   View = 'View',
   Edit = 'Edit'
 }
@@ -32,7 +32,7 @@ export class ProjectMember {
   @Column({
     type: 'simple-array'
   })
-    permissions!: Permissions[];
+    permissions!: Permission[];
 
   @CreateDateColumn()
     createdAt!: Date;
