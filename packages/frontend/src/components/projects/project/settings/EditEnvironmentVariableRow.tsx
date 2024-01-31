@@ -58,7 +58,7 @@ const EditEnvironmentVariableRow = ({
     } else {
       toast.error('Variable not deleted');
     }
-  }, [variable, deleteDialogOpen, onUpdate]);
+  }, [variable, onUpdate]);
 
   const updateEnvironmentVariableHandler = useCallback(
     async (data: { key: string; value: string }) => {
@@ -73,7 +73,7 @@ const EditEnvironmentVariableRow = ({
         toast.error('Variable not edited');
       }
     },
-    [variable, edit, onUpdate],
+    [variable, onUpdate],
   );
 
   useEffect(() => {

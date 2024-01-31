@@ -16,7 +16,7 @@ type ConfirmDialogProp = {
   open: boolean;
   handleOpen: () => void;
   confirmButtonTitle: string;
-  handleConfirm?: (() => void) | (() => Promise<void>);
+  handleConfirm?: () => void;
   color: color;
 };
 
