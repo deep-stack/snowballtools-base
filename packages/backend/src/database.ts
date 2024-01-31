@@ -201,6 +201,28 @@ export class Database {
     return savedEnvironmentVariables.length > 0;
   }
 
+  async updateEnvironmentVariable (environmentVariableId: string, update: DeepPartial<EnvironmentVariable>): Promise<boolean> {
+    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+    const updateResult = await environmentVariableRepository.update({ id: Number(environmentVariableId) }, update);
+
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
+  async deleteEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
+    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+    const deleteResult = await environmentVariableRepository.delete({ id: Number(environmentVariableId) });
+
+    if (deleteResult.affected) {
+      return deleteResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
   async getProjectMemberByMemberId (memberId: string): Promise<ProjectMember> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 

@@ -133,6 +133,8 @@ type AuthResult {
 type Mutation {
   removeMember(memberId: String!): Boolean!
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
+  removeEnvironmentVariable(environmentVariableId: String!): Boolean!
+  updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
   updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
@@ -162,4 +164,9 @@ input UpdateDomainInput {
   name: String
   isRedirected: Boolean
   branch: String
+}
+
+input UpdateEnvironmentVariableInput {
+  key: String
+  value: String
 }
