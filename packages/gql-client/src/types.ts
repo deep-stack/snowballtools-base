@@ -53,6 +53,7 @@ export type User = {
   email: string
   createdAt: string
   updatedAt: string
+  gitHubToken: string | null
 }
 
 export type Deployment = {
@@ -244,8 +245,12 @@ export type AddDomainResponse = {
   addDomain: true
 }
 
-export type AuthenticateGithubResponse = {
-  authenticateGithub: {
+export type AuthenticateGitHubResponse = {
+  authenticateGitHub: {
     token: string
   }
+}
+
+export type UnauthenticateGitHubResponse = {
+  unauthenticateGitHub: boolean
 }

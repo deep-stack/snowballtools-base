@@ -4,24 +4,13 @@ import toast from 'react-hot-toast';
 
 import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 
-import RepositoryList from '../../create/RepositoryList';
-import RepoConnectedSection from './RepoConnectedSection';
-import GitSelectionSection from './GitSelectionSection';
-import { GitRepositoryDetails, GitSelect } from '../../../../types/project';
+import { GitRepositoryDetails } from '../../../../types/project';
 import WebhookCard from './WebhookCard';
 
 const GitTabPanel = () => {
-  const [gitSelect, setGitSelect] = useState('none');
-  const [linkedRepo, setLinkedRepo] = useState<GitRepositoryDetails>();
+  // TODO: Get linked repo from project
+  const [linkedRepo] = useState<GitRepositoryDetails>();
   const [webhooksArray, setWebhooksArray] = useState<Array<string>>([]);
-
-  const gitSelectionHandler = (git: GitSelect) => {
-    setGitSelect(git);
-  };
-
-  const repoSelectionHandler = (repoDetails: GitRepositoryDetails) => {
-    setLinkedRepo(repoDetails);
-  };
 
   const {
     register,
@@ -44,22 +33,8 @@ const GitTabPanel = () => {
     <>
       <div className="mb-2 p-2">
         <Typography variant="h6" className="text-black">
-          Connect Git repository
+          Git repository
         </Typography>
-        <Typography variant="small">
-          Create deployments for any commits pushed to your Git repository.
-        </Typography>
-        {linkedRepo && <RepoConnectedSection linkedRepo={linkedRepo} />}
-        {!linkedRepo &&
-          (GitSelect.NONE === gitSelect ? (
-            <GitSelectionSection gitSelectionHandler={gitSelectionHandler} />
-          ) : (
-            <RepositoryList
-              repoSelectionHandler={repoSelectionHandler}
-              // TODO: Pass Github access token after authentication
-              token=""
-            />
-          ))}
 
         <div className="flex justify-between mt-4">
           <div>

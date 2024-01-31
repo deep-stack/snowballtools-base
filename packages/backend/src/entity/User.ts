@@ -18,6 +18,9 @@ export class User {
   @Column()
     email!: string;
 
+  @Column('varchar', { nullable: true })
+    gitHubToken!: string | null;
+
   @CreateDateColumn()
     createdAt!: Date;
 

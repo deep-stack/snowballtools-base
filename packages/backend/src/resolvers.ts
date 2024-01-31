@@ -245,15 +245,24 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
-      authenticateGithub: async (_: any, { code }: { code: string }) => {
+      authenticateGitHub: async (_: any, { code }: { code: string }, context: any) => {
         // TOO: Move to Service class
         const { authentication: { token } } = await app.createToken({
           code
         });
 
-        // TODO: Save bearer token in DB for user
+        await db.updateUser(context.userId, { gitHubToken: token });
 
         return { token };
+      },
+
+      unauthenticateGitHub: async (_: any, __: object, context: any) => {
+        try {
+          return db.updateUser(context.userId, { gitHubToken: null });
+        } catch (err) {
+          log(err);
+          return false;
+        }
       }
     }
   };

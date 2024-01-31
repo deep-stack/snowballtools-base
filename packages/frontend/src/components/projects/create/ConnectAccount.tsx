@@ -19,8 +19,8 @@ const ConnectAccount = ({ onToken }: ConnectAccountInterface) => {
   const handleCode = async (code: string) => {
     // Pass code to backend and get access token
     const {
-      authenticateGithub: { token },
-    } = await client.authenticateGithub(code);
+      authenticateGitHub: { token },
+    } = await client.authenticateGitHub(code);
     onToken(token);
   };
 
