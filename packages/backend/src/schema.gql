@@ -98,7 +98,6 @@ type Domain {
   id: String!
   branch: String!
   name: String!
-  isRedirected: Boolean!
   redirectTo: Domain
   status: DomainStatus!
   createdAt: String!
@@ -164,7 +163,6 @@ input AddDomainInput {
 
 input UpdateDomainInput {
   name: String
-  isRedirected: Boolean
   branch: String
   redirectToId: String
 }

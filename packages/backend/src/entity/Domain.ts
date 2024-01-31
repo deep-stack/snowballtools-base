@@ -30,9 +30,6 @@ export class Domain {
   @Column('varchar', { length: 255 })
     name!: string;
 
-  @Column('boolean', { default: false })
-    isRedirected!: boolean;
-
   @Column('varchar', { nullable: true })
     redirectToId!: string;
 

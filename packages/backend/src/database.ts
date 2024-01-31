@@ -378,7 +378,6 @@ export class Database {
 
     const primaryDomainDetails = {
       ...domainDetails,
-      isRedirected: false,
       branch: currentProject.prodBranch,
       project: currentProject
     };
@@ -390,7 +389,6 @@ export class Database {
 
     const redirectedDomainDetails = {
       name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
-      isRedirected: true,
       branch: currentProject.prodBranch,
       project: currentProject,
       redirectTo: savedPrimaryDomain

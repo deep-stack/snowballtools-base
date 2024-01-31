@@ -70,7 +70,6 @@ export interface DomainDetails {
     name: string;
     value: string;
   };
-  isRedirectedto: boolean;
 }
 
 export enum Permission {

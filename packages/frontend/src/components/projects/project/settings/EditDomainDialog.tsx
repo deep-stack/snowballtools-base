@@ -61,7 +61,7 @@ const EditDomainDialog = ({
       (domainData) => domainData.redirectTo?.id === domain.id,
     );
 
-    return domainRedirected?.isRedirected;
+    return domainRedirected?.redirectTo?.id !== undefined;
   }, [domain, domains]);
 
   const getRedirectedTo = () => {
@@ -96,7 +96,6 @@ const EditDomainDialog = ({
       const updates = {
         name: data.name,
         branch: data.branch ? data.branch : repo.branch[0],
-        isRedirected: data.redirectedTo !== 'none',
         redirectToId: domainRedirectTo ? domainRedirectTo.id : undefined,
       };
 

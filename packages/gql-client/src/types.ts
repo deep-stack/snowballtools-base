@@ -41,7 +41,6 @@ export type Domain = {
   id: string
   branch: string
   name: string
-  isRedirected: boolean
   status: DomainStatus
   redirectTo?: Domain
   createdAt: string
@@ -225,7 +224,6 @@ export type UpdateProjectInput = {
 
 export type UpdateDomainInput = {
   name?: string;
-  isRedirected?: boolean;
   branch?: string;
   redirectToId?: string;
 }

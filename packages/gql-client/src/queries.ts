@@ -48,7 +48,6 @@ query ($projectId: String!) {
         updatedAt
         id
         name
-        isRedirected
       }
     }
   }
@@ -85,7 +84,6 @@ query ($organizationId: String!) {
         updatedAt
         id
         name
-        isRedirected
       }
     }
   }
@@ -136,7 +134,6 @@ query ($projectId: String!)  {
     domain{
       branch
       createdAt
-      isRedirected
       id
       name
       status
@@ -218,7 +215,6 @@ query ($projectId: String!) {
   domains(projectId: $projectId) {
     branch
     createdAt
-    isRedirected
     redirectTo {
       id
       name

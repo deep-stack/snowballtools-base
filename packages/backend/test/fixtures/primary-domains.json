@@ -3,7 +3,6 @@
     "projectIndex": 0,
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "main"
   },
@@ -11,7 +10,6 @@
     "projectIndex": 0,
     "name": "saugatt.com",
     "status": "Pending",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "test"
   },
@@ -19,7 +17,6 @@
     "projectIndex": 1,
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "main"
   },
@@ -27,7 +24,6 @@
     "projectIndex": 1,
     "name": "saugatt.com",
     "status": "Pending",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "test"
   },
@@ -35,7 +31,6 @@
     "projectIndex": 2,
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "main"
   },
@@ -43,7 +38,6 @@
     "projectIndex": 2,
     "name": "saugatt.com",
     "status": "Pending",
-    "isRedirected": false,
     "redirectToIndex": null,
     "branch": "test"
   }

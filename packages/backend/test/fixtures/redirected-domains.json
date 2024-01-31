@@ -3,7 +3,6 @@
     "projectIndex": 0,
     "name": "www.saugatt.com",
     "status": "Pending",
-    "isRedirected": true,
     "redirectToIndex": 1,
     "branch": "test"
   },
@@ -11,7 +10,6 @@
     "projectIndex": 1,
     "name": "www.saugatt.com",
     "status": "Pending",
-    "isRedirected": true,
     "redirectToIndex": 3,
     "branch": "test"
   },
@@ -19,7 +17,6 @@
     "projectIndex": 2,
     "name": "www.saugatt.com",
     "status": "Pending",
-    "isRedirected": true,
     "redirectToIndex": 5,
     "branch": "test"
   }
