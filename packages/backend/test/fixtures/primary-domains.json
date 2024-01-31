@@ -4,7 +4,7 @@
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
     "isRedirected": false,
-    "redirectTo": null,
+    "redirectToIndex": null,
     "branch": "main"
   },
   {
@@ -12,15 +12,7 @@
     "name": "saugatt.com",
     "status": "Pending",
     "isRedirected": false,
-    "redirectTo": null,
-    "branch": "test"
-  },
-  {
-    "projectIndex": 0,
-    "name": "www.saugatt.com",
-    "status": "Pending",
-    "isRedirected": true,
-    "redirectTo": 2,
+    "redirectToIndex": null,
     "branch": "test"
   },
   {
@@ -28,7 +20,7 @@
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
     "isRedirected": false,
-    "redirectTo": null,
+    "redirectToIndex": null,
     "branch": "main"
   },
   {
@@ -36,15 +28,7 @@
     "name": "saugatt.com",
     "status": "Pending",
     "isRedirected": false,
-    "redirectTo": null,
-    "branch": "test"
-  },
-  {
-    "projectIndex": 1,
-    "name": "www.saugatt.com",
-    "status": "Pending",
-    "isRedirected": true,
-    "redirectTo": 5,
+    "redirectToIndex": null,
     "branch": "test"
   },
   {
@@ -52,7 +36,7 @@
     "name": "randomurl.snowballtools.xyz",
     "status": "Live",
     "isRedirected": false,
-    "redirectTo": null,
+    "redirectToIndex": null,
     "branch": "main"
   },
   {
@@ -60,15 +44,7 @@
     "name": "saugatt.com",
     "status": "Pending",
     "isRedirected": false,
-    "redirectTo": null,
-    "branch": "test"
-  },
-  {
-    "projectIndex": 2,
-    "name": "www.saugatt.com",
-    "status": "Pending",
-    "isRedirected": true,
-    "redirectTo": 8,
+    "redirectToIndex": null,
     "branch": "test"
   }
 ]
