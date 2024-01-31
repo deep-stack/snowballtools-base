@@ -105,7 +105,9 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
                 ),
               );
             }}
-            onRemoveProjectMember={() => removeMemberHandler(projectMember.id)}
+            onRemoveProjectMember={async () =>
+              await removeMemberHandler(projectMember.id)
+            }
             onUpdateProjectMember={async (data) => {
               await updateProjectMemberHandler(projectMember.id, data);
             }}

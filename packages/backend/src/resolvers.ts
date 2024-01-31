@@ -6,7 +6,7 @@ import { OAuthApp } from '@octokit/oauth-app';
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
-import { Permissions } from './entity/ProjectMember';
+import { Permission } from './entity/ProjectMember';
 
 const log = debug('snowball:database');
 
@@ -134,7 +134,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
       updateProjectMember: async (_: any, { projectMemberId, data }: {
         projectMemberId: string,
         data: {
-          permissions: Permissions[]
+          permissions: Permission[]
         }
       }) => {
         try {
