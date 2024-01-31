@@ -14,12 +14,12 @@ const REPOS_PER_PAGE = 5;
 
 interface RepositoryListProps {
   repoSelectionHandler: (repo: GitRepositoryDetails) => void;
-  token: string;
+  octokit: Octokit;
 }
 
 const RepositoryList = ({
   repoSelectionHandler,
-  token,
+  octokit,
 }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState('');
@@ -31,11 +31,6 @@ const RepositoryList = ({
     GitRepositoryDetails[]
   >([]);
 
-  const octokit = useMemo(() => {
-    // TODO: Create github/octokit context
-    return new Octokit({ auth: token });
-  }, [token]);
-
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
       const user = await octokit.rest.users.getAuthenticated();
@@ -45,9 +40,7 @@ const RepositoryList = ({
       setSelectedAccount(user.data.login);
     };
 
-    if (token) {
-      fetchUserAndOrgs();
-    }
+    fetchUserAndOrgs();
   }, [octokit]);
 
   const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);

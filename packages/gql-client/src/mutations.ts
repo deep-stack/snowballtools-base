@@ -70,9 +70,14 @@ mutation ($projectId: String!, $domainDetails: AddDomainInput!) {
 }
 `;
 
-export const authenticateGithub = gql`
+export const authenticateGitHub = gql`
 mutation ($code: String!) {
-  authenticateGithub(code: $code) {
+  authenticateGitHub(code: $code) {
     token
   }
+}`;
+
+export const unauthenticateGitHub = gql`
+mutation {
+  unauthenticateGitHub
 }`;

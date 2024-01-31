@@ -8,6 +8,7 @@ query {
     email
     createdAt
     updatedAt
+    gitHubToken
   }
 }
 `;

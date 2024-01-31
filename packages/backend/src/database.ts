@@ -1,6 +1,7 @@
 import { DataSource, DeepPartial } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
+import assert from 'assert';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
@@ -14,6 +15,7 @@ import { Domain } from './entity/Domain';
 
 const log = debug('snowball:database');
 
+// TODO: Fix order of methods
 export class Database {
   private dataSource: DataSource;
 
@@ -39,6 +41,14 @@ export class Database {
     });
 
     return user;
+  }
+
+  async updateUser (userId: number, data: DeepPartial<User>): Promise<boolean> {
+    const userRepository = this.dataSource.getRepository(User);
+    const updateResult = await userRepository.update({ id: Number(userId) }, data);
+    assert(updateResult.affected);
+
+    return updateResult.affected > 0;
   }
 
   async getOrganizationsByUserId (userId: number): Promise<Organization[]> {

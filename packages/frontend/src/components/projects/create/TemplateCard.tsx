@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from 'react-hot-toast';
 
 import { IconButton, Typography } from '@material-tailwind/react';
 
@@ -10,25 +11,40 @@ interface TemplateDetails {
 }
 interface TemplateCardProps {
   framework: TemplateDetails;
+  isGitAuth: boolean;
 }
 
-const TemplateCard: React.FC<TemplateCardProps> = ({ framework }) => {
+const CardDetails = ({ framework }: { framework: TemplateDetails }) => {
   return (
-    <Link to={'/projects/create/template'}>
-      <div className="h-14 group bg-gray-200 border-gray-200 rounded-lg shadow p-4 flex items-center justify-between">
-        <Typography className="grow">
-          {framework.icon} {framework.framework}
-        </Typography>
-        <div>
-          <IconButton
-            size="sm"
-            className="rounded-full hidden group-hover:block"
-          >
-            {'>'}
-          </IconButton>
-        </div>
+    <div className="h-14 group bg-gray-200 border-gray-200 rounded-lg shadow p-4 flex items-center justify-between">
+      <Typography className="grow">
+        {framework.icon} {framework.framework}
+      </Typography>
+      <div>
+        <IconButton size="sm" className="rounded-full hidden group-hover:block">
+          {'>'}
+        </IconButton>
       </div>
+    </div>
+  );
+};
+
+const TemplateCard: React.FC<TemplateCardProps> = ({
+  framework,
+  isGitAuth,
+}) => {
+  return isGitAuth ? (
+    <Link to="/projects/create/template">
+      <CardDetails framework={framework} />
     </Link>
+  ) : (
+    <a
+      onClick={() =>
+        toast.error('Connect Git account to start with a template')
+      }
+    >
+      <CardDetails framework={framework} />
+    </a>
   );
 };
 

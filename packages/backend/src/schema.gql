@@ -34,6 +34,7 @@ type User {
   projects: [Project!]
   createdAt: String!
   updatedAt: String!
+  gitHubToken: String
 }
 
 type Organization {
@@ -143,7 +144,8 @@ type Mutation {
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
   addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
   updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!
-  authenticateGithub(code: String!): AuthResult!
+  authenticateGitHub(code: String!): AuthResult!
+  unauthenticateGitHub: Boolean!
 }
 
 input AddEnvironmentVariableInput {
