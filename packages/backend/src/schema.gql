@@ -100,6 +100,7 @@ type Domain {
   branch: String!
   name: String!
   redirectTo: Domain
+  redirectToId: String
   status: DomainStatus!
   createdAt: String!
   updatedAt: String!
@@ -141,6 +142,7 @@ type Mutation {
   updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
+  deleteDomain(domainId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
   addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
   updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!

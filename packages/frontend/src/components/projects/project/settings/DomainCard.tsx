@@ -15,6 +15,7 @@ import {
 import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 enum RefreshStatus {
   IDLE,
@@ -50,6 +51,19 @@ const DomainCard = ({
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const client = useGQLClient();
+
+  const deleteDomain = async () => {
+    const { deleteDomain } = await client.deleteDomain(domain.id);
+
+    if (deleteDomain) {
+      onUpdate();
+      toast.success(`Domain ${domain.name} deleted successfully`);
+    } else {
+      toast.error(`Error deleting domain ${domain.name}`);
+    }
+  };
 
   return (
     <>
@@ -109,8 +123,8 @@ const DomainCard = ({
           open={deleteDialogOpen}
           confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
+            deleteDomain();
             setDeleteDialogOpen((preVal) => !preVal);
-            toast.success(`Domain "${domain.name}" has been deleted`);
           }}
           color="red"
         >

@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useOutletContext } from 'react-router-dom';
+import { Domain } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
 import { ProjectSearchOutletContext } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
-import { Domain } from 'gql-client';
+import repositories from '../../../../assets/repositories.json';
 
 const Domains = () => {
   const { id } = useParams();
@@ -21,16 +22,6 @@ const Domains = () => {
       return project.id === id;
     });
   }, [id, projects]);
-
-  // TODO: Use github API for getting linked repository
-  const linkedRepo = {
-    id: 3,
-    title: 'project-103',
-    updatedAt: '2023-12-21T04:20:00',
-    user: 'charlie',
-    private: false,
-    branch: ['main', 'prod', 'test'],
-  };
 
   const fetchDomains = async () => {
     if (currentProject === undefined) {
@@ -62,7 +53,8 @@ const Domains = () => {
             domains={domains}
             domain={domain}
             key={domain.id}
-            repo={linkedRepo!}
+            // TODO: Use github API for getting linked repository
+            repo={repositories[0]!}
             project={currentProject!}
             onUpdate={fetchDomains}
           />

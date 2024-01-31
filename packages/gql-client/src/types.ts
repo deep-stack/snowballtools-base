@@ -43,6 +43,7 @@ export type Domain = {
   name: string
   status: DomainStatus
   redirectTo?: Domain
+  redirectToId: string
   createdAt: string
   updatedAt: string
 }
@@ -216,6 +217,10 @@ export type UpdateDomainResponse = {
 
 export type DeleteProjectResponse = {
   deleteProject: boolean;
+}
+
+export type DeleteDomainResponse = {
+  deleteDomain: boolean;
 }
 
 export type UpdateProjectInput = {

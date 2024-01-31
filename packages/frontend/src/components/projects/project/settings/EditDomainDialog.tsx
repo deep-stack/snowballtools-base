@@ -57,13 +57,11 @@ const EditDomainDialog = ({
   }, [domain, domains]);
 
   const domainRedirectedFrom = useMemo(() => {
-    return domains.find(
-      (domainData) => domainData.redirectTo?.id === domain.id,
-    );
+    return domains.find((domainData) => domainData.redirectToId === domain.id);
   }, [domains, domain]);
 
   const isDisableDropdown = useMemo(() => {
-    return domainRedirectedFrom?.redirectTo?.id !== undefined;
+    return domainRedirectedFrom?.redirectToId !== undefined;
   }, [domain, domains]);
 
   const {
