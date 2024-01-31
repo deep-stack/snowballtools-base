@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { EnvironmentVariable } from 'gql-client';
@@ -6,6 +6,7 @@ import { EnvironmentVariable } from 'gql-client';
 import { IconButton, Input, Typography } from '@material-tailwind/react';
 
 import ConfirmDialog from '../../../shared/ConfirmDialog';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const ShowPasswordIcon = ({
   handler,
@@ -28,9 +29,13 @@ const ShowPasswordIcon = ({
 
 const EditEnvironmentVariableRow = ({
   variable,
+  onUpdate,
 }: {
   variable: EnvironmentVariable;
+  onUpdate: () => Promise<void>;
 }) => {
+  const client = useGQLClient();
+
   const { handleSubmit, register, reset } = useForm({
     defaultValues: {
       key: variable.key,
@@ -41,6 +46,39 @@ const EditEnvironmentVariableRow = ({
   const [showPassword, setShowPassword] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [edit, setEdit] = useState(false);
+
+  const removeEnvironmentVariableHandler = useCallback(async () => {
+    const { removeEnvironmentVariable: isEnvironmentVariableRemoved } =
+      await client.removeEnvironmentVariable(variable.id);
+
+    if (isEnvironmentVariableRemoved) {
+      await onUpdate();
+      setDeleteDialogOpen((preVal) => !preVal);
+      toast.success('Variable deleted');
+    } else {
+      toast.error('Variable not deleted');
+    }
+  }, [variable, deleteDialogOpen, onUpdate]);
+
+  const updateEnvironmentVariableHandler = useCallback(
+    async (data: { key: string; value: string }) => {
+      const { updateEnvironmentVariable: isEnvironmentVariableUpdated } =
+        await client.updateEnvironmentVariable(variable.id, data);
+
+      if (isEnvironmentVariableUpdated) {
+        await onUpdate();
+        toast.success('Variable edited');
+        setEdit((preVal) => !preVal);
+      } else {
+        toast.error('Variable not edited');
+      }
+    },
+    [variable, edit, onUpdate],
+  );
+
+  useEffect(() => {
+    reset({ key: variable.key, value: variable.value });
+  }, [variable]);
 
   return (
     <>
@@ -74,10 +112,7 @@ const EditEnvironmentVariableRow = ({
           <>
             <div className="self-end">
               <IconButton
-                onClick={handleSubmit(() => {
-                  toast.success('Variable edited');
-                  setEdit((preVal) => !preVal);
-                })}
+                onClick={handleSubmit(updateEnvironmentVariableHandler)}
                 size="sm"
               >
                 {'S'}
@@ -124,10 +159,7 @@ const EditEnvironmentVariableRow = ({
         handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
         open={deleteDialogOpen}
         confirmButtonTitle="Yes, Confirm delete"
-        handleConfirm={() => {
-          setDeleteDialogOpen((preVal) => !preVal);
-          toast.success('Variable deleted');
-        }}
+        handleConfirm={removeEnvironmentVariableHandler}
         color="red"
       >
         <Typography variant="small">
