@@ -225,7 +225,7 @@ export type UpdateProjectInput = {
 export type UpdateDomainInput = {
   name?: string;
   branch?: string;
-  redirectToId?: string;
+  redirectToId?: string | null;
 }
 
 export type RedeployToProdResponse = {

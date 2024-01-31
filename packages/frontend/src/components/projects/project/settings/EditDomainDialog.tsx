@@ -56,19 +56,17 @@ const EditDomainDialog = ({
     return ['none', ...domainNames];
   }, [domain, domains]);
 
-  const isDisableDropdown = useMemo(() => {
-    const domainRedirected = domains.find(
+  const domainRedirected = useMemo(() => {
+    return domains.find(
       (domainData) => domainData.redirectTo?.id === domain.id,
     );
+  }, [domains, domain]);
 
+  const isDisableDropdown = useMemo(() => {
     return domainRedirected?.redirectTo?.id !== undefined;
   }, [domain, domains]);
 
-  const getRedirectedTo = () => {
-    const domainRedirected = domains.find((domainData) => {
-      return domainData.redirectTo?.id === domain.id;
-    });
-
+  const getRedirectedFrom = () => {
     return domainRedirected ? domainRedirected.name : '';
   };
 
@@ -82,7 +80,7 @@ const EditDomainDialog = ({
   } = useForm({
     defaultValues: {
       name: domain.name,
-      branch: repo.branch[0],
+      branch: domain.branch,
       redirectedTo: getRedirectUrl(domain),
     },
   });
@@ -94,9 +92,9 @@ const EditDomainDialog = ({
       );
 
       const updates = {
-        name: data.name,
-        branch: data.branch ? data.branch : repo.branch[0],
-        redirectToId: domainRedirectTo ? domainRedirectTo.id : undefined,
+        name: data.name ? data.name : domain.name,
+        branch: data.branch ? data.branch : domain.branch,
+        redirectToId: domainRedirectTo ? domainRedirectTo.id : null,
       };
 
       const { updateDomain } = await client.updateDomain(domain.id, updates);
@@ -156,8 +154,8 @@ const EditDomainDialog = ({
             <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
               <div>^</div>
               <Typography variant="small">
-                Domain “{getRedirectedTo()}” redirects to this domain so you can
-                not redirect this doman further.
+                Domain “{getRedirectedFrom()}” redirects to this domain so you
+                can not redirect this doman further.
               </Typography>
             </div>
           )}

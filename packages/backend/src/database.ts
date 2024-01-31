@@ -450,7 +450,7 @@ export class Database {
       }
     });
 
-    if (domainRedirected.length > 0) {
+    if (domainRedirected.length > 0 && data.branch === domain.branch) {
       throw new Error('Remove all redirects to this domain before updating');
     }
 
@@ -463,6 +463,10 @@ export class Database {
           id: data.redirectToId
         }
       });
+
+      if (redirectedDomain === null) {
+        throw new Error('Could not find Domain to redirect to');
+      }
 
       if (redirectedDomain?.redirectTo) {
         throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
