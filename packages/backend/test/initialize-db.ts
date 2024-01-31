@@ -22,9 +22,10 @@ const PROJECT_DATA_PATH = './fixtures/projects.json';
 const ORGANIZATION_DATA_PATH = './fixtures/organizations.json';
 const USER_ORGANIZATION_DATA_PATH = './fixtures/user-orgnizations.json';
 const PROJECT_MEMBER_DATA_PATH = './fixtures/project-members.json';
-const DOMAIN_DATA_PATH = './fixtures/domains.json';
+const PRIMARY_DOMAIN_DATA_PATH = './fixtures/primary-domains.json';
 const DEPLOYMENT_DATA_PATH = './fixtures/deployments.json';
 const ENVIRONMENT_VARIABLE_DATA_PATH = './fixtures/environment-variables.json';
+const REDIRECTED_DOMAIN_DATA_PATH = './fixtures/redirected-domains.json';
 
 const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, filePath: string, relations?: any | undefined) => {
   const entitiesData = await fs.readFile(filePath, 'utf-8');
@@ -54,6 +55,8 @@ const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityT
 };
 
 const generateTestData = async (dataSource: DataSource) => {
+  const domainRepository = await dataSource.getRepository(Domain);
+
   const savedUsers = await loadAndSaveData(User, dataSource, path.resolve(__dirname, USER_DATA_PATH));
   const savedOrgs = await loadAndSaveData(Organization, dataSource, path.resolve(__dirname, ORGANIZATION_DATA_PATH));
 
@@ -64,11 +67,20 @@ const generateTestData = async (dataSource: DataSource) => {
 
   const savedProjects = await loadAndSaveData(Project, dataSource, path.resolve(__dirname, PROJECT_DATA_PATH), projectRelations);
 
-  const domainRelations = {
+  const domainPrimaryRelations = {
     project: savedProjects
   };
 
-  const savedDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, DOMAIN_DATA_PATH), domainRelations);
+  const savedPrimaryDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, PRIMARY_DOMAIN_DATA_PATH), domainPrimaryRelations);
+
+  const domainRedirectedRelations = {
+    project: savedProjects,
+    redirectTo: savedPrimaryDomains
+  };
+
+  await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, REDIRECTED_DOMAIN_DATA_PATH), domainRedirectedRelations);
+
+  const savedDomains = await domainRepository.find();
 
   const userOrganizationRelations = {
     member: savedUsers,

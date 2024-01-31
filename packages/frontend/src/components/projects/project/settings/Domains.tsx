@@ -22,11 +22,15 @@ const Domains = () => {
     });
   }, [id, projects]);
 
-  const linkedRepo = useMemo(() => {
-    return currentProject?.repositories?.find(
-      (repo: any) => repo.id === Number(currentProject?.repositoryId),
-    );
-  }, [currentProject]);
+  // TODO: Use github API for getting linked repository
+  const linkedRepo = {
+    id: 3,
+    title: 'project-103',
+    updatedAt: '2023-12-21T04:20:00',
+    user: 'charlie',
+    private: false,
+    branch: ['main', 'prod', 'test'],
+  };
 
   const fetchDomains = async () => {
     if (currentProject === undefined) {
