@@ -227,16 +227,25 @@ export const EnvironmentVariablesTabPanel = () => {
         <DisplayEnvironmentVariables
           environment={Environment.Production}
           variables={getEnvironmentVariables(Environment.Production)}
+          onUpdate={async () => {
+            await fetchEnvironmentVariables(id);
+          }}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environment.Preview}
           variables={getEnvironmentVariables(Environment.Preview)}
+          onUpdate={async () => {
+            await fetchEnvironmentVariables(id);
+          }}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environment.Development}
           variables={getEnvironmentVariables(Environment.Development)}
+          onUpdate={async () => {
+            await fetchEnvironmentVariables(id);
+          }}
         />
       </div>
     </>
