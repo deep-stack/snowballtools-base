@@ -11,7 +11,7 @@ import {
 import { Project } from './Project';
 import { User } from './User';
 
-enum Permissions {
+export enum Permissions {
   View = 'View',
   Edit = 'Edit'
 }
