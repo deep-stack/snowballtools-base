@@ -49,7 +49,6 @@ query ($projectId: String!) {
         updatedAt
         id
         name
-        redirectToId
       }
     }
   }
@@ -227,7 +226,6 @@ query ($projectId: String!) {
     name
     status
     updatedAt
-    redirectToId
   }
 }
 `;

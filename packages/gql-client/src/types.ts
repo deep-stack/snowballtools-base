@@ -43,7 +43,6 @@ export type Domain = {
   name: string
   status: DomainStatus
   redirectTo?: Domain
-  redirectToId: string
   createdAt: string
   updatedAt: string
 }

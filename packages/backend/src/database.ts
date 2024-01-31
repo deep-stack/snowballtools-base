@@ -350,22 +350,9 @@ export class Database {
   async deleteDomainById (domainId: string): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
-    const domain = await domainRepository.findOne({
-      where: {
-        id: Number(domainId)
-      }
-    });
-
-    if (domain === null) {
-      throw new Error(`Error finding domain with id ${domainId}`);
-    }
-
     const domainsRedirectedFrom = await domainRepository.find({
       where: {
-        project: {
-          id: domain.projectId
-        },
-        redirectToId: domain.id
+        redirectToId: Number(domainId)
       }
     });
 
