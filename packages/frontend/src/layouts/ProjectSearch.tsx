@@ -51,7 +51,6 @@ const ProjectSearch = () => {
           ...project,
           // TODO: populate empty fields
           icon: '',
-          title: project.name,
           organization: orgName,
           deployments: updatedDeployments,
           url: '',

@@ -139,6 +139,27 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
+      updateEnvironmentVariable: async (_: any, { environmentVariableId, environmentVariable }: { environmentVariableId: string, environmentVariable : {
+        key: string
+        value: string
+      }}) => {
+        try {
+          return db.updateEnvironmentVariable(environmentVariableId, environmentVariable);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      removeEnvironmentVariable: async (_: any, { environmentVariableId }: { environmentVariableId: string}) => {
+        try {
+          return db.deleteEnvironmentVariable(environmentVariableId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
       updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
         try {
           return db.updateDeploymentById(deploymentId, {

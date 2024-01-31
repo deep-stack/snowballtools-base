@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getDomains, getProjectsInOrganization } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGithubResponse } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGithub } from './mutations';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGithubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse } from './types';
+import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGithub, updateEnvironmentVariable, removeEnvironmentVariable } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -130,6 +130,29 @@ export class GQLClient {
       variables: {
         projectId,
         environmentVariables
+      }
+    });
+
+    return data;
+  }
+
+  async updateEnvironmentVariable (environmentVariableId: string, environmentVariable: UpdateEnvironmentVariableInput): Promise<UpdateEnvironmentVariableResponse> {
+    const { data } = await this.client.mutate({
+      mutation: updateEnvironmentVariable,
+      variables: {
+        environmentVariableId,
+        environmentVariable
+      }
+    });
+
+    return data;
+  }
+
+  async removeEnvironmentVariable (environmentVariableId: string): Promise<RemoveEnvironmentVariableResponse> {
+    const { data } = await this.client.mutate({
+      mutation: removeEnvironmentVariable,
+      variables: {
+        environmentVariableId
       }
     });
 
