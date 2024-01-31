@@ -8,11 +8,13 @@ import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
 interface DisplayEnvironmentVariablesProps {
   environment: Environment;
   variables: EnvironmentVariable[];
+  onUpdate: () => Promise<void>;
 }
 
 const DisplayEnvironmentVariables = ({
   environment,
   variables,
+  onUpdate,
 }: DisplayEnvironmentVariablesProps) => {
   const [openCollapse, setOpenCollapse] = useState(false);
 
@@ -37,9 +39,13 @@ const DisplayEnvironmentVariables = ({
             </Typography>
           </Card>
         ) : (
-          variables.map((variable: EnvironmentVariable, index: number) => {
+          variables.map((variable: EnvironmentVariable) => {
             return (
-              <EditEnvironmentVariableRow key={index} variable={variable} />
+              <EditEnvironmentVariableRow
+                onUpdate={onUpdate}
+                key={variable.id}
+                variable={variable}
+              />
             );
           })
         )}
