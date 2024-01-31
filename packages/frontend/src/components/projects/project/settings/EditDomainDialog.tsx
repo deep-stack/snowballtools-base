@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
@@ -40,37 +40,57 @@ const EditDomainDialog = ({
   const client = useGQLClient();
 
   const getRedirectUrl = (domain: Domain) => {
-    const domainArr = domain.name.split('www.');
-    let redirectUrl = '';
-    if (domain.name.startsWith('www.')) {
-      redirectUrl = domainArr[1];
+    const redirectDomain = domain.redirectTo;
+
+    if (redirectDomain !== null) {
+      return redirectDomain?.name;
     } else {
-      redirectUrl = `www.${domainArr[0]}`;
+      return 'none';
     }
-    return redirectUrl;
   };
 
   const redirectOptions = useMemo(() => {
-    const redirectUrl = getRedirectUrl(domain);
-    return [...DEFAULT_REDIRECT_OPTIONS, redirectUrl];
-  }, [domain]);
+    const domainNames = domains
+      .filter((domainData) => domainData.id !== domain.id)
+      .map((domain) => domain.name);
+    return ['none', ...domainNames];
+  }, [domain, domains]);
+
+  const domainRedirectedFrom = useMemo(() => {
+    return domains.find(
+      (domainData) => domainData.redirectTo?.id === domain.id,
+    );
+  }, [domains, domain]);
 
   const isDisableDropdown = useMemo(() => {
-    const redirectUrl = getRedirectUrl(domain);
+    return domainRedirectedFrom?.redirectTo?.id !== undefined;
+  }, [domain, domains]);
 
-    const domainRedirected = domains.find(
-      (domain) => domain.name === redirectUrl,
-    );
+  const {
+    handleSubmit,
+    register,
+    control,
+    watch,
+    reset,
+    formState: { isValid, isDirty },
+  } = useForm({
+    defaultValues: {
+      name: domain.name,
+      branch: domain.branch,
+      redirectedTo: getRedirectUrl(domain),
+    },
+  });
 
-    return domainRedirected?.isRedirected;
-  }, [domain]);
-
-  const onSubmit = useCallback(
+  const updateDomainHandler = useCallback(
     async (data: any) => {
+      const domainRedirectTo = domains.find(
+        (domainData) => data.redirectedTo === domainData.name,
+      );
+
       const updates = {
-        name: data.name,
-        branch: data.branch,
-        isRedirected: data.redirectedTo !== 'none',
+        name: data.name ? data.name : domain.name,
+        branch: data.branch ? data.branch : domain.branch,
+        redirectToId: domainRedirectTo ? domainRedirectTo.id : null,
       };
 
       const { updateDomain } = await client.updateDomain(domain.id, updates);
@@ -79,29 +99,22 @@ const EditDomainDialog = ({
         await onUpdate();
         toast.success(`Domain ${domain.name} has been updated`);
       } else {
+        reset();
         toast.error(`Error updating domain ${domain.name}`);
       }
 
       handleOpen();
     },
-    [client],
+    [client, domains, domain],
   );
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    watch,
-    formState: { isValid, isDirty },
-  } = useForm({
-    defaultValues: {
+  useEffect(() => {
+    reset({
       name: domain.name,
-      branch: repo.branch[0],
-      redirectedTo: !domain.isRedirected
-        ? redirectOptions[0]
-        : redirectOptions[1],
-    },
-  });
+      branch: domain.branch,
+      redirectedTo: getRedirectUrl(domain),
+    });
+  }, [domain, repo]);
 
   return (
     <Dialog open={open} handler={handleOpen}>
@@ -115,7 +128,7 @@ const EditDomainDialog = ({
           X
         </Button>
       </DialogHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(updateDomainHandler)}>
         <DialogBody className="flex flex-col gap-2 p-4">
           <Typography variant="small">Domain name</Typography>
           <Input crossOrigin={undefined} {...register('name')} />
@@ -137,8 +150,9 @@ const EditDomainDialog = ({
             <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
               <div>^</div>
               <Typography variant="small">
-                Domain “{redirectOptions[1]}” redirects to this domain so you
-                can not redirect this doman further.
+                Domain “{domainRedirectedFrom ? domainRedirectedFrom.name : ''}”
+                redirects to this domain so you can not redirect this doman
+                further.
               </Typography>
             </div>
           )}

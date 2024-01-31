@@ -20,6 +20,9 @@ export class Domain {
   @PrimaryGeneratedColumn()
     id!: number;
 
+  @Column('varchar')
+    projectId!: string;
+
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
     project!: Project;
@@ -30,8 +33,13 @@ export class Domain {
   @Column('varchar', { length: 255 })
     name!: string;
 
-  @Column('boolean', { default: false })
-    isRedirected!: boolean;
+  @Column('int', { nullable: true })
+    redirectToId!: number;
+
+  @ManyToOne(() => Domain)
+  @JoinColumn({ name: 'redirectToId' })
+    // eslint-disable-next-line no-use-before-define
+    redirectTo!: Domain | null;
 
   @Column({
     enum: Status,

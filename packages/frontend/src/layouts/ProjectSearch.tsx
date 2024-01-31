@@ -41,7 +41,6 @@ const ProjectSearch = () => {
                     name: '',
                     value: '',
                   },
-                  isRedirectedto: deployment.domain.isRedirected,
                 }
               : null,
           };
