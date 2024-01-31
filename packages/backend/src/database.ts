@@ -393,7 +393,7 @@ export class Database {
       isRedirected: true,
       branch: currentProject.prodBranch,
       project: currentProject,
-      redirectTo: savedPrimaryDomain.id
+      redirectTo: savedPrimaryDomain
     };
 
     const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
@@ -406,6 +406,9 @@ export class Database {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const domains = await domainRepository.find({
+      relations: {
+        redirectTo: true
+      },
       where: {
         project: {
           id: projectId
@@ -416,23 +419,37 @@ export class Database {
     return domains;
   }
 
-  async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
+  async updateDomainById (domainId: string, updates: {name?: string, isRedirected?: boolean, branch?: string, redirectToId?: string}): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const domain = await domainRepository.findOne({
       relations: {
-        project: true
+        project: true,
+        redirectTo: true
       },
       where: {
         id: Number(domainId)
       }
     });
 
+    const newUpdates: {
+      name?: string,
+      isRedirected?: boolean,
+      branch?: string,
+      redirectTo: Domain | null
+    } = {
+      ...updates,
+      redirectTo: null
+    };
+
     if (domain === null) {
       throw new Error(`Error finding domain with id ${domainId}`);
     }
 
     const domains = await domainRepository.find({
+      relations: {
+        redirectTo: true
+      },
       where: {
         project: {
           id: domain?.project.id
@@ -441,28 +458,31 @@ export class Database {
     });
 
     const domainRedirected = domains.find((domainData) => {
-      return Number(domainData.redirectTo) === Number(domain.id);
+      return domainData.redirectTo?.id === domain.id;
     });
 
-    if (domainRedirected !== undefined) {
+    if (domainRedirected) {
       throw new Error('Remove all redirects to this domain before updating');
     }
 
-    if (updates.redirectTo) {
+    if (updates.redirectToId) {
       const redirectedDomain = await domainRepository.findOne({
+        relations: {
+          redirectTo: true
+        },
         where: {
-          id: Number(updates.redirectTo)
+          id: Number(updates.redirectToId)
         }
       });
-
-      console.log(redirectedDomain);
 
       if (redirectedDomain?.redirectTo) {
         throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
       }
+
+      newUpdates.redirectTo = redirectedDomain;
     }
 
-    const updateResult = await domainRepository.update({ id: Number(domainId) }, updates);
+    const updateResult = await domainRepository.update({ id: Number(domainId) }, newUpdates);
 
     if (updateResult.affected) {
       return updateResult.affected > 0;

@@ -99,7 +99,7 @@ type Domain {
   branch: String!
   name: String!
   isRedirected: Boolean!
-  redirectTo: String
+  redirectTo: Domain
   status: DomainStatus!
   createdAt: String!
   updatedAt: String!

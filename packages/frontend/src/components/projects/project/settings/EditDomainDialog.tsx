@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
@@ -40,13 +40,10 @@ const EditDomainDialog = ({
   const client = useGQLClient();
 
   const getRedirectUrl = (domain: Domain) => {
-    const redirectDomain = domains.find((domainData) => {
-      if (domain.redirectTo !== null) {
-        return Number(domainData.id) === Number(domain.redirectTo);
-      }
-    });
-    if (redirectDomain !== undefined) {
-      return redirectDomain.name;
+    const redirectDomain = domain.redirectTo;
+
+    if (redirectDomain !== null) {
+      return redirectDomain?.name;
     } else {
       return 'none';
     }
@@ -55,32 +52,49 @@ const EditDomainDialog = ({
   const redirectOptions = useMemo(() => {
     const redirectUrl = getRedirectUrl(domain);
 
+    const redirectArray =
+      redirectUrl === 'none' ? [redirectUrl] : [redirectUrl, 'none'];
     const domainNames = domains
       .filter(
         (domainData) =>
-          domainData.name !== redirectUrl && domainData !== domain,
+          domainData.name !== redirectUrl && domainData.name !== domain.name,
       )
       .map((domain) => domain.name);
-    return ['none', ...domainNames, redirectUrl];
-  }, [domain]);
+    return [...domainNames, ...redirectArray];
+  }, [domain, domains]);
 
   const isDisableDropdown = useMemo(() => {
-    const domainRedirected = domains.find((domainData) => {
-      return Number(domainData.redirectTo) === Number(domain.id);
-    });
+    const domainRedirected = domains.find(
+      (domainData) => domainData.redirectTo?.id === domain.id,
+    );
 
     return domainRedirected?.isRedirected;
-  }, [domain]);
+  }, [domain, domains]);
 
   const getRedirectedTo = () => {
     const domainRedirected = domains.find((domainData) => {
-      return Number(domainData.redirectTo) === Number(domain.id);
+      return domainData.redirectTo?.id === domain.id;
     });
 
     return domainRedirected ? domainRedirected.name : '';
   };
 
-  const onSubmit = useCallback(
+  const {
+    handleSubmit,
+    register,
+    control,
+    watch,
+    reset,
+    formState: { isValid, isDirty },
+  } = useForm({
+    defaultValues: {
+      name: domain.name,
+      branch: repo.branch[0],
+      redirectedTo: !domain.isRedirected ? 'none' : getRedirectUrl(domain),
+    },
+  });
+
+  const updateDomainHandler = useCallback(
     async (data: any) => {
       const domainRedirectTo = domains.find(
         (domainData) => data.redirectedTo === domainData.name,
@@ -88,7 +102,7 @@ const EditDomainDialog = ({
 
       const updates = {
         name: data.name,
-        branch: data.branch,
+        branch: data.branch ? data.branch : repo.branch[0],
         isRedirected: data.redirectedTo !== 'none',
         redirectTo: domainRedirectTo ? domainRedirectTo.id : undefined,
       };
@@ -99,29 +113,22 @@ const EditDomainDialog = ({
         await onUpdate();
         toast.success(`Domain ${domain.name} has been updated`);
       } else {
+        reset();
         toast.error(`Error updating domain ${domain.name}`);
       }
 
       handleOpen();
     },
-    [client, domains],
+    [client, domains, domain],
   );
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    watch,
-    formState: { isValid, isDirty },
-  } = useForm({
-    defaultValues: {
+  useEffect(() => {
+    reset({
       name: domain.name,
       branch: repo.branch[0],
-      redirectedTo: !domain.isRedirected
-        ? 'none'
-        : redirectOptions[redirectOptions.length - 1],
-    },
-  });
+      redirectedTo: !domain.isRedirected ? 'none' : getRedirectUrl(domain),
+    });
+  }, [domain, repo]);
 
   return (
     <Dialog open={open} handler={handleOpen}>
@@ -135,7 +142,7 @@ const EditDomainDialog = ({
           X
         </Button>
       </DialogHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(updateDomainHandler)}>
         <DialogBody className="flex flex-col gap-2 p-4">
           <Typography variant="small">Domain name</Typography>
           <Input crossOrigin={undefined} {...register('name')} />

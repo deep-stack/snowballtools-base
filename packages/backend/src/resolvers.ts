@@ -7,6 +7,7 @@ import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
+// import { Domain } from './entity/Domain';
 
 const log = debug('snowball:database');
 
@@ -233,7 +234,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
-      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: {name?: string, isRedirected?: boolean, branch?: string, redirectTo?: number }}) => {
+      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: {name?: string, isRedirected?: boolean, branch?: string, redirectToId?: string}}) => {
         try {
           await db.updateDomainById(domainId, domainDetails);
           return true;

@@ -33,8 +33,10 @@ export class Domain {
   @Column('boolean', { default: false })
     isRedirected!: boolean;
 
-  @Column('varchar', { default: null })
-    redirectTo!: number | null;
+  @ManyToOne(() => Domain)
+    @JoinColumn({ name: 'redirectToId' })
+    // eslint-disable-next-line no-use-before-define
+    redirectTo!: Domain | null;
 
   @Column({
     enum: Status,
