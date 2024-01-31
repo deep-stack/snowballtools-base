@@ -180,6 +180,19 @@ export type AddEnvironmentVariableInput = {
   value: string;
 }
 
+export type UpdateEnvironmentVariableInput = {
+  key: string;
+  value: string;
+}
+
+export type UpdateEnvironmentVariableResponse = {
+  updateEnvironmentVariable: boolean;
+}
+
+export type RemoveEnvironmentVariableResponse = {
+  removeEnvironmentVariable: boolean;
+}
+
 export type UpdateDeploymentToProdResponse = {
   updateDeploymentToProd: boolean;
 }

@@ -70,7 +70,7 @@ export const EnvironmentVariablesTabPanel = () => {
     }
   }, [isSubmitSuccessful, reset, id]);
 
-  const getEnvironmentVariable = useCallback(
+  const getEnvironmentVariables = useCallback(
     (environment: Environment) => {
       return environmentVariables.filter(
         (item) => item.environment === environment,
@@ -226,17 +226,17 @@ export const EnvironmentVariablesTabPanel = () => {
       <div className="p-2">
         <DisplayEnvironmentVariables
           environment={Environment.Production}
-          variables={getEnvironmentVariable(Environment.Production)}
+          variables={getEnvironmentVariables(Environment.Production)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environment.Preview}
-          variables={getEnvironmentVariable(Environment.Preview)}
+          variables={getEnvironmentVariables(Environment.Preview)}
         />
         <HorizontalLine />
         <DisplayEnvironmentVariables
           environment={Environment.Development}
-          variables={getEnvironmentVariable(Environment.Development)}
+          variables={getEnvironmentVariables(Environment.Development)}
         />
       </div>
     </>
