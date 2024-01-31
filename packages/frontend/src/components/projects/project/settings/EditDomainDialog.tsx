@@ -56,19 +56,15 @@ const EditDomainDialog = ({
     return ['none', ...domainNames];
   }, [domain, domains]);
 
-  const domainRedirected = useMemo(() => {
+  const domainRedirectedFrom = useMemo(() => {
     return domains.find(
       (domainData) => domainData.redirectTo?.id === domain.id,
     );
   }, [domains, domain]);
 
   const isDisableDropdown = useMemo(() => {
-    return domainRedirected?.redirectTo?.id !== undefined;
+    return domainRedirectedFrom?.redirectTo?.id !== undefined;
   }, [domain, domains]);
-
-  const getRedirectedFrom = () => {
-    return domainRedirected ? domainRedirected.name : '';
-  };
 
   const {
     handleSubmit,
@@ -115,7 +111,7 @@ const EditDomainDialog = ({
   useEffect(() => {
     reset({
       name: domain.name,
-      branch: repo.branch[0],
+      branch: domain.branch,
       redirectedTo: getRedirectUrl(domain),
     });
   }, [domain, repo]);
@@ -154,8 +150,9 @@ const EditDomainDialog = ({
             <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
               <div>^</div>
               <Typography variant="small">
-                Domain “{getRedirectedFrom()}” redirects to this domain so you
-                can not redirect this doman further.
+                Domain “{domainRedirectedFrom ? domainRedirectedFrom.name : ''}”
+                redirects to this domain so you can not redirect this doman
+                further.
               </Typography>
             </div>
           )}

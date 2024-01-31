@@ -1,5 +1,6 @@
 import debug from 'debug';
 import assert from 'assert';
+import { DeepPartial } from 'typeorm';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -7,7 +8,6 @@ import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
-import { DeepPartial } from 'typeorm';
 import { Domain } from './entity/Domain';
 
 const log = debug('snowball:database');

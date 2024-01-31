@@ -421,12 +421,8 @@ export class Database {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const domain = await domainRepository.findOne({
-      relations: {
-        project: true,
-        redirectTo: true
-      },
       where: {
-        id: domainId
+        id: Number(domainId)
       }
     });
 
@@ -438,29 +434,24 @@ export class Database {
       throw new Error(`Error finding domain with id ${domainId}`);
     }
 
-    const domainRedirected = await domainRepository.find({
-      relations: {
-        redirectTo: true
-      },
+    const domainsRedirectedFrom = await domainRepository.find({
       where: {
         project: {
-          id: domain.project.id
+          id: domain.projectId
         },
         redirectToId: domain.id
       }
     });
 
-    if (domainRedirected.length > 0 && data.branch === domain.branch) {
+    // If there are domains redirecting to current domain, only branch of current domain can be updated
+    if (domainsRedirectedFrom.length > 0 && data.branch === domain.branch) {
       throw new Error('Remove all redirects to this domain before updating');
     }
 
     if (data.redirectToId) {
       const redirectedDomain = await domainRepository.findOne({
-        relations: {
-          redirectTo: true
-        },
         where: {
-          id: data.redirectToId
+          id: Number(data.redirectToId)
         }
       });
 
@@ -468,14 +459,14 @@ export class Database {
         throw new Error('Could not find Domain to redirect to');
       }
 
-      if (redirectedDomain?.redirectTo) {
+      if (redirectedDomain.redirectToId) {
         throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
       }
 
       newDomain.redirectTo = redirectedDomain;
     }
 
-    const updateResult = await domainRepository.update({ id: domainId }, newDomain);
+    const updateResult = await domainRepository.update({ id: Number(domainId) }, newDomain);
 
     if (updateResult.affected) {
       return updateResult.affected > 0;
