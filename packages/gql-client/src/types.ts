@@ -134,8 +134,12 @@ export type GetProjectMembersResponse = {
   projectMembers: ProjectMember[]
 }
 
-export type RemoveMemberResponse = {
-  removeMember: boolean;
+export type RemoveProjectMemberResponse = {
+  removeProjectMember: boolean;
+}
+
+export type UpdateProjectMemberResponse = {
+  updateProjectMember: boolean;
 }
 
 export type GetDeploymentsResponse = {
@@ -183,6 +187,10 @@ export type AddEnvironmentVariableInput = {
 export type UpdateEnvironmentVariableInput = {
   key: string;
   value: string;
+}
+
+export type UpdateProjectMemberInput = {
+  permissions: Permission[];
 }
 
 export type UpdateEnvironmentVariableResponse = {

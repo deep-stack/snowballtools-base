@@ -165,13 +165,24 @@ export class Database {
     return environmentVariables;
   }
 
-  async removeProjectMemberById (memberId: string): Promise<boolean> {
+  async removeProjectMemberById (projectMemberId: string): Promise<boolean> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
-    const deleted = await projectMemberRepository.delete(memberId);
+    const deleteResult = await projectMemberRepository.delete({ id: Number(projectMemberId) });
 
-    if (deleted.affected) {
-      return deleted.affected > 0;
+    if (deleteResult.affected) {
+      return deleteResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
+  async updateProjectMemberById (projectMemberId: string, data: DeepPartial<ProjectMember>): Promise<boolean> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+    const updateResult = await projectMemberRepository.update({ id: Number(projectMemberId) }, data);
+
+    if (updateResult.affected) {
+      return updateResult.affected > 0;
     } else {
       return false;
     }
@@ -223,7 +234,7 @@ export class Database {
     }
   }
 
-  async getProjectMemberByMemberId (memberId: string): Promise<ProjectMember> {
+  async getProjectMemberById (projectMemberId: string): Promise<ProjectMember> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
     const projectMemberWithProject = await projectMemberRepository.find({
@@ -234,7 +245,7 @@ export class Database {
         member: true
       },
       where: {
-        id: Number(memberId)
+        id: Number(projectMemberId)
       }
     }
     );

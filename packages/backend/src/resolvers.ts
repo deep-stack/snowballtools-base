@@ -6,6 +6,7 @@ import { OAuthApp } from '@octokit/oauth-app';
 import { Database } from './database';
 import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
+import { Permission } from './entity/ProjectMember';
 
 const log = debug('snowball:database');
 
@@ -108,9 +109,9 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
     },
 
     Mutation: {
-      removeMember: async (_: any, { memberId }: { memberId: string }, context: any) => {
+      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
         try {
-          const member = await db.getProjectMemberByMemberId(memberId);
+          const member = await db.getProjectMemberById(projectMemberId);
 
           if (member.member.id === context.userId) {
             throw new Error('Invalid operation: cannot remove self');
@@ -120,10 +121,24 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
           assert(memberProject);
 
           if (isUserOwner(String(context.userId), String(memberProject.owner.id))) {
-            return db.removeProjectMemberById(memberId);
+            return db.removeProjectMemberById(projectMemberId);
           } else {
             throw new Error('Invalid operation: not authorized');
           }
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      updateProjectMember: async (_: any, { projectMemberId, data }: {
+        projectMemberId: string,
+        data: {
+          permissions: Permission[]
+        }
+      }) => {
+        try {
+          return db.updateProjectMemberById(projectMemberId, data);
         } catch (err) {
           log(err);
           return false;

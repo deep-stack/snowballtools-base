@@ -1,8 +1,14 @@
 import { gql } from '@apollo/client';
 
-export const removeMember = gql`
-mutation ($memberId: String!) {
-  removeMember(memberId: $memberId)
+export const removeProjectMember = gql`
+mutation ($projectMemberId: String!) {
+  removeProjectMember(projectMemberId: $projectMemberId)
+}
+`;
+
+export const updateProjectMember = gql`
+mutation ($projectMemberId: String!, $data: UpdateProjectMemberInput) {
+  updateProjectMember(projectMemberId: $projectMemberId, data: $data)
 }
 `;
 

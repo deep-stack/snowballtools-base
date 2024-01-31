@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getDomains, getProjectsInOrganization } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, RemoveMemberResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGithubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse } from './types';
-import { removeMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGithub, updateEnvironmentVariable, removeEnvironmentVariable } from './mutations';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGithubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse, UpdateProjectMemberInput, RemoveProjectMemberResponse, UpdateProjectMemberResponse } from './types';
+import { removeProjectMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGithub, updateEnvironmentVariable, removeEnvironmentVariable, updateProjectMember } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -91,26 +91,38 @@ export class GQLClient {
     return data;
   }
 
-  async removeMember (memberId: string): Promise<RemoveMemberResponse> {
-    const { data } = await this.client.mutate({
-      mutation: removeMember,
-      variables: {
-        memberId
-      }
-    });
-
-    return data;
-  }
-
   async getProjectMembers (projectId: string) : Promise<GetProjectMembersResponse> {
-    const { data } = await this.client.query({
+    const result = await this.client.query({
       query: getProjectMembers,
       variables: {
         projectId
       }
     });
 
-    return data;
+    return result.data;
+  }
+
+  async updateProjectMember (projectMemberId: string, data: UpdateProjectMemberInput): Promise<UpdateProjectMemberResponse> {
+    const result = await this.client.mutate({
+      mutation: updateProjectMember,
+      variables: {
+        projectMemberId,
+        data
+      }
+    });
+
+    return result.data;
+  }
+
+  async removeProjectMember (projectMemberId: string): Promise<RemoveProjectMemberResponse> {
+    const result = await this.client.mutate({
+      mutation: removeProjectMember,
+      variables: {
+        projectMemberId
+      }
+    });
+
+    return result.data;
   }
 
   async searchProjects (searchText: string) : Promise<SearchProjectsResponse> {
