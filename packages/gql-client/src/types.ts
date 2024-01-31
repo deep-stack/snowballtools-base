@@ -227,7 +227,7 @@ export type UpdateDomainInput = {
   name?: string;
   isRedirected?: boolean;
   branch?: string;
-  redirectTo?: string;
+  redirectToId?: string;
 }
 
 export type RedeployToProdResponse = {

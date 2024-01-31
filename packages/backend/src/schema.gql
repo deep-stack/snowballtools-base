@@ -166,7 +166,7 @@ input UpdateDomainInput {
   name: String
   isRedirected: Boolean
   branch: String
-  redirectTo: String
+  redirectToId: String
 }
 
 input UpdateEnvironmentVariableInput {

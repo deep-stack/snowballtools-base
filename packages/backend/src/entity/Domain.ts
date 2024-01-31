@@ -18,7 +18,7 @@ export enum Status {
 @Entity()
 export class Domain {
   @PrimaryGeneratedColumn()
-    id!: number;
+    id!: string;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
@@ -33,8 +33,11 @@ export class Domain {
   @Column('boolean', { default: false })
     isRedirected!: boolean;
 
+  @Column('varchar', { nullable: true })
+    redirectToId!: string;
+
   @ManyToOne(() => Domain)
-    @JoinColumn({ name: 'redirectToId' })
+  @JoinColumn({ name: 'redirectToId' })
     // eslint-disable-next-line no-use-before-define
     redirectTo!: Domain | null;
 

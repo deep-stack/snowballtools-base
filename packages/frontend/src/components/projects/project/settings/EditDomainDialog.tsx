@@ -50,17 +50,10 @@ const EditDomainDialog = ({
   };
 
   const redirectOptions = useMemo(() => {
-    const redirectUrl = getRedirectUrl(domain);
-
-    const redirectArray =
-      redirectUrl === 'none' ? [redirectUrl] : [redirectUrl, 'none'];
     const domainNames = domains
-      .filter(
-        (domainData) =>
-          domainData.name !== redirectUrl && domainData.name !== domain.name,
-      )
+      .filter((domainData) => domainData.id !== domain.id)
       .map((domain) => domain.name);
-    return [...domainNames, ...redirectArray];
+    return ['none', ...domainNames];
   }, [domain, domains]);
 
   const isDisableDropdown = useMemo(() => {
@@ -90,7 +83,7 @@ const EditDomainDialog = ({
     defaultValues: {
       name: domain.name,
       branch: repo.branch[0],
-      redirectedTo: !domain.isRedirected ? 'none' : getRedirectUrl(domain),
+      redirectedTo: getRedirectUrl(domain),
     },
   });
 
@@ -104,7 +97,7 @@ const EditDomainDialog = ({
         name: data.name,
         branch: data.branch ? data.branch : repo.branch[0],
         isRedirected: data.redirectedTo !== 'none',
-        redirectTo: domainRedirectTo ? domainRedirectTo.id : undefined,
+        redirectToId: domainRedirectTo ? domainRedirectTo.id : undefined,
       };
 
       const { updateDomain } = await client.updateDomain(domain.id, updates);
@@ -126,7 +119,7 @@ const EditDomainDialog = ({
     reset({
       name: domain.name,
       branch: repo.branch[0],
-      redirectedTo: !domain.isRedirected ? 'none' : getRedirectUrl(domain),
+      redirectedTo: getRedirectUrl(domain),
     });
   }, [domain, repo]);
 
