@@ -326,6 +326,27 @@ export class Database {
     }
   }
 
+  async addProject (userId: string, projectDetails: DeepPartial<Project>): Promise<Project> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    // TODO: Check if organization exists
+    const newProject = projectRepository.create(projectDetails);
+    // TODO: Set default empty array for webhooks in TypeORM
+    newProject.webhooks = [];
+    // TODO: Set icon according to framework
+    newProject.icon = '';
+
+    newProject.owner = Object.assign(new User(), {
+      id: Number(userId)
+    });
+
+    newProject.organization = Object.assign(new Organization(), {
+      id: Number(projectDetails.organizationId)
+    });
+
+    return projectRepository.save(newProject);
+  }
+
   async updateProjectById (projectId: string, updates: DeepPartial<Project>): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
     const updateResult = await projectRepository.update({ id: projectId }, updates);

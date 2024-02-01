@@ -206,6 +206,16 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
+      addProject: async (_: any, { projectDetails }: { projectDetails: DeepPartial<Project> }, context: any) => {
+        try {
+          await db.addProject(context.userId, projectDetails);
+          return true;
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
       updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: DeepPartial<Project> }) => {
         try {
           return await db.updateProjectById(projectId, projectDetails);

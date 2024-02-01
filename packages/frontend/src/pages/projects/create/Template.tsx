@@ -8,6 +8,7 @@ const STEPPER_VALUES = [
   { step: 2, route: '/projects/create/template/deploy', label: 'Deploy' },
 ];
 
+// TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
   const location = useLocation();
 
@@ -23,6 +24,7 @@ const CreateWithTemplate = () => {
       <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6">
         <div>^</div>
         <div className="grow">React native</div>
+        {/* TODO: Get template Git link from DB */}
         <div>^snowball-tools/react-native-starter</div>
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">

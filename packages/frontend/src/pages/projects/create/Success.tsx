@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@material-tailwind/react';
 
+// TODO: Use dynamic route params for fetching project created details
 const Success = () => {
   return (
     <div className="flex justify-center">

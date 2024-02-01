@@ -13,14 +13,10 @@ const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
 
 interface RepositoryListProps {
-  repoSelectionHandler: (repo: GitRepositoryDetails) => void;
   octokit: Octokit;
 }
 
-const RepositoryList = ({
-  repoSelectionHandler,
-  octokit,
-}: RepositoryListProps) => {
+const RepositoryList = ({ octokit }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
@@ -135,15 +131,7 @@ const RepositoryList = ({
       </div>
       {Boolean(repositoryDetails.length) ? (
         repositoryDetails.map((repo, key) => {
-          return (
-            <ProjectRepoCard
-              repository={repo}
-              key={key}
-              onClick={() => {
-                repoSelectionHandler(repo);
-              }}
-            />
-          );
+          return <ProjectRepoCard repository={repo} key={key} />;
         })
       ) : (
         <div className="mt-4 p-6 flex items-center justify-center">

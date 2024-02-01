@@ -9,6 +9,7 @@ import {
   projectsRoutesWithoutSearch,
 } from './pages/projects/routes';
 import ProjectSearchLayout from './layouts/ProjectSearch';
+import { OctokitProvider } from './context/OctokitContext';
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <OctokitProvider>
+      <RouterProvider router={router} />
+    </OctokitProvider>
+  );
 }
 
 export default App;

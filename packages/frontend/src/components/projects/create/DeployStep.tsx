@@ -3,9 +3,9 @@ import toast from 'react-hot-toast';
 
 import { Collapse, Button, Typography } from '@material-tailwind/react';
 
-import { Stopwatch, setStopWatchOffset } from '../../../../StopWatch';
-import FormatMillisecond from '../../../../FormatMilliSecond';
-import processLogs from '../../../../../assets/process-logs.json';
+import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
+import FormatMillisecond from '../../FormatMilliSecond';
+import processLogs from '../../../assets/process-logs.json';
 
 enum DeployStatus {
   PROCESSING = 'progress',

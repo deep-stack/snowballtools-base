@@ -1,66 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { User } from 'gql-client';
-import { Octokit, RequestError } from 'octokit';
+import React from 'react';
 
 import templateDetails from '../../../assets/templates.json';
 import TemplateCard from '../../../components/projects/create/TemplateCard';
 import RepositoryList from '../../../components/projects/create/RepositoryList';
 import ConnectAccount from '../../../components/projects/create/ConnectAccount';
-import { useGQLClient } from '../../../context/GQLClientContext';
-
-const UNAUTHORIZED_ERROR_CODE = 401;
+import { useOctokit } from '../../../context/OctokitContext';
 
 const NewProject = () => {
-  const client = useGQLClient();
-  const [user, setUser] = useState<User>();
-
-  const octokit = useMemo(() => {
-    if (!user?.gitHubToken) {
-      return;
-    }
-
-    // TODO: Create github/octokit context
-    return new Octokit({ auth: user.gitHubToken });
-  }, [user]);
-
-  const fetchUser = useCallback(async () => {
-    const { user } = await client.getUser();
-    setUser(user);
-  }, []);
-
-  const handleToken = useCallback(() => {
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    if (!octokit) {
-      return;
-    }
-
-    // TODO: Handle React component error
-    const interceptor = async (error: RequestError | Error) => {
-      if (
-        error instanceof RequestError &&
-        error.status === UNAUTHORIZED_ERROR_CODE
-      ) {
-        await client.unauthenticateGithub();
-        await fetchUser();
-      }
-
-      throw error;
-    };
-
-    octokit.hook.error('request', interceptor);
-
-    return () => {
-      // Remove the interceptor when the component unmounts
-      octokit.hook.remove('request', interceptor);
-    };
-  }, [octokit, client]);
+  const { octokit, updateAuth } = useOctokit();
 
   return (
     <>
@@ -69,7 +16,7 @@ const NewProject = () => {
         {templateDetails.map((framework, key) => {
           return (
             <TemplateCard
-              isGitAuth={Boolean(user?.gitHubToken)}
+              isGitAuth={Boolean(octokit)}
               framework={framework}
               key={key}
             />
@@ -78,9 +25,9 @@ const NewProject = () => {
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
       {Boolean(octokit) ? (
-        <RepositoryList octokit={octokit!} repoSelectionHandler={() => {}} />
+        <RepositoryList octokit={octokit!} />
       ) : (
-        <ConnectAccount onToken={handleToken} />
+        <ConnectAccount onAuth={updateAuth} />
       )}
     </>
   );

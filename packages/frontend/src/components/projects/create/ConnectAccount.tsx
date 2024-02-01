@@ -10,10 +10,10 @@ const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
 }&scope=${encodeURIComponent(SCOPES)}`;
 
 interface ConnectAccountInterface {
-  onToken: (token: string) => void;
+  onAuth: (token: string) => void;
 }
 
-const ConnectAccount = ({ onToken }: ConnectAccountInterface) => {
+const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
   const client = useGQLClient();
 
   const handleCode = async (code: string) => {

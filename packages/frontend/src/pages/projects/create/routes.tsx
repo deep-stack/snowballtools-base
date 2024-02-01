@@ -4,6 +4,7 @@ import NewProject from './index';
 import CreateWithTemplate from './Template';
 import { templateRoutes } from './template/routes';
 import Success from './Success';
+import Import from './Import';
 
 export const createProjectRoutes = [
   {
@@ -18,5 +19,9 @@ export const createProjectRoutes = [
   {
     path: 'success',
     element: <Success />,
+  },
+  {
+    path: 'import',
+    element: <Import />,
   },
 ];

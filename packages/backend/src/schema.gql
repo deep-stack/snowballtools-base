@@ -64,7 +64,7 @@ type Project {
   prodBranch: String!
   description: String
   template: String
-  framework: String!
+  framework: String
   webhooks: [String!]
   members: [ProjectMember!]
   environmentVariables: [EnvironmentVariable!]
@@ -116,46 +116,21 @@ type EnvironmentVariable {
   updatedAt: String!
 }
 
-type Query {
-  user: User!
-  organizations: [Organization!]
-  projects: [Project!]
-  projectsInOrganization(organizationId: String!): [Project!]
-  project(projectId: String!): Project
-  deployments(projectId: String!): [Deployment!]
-  environmentVariables(projectId: String!): [EnvironmentVariable!]
-  projectMembers(projectId: String!): [ProjectMember!]
-  searchProjects(searchText: String!): [Project!]
-  domains(projectId: String!): [Domain!]
-}
-
 type AuthResult {
   token: String!
-}
-
-type Mutation {
-  removeProjectMember(projectMemberId: String!): Boolean!
-  updateProjectMember(projectMemberId: String!, data: UpdateProjectMemberInput): Boolean!
-  addProjectMember(projectId: String!, data: AddProjectMemberInput): Boolean!
-  addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
-  removeEnvironmentVariable(environmentVariableId: String!): Boolean!
-  updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
-  updateDeploymentToProd(deploymentId: String!): Boolean!
-  updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
-  redeployToProd(deploymentId: String!): Boolean!
-  deleteProject(projectId: String!): Boolean!
-  deleteDomain(domainId: String!): Boolean!
-  rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
-  addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
-  updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!
-  authenticateGitHub(code: String!): AuthResult!
-  unauthenticateGitHub: Boolean!
 }
 
 input AddEnvironmentVariableInput {
   environments: [Environment!]!
   key: String!
   value: String!
+}
+
+input AddProjectInput {
+  organizationId: String!
+  name: String!
+  repository: String!
+  prodBranch: String!
 }
 
 input UpdateProjectInput {
@@ -187,4 +162,37 @@ input AddProjectMemberInput {
 
 input UpdateProjectMemberInput {
   permissions: [Permission]
+}
+
+type Query {
+  user: User!
+  organizations: [Organization!]
+  projects: [Project!]
+  projectsInOrganization(organizationId: String!): [Project!]
+  project(projectId: String!): Project
+  deployments(projectId: String!): [Deployment!]
+  environmentVariables(projectId: String!): [EnvironmentVariable!]
+  projectMembers(projectId: String!): [ProjectMember!]
+  searchProjects(searchText: String!): [Project!]
+  domains(projectId: String!): [Domain!]
+}
+
+type Mutation {
+  addProjectMember(projectId: String!, data: AddProjectMemberInput): Boolean!
+  updateProjectMember(projectMemberId: String!, data: UpdateProjectMemberInput): Boolean!
+  removeProjectMember(projectMemberId: String!): Boolean!
+  addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
+  updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
+  removeEnvironmentVariable(environmentVariableId: String!): Boolean!
+  updateDeploymentToProd(deploymentId: String!): Boolean!
+  addProject(projectDetails: AddProjectInput): Boolean!
+  updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
+  redeployToProd(deploymentId: String!): Boolean!
+  deleteProject(projectId: String!): Boolean!
+  deleteDomain(domainId: String!): Boolean!
+  rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
+  addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
+  updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!
+  authenticateGitHub(code: String!): AuthResult!
+  unauthenticateGitHub: Boolean!
 }

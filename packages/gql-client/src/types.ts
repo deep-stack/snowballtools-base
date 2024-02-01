@@ -217,6 +217,10 @@ export type UpdateDeploymentToProdResponse = {
   updateDeploymentToProd: boolean;
 }
 
+export type AddProjectResponse = {
+  addProject: boolean
+}
+
 export type UpdateProjectResponse = {
   updateProject: boolean;
 }
@@ -231,6 +235,13 @@ export type DeleteProjectResponse = {
 
 export type DeleteDomainResponse = {
   deleteDomain: boolean;
+}
+
+export type AddProjectInput = {
+  organizationId: string;
+  name: string;
+  repository: string;
+  prodBranch: string;
 }
 
 export type UpdateProjectInput = {

@@ -28,6 +28,9 @@ export class Project {
   @JoinColumn({ name: 'organizationId' })
     organization!: Organization | null;
 
+  @Column('integer')
+    organizationId!: number;
+
   @Column('varchar')
     name!: string;
 
@@ -37,14 +40,14 @@ export class Project {
   @Column('varchar', { length: 255, default: 'main' })
     prodBranch!: string;
 
-  @Column('text')
+  @Column('text', { default: '' })
     description!: string;
 
-  @Column('varchar')
-    template!: string;
+  @Column('varchar', { nullable: true })
+    template!: string | null;
 
-  @Column('varchar')
-    framework!: string;
+  @Column('varchar', { nullable: true })
+    framework!: string | null;
 
   @Column({
     type: 'simple-array'

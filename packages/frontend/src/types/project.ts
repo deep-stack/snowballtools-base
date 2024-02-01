@@ -41,6 +41,7 @@ export interface GitRepositoryDetails {
   owner: GitOrgDetails | null;
   visibility?: string;
   updated_at?: string | null;
+  default_branch?: string;
 }
 
 export enum GitSelect {
