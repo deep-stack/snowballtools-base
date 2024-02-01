@@ -24,7 +24,7 @@ const GitTabPanel = ({
     formState: { isSubmitSuccessful },
   } = useForm({
     defaultValues: {
-      webhookUrl: project?.webhooks,
+      webhookUrl: project.webhooks,
     },
   });
 
@@ -34,20 +34,19 @@ const GitTabPanel = ({
     reset: resetProdBranch,
   } = useForm({
     defaultValues: {
-      prodBranch: project?.prodBranch,
+      prodBranch: project.prodBranch,
     },
   });
 
   const updateProdBranchHandler = useCallback(
     async (data: any) => {
-      console.log('updateProdBranchHandler', data);
       const { updateProdBranch } = await client.updateProdBranch(
         project.id,
         data.prodBranch,
       );
 
       if (updateProdBranch) {
-        onUpdate();
+        await onUpdate();
         toast.success('Production branch upadated successfully');
       } else {
         toast.error('Error updating production branch');
@@ -62,12 +61,12 @@ const GitTabPanel = ({
 
   useEffect(() => {
     resetProdBranch({
-      prodBranch: project?.prodBranch,
+      prodBranch: project.prodBranch,
     });
   }, [project]);
 
-  const handleDelete = (index: number) => {
-    return index;
+  const handleDelete = () => {
+    // TODO: Impletement functionality to delete webhooks
   };
 
   return (
@@ -145,12 +144,12 @@ const GitTabPanel = ({
         </div>
       </form>
       <div className="mb-2 p-2">
-        {project?.webhooks?.map((webhookUrl, index) => {
+        {project.webhooks.map((webhookUrl, index) => {
           return (
             <WebhookCard
               webhooksArray={project.webhooks}
               webhookUrl={webhookUrl}
-              handleDelete={() => handleDelete(index)}
+              handleDelete={() => handleDelete()}
               key={index}
             />
           );
