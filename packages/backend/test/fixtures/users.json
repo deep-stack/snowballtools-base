@@ -1,14 +1,17 @@
 [
   {
     "name": "Saugat Yadav",
-    "email": "saugaty@airfoil.studio"
+    "email": "saugaty@airfoil.studio",
+    "isVerified": true
   },
   {
     "name": "Gideon Low",
-    "email": "gideonl@airfoil.studio"
+    "email": "gideonl@airfoil.studio",
+    "isVerified": true
   },
   {
     "name": "Sushan Yadav",
-    "email": "sushany@airfoil.studio"
+    "email": "sushany@airfoil.studio",
+    "isVerified": true
   }
 ]

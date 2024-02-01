@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { Permission, Project } from 'gql-client';
+import {
+  Permission,
+  Project,
+  AddProjectMemberInput,
+  ProjectMember,
+} from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
 import MemberCard from './MemberCard';
-import { ProjectMember } from '../../../../types/project';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
@@ -18,16 +22,25 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
 
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
 
-  const addMemberHandler = useCallback((projectMember: ProjectMember) => {
-    setProjectMembers((val) => [...val, projectMember]);
-    toast.success('Invitation sent');
-  }, []);
-
   const fetchProjectMembers = useCallback(async () => {
     const { projectMembers } = await client.getProjectMembers(project.id);
-
     setProjectMembers(projectMembers);
   }, [project.id]);
+
+  const addMemberHandler = useCallback(
+    async (data: AddProjectMemberInput) => {
+      const { addProjectMember: isProjectMemberAdded } =
+        await client.addProjectMember(project.id, data);
+
+      if (isProjectMemberAdded) {
+        await fetchProjectMembers();
+        toast.success('Invitation sent');
+      } else {
+        toast.error('Invitation not sent');
+      }
+    },
+    [project],
+  );
 
   const removeMemberHandler = async (projectMemberId: string) => {
     const { removeProjectMember: isMemberRemoved } =
@@ -96,15 +109,8 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
             key={projectMember.id}
             isFirstCard={index === FIRST_MEMBER_CARD}
             isOwner={projectMember.member.id === project.owner.id}
-            isPending={projectMember.member.name === ''}
+            isPending={projectMember.isPending}
             permissions={projectMember.permissions}
-            handleDeletePendingMember={(id: string) => {
-              setProjectMembers(
-                projectMembers.filter(
-                  (projectMember) => projectMember.member.id !== id,
-                ),
-              );
-            }}
             onRemoveProjectMember={async () =>
               await removeMemberHandler(projectMember.id)
             }

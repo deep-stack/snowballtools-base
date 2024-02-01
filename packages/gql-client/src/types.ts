@@ -42,15 +42,16 @@ export type Domain = {
   branch: string
   name: string
   status: DomainStatus
-  redirectTo?: Domain
+  redirectTo: Domain | null
   createdAt: string
   updatedAt: string
 }
 
 export type User = {
   id: string
-  name: string
+  name: string | null
   email: string
+  isVerified: boolean
   createdAt: string
   updatedAt: string
   gitHubToken: string | null
@@ -82,6 +83,7 @@ export type ProjectMember = {
   id: string
   member: User
   permissions: Permission[]
+  isPending: boolean
   createdAt: string
   updatedAt: string
 }
@@ -133,6 +135,10 @@ export type Project = {
 
 export type GetProjectMembersResponse = {
   projectMembers: ProjectMember[]
+}
+
+export type AddProjectMemberResponse = {
+  addProjectMember: boolean
 }
 
 export type RemoveProjectMemberResponse = {
@@ -192,6 +198,11 @@ export type UpdateEnvironmentVariableInput = {
 
 export type UpdateProjectMemberInput = {
   permissions: Permission[];
+}
+
+export type AddProjectMemberInput = {
+  email: string;
+  permissions: Permission[]
 }
 
 export type UpdateEnvironmentVariableResponse = {

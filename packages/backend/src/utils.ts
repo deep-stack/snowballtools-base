@@ -65,6 +65,7 @@ export const projectMemberToGqlType = (dbProjectMember: ProjectMember): any => {
   return {
     id: dbProjectMember.id,
     member: dbProjectMember.member,
+    isPending: dbProjectMember.isPending,
     permissions: dbProjectMember.permissions,
     createdAt: dbProjectMember.createdAt,
     updatedAt: dbProjectMember.updatedAt

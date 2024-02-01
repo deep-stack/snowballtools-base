@@ -5,7 +5,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  JoinColumn
+  JoinColumn,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { User } from './User';
@@ -22,11 +23,11 @@ export class UserOrganization {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
     member!: User;
 
-  @ManyToOne(() => Organization, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Organization)
   @JoinColumn({ name: 'organizationId' })
     organization!: Organization;
 
@@ -40,4 +41,7 @@ export class UserOrganization {
 
   @UpdateDateColumn()
     updatedAt!: Date;
+
+  @DeleteDateColumn()
+    deletedAt?: Date;
 }

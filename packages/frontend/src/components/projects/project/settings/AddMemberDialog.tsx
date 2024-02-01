@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import { AddProjectMemberInput, Permission } from 'gql-client';
 
 import {
   Button,
@@ -12,12 +13,10 @@ import {
   Checkbox,
 } from '@material-tailwind/react';
 
-import { ProjectMember, Permission } from '../../../../types/project';
-
 interface AddMemberDialogProp {
   open: boolean;
   handleOpen: () => void;
-  handleAddMember: (projectMember: ProjectMember) => void;
+  handleAddMember: (data: AddProjectMemberInput) => Promise<void>;
 }
 
 interface formData {
@@ -48,21 +47,17 @@ const AddMemberDialog = ({
     },
   });
 
-  const submitHandler = useCallback((data: formData) => {
+  const submitHandler = useCallback(async (data: formData) => {
     reset();
     handleOpen();
 
-    const projectMember: ProjectMember = {
-      id: Math.random().toString(),
-      permissions: [],
-      member: {
-        name: '',
-        email: data.emailAddress,
-        id: Math.random().toString(),
-      },
-    };
+    const permissions = Object.entries(data.permissions)
+      .filter(([, value]) => value)
+      .map(
+        ([key]) => key.charAt(0).toUpperCase() + key.slice(1),
+      ) as Permission[];
 
-    handleAddMember(projectMember);
+    await handleAddMember({ email: data.emailAddress, permissions });
   }, []);
 
   return (
@@ -96,13 +91,13 @@ const AddMemberDialog = ({
           </Typography>
           <Checkbox
             crossOrigin={undefined}
-            label={Permission.VIEW}
+            label={Permission.View}
             {...register(`permissions.view`)}
             color="blue"
           />
           <Checkbox
             crossOrigin={undefined}
-            label={Permission.EDIT}
+            label={Permission.Edit}
             {...register(`permissions.edit`)}
             color="blue"
           />

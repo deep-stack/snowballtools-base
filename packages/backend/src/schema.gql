@@ -28,10 +28,11 @@ enum DomainStatus {
 
 type User {
   id: String!
-  name: String!
+  name: String
   email: String!
   organizations: [Organization!]
   projects: [Project!]
+  isVerified: Boolean!
   createdAt: String!
   updatedAt: String!
   gitHubToken: String
@@ -77,6 +78,7 @@ type ProjectMember {
   id: String!
   member: User!
   permissions: [Permission!]!
+  isPending: Boolean!
   createdAt: String!
   updatedAt: String!
 }
@@ -134,6 +136,7 @@ type AuthResult {
 type Mutation {
   removeProjectMember(projectMemberId: String!): Boolean!
   updateProjectMember(projectMemberId: String!, data: UpdateProjectMemberInput): Boolean!
+  addProjectMember(projectId: String!, data: AddProjectMemberInput): Boolean!
   addEnvironmentVariables(projectId: String!, environmentVariables: [AddEnvironmentVariableInput!]): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
@@ -175,6 +178,11 @@ input UpdateDomainInput {
 input UpdateEnvironmentVariableInput {
   key: String
   value: String
+}
+
+input AddProjectMemberInput {
+  email: String!
+  permissions: [Permission!]
 }
 
 input UpdateProjectMemberInput {

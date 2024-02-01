@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { UserOrganization } from './UserOrganization';
 
 @Entity()
 export class Organization {
@@ -19,4 +21,9 @@ export class Organization {
 
   @UpdateDateColumn()
     updatedAt!: Date;
+
+  @OneToMany(() => UserOrganization, userOrganization => userOrganization.organization, {
+    cascade: ['soft-remove']
+  })
+    userOrganizations!: UserOrganization[];
 }

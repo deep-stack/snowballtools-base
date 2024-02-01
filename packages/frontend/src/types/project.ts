@@ -8,12 +8,6 @@ export interface ProjectDetails extends Project {
   repositoryId?: number;
 }
 
-export interface ProjectMember {
-  id: string;
-  member: Member;
-  permissions: string[];
-}
-
 export interface DeploymentDetails extends Deployment {
   commit: Commit;
   author: string;
@@ -70,17 +64,6 @@ export interface DomainDetails {
     name: string;
     value: string;
   };
-}
-
-export enum Permission {
-  VIEW = 'view',
-  EDIT = 'edit',
-}
-
-export interface Member {
-  name: string;
-  email: string;
-  id: string;
 }
 
 export interface ProjectSearchOutletContext {

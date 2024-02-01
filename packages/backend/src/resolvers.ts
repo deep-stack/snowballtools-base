@@ -111,6 +111,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
       }
     },
 
+    // TODO: Return error in GQL response
     Mutation: {
       removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
         try {
@@ -124,7 +125,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
           assert(memberProject);
 
           if (isUserOwner(String(context.userId), String(memberProject.owner.id))) {
-            return db.removeProjectMemberById(projectMemberId);
+            return await db.removeProjectMemberById(projectMemberId);
           } else {
             throw new Error('Invalid operation: not authorized');
           }
@@ -141,7 +142,23 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       }) => {
         try {
-          return db.updateProjectMemberById(projectMemberId, data);
+          return await db.updateProjectMemberById(projectMemberId, data);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      addProjectMember: async (_: any, { projectId, data }: {
+        projectId: string,
+        data: {
+          email: string,
+          permissions: Permission[]
+        }
+      }) => {
+        try {
+          // TODO: Send invitation
+          return await db.addProjectMember(projectId, data);
         } catch (err) {
           log(err);
           return false;
@@ -150,7 +167,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       addEnvironmentVariables: async (_: any, { projectId, environmentVariables }: { projectId: string, environmentVariables: { environments: string[], key: string, value: string}[] }) => {
         try {
-          return db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
+          return await db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
         } catch (err) {
           log(err);
           return false;
@@ -162,7 +179,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         value: string
       }}) => {
         try {
-          return db.updateEnvironmentVariable(environmentVariableId, environmentVariable);
+          return await db.updateEnvironmentVariable(environmentVariableId, environmentVariable);
         } catch (err) {
           log(err);
           return false;
@@ -171,7 +188,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       removeEnvironmentVariable: async (_: any, { environmentVariableId }: { environmentVariableId: string}) => {
         try {
-          return db.deleteEnvironmentVariable(environmentVariableId);
+          return await db.deleteEnvironmentVariable(environmentVariableId);
         } catch (err) {
           log(err);
           return false;
@@ -180,7 +197,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
         try {
-          return db.updateDeploymentById(deploymentId, {
+          return await db.updateDeploymentById(deploymentId, {
             environment: Environment.Production
           });
         } catch (err) {
@@ -200,8 +217,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          await db.redeployToProdById(context.userId, deploymentId);
-          return true;
+          return await db.redeployToProdById(context.userId, deploymentId);
         } catch (err) {
           log(err);
           return false;
@@ -210,7 +226,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       deleteProject: async (_: any, { projectId }: { projectId: string }) => {
         try {
-          return db.deleteProjectById(projectId);
+          return await db.deleteProjectById(projectId);
         } catch (err) {
           log(err);
           return false;
@@ -219,8 +235,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       deleteDomain: async (_: any, { domainId }: { domainId: string }) => {
         try {
-          await db.deleteDomainById(domainId);
-          return true;
+          return await db.deleteDomainById(domainId);
         } catch (err) {
           log(err);
           return false;
@@ -229,7 +244,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
         try {
-          return db.rollbackDeploymentById(projectId, deploymentId);
+          return await db.rollbackDeploymentById(projectId, deploymentId);
         } catch (err) {
           log(err);
           return false;
@@ -238,8 +253,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
         try {
-          await db.addDomainByProjectId(projectId, domainDetails);
-          return true;
+          return await db.addDomainByProjectId(projectId, domainDetails);
         } catch (err) {
           log(err);
           return false;
@@ -248,8 +262,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: DeepPartial<Domain>}) => {
         try {
-          await db.updateDomainById(domainId, domainDetails);
-          return true;
+          return await db.updateDomainById(domainId, domainDetails);
         } catch (err) {
           log(err);
           return false;

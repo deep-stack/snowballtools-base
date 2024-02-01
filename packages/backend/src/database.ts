@@ -9,7 +9,7 @@ import { Organization } from './entity/Organization';
 import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
 import { Deployment, Environment } from './entity/Deployment';
-import { ProjectMember } from './entity/ProjectMember';
+import { Permission, ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 
@@ -198,6 +198,38 @@ export class Database {
     }
   }
 
+  async addProjectMember (projectId: string, data: {
+    email: string,
+    permissions: Permission[]
+  }): Promise<boolean> {
+    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+    const userRepository = this.dataSource.getRepository(User);
+
+    let user = await userRepository.findOneBy({
+      email: data.email
+    });
+
+    if (!user) {
+      user = await userRepository.save({
+        email: data.email,
+        isVerified: false
+      });
+    }
+
+    const newProjectMember = await projectMemberRepository.save({
+      project: {
+        id: projectId
+      },
+      permissions: data.permissions,
+      isPending: true,
+      member: {
+        id: user.id
+      }
+    });
+
+    return Boolean(newProjectMember);
+  }
+
   async addEnvironmentVariablesByProjectId (projectId: string, environmentVariables: {
     environments: string[];
     key: string;
@@ -338,13 +370,18 @@ export class Database {
 
   async deleteProjectById (projectId: string): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
-    const deleteResult = await projectRepository.softDelete({ id: projectId });
+    const project = await projectRepository.findOneOrFail({
+      where: {
+        id: projectId
+      },
+      relations: {
+        projectMembers: true
+      }
+    });
 
-    if (deleteResult.affected) {
-      return deleteResult.affected > 0;
-    } else {
-      return false;
-    }
+    const deleteResult = await projectRepository.softRemove(project);
+
+    return Boolean(deleteResult);
   }
 
   async deleteDomainById (domainId: string): Promise<boolean> {

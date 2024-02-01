@@ -12,6 +12,12 @@ mutation ($projectMemberId: String!, $data: UpdateProjectMemberInput) {
 }
 `;
 
+export const addProjectMember = gql`
+mutation ($projectId: String!, $data: AddProjectMemberInput) {
+  addProjectMember(projectId: $projectId, data: $data)
+}
+`;
+
 export const addEnvironmentVariables = gql`
 mutation ($projectId: String!, $environmentVariables: [AddEnvironmentVariableInput!]) {
   addEnvironmentVariables(projectId: $projectId, environmentVariables: $environmentVariables)

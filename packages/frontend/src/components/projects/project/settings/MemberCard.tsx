@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Permission } from 'gql-client';
+import { Permission, User } from 'gql-client';
 
 import {
   Select,
@@ -10,7 +10,6 @@ import {
 } from '@material-tailwind/react';
 
 import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { Member } from '../../../../types/project';
 
 const PERMISSION_OPTIONS = [
   {
@@ -29,12 +28,11 @@ const DROPDOWN_OPTIONS = [
 ];
 
 interface MemberCardProps {
-  member: Member;
+  member: User;
   isFirstCard: boolean;
   isOwner: boolean;
   isPending: boolean;
   permissions: string[];
-  handleDeletePendingMember?: (id: string) => void;
   onRemoveProjectMember?: () => Promise<void>;
   onUpdateProjectMember?: (data: {
     permissions: Permission[];
@@ -47,7 +45,6 @@ const MemberCard = ({
   isOwner,
   isPending,
   permissions,
-  handleDeletePendingMember,
   onRemoveProjectMember,
   onUpdateProjectMember,
 }: MemberCardProps) => {
@@ -82,7 +79,7 @@ const MemberCard = ({
     >
       <div>^</div>
       <div className="basis-1/2">
-        <Typography variant="small">{member.name}</Typography>
+        {member.name && <Typography variant="small">{member.name}</Typography>}
         <Typography variant="small">{member.email}</Typography>
       </div>
       <div className="basis-1/2">
@@ -122,9 +119,7 @@ const MemberCard = ({
                 size="sm"
                 className="rounded-full"
                 onClick={() => {
-                  if (handleDeletePendingMember) {
-                    handleDeletePendingMember(member.id);
-                  }
+                  setRemoveMemberDialogOpen((prevVal) => !prevVal);
                 }}
               >
                 D

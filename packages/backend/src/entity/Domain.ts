@@ -35,7 +35,7 @@ export class Domain {
     name!: string;
 
   @Column('int', { nullable: true })
-    redirectToId!: number;
+    redirectToId!: number | null;
 
   @ManyToOne(() => Domain)
   @JoinColumn({ name: 'redirectToId' })

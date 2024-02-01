@@ -63,9 +63,11 @@ export class Project {
   @DeleteDateColumn()
     deletedAt?: Date;
 
-  @OneToMany(() => ProjectMember, projectMember => projectMember.project)
-    projectMembers!: ProjectMember[];
-
   @OneToMany(() => Deployment, (deployment) => deployment.project)
     deployments!: Deployment[];
+
+  @OneToMany(() => ProjectMember, projectMember => projectMember.project, {
+    cascade: ['soft-remove']
+  })
+    projectMembers!: ProjectMember[];
 }

@@ -2,46 +2,77 @@
   {
     "memberIndex": 1,
     "projectIndex": 0,
-    "permissions": ["View"]
+    "permissions": [
+      "View"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 2,
     "projectIndex": 0,
-    "permissions": ["View", "Edit"]
+    "permissions": [
+      "View",
+      "Edit"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 2,
     "projectIndex": 1,
-    "permissions": ["View"]
+    "permissions": [
+      "View"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 0,
     "projectIndex": 2,
-    "permissions": ["View"]
+    "permissions": [
+      "View"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 1,
     "projectIndex": 2,
-    "permissions": ["View", "Edit"]
+    "permissions": [
+      "View",
+      "Edit"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 0,
     "projectIndex": 3,
-    "permissions": ["View"]
+    "permissions": [
+      "View"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 2,
     "projectIndex": 3,
-    "permissions": ["View", "Edit"]
+    "permissions": [
+      "View",
+      "Edit"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 1,
     "projectIndex": 4,
-    "permissions": ["View"]
+    "permissions": [
+      "View"
+    ],
+    "isPending": false
   },
   {
     "memberIndex": 2,
     "projectIndex": 4,
-    "permissions": ["View", "Edit"]
+    "permissions": [
+      "View",
+      "Edit"
+    ],
+    "isPending": false
   }
 ]

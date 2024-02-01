@@ -5,7 +5,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  JoinColumn
+  JoinColumn,
+  Unique,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { Project } from './Project';
@@ -17,15 +19,16 @@ export enum Permission {
 }
 
 @Entity()
+@Unique(['project', 'member'])
 export class ProjectMember {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @ManyToOne(() => User, (user) => user.projectMembers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.projectMembers)
   @JoinColumn({ name: 'userId' })
     member!: User;
 
-  @ManyToOne(() => Project, (project) => project.projectMembers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Project, (project) => project.projectMembers)
   @JoinColumn({ name: 'projectId' })
     project!: Project;
 
@@ -34,9 +37,15 @@ export class ProjectMember {
   })
     permissions!: Permission[];
 
+  @Column('boolean', { default: false })
+    isPending!: boolean;
+
   @CreateDateColumn()
     createdAt!: Date;
 
   @UpdateDateColumn()
     updatedAt!: Date;
+
+  @DeleteDateColumn()
+    deletedAt?: Date;
 }

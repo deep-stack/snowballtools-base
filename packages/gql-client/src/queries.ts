@@ -178,7 +178,9 @@ query ($projectId: String!) {
       id
       name
       email
+      isVerified
     }
+    isPending
     createdAt
     updatedAt
     permissions
