@@ -32,7 +32,10 @@
 
 - Set `githubOauth.clientId` and `githubOauth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
   - Client id and secret will be available after creating Github OAuth app
-  - https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
+    - https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
+    - In "Homepage URL", type `http://localhost:3000`
+    - In "Authorization callback URL", type `http://localhost:3000/projects/create`
+    - Generate a new client secret after app is created
 
 - Start the server
 
@@ -40,7 +43,7 @@
   yarn start
   ```
 
-- Copy the graphQL endpoint from terminal and add the endpoint in the `.env` file present in `packages/frontend`
+- Copy the graphQL endpoint from terminal and add the endpoint in the [.env](packages/frontend/.env) file present in `packages/frontend`
 
   ```
   REACT_APP_GQL_SERVER_URL = 'http://localhost:8000/graphql'

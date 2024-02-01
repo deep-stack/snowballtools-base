@@ -273,6 +273,15 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
           log(err);
           return false;
         }
+      },
+
+      updateProdBranch: async (_: any, { projectId, prodBranch }: {projectId: string, prodBranch: string }) => {
+        try {
+          return await db.updateProjectById(projectId, { prodBranch });
+        } catch (err) {
+          log(err);
+          return (false);
+        }
       }
     }
   };

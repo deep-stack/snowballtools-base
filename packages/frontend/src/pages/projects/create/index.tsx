@@ -41,6 +41,7 @@ const NewProject = () => {
       return;
     }
 
+    // TODO: Handle React component error
     const interceptor = async (error: RequestError | Error) => {
       if (
         error instanceof RequestError &&

@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
 import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getDomains, getProjectsInOrganization } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGitHubResponse, UnauthenticateGitHubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse, UpdateProjectMemberInput, RemoveProjectMemberResponse, UpdateProjectMemberResponse, DeleteDomainResponse } from './types';
-import { removeProjectMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGitHub, unauthenticateGitHub, updateEnvironmentVariable, removeEnvironmentVariable, updateProjectMember, deleteDomain } from './mutations';
+import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGitHubResponse, UnauthenticateGitHubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse, UpdateProjectMemberInput, RemoveProjectMemberResponse, UpdateProjectMemberResponse, DeleteDomainResponse, UpdateProdBranchResponse } from './types';
+import { removeProjectMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGitHub, unauthenticateGitHub, updateEnvironmentVariable, removeEnvironmentVariable, updateProjectMember, deleteDomain, updateProdBranch } from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -288,6 +288,18 @@ export class GQLClient {
   async unauthenticateGithub (): Promise<UnauthenticateGitHubResponse> {
     const { data } = await this.client.mutate({
       mutation: unauthenticateGitHub
+    });
+
+    return data;
+  }
+
+  async updateProdBranch (projectId: string, prodBranch: string): Promise<UpdateProdBranchResponse> {
+    const { data } = await this.client.mutate({
+      mutation: updateProdBranch,
+      variables: {
+        projectId,
+        prodBranch
+      }
     });
 
     return data;
