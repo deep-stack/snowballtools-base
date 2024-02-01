@@ -1,32 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { Project } from 'gql-client';
 
 import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 
-import { GitRepositoryDetails } from '../../../../types/project';
 import WebhookCard from './WebhookCard';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
-const GitTabPanel = () => {
-  // TODO: Get linked repo from project
-  const [linkedRepo] = useState<GitRepositoryDetails>();
-  const [webhooksArray, setWebhooksArray] = useState<Array<string>>([]);
+const GitTabPanel = ({
+  project,
+  onUpdate,
+}: {
+  project: Project;
+  onUpdate: () => Promise<void>;
+}) => {
+  const client = useGQLClient();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { isSubmitSuccessful },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      webhookUrl: project?.webhooks,
+    },
+  });
+
+  const {
+    register: registerProdBranch,
+    handleSubmit: handleSubmitProdBranch,
+    reset: resetProdBranch,
+  } = useForm({
+    defaultValues: {
+      prodBranch: project?.prodBranch,
+    },
+  });
+
+  const updateProdBranchHandler = useCallback(
+    async (data: any) => {
+      console.log('updateProdBranchHandler', data);
+      const { updateProdBranch } = await client.updateProdBranch(
+        project.id,
+        data.prodBranch,
+      );
+
+      if (updateProdBranch) {
+        onUpdate();
+        toast.success('Production branch upadated successfully');
+      } else {
+        toast.error('Error updating production branch');
+      }
+    },
+    [project],
+  );
 
   useEffect(() => {
     reset();
   }, [isSubmitSuccessful]);
 
+  useEffect(() => {
+    resetProdBranch({
+      prodBranch: project?.prodBranch,
+    });
+  }, [project]);
+
   const handleDelete = (index: number) => {
-    const newArray = webhooksArray.filter((value, idx) => idx != index);
-    setWebhooksArray(newArray);
-    toast.success('Webhook deleted successfully');
+    return index;
   };
 
   return (
@@ -55,44 +96,30 @@ const GitTabPanel = () => {
         </div>
       </div>
 
-      <div className="mb-2 p-2">
-        <Typography variant="h6" className="text-black">
-          Production branch
-        </Typography>
-        <Typography variant="small">
-          By default, each commit pushed to the{' '}
-          <span className="font-bold">main</span> branch initiates a production
-          deployment. You can opt for a different branch for deployment in the
-          settings.
-        </Typography>
-        {!linkedRepo && (
-          <div className="flex bg-blue-100 gap-4 rounded-lg p-2">
-            <div>^</div>
-            <div>
-              <Typography variant="small">
-                This project isn&apos;t currently linked to a Git repository. To
-                establish a production branch, please linked to an existing Git
-                repository in the &apos;Connected Git Repository&apos; section
-                above.
-              </Typography>
-            </div>
-          </div>
-        )}
-        <Typography variant="small">Branch name</Typography>
-        <Input
-          crossOrigin={undefined}
-          disabled={Boolean(!linkedRepo)}
-          value="main"
-        />
-        <Button size="sm" disabled className="mt-1">
-          Save
-        </Button>
-      </div>
+      <form onSubmit={handleSubmitProdBranch(updateProdBranchHandler)}>
+        <div className="mb-2 p-2">
+          <Typography variant="h6" className="text-black">
+            Production branch
+          </Typography>
+          <Typography variant="small">
+            By default, each commit pushed to the{' '}
+            <span className="font-bold">{project.prodBranch}</span> branch
+            initiates a production deployment. You can opt for a different
+            branch for deployment in the settings.
+          </Typography>
+          <Typography variant="small">Branch name</Typography>
+          <Input
+            crossOrigin={undefined}
+            {...registerProdBranch('prodBranch')}
+          />
+          <Button size="sm" className="mt-1" type="submit">
+            Save
+          </Button>
+        </div>
+      </form>
 
       <form
-        onSubmit={handleSubmit((data) => {
-          setWebhooksArray((prevArray) => [...prevArray, data.webhookUrl]);
-
+        onSubmit={handleSubmit(() => {
           toast.success('Webhook added successfully.');
         })}
       >
@@ -118,10 +145,10 @@ const GitTabPanel = () => {
         </div>
       </form>
       <div className="mb-2 p-2">
-        {webhooksArray?.map((webhookUrl, index) => {
+        {project?.webhooks?.map((webhookUrl, index) => {
           return (
             <WebhookCard
-              webhooksArray={webhooksArray}
+              webhooksArray={project.webhooks}
               webhookUrl={webhookUrl}
               handleDelete={() => handleDelete(index)}
               key={index}

@@ -277,8 +277,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
 
       updateProdBranch: async (_: any, { projectId, prodBranch }: {projectId: string, prodBranch: string }) => {
         try {
-          await db.updateProjectById(projectId, { prodBranch });
-          return true;
+          return await db.updateProjectById(projectId, { prodBranch });
         } catch (err) {
           log(err);
           return (false);

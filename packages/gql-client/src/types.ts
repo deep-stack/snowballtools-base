@@ -258,3 +258,7 @@ export type AuthenticateGitHubResponse = {
 export type UnauthenticateGitHubResponse = {
   unauthenticateGitHub: boolean
 }
+
+export type UpdateProdBranchResponse = {
+  updateProdBranch: boolean
+}

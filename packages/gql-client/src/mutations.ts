@@ -86,3 +86,9 @@ export const unauthenticateGitHub = gql`
 mutation {
   unauthenticateGitHub
 }`;
+
+export const updateProdBranch = gql`
+mutation ($projectId: String!, $prodBranch: String!) {
+  updateProdBranch(projectId: $projectId, prodBranch: $prodBranch)
+}
+`;
