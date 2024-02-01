@@ -218,6 +218,10 @@ export type DeleteProjectResponse = {
   deleteProject: boolean;
 }
 
+export type DeleteDomainResponse = {
+  deleteDomain: boolean;
+}
+
 export type UpdateProjectInput = {
   name: string
   description: string

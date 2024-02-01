@@ -5,7 +5,7 @@
     "updatedAt": "2023-12-21T08:30:00",
     "user": "bob",
     "private": false,
-    "branch": ["main", "prod", "dev"]
+    "branch": ["main", "prod", "test"]
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "updatedAt": "2023-12-21T08:30:00",
     "user": "alice",
     "private": true,
-    "branch": ["main", "prod", "dev"]
+    "branch": ["main", "prod", "test"]
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "updatedAt": "2023-12-21T04:20:00",
     "user": "charlie",
     "private": false,
-    "branch": ["main", "prod", "dev"]
+    "branch": ["main", "prod", "test"]
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "updatedAt": "2023-12-21T04:27:00",
     "user": "alice",
     "private": false,
-    "branch": ["main", "prod", "dev"]
+    "branch": ["main", "prod", "test"]
   },
   {
     "id": 5,
@@ -37,6 +37,6 @@
     "updatedAt": "2023-12-21T04:41:00",
     "user": "ivan",
     "private": false,
-    "branch": ["main", "prod", "dev"]
+    "branch": ["main", "prod", "test"]
   }
 ]

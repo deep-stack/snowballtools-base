@@ -347,6 +347,28 @@ export class Database {
     }
   }
 
+  async deleteDomainById (domainId: string): Promise<boolean> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+
+    const domainsRedirectedFrom = await domainRepository.find({
+      where: {
+        redirectToId: Number(domainId)
+      }
+    });
+
+    if (domainsRedirectedFrom.length > 0) {
+      throw new Error('Cannot delete domain since it has redirects from other domains');
+    }
+
+    const deleteResult = await domainRepository.softDelete({ id: Number(domainId) });
+
+    if (deleteResult.affected) {
+      return deleteResult.affected > 0;
+    } else {
+      return false;
+    }
+  }
+
   async rollbackDeploymentById (projectId: string, deploymentId: string): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
