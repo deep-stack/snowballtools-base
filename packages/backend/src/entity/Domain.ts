@@ -5,7 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { Project } from './Project';
@@ -52,4 +53,7 @@ export class Domain {
 
   @UpdateDateColumn()
     updatedAt!: Date;
+
+  @DeleteDateColumn()
+    deletedAt?: Date;
 }

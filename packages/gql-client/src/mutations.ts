@@ -58,6 +58,11 @@ mutation ($projectId: String!) {
 }
 `;
 
+export const deleteDomain = gql`
+mutation ($domainId: String!) {
+  deleteDomain(domainId: $domainId)
+}`;
+
 export const rollbackDeployment = gql`
 mutation ($projectId: String! ,$deploymentId: String!) {
   rollbackDeployment(projectId: $projectId, deploymentId: $deploymentId)

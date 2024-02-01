@@ -216,6 +216,16 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
+      deleteDomain: async (_: any, { domainId }: { domainId: string }) => {
+        try {
+          await db.deleteDomainById(domainId);
+          return true;
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
       rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
         try {
           return db.rollbackDeploymentById(projectId, deploymentId);
