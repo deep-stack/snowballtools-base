@@ -139,7 +139,6 @@ type Mutation {
   updateEnvironmentVariable(environmentVariableId: String!, environmentVariable: UpdateEnvironmentVariableInput!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
   updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
-  updateProdBranch(projectId: String!, prodBranch: String!): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
   deleteDomain(domainId: String!): Boolean!
@@ -159,6 +158,8 @@ input AddEnvironmentVariableInput {
 input UpdateProjectInput {
   name: String
   description: String
+  prodBranch: String
+  webhooks: [String!]
 }
 
 input AddDomainInput {

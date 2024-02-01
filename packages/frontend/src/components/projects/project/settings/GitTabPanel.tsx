@@ -18,17 +18,6 @@ const GitTabPanel = ({
   const client = useGQLClient();
 
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitSuccessful },
-  } = useForm({
-    defaultValues: {
-      webhookUrl: project.webhooks,
-    },
-  });
-
-  const {
     register: registerProdBranch,
     handleSubmit: handleSubmitProdBranch,
     reset: resetProdBranch,
@@ -40,12 +29,11 @@ const GitTabPanel = ({
 
   const updateProdBranchHandler = useCallback(
     async (data: any) => {
-      const { updateProdBranch } = await client.updateProdBranch(
-        project.id,
-        data.prodBranch,
-      );
+      const { updateProject } = await client.updateProject(project.id, {
+        prodBranch: data.prodBranch,
+      });
 
-      if (updateProdBranch) {
+      if (updateProject) {
         await onUpdate();
         toast.success('Production branch upadated successfully');
       } else {
@@ -55,9 +43,33 @@ const GitTabPanel = ({
     [project],
   );
 
-  useEffect(() => {
-    reset();
-  }, [isSubmitSuccessful]);
+  const {
+    register: registerWebhooks,
+    handleSubmit: handleSubmitWebhooks,
+    reset: resetWebhooks,
+  } = useForm({
+    defaultValues: {
+      webhookUrl: '',
+    },
+  });
+
+  const updateWebhooksHandler = useCallback(
+    async (data: any) => {
+      const { updateProject } = await client.updateProject(project.id, {
+        webhooks: [...project.webhooks, data.webhookUrl],
+      });
+
+      if (updateProject) {
+        await onUpdate();
+        toast.success('Webhook added successfully');
+      } else {
+        toast.error('Error adding webhook');
+      }
+
+      resetWebhooks();
+    },
+    [project],
+  );
 
   useEffect(() => {
     resetProdBranch({
@@ -65,8 +77,18 @@ const GitTabPanel = ({
     });
   }, [project]);
 
-  const handleDelete = () => {
-    // TODO: Impletement functionality to delete webhooks
+  const handleDeleteWebhook = async (index: number) => {
+    project.webhooks.splice(index, 1);
+    const { updateProject } = await client.updateProject(project.id, {
+      webhooks: project.webhooks,
+    });
+
+    if (updateProject) {
+      await onUpdate();
+      toast.success('Webhook deleted successfully');
+    } else {
+      toast.error('Error deleting webhook');
+    }
   };
 
   return (
@@ -117,11 +139,7 @@ const GitTabPanel = ({
         </div>
       </form>
 
-      <form
-        onSubmit={handleSubmit(() => {
-          toast.success('Webhook added successfully.');
-        })}
-      >
+      <form onSubmit={handleSubmitWebhooks(updateWebhooksHandler)}>
         <div className="mb-2 p-2">
           <Typography variant="h6" className="text-black">
             Deploy webhooks
@@ -133,7 +151,10 @@ const GitTabPanel = ({
           <div className="flex gap-1">
             <div className="grow">
               <Typography variant="small">Webhook URL</Typography>
-              <Input crossOrigin={undefined} {...register('webhookUrl')} />
+              <Input
+                crossOrigin={undefined}
+                {...registerWebhooks('webhookUrl')}
+              />
             </div>
             <div className="self-end">
               <Button size="sm" type="submit">
@@ -147,9 +168,8 @@ const GitTabPanel = ({
         {project.webhooks.map((webhookUrl, index) => {
           return (
             <WebhookCard
-              webhooksArray={project.webhooks}
               webhookUrl={webhookUrl}
-              handleDelete={() => handleDelete()}
+              onDelete={() => handleDeleteWebhook(index)}
               key={index}
             />
           );

@@ -5,21 +5,22 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 
-const WebhookCard = (props: {
-  webhooksArray: string[];
+interface WebhookCardProps {
   webhookUrl: string;
-  handleDelete: () => void;
-}) => {
+  onDelete: () => void;
+}
+
+const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   return (
     <div className="flex justify-between w-full mb-3">
-      {props.webhookUrl}
+      {webhookUrl}
 
       <div className="flex gap-3">
         <Button
           size="sm"
           onClick={() => {
-            navigator.clipboard.writeText(props.webhookUrl);
+            navigator.clipboard.writeText(webhookUrl);
             toast.success('Copied to clipboard');
           }}
         >
@@ -43,16 +44,13 @@ const WebhookCard = (props: {
         confirmButtonTitle="Yes, Confirm delete"
         handleConfirm={() => {
           setDeleteDialogOpen((preVal) => !preVal);
-          props.handleDelete();
+          onDelete();
         }}
         color="red"
       >
         <Typography variant="small">
           Are you sure you want to delete the variable{' '}
-          <span className="bg-blue-100 p-0.5 rounded-sm">
-            {props.webhookUrl}
-          </span>
-          ?
+          <span className="bg-blue-100 p-0.5 rounded-sm">{webhookUrl}</span>?
         </Typography>
       </ConfirmDialog>
     </div>

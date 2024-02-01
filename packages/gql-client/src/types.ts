@@ -223,8 +223,10 @@ export type DeleteDomainResponse = {
 }
 
 export type UpdateProjectInput = {
-  name: string
-  description: string
+  name?: string
+  description?: string
+  prodBranch?: string
+  webhooks?: string[]
 }
 
 export type UpdateDomainInput = {
@@ -257,8 +259,4 @@ export type AuthenticateGitHubResponse = {
 
 export type UnauthenticateGitHubResponse = {
   unauthenticateGitHub: boolean
-}
-
-export type UpdateProdBranchResponse = {
-  updateProdBranch: boolean
 }

@@ -9,6 +9,7 @@ import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environm
 import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
+import { Project } from './entity/Project';
 
 const log = debug('snowball:database');
 
@@ -188,9 +189,9 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         }
       },
 
-      updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: { name: string, description: string } }) => {
+      updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: DeepPartial<Project> }) => {
         try {
-          return db.updateProjectById(projectId, projectDetails);
+          return await db.updateProjectById(projectId, projectDetails);
         } catch (err) {
           log(err);
           return false;
@@ -272,15 +273,6 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
         } catch (err) {
           log(err);
           return false;
-        }
-      },
-
-      updateProdBranch: async (_: any, { projectId, prodBranch }: {projectId: string, prodBranch: string }) => {
-        try {
-          return await db.updateProjectById(projectId, { prodBranch });
-        } catch (err) {
-          log(err);
-          return (false);
         }
       }
     }
