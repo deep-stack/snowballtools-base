@@ -11,6 +11,7 @@ import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
 import { Config } from './config';
 import { DEFAULT_CONFIG_FILE_PATH } from './constants';
+import { Service } from './service';
 
 const log = debug('snowball:server');
 
@@ -20,6 +21,7 @@ export const main = async (): Promise<void> => {
 
   const db = new Database(database);
   await db.init();
+  const service = new Service(db);
 
   // TODO: Move to Service class
   const app = new OAuthApp({
@@ -29,7 +31,7 @@ export const main = async (): Promise<void> => {
   });
 
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
-  const resolvers = await createResolvers(db, app);
+  const resolvers = await createResolvers(db, app, service);
 
   await createAndStartServer(typeDefs, resolvers, server);
 };

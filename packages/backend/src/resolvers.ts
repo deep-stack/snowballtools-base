@@ -4,8 +4,9 @@ import { DeepPartial } from 'typeorm';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
+import { Service } from './service';
 import { Database } from './database';
-import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, isUserOwner } from './utils';
+import { isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
@@ -13,71 +14,45 @@ import { Project } from './entity/Project';
 
 const log = debug('snowball:database');
 
-export const createResolvers = async (db: Database, app: OAuthApp): Promise<any> => {
+// TODO: Remove Database argument and refactor code to Service
+export const createResolvers = async (db: Database, app: OAuthApp, service: Service): Promise<any> => {
   return {
     Query: {
       // TODO: add custom type for context
       user: (_: any, __: any, context: any) => {
-        return db.getUser(context.userId);
+        return service.getUser(context.userId);
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        return db.getOrganizationsByUserId(context.userId);
+        return service.getOrganizationsByUserId(context.userId);
       },
 
       project: async (_: any, { projectId }: { projectId: string }) => {
-        const dbProject = await db.getProjectById(projectId);
-
-        return dbProject || null;
+        return service.getProjectById(projectId);
       },
 
       projectsInOrganization: async (_: any, { organizationId }: {organizationId: string }, context: any) => {
-        const dbProjects = await db.getProjectsInOrganization(context.userId, organizationId);
-        return dbProjects;
+        return service.getProjectsInOrganization(context.userId, organizationId);
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
-        const dbDeployments = await db.getDeploymentsByProjectId(projectId);
-
-        const deployments = dbDeployments.map(dbDeployment => {
-          return deploymentToGqlType(dbDeployment);
-        });
-
-        return deployments;
+        return service.getDeployementsByProjectId(projectId);
       },
 
       environmentVariables: async (_: any, { projectId }: { projectId: string }) => {
-        const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(projectId);
-        return dbEnvironmentVariables;
+        return service.getEnvironmentVariablesByProjectId(projectId);
       },
 
       projectMembers: async (_: any, { projectId }: { projectId: string }) => {
-        const dbProjectMembers = await db.getProjectMembersByProjectId(projectId);
-
-        const projectMembers = dbProjectMembers.map(dbProjectMember => {
-          return projectMemberToGqlType(dbProjectMember);
-        });
-
-        return projectMembers;
+        return service.getProjectMembersByProjectId(projectId);
       },
 
       searchProjects: async (_: any, { searchText }: { searchText: string }, context: any) => {
-        const dbProjects = await db.getProjectsBySearchText(context.userId, searchText);
-
-        const projects = dbProjects.map((project) => {
-          return projectToGqlType(project, [], []);
-        });
-
-        return projects;
+        return service.searchProjects(context.userId, searchText);
       },
 
       domains: async (_:any, { projectId }: { projectId: string }) => {
-        try {
-          return db.getDomainsByProjectId(projectId);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.getDomainsByProjectId(projectId);
       }
     },
 
