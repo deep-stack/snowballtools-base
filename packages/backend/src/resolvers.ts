@@ -5,7 +5,7 @@ import { DeepPartial } from 'typeorm';
 import { OAuthApp } from '@octokit/oauth-app';
 
 import { Database } from './database';
-import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, environmentVariableToGqlType, isUserOwner } from './utils';
+import { deploymentToGqlType, projectMemberToGqlType, projectToGqlType, isUserOwner } from './utils';
 import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
@@ -22,37 +22,7 @@ export const createResolvers = async (db: Database, app: OAuthApp): Promise<any>
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        const organizations = await db.getOrganizationsByUserId(context.userId);
-
-        const orgsWithProjectsPromises = organizations.map(async (org) => {
-          const dbProjects = await db.getProjectsByOrganizationId(org.id);
-
-          const projectsPromises = dbProjects.map(async (dbProject) => {
-            const dbProjectMembers = await db.getProjectMembersByProjectId(dbProject.id);
-            const dbEnvironmentVariables = await db.getEnvironmentVariablesByProjectId(dbProject.id);
-
-            const projectMembers = dbProjectMembers.map(dbProjectMember => {
-              return projectMemberToGqlType(dbProjectMember);
-            });
-
-            const environmentVariables = dbEnvironmentVariables.map(dbEnvironmentVariable => {
-              return environmentVariableToGqlType(dbEnvironmentVariable);
-            });
-
-            return projectToGqlType(dbProject, projectMembers, environmentVariables);
-          });
-
-          const projects = await Promise.all(projectsPromises);
-
-          return {
-            ...org,
-            projects
-          };
-        });
-
-        // TODO: Add organizationMembers field when / if required
-        const orgsWithProjects = await Promise.all(orgsWithProjectsPromises);
-        return orgsWithProjects;
+        return db.getOrganizationsByUserId(context.userId);
       },
 
       project: async (_: any, { projectId }: { projectId: string }) => {

@@ -27,6 +27,10 @@ query ($projectId: String!) {
     repository
     webhooks
     icon
+    organization {
+      id
+      name
+    }
     owner {
       id
       name
@@ -96,34 +100,8 @@ query {
   organizations {
     id
     name
-    projects {
-      id
-      owner {
-        id
-        name
-      }
-      deployments {
-        id
-      }
-      name
-      repository
-      prodBranch
-      description
-      template
-      framework
-      webhooks
-      members {
-        id
-        permissions
-        member{
-          id
-          name
-          email
-        }
-      }
-      createdAt
-      updatedAt
-    }
+    createdAt
+    updatedAt
   }
 }
 `;

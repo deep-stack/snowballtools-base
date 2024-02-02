@@ -249,6 +249,7 @@ export type UpdateProjectInput = {
   description?: string
   prodBranch?: string
   webhooks?: string[]
+  organizationId?: string
 }
 
 export type UpdateDomainInput = {

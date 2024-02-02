@@ -1,34 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, Link, useOutletContext } from 'react-router-dom';
-import { Domain } from 'gql-client';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Domain, Project } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
 import DomainCard from './DomainCard';
-import { ProjectSearchOutletContext } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 import repositories from '../../../../assets/repositories.json';
 
-const Domains = () => {
-  const { id } = useParams();
+const Domains = ({ project }: { project: Project }) => {
   const client = useGQLClient();
-
   const [domains, setDomains] = useState<Domain[]>([]);
 
-  const { projects } = useOutletContext<ProjectSearchOutletContext>();
-
-  const currentProject = useMemo(() => {
-    return projects.find((project) => {
-      return project.id === id;
-    });
-  }, [id, projects]);
-
   const fetchDomains = async () => {
-    if (currentProject === undefined) {
+    if (project === undefined) {
       return;
     }
 
-    const fetchedDomains = await client.getDomains(currentProject.id);
+    const fetchedDomains = await client.getDomains(project.id);
     setDomains(fetchedDomains.domains);
   };
 
@@ -55,7 +44,7 @@ const Domains = () => {
             key={domain.id}
             // TODO: Use github API for getting linked repository
             repo={repositories[0]!}
-            project={currentProject!}
+            project={project}
             onUpdate={fetchDomains}
           />
         );

@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Project } from 'gql-client';
+import { Organization, Project } from 'gql-client';
 
-import {
-  Button,
-  Typography,
-  Input,
-  Select,
-  Option,
-} from '@material-tailwind/react';
+import { Button, Typography, Input, Option } from '@material-tailwind/react';
 
 import DeleteProjectDialog from './DeleteProjectDialog';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
-
-const TEAMS = ['Airfoil'];
-const DEFAULT_SELECT_TEAM = undefined;
+import AsyncSelect from '../../../shared/AsyncSelect';
 
 const CopyIcon = ({ value }: { value: string }) => {
   return (
@@ -41,22 +33,26 @@ const GeneralTabPanel = ({
   onUpdate: () => Promise<void>;
 }) => {
   const client = useGQLClient();
+  const [transferOrganizations, setTransferOrganizations] = useState<
+    Organization[]
+  >([]);
+  const [selectedTransferOrganization, setSelectedTransferOrganization] =
+    useState('');
 
   const {
     handleSubmit: handleTransfer,
     control,
     formState,
+    reset: transferFormReset,
   } = useForm({
     defaultValues: {
-      team: DEFAULT_SELECT_TEAM,
+      orgId: '',
     },
   });
 
   const [openTransferDialog, setOpenTransferDialog] = useState(false);
-  const handleTransferProjectDialog = () =>
-    setOpenTransferDialog(!openTransferDialog);
-
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
   const handleDeleteProjectDialog = () =>
     setOpenDeleteDialog(!openDeleteDialog);
 
@@ -71,6 +67,45 @@ const GeneralTabPanel = ({
       description: project.description,
     },
   });
+
+  const fetchUserOrganizations = useCallback(async () => {
+    const { organizations } = await client.getOrganizations();
+    const orgsToTransfer = organizations.filter(
+      (org) => org.id !== project.organization.id,
+    );
+    setTransferOrganizations(orgsToTransfer);
+  }, [project]);
+
+  const handleTransferProject = useCallback(async () => {
+    const { updateProject: isTransferred } = await client.updateProject(
+      project.id,
+      {
+        organizationId: selectedTransferOrganization,
+      },
+    );
+    setOpenTransferDialog(!openTransferDialog);
+
+    if (isTransferred) {
+      toast.success('Project transferred');
+      await fetchUserOrganizations();
+      await onUpdate();
+      transferFormReset();
+    } else {
+      toast.error('Project not transrfered');
+    }
+  }, [project, selectedTransferOrganization]);
+
+  const selectedUserOrgName = useMemo(() => {
+    return (
+      transferOrganizations.find(
+        (org) => org.id === selectedTransferOrganization,
+      )?.name || ''
+    );
+  }, [transferOrganizations, selectedTransferOrganization]);
+
+  useEffect(() => {
+    fetchUserOrganizations();
+  }, [project]);
 
   useEffect(() => {
     reset({ appName: project.name, description: project.description });
@@ -140,29 +175,30 @@ const GeneralTabPanel = ({
           </Link>
         </Typography>
         <form
-          onSubmit={handleTransfer(() => {
-            handleTransferProjectDialog();
+          onSubmit={handleTransfer(({ orgId }) => {
+            setSelectedTransferOrganization(orgId);
+            setOpenTransferDialog(!openTransferDialog);
           })}
         >
           <Typography variant="small" className="font-medium text-gray-800">
             Choose team
           </Typography>
           <Controller
-            name="team"
+            name="orgId"
             rules={{ required: 'This field is required' }}
             control={control}
             render={({ field }) => (
-              <Select
+              <AsyncSelect
                 {...field}
                 // TODO: Implement placeholder for select
                 label={!field.value ? 'Select an account / team' : ''}
               >
-                {TEAMS.map((team, key) => (
-                  <Option key={key} value={team}>
-                    ^ {team}
+                {transferOrganizations.map((org, key) => (
+                  <Option key={key} value={org.id}>
+                    ^ {org.name}
                   </Option>
                 ))}
-              </Select>
+              </AsyncSelect>
             )}
           />
           <Button
@@ -177,15 +213,15 @@ const GeneralTabPanel = ({
         </form>
         <ConfirmDialog
           dialogTitle="Transfer project"
-          handleOpen={handleTransferProjectDialog}
+          handleOpen={() => setOpenTransferDialog(!openTransferDialog)}
           open={openTransferDialog}
           confirmButtonTitle="Yes, Confirm transfer"
-          handleConfirm={handleTransferProjectDialog}
+          handleConfirm={handleTransferProject}
           color="blue"
         >
           <Typography variant="small">
-            Upon confirmation, your project nextjs-boilerplate will be
-            transferred from saugat to Airfoil.
+            Upon confirmation, your project {project.name} will be transferred
+            from {project.organization.name} to {selectedUserOrgName}.
           </Typography>
         </ConfirmDialog>
       </div>

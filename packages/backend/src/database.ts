@@ -6,7 +6,6 @@ import assert from 'assert';
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
 import { Organization } from './entity/Organization';
-import { UserOrganization } from './entity/UserOrganization';
 import { Project } from './entity/Project';
 import { Deployment, Environment } from './entity/Deployment';
 import { Permission, ProjectMember } from './entity/ProjectMember';
@@ -52,22 +51,19 @@ export class Database {
   }
 
   async getOrganizationsByUserId (userId: number): Promise<Organization[]> {
-    const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
+    const organizationRepository = this.dataSource.getRepository(Organization);
 
-    const userOrgs = await userOrganizationRepository.find({
-      relations: {
-        member: true,
-        organization: true
-      },
+    const userOrgs = await organizationRepository.find({
       where: {
-        member: {
-          id: userId
+        userOrganizations: {
+          member: {
+            id: userId
+          }
         }
       }
     });
 
-    const organizations = userOrgs.map(userOrg => userOrg.organization);
-    return organizations;
+    return userOrgs;
   }
 
   async getProjectsByOrganizationId (organizationId: number): Promise<Project[]> {
@@ -96,6 +92,7 @@ export class Database {
       .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoinAndSelect('project.owner', 'owner')
+      .leftJoinAndSelect('project.organization', 'organization')
       .where('project.id = :projectId', {
         projectId
       })

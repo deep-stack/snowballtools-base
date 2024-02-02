@@ -137,6 +137,7 @@ input UpdateProjectInput {
   name: String
   description: String
   prodBranch: String
+  organizationId: String
   webhooks: [String!]
 }
 

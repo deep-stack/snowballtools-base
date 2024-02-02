@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Domain, DomainStatus } from 'gql-client';
+import { Domain, DomainStatus, Project } from 'gql-client';
 
 import {
   Chip,
@@ -12,7 +12,7 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import { ProjectDetails, RepositoryDetails } from '../../../../types/project';
+import { RepositoryDetails } from '../../../../types/project';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
@@ -28,7 +28,7 @@ interface DomainCardProps {
   domains: Domain[];
   domain: Domain;
   repo: RepositoryDetails;
-  project: ProjectDetails;
+  project: Project;
   onUpdate: () => Promise<void>;
 }
 
