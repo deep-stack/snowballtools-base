@@ -194,15 +194,15 @@ export class GQLClient {
     return data;
   }
 
-  async addProject (projectDetails: AddProjectInput): Promise<AddProjectResponse> {
-    const { data } = await this.client.mutate({
+  async addProject (data: AddProjectInput): Promise<AddProjectResponse> {
+    const result = await this.client.mutate({
       mutation: addProject,
       variables: {
-        projectDetails
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
   async updateProject (projectId: string, projectDetails: UpdateProjectInput): Promise<UpdateProjectResponse> {

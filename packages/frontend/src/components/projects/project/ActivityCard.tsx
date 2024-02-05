@@ -3,31 +3,24 @@ import React from 'react';
 import { Typography, IconButton } from '@material-tailwind/react';
 
 import { relativeTime } from '../../../utils/time';
-
-interface ActivityDetails {
-  author: string;
-  authorAvatar: string;
-  createdAt: string;
-  branch: string;
-  message: string;
-}
+import { GitCommitDetails } from '../../../types/project';
 
 interface ActivityCardProps {
-  activity: ActivityDetails;
+  activity: GitCommitDetails;
 }
 
 const ActivityCard = ({ activity }: ActivityCardProps) => {
   return (
     <div className="group flex hover:bg-gray-200 rounded mt-1">
-      <div className="w-4">{activity.authorAvatar}</div>
+      <div className="w-4">^</div>
 
       <div className="grow">
-        <Typography>{activity.author}</Typography>
+        <Typography>{activity.commit.author?.name}</Typography>
         <Typography variant="small" color="gray">
-          {relativeTime(activity.createdAt)} ^ {activity.branch}
+          {relativeTime(activity.commit.author!.date!)} ^ {activity.branch.name}
         </Typography>
         <Typography variant="small" color="gray">
-          {activity.message}
+          {activity.commit.message}
         </Typography>
       </div>
       <div className="mr-2 self-center hidden group-hover:block">

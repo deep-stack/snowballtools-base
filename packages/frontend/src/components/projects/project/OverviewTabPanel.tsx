@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Project } from 'gql-client';
 
 import { Typography, Button, Chip } from '@material-tailwind/react';
 
 import ActivityCard from './ActivityCard';
-import activityDetails from '../../../assets/activities.json';
 import { relativeTimeMs } from '../../../utils/time';
+import { useOctokit } from '../../../context/OctokitContext';
+import { GitCommitDetails } from '../../../types/project';
+
+const COMMITS_PER_PAGE = 4;
 
 interface OverviewProps {
   project: Project;
@@ -15,6 +18,58 @@ interface OverviewProps {
 const IS_DOMAIN_SETUP = false;
 
 const OverviewTabPanel = ({ project }: OverviewProps) => {
+  const { octokit } = useOctokit();
+  const [activities, setActivities] = useState<GitCommitDetails[]>([]);
+
+  useEffect(() => {
+    if (!octokit) {
+      return;
+    }
+
+    // TODO: Save repo commits in DB and avoid using GitHub API in frontend
+    // TODO: Figure out fetching latest commits for all branches
+    const fetchRepoActivity = async () => {
+      const [owner, repo] = project.repository.split('/');
+
+      // Get all branches in project repo
+      const result = await octokit.rest.repos.listBranches({
+        owner,
+        repo,
+      });
+
+      // Get first 4 commits from repo branches
+      const commitsByBranchPromises = result.data.map(async (branch) => {
+        const result = await octokit.rest.repos.listCommits({
+          owner,
+          repo,
+          sha: branch.commit.sha,
+          per_page: COMMITS_PER_PAGE,
+        });
+
+        return result.data.map((data) => ({
+          ...data,
+          branch,
+        }));
+      });
+
+      const commitsByBranch = await Promise.all(commitsByBranchPromises);
+      const commitsWithBranch = commitsByBranch.flat();
+
+      // Order commits by date and set latest 4 commits in activity section
+      const orderedCommits = commitsWithBranch
+        .sort(
+          (a, b) =>
+            new Date(b.commit.author!.date!).getTime() -
+            new Date(a.commit.author!.date!).getTime(),
+        )
+        .slice(0, COMMITS_PER_PAGE);
+
+      setActivities(orderedCommits);
+    };
+
+    fetchRepoActivity();
+  }, [octokit, project]);
+
   return (
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
@@ -86,8 +141,8 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
           </button>
         </div>
         <div className="p-2">
-          {activityDetails.map((activity, key) => {
-            return <ActivityCard activity={activity} key={key} />;
+          {activities.map((activity, index) => {
+            return <ActivityCard activity={activity} key={index} />;
           })}
         </div>
       </div>

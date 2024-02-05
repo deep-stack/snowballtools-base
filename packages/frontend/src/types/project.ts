@@ -44,6 +44,21 @@ export interface GitRepositoryDetails {
   default_branch?: string;
 }
 
+export interface GitBranchDetails {
+  name: string;
+}
+
+export interface GitCommitDetails {
+  branch: GitBranchDetails;
+  commit: {
+    author: {
+      name?: string;
+      date?: string;
+    } | null;
+    message: string;
+  };
+}
+
 export enum GitSelect {
   GITHUB = 'github',
   GITEA = 'gitea',
