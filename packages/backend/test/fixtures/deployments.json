@@ -3,110 +3,130 @@
     "projectIndex": 0,
     "domainIndex":0,
     "createdByIndex": 0,
+    "id":"ffhae3zq",
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
     "isCurrent": true,
     "branch": "main",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-ffhae3zq.testProject.snowball.xyz"
   },
   {
     "projectIndex": 0,
     "domainIndex":1,
     "createdByIndex": 0,
+    "id":"vehagei8",
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-vehagei8.testProject.snowball.xyz"
   },
   {
     "projectIndex": 0,
     "domainIndex":2,
     "createdByIndex": 0,
+    "id":"qmgekyte",
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-qmgekyte.testProject.snowball.xyz"
   },
   {
     "projectIndex": 0,
     "domainIndex": null,
     "createdByIndex": 0,
+    "id":"f8wsyim6",
     "title": "nextjs-boilerplate-4",
     "status": "Ready",
     "environment": "Production",
     "isCurrent": false,
     "branch": "prod",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-f8wsyim6.testProject.snowball.xyz"
   },
   {
     "projectIndex": 1,
     "domainIndex":3,
     "createdByIndex": 1,
+    "id":"eO8cckxk",
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
     "isCurrent": true,
     "branch": "main",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-2-eO8cckxk.testProject-2.snowball.xyz"
   },
   {
     "projectIndex": 1,
     "domainIndex":4,
     "createdByIndex": 1,
+    "id":"yaq0t5yw",
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-2-yaq0t5yw.testProject-2.snowball.xyz"
   },
   {
     "projectIndex": 1,
     "domainIndex":5,
     "createdByIndex": 1,
+    "id":"hwwr6sbx",
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "testProject-2-hwwr6sbx.testProject-2.snowball.xyz"
   },
   {
     "projectIndex": 2,
     "domainIndex":6,
     "createdByIndex": 2,
+    "id":"ndxje48a",
     "title": "nextjs-boilerplate-1",
     "status": "Building",
     "environment": "Production",
     "isCurrent": true,
     "branch": "main",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "iglootools-ndxje48a.iglootools.snowball.xyz"
   },
   {
     "projectIndex": 2,
     "domainIndex":7,
     "createdByIndex": 2,
+    "id":"gtgpgvei",
     "title": "nextjs-boilerplate-2",
     "status": "Ready",
     "environment": "Preview",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "iglootools-gtgpgvei.iglootools.snowball.xyz"
   },
   {
     "projectIndex": 2,
     "domainIndex":8,
     "createdByIndex": 2,
+    "id":"b4bpthjr",
     "title": "nextjs-boilerplate-3",
     "status": "Error",
     "environment": "Development",
     "isCurrent": false,
     "branch": "test",
-    "commitHash": "testXyz"
+    "commitHash": "testXyz",
+    "url": "iglootools-b4bpthjr.iglootools.snowball.xyz"
   }
 ]

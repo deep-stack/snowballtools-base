@@ -63,6 +63,7 @@ export type Deployment = {
   branch: string
   commitHash: string
   title: string
+  url: string
   environment: Environment
   isCurrent: boolean
   status: DeploymentStatus
@@ -131,6 +132,7 @@ export type Project = {
   updatedAt: string
   organization: Organization
   icon: string
+  subDomain: string
 }
 
 export type GetProjectMembersResponse = {

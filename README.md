@@ -1,5 +1,7 @@
 # snowballtools
 
+## Setup
+
 - Clone the  `snowballtools` repo
 
   ```bash
@@ -17,6 +19,8 @@
   ```bash
   yarn build --ignore frontend
   ```
+
+## Backend
 
 - Change directory to `packages/backend`
 
@@ -43,6 +47,8 @@
   yarn start
   ```
 
+## Frontend
+
 - Change directory to `packages/frontend` in a new terminal
 
   ```bash
@@ -61,6 +67,8 @@
   REACT_APP_GITHUB_CLIENT_ID = <CLIENT_ID>
   ```
 
+### Development
+
 - Start the React application
 
   ```bash
@@ -68,3 +76,17 @@
   ```
 
 - The React application will be running in `http://localhost:3000/`
+
+### Production
+
+- Build the React application
+
+  ```bash
+  yarn build
+  ```
+
+- Use a web server for hosting static built files
+
+  ```bash
+  python3 -m http.server -d build 3000
+  ```

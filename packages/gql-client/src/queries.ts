@@ -27,6 +27,7 @@ query ($projectId: String!) {
     repository
     webhooks
     icon
+    subDomain
     organization {
       id
       name
@@ -54,6 +55,10 @@ query ($projectId: String!) {
         id
         name
       }
+      createdBy {
+        id
+        name
+      }
     }
   }
 }
@@ -72,6 +77,7 @@ query ($organizationId: String!) {
     repository
     updatedAt
     icon
+    subDomain
     deployments {
       id
       branch
@@ -121,6 +127,7 @@ query ($projectId: String!)  {
     branch
     commitHash
     title
+    url
     environment
     isCurrent
     status

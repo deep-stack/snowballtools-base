@@ -52,6 +52,7 @@ export const deploymentToGqlType = (dbDeployment: Deployment): any => {
     branch: dbDeployment.branch,
     commitHash: dbDeployment.commitHash,
     title: dbDeployment.title,
+    url: dbDeployment.url,
     environment: dbDeployment.environment,
     isCurrent: dbDeployment.isCurrent,
     status: dbDeployment.status,

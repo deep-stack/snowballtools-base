@@ -1,6 +1,6 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -27,8 +27,9 @@ enum Status {
 
 @Entity()
 export class Deployment {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  // TODO: set custom generated id
+  @PrimaryColumn('varchar')
+    id!: string;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
@@ -46,6 +47,9 @@ export class Deployment {
 
   @Column('varchar')
     title!: string;
+
+  @Column('varchar')
+    url!: string;
 
   @Column({
     enum: Environment

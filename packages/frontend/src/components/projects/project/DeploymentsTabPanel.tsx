@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Project } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -16,14 +17,14 @@ const DEFAULT_FILTER_VALUE: FilterValue = {
   status: StatusOptions.ALL_STATUS,
 };
 
-const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
+const DeploymentsTabPanel = ({ project }: { project: Project }) => {
   const client = useGQLClient();
 
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
   const [deployments, setDeployments] = useState<DeploymentDetails[]>([]);
 
   const fetchDeployments = async () => {
-    const { deployments } = await client.getDeployments(projectId);
+    const { deployments } = await client.getDeployments(project.id);
     const updatedDeployments = deployments.map((deployment) => {
       return {
         ...deployment,
@@ -91,7 +92,7 @@ const DeploymentsTabPanel = ({ projectId }: { projectId: string }) => {
                 key={key}
                 currentDeployment={currentDeployment!}
                 onUpdate={onUpdateDeploymenToProd}
-                projectId={projectId}
+                project={project}
               />
             );
           })

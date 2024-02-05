@@ -9,7 +9,8 @@
     "template": "test",
     "framework": "test",
     "webhooks": [],
-    "icon": ""
+    "icon": "",
+    "subDomain": "testProject.snowball.xyz"
   },
   {
     "ownerIndex": 1,
@@ -21,7 +22,8 @@
     "template": "test-2",
     "framework": "test-2",
     "webhooks": [],
-    "icon": ""
+    "icon": "",
+    "subDomain": "testProject-2.snowball.xyz"
   },
   {
     "ownerIndex": 2,
@@ -33,7 +35,8 @@
     "template": "test-3",
     "framework": "test-3",
     "webhooks": [],
-    "icon": ""
+    "icon": "",
+    "subDomain": "iglootools.snowball.xyz"
   },
   {
     "ownerIndex": 1,
@@ -45,7 +48,8 @@
     "template": "test-4",
     "framework": "test-4",
     "webhooks": [],
-    "icon": ""
+    "icon": "",
+    "subDomain": "iglootools-2.snowball.xyz"
   },
   {
     "ownerIndex": 0,
@@ -57,6 +61,7 @@
     "template": "test-5",
     "framework": "test-5",
     "webhooks": [],
-    "icon": ""
+    "icon": "",
+    "subDomain": "snowball-2.snowball.xyz"
   }
 ]

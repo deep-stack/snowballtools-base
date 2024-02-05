@@ -23,8 +23,7 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
           <div className="grow">
             <Typography>{project.name}</Typography>
             <Typography variant="small" color="gray">
-              {project.deployments[0]?.domain?.name ??
-                'No Production Deployment'}
+              {project.subDomain}
             </Typography>
           </div>
         </div>
@@ -55,22 +54,29 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
             </Button>
           )}
         </div>
-        <div className="flex justify-between p-2 text-sm">
-          <p>^ Source</p>
-          <p>{project.deployments[0]?.branch}</p>
-        </div>
-        <div className="flex justify-between p-2 text-sm">
-          <p>^ Deployment</p>
-          <p className="text-blue-600">
-            {project.deployments[0]?.domain?.name}
-          </p>
-        </div>
-        <div className="flex justify-between p-2 text-sm">
-          <p>^ Created</p>
-          <p>
-            {relativeTimeMs(project.createdAt)} by ^ {project.owner.name}
-          </p>
-        </div>
+        {project.deployments.length !== 0 ? (
+          <>
+            <div className="flex justify-between p-2 text-sm">
+              <p>^ Source</p>
+              <p>{project.deployments[0]?.branch}</p>
+            </div>
+            <div className="flex justify-between p-2 text-sm">
+              <p>^ Deployment</p>
+              <p className="text-blue-600">
+                {project.deployments[0]?.domain?.name}
+              </p>
+            </div>
+            <div className="flex justify-between p-2 text-sm">
+              <p>^ Created</p>
+              <p>
+                {relativeTimeMs(project.deployments[0].createdAt)} by ^{' '}
+                {project.deployments[0].createdBy.name}
+              </p>
+            </div>
+          </>
+        ) : (
+          <div>No current deployment found</div>
+        )}
       </div>
       <div className="col-span-2 p-2">
         <div className="flex justify-between">

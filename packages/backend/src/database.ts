@@ -2,6 +2,8 @@ import { DataSource, DeepPartial } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
+import { customAlphabet } from 'nanoid';
+import { lowercase, numbers } from 'nanoid-dictionary';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
@@ -11,8 +13,11 @@ import { Deployment, Environment } from './entity/Deployment';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
+import { PROJECT_DOMAIN } from './constants';
 
 const log = debug('snowball:database');
+
+const nanoid = customAlphabet(lowercase + numbers, 8);
 
 // TODO: Fix order of methods
 export class Database {
@@ -90,6 +95,7 @@ export class Database {
     const project = await projectRepository
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect('deployments.createdBy', 'user')
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoinAndSelect('project.owner', 'owner')
       .leftJoinAndSelect('project.organization', 'organization')
@@ -314,7 +320,7 @@ export class Database {
 
   async updateDeploymentById (deploymentId: string, updates: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const updateResult = await deploymentRepository.update({ id: Number(deploymentId) }, updates);
+    const updateResult = await deploymentRepository.update({ id: deploymentId }, updates);
 
     if (updateResult.affected) {
       return updateResult.affected > 0;
@@ -341,6 +347,8 @@ export class Database {
       id: Number(projectDetails.organizationId)
     });
 
+    newProject.subDomain = `${newProject.name}.${PROJECT_DOMAIN}`;
+
     return projectRepository.save(newProject);
   }
 
@@ -364,14 +372,14 @@ export class Database {
         createdBy: true
       },
       where: {
-        id: Number(deploymentId)
+        id: deploymentId
       }
     });
 
     if (deployment === null) {
       throw new Error('Deployment not found');
     }
-    const { id, createdAt, updatedAt, ...updatedDeployment } = deployment;
+    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
 
     if (updatedDeployment.environment === Environment.Production) {
       // TODO: Put isCurrent field in project
@@ -381,7 +389,10 @@ export class Database {
       });
     }
 
-    await deploymentRepository.update({ id: Number(deploymentId) }, { domain: null, isCurrent: false });
+    await deploymentRepository.update({ id: deploymentId }, { domain: null, isCurrent: false });
+
+    updatedDeployment.id = nanoid();
+    updatedDeployment.url = `${updatedDeployment.id}-${updatedDeployment.project.subDomain}`;
 
     return deploymentRepository.save(updatedDeployment);
   }
@@ -442,7 +453,7 @@ export class Database {
 
     const oldCurrentDeploymentUpdate = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false, domain: null });
 
-    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: Number(deploymentId) }, { isCurrent: true, domain: oldCurrentDeployment?.domain });
+    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: deploymentId }, { isCurrent: true, domain: oldCurrentDeployment?.domain });
 
     if (oldCurrentDeploymentUpdate.affected && newCurrentDeploymentUpdate.affected) {
       return oldCurrentDeploymentUpdate.affected > 0 && newCurrentDeploymentUpdate.affected > 0;

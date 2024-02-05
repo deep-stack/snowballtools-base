@@ -47,7 +47,7 @@ const ProjectTabs = ({ project, onUpdate }: ProjectTabsProps) => {
         <OverviewTabPanel project={project} />
       </TabPanel>
       <TabPanel>
-        <DeploymentsTabPanel projectId={project.id} />
+        <DeploymentsTabPanel project={project} />
       </TabPanel>
       <TabPanel>
         <Database />

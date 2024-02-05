@@ -72,6 +72,7 @@ type Project {
   updatedAt: String!
   organization: Organization!
   icon: String
+  subDomain: String
 }
 
 type ProjectMember {
@@ -89,6 +90,7 @@ type Deployment {
   branch: String!
   commitHash: String!
   title: String!
+  url: String!
   environment: Environment!
   isCurrent: Boolean!
   status: DeploymentStatus!

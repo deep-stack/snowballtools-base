@@ -55,8 +55,6 @@ const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityT
 };
 
 const generateTestData = async (dataSource: DataSource) => {
-  const domainRepository = await dataSource.getRepository(Domain);
-
   const savedUsers = await loadAndSaveData(User, dataSource, path.resolve(__dirname, USER_DATA_PATH));
   const savedOrgs = await loadAndSaveData(Organization, dataSource, path.resolve(__dirname, ORGANIZATION_DATA_PATH));
 
@@ -66,6 +64,8 @@ const generateTestData = async (dataSource: DataSource) => {
   };
 
   const savedProjects = await loadAndSaveData(Project, dataSource, path.resolve(__dirname, PROJECT_DATA_PATH), projectRelations);
+
+  const domainRepository = dataSource.getRepository(Domain);
 
   const domainPrimaryRelations = {
     project: savedProjects

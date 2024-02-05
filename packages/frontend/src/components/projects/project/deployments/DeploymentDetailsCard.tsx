@@ -10,11 +10,12 @@ import {
   ChipProps,
 } from '@material-tailwind/react';
 import toast from 'react-hot-toast';
-import { Environment } from 'gql-client';
+import { Environment, Project } from 'gql-client';
 
 import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
+import AssignDomainDialog from './AssignDomainDialog';
 import { DeploymentDetails, Status } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
@@ -22,7 +23,7 @@ interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
   currentDeployment: DeploymentDetails;
   onUpdate: () => Promise<void>;
-  projectId: string;
+  project: Project;
 }
 
 const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
@@ -35,13 +36,14 @@ const DeploymentDetailsCard = ({
   deployment,
   currentDeployment,
   onUpdate,
-  projectId,
+  project,
 }: DeployDetailsCardProps) => {
   const client = useGQLClient();
 
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
+  const [assignDomainDialog, setAssignDomainDialog] = useState(false);
 
   const updateDeployment = async () => {
     const isUpdated = await client.updateDeploymentToProd(deployment.id);
@@ -65,7 +67,7 @@ const DeploymentDetailsCard = ({
 
   const rollbackDeploymentHandler = async () => {
     const isRollbacked = await client.rollbackDeployment(
-      projectId,
+      project.id,
       deployment.id,
     );
     if (isRollbacked) {
@@ -80,7 +82,7 @@ const DeploymentDetailsCard = ({
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
       <div className="col-span-2">
         <div className="flex">
-          <Typography className=" basis-3/4">{deployment.title}</Typography>
+          <Typography className=" basis-3/4">{deployment.url}</Typography>
           <Chip
             value={deployment.status}
             color={STATUS_COLORS[deployment.status] ?? 'gray'}
@@ -110,7 +112,11 @@ const DeploymentDetailsCard = ({
           </MenuHandler>
           <MenuList>
             <MenuItem>^ Visit</MenuItem>
-            <MenuItem>^ Assign domain</MenuItem>
+            <MenuItem
+              onClick={() => setAssignDomainDialog(!assignDomainDialog)}
+            >
+              ^ Assign domain
+            </MenuItem>
             {!(deployment.environment === Environment.Production) && (
               <MenuItem
                 onClick={() => setChangeToProduction(!changeToProduction)}
@@ -235,6 +241,10 @@ const DeploymentDetailsCard = ({
           </Typography>
         </div>
       </ConfirmDialog>
+      <AssignDomainDialog
+        open={assignDomainDialog}
+        handleOpen={() => setAssignDomainDialog(!assignDomainDialog)}
+      />
     </div>
   );
 };

@@ -57,6 +57,9 @@ export class Project {
   @Column('varchar')
     icon!: string;
 
+  @Column('varchar')
+    subDomain!: string;
+
   @CreateDateColumn()
     createdAt!: Date;
 
