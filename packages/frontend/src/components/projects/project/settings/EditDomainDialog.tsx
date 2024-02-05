@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
 
@@ -28,6 +28,12 @@ interface EditDomainDialogProp {
   repo: RepositoryDetails;
   onUpdate: () => Promise<void>;
 }
+
+type EditDomainValues = {
+  name: string;
+  branch: string;
+  redirectedTo: string;
+};
 
 const EditDomainDialog = ({
   domains,
@@ -81,8 +87,8 @@ const EditDomainDialog = ({
     },
   });
 
-  const updateDomainHandler = useCallback(
-    async (data: any) => {
+  const updateDomainHandler: SubmitHandler<EditDomainValues> = useCallback(
+    async (data) => {
       const domainRedirectTo = domains.find(
         (domainData) => data.redirectedTo === domainData.name,
       );

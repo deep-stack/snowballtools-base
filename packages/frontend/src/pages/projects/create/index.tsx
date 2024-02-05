@@ -9,7 +9,7 @@ import { useOctokit } from '../../../context/OctokitContext';
 const NewProject = () => {
   const { octokit, updateAuth } = useOctokit();
 
-  return (
+  return Boolean(octokit) ? (
     <>
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
@@ -24,12 +24,10 @@ const NewProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      {Boolean(octokit) ? (
-        <RepositoryList octokit={octokit!} />
-      ) : (
-        <ConnectAccount onAuth={updateAuth} />
-      )}
+      <RepositoryList octokit={octokit!} />
     </>
+  ) : (
+    <ConnectAccount onAuth={updateAuth} />
   );
 };
 

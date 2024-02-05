@@ -3,6 +3,7 @@ import React from 'react';
 import OauthPopup from 'react-oauth-popup';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
+import ConnectAccountTabPanel from './ConnectAccountTabPanel';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -24,8 +25,9 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
     onToken(token);
   };
 
+  // TODO: Use correct height
   return (
-    <div className="bg-gray-100 flex flex-col p-4 justify-end items-center text-center text-sm h-60 rounded-2xl">
+    <div className="bg-gray-100 flex flex-col p-4 justify-center items-center text-center text-sm h-full rounded-2xl">
       <div>^</div>
       <div>
         <p>Connect to your git account</p>
@@ -47,6 +49,7 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
         </OauthPopup>
         <Button className="rounded-full mx-2">Connect to Gitea</Button>
       </div>
+      <ConnectAccountTabPanel />
     </div>
   );
 };

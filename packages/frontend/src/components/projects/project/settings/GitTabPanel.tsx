@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Project } from 'gql-client';
 
@@ -7,6 +7,14 @@ import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 
 import WebhookCard from './WebhookCard';
 import { useGQLClient } from '../../../../context/GQLClientContext';
+
+type UpdateProdBranchValues = {
+  prodBranch: string;
+};
+
+type UpdateWebhooksValues = {
+  webhookUrl: string;
+};
 
 const GitTabPanel = ({
   project,
@@ -27,21 +35,22 @@ const GitTabPanel = ({
     },
   });
 
-  const updateProdBranchHandler = useCallback(
-    async (data: any) => {
-      const { updateProject } = await client.updateProject(project.id, {
-        prodBranch: data.prodBranch,
-      });
+  const updateProdBranchHandler: SubmitHandler<UpdateProdBranchValues> =
+    useCallback(
+      async (data) => {
+        const { updateProject } = await client.updateProject(project.id, {
+          prodBranch: data.prodBranch,
+        });
 
-      if (updateProject) {
-        await onUpdate();
-        toast.success('Production branch upadated successfully');
-      } else {
-        toast.error('Error updating production branch');
-      }
-    },
-    [project],
-  );
+        if (updateProject) {
+          await onUpdate();
+          toast.success('Production branch upadated successfully');
+        } else {
+          toast.error('Error updating production branch');
+        }
+      },
+      [project],
+    );
 
   const {
     register: registerWebhooks,
@@ -53,23 +62,24 @@ const GitTabPanel = ({
     },
   });
 
-  const updateWebhooksHandler = useCallback(
-    async (data: any) => {
-      const { updateProject } = await client.updateProject(project.id, {
-        webhooks: [...project.webhooks, data.webhookUrl],
-      });
+  const updateWebhooksHandler: SubmitHandler<UpdateWebhooksValues> =
+    useCallback(
+      async (data) => {
+        const { updateProject } = await client.updateProject(project.id, {
+          webhooks: [...project.webhooks, data.webhookUrl],
+        });
 
-      if (updateProject) {
-        await onUpdate();
-        toast.success('Webhook added successfully');
-      } else {
-        toast.error('Error adding webhook');
-      }
+        if (updateProject) {
+          await onUpdate();
+          toast.success('Webhook added successfully');
+        } else {
+          toast.error('Error adding webhook');
+        }
 
-      resetWebhooks();
-    },
-    [project],
-  );
+        resetWebhooks();
+      },
+      [project],
+    );
 
   useEffect(() => {
     resetProdBranch({
