@@ -1,23 +1,19 @@
-import { DataSource, DeepPartial } from 'typeorm';
+import { DataSource, DeepPartial, FindManyOptions, FindOneOptions } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
-import { customAlphabet } from 'nanoid';
-import { lowercase, numbers } from 'nanoid-dictionary';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
-import { Deployment, Environment } from './entity/Deployment';
-import { Permission, ProjectMember } from './entity/ProjectMember';
+import { Deployment } from './entity/Deployment';
+import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 import { PROJECT_DOMAIN } from './constants';
 
 const log = debug('snowball:database');
-
-const nanoid = customAlphabet(lowercase + numbers, 8);
 
 // TODO: Fix order of methods
 export class Database {
@@ -38,11 +34,16 @@ export class Database {
     log('database initialized');
   }
 
-  async getUser (userId: number): Promise<User | null> {
+  async getUser (options: FindOneOptions<User>): Promise<User | null> {
     const userRepository = this.dataSource.getRepository(User);
-    const user = await userRepository.findOneBy({
-      id: userId
-    });
+    const user = await userRepository.findOne(options);
+
+    return user;
+  }
+
+  async createUser (data: DeepPartial<User>): Promise<User> {
+    const userRepository = this.dataSource.getRepository(User);
+    const user = await userRepository.save(data);
 
     return user;
   }
@@ -146,6 +147,27 @@ export class Database {
     return deployments;
   }
 
+  async getDeployment (options: FindOneOptions<Deployment>): Promise<Deployment | null> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployment = await deploymentRepository.findOne(options);
+
+    return deployment;
+  }
+
+  async getDomains (options: FindManyOptions<Domain>): Promise<Domain[]> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+    const domains = await domainRepository.find(options);
+
+    return domains;
+  }
+
+  async createDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployment = await deploymentRepository.save(data);
+
+    return deployment;
+  }
+
   async getProjectMembersByProjectId (projectId: string): Promise<ProjectMember[]> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
@@ -201,60 +223,18 @@ export class Database {
     }
   }
 
-  async addProjectMember (projectId: string, data: {
-    email: string,
-    permissions: Permission[]
-  }): Promise<boolean> {
+  async addProjectMember (data: DeepPartial<ProjectMember>): Promise<ProjectMember> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
-    const userRepository = this.dataSource.getRepository(User);
+    const newProjectMember = await projectMemberRepository.save(data);
 
-    let user = await userRepository.findOneBy({
-      email: data.email
-    });
-
-    if (!user) {
-      user = await userRepository.save({
-        email: data.email,
-        isVerified: false
-      });
-    }
-
-    const newProjectMember = await projectMemberRepository.save({
-      project: {
-        id: projectId
-      },
-      permissions: data.permissions,
-      isPending: true,
-      member: {
-        id: user.id
-      }
-    });
-
-    return Boolean(newProjectMember);
+    return newProjectMember;
   }
 
-  async addEnvironmentVariablesByProjectId (projectId: string, environmentVariables: {
-    environments: string[];
-    key: string;
-    value: string;
-  }[]): Promise<boolean> {
+  async addEnvironmentVariables (data: DeepPartial<EnvironmentVariable>[]): Promise<EnvironmentVariable[]> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+    const savedEnvironmentVariables = await environmentVariableRepository.save(data);
 
-    const formattedEnvironmentVariables = environmentVariables.map((environmentVariable) => {
-      return environmentVariable.environments.map((environment) => {
-        return ({
-          key: environmentVariable.key,
-          value: environmentVariable.value,
-          environment: environment as Environment,
-          project: Object.assign(new Project(), {
-            id: projectId
-          })
-        });
-      });
-    }).flat();
-
-    const savedEnvironmentVariables = await environmentVariableRepository.save(formattedEnvironmentVariables);
-    return savedEnvironmentVariables.length > 0;
+    return savedEnvironmentVariables;
   }
 
   async updateEnvironmentVariable (environmentVariableId: string, update: DeepPartial<EnvironmentVariable>): Promise<boolean> {
@@ -363,40 +343,6 @@ export class Database {
     }
   }
 
-  async redeployToProdById (userId: string, deploymentId: string): Promise<Deployment> {
-    const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const deployment = await deploymentRepository.findOne({
-      relations: {
-        project: true,
-        domain: true,
-        createdBy: true
-      },
-      where: {
-        id: deploymentId
-      }
-    });
-
-    if (deployment === null) {
-      throw new Error('Deployment not found');
-    }
-    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
-
-    if (updatedDeployment.environment === Environment.Production) {
-      // TODO: Put isCurrent field in project
-      updatedDeployment.isCurrent = true;
-      updatedDeployment.createdBy = Object.assign(new User(), {
-        id: Number(userId)
-      });
-    }
-
-    await deploymentRepository.update({ id: deploymentId }, { domain: null, isCurrent: false });
-
-    updatedDeployment.id = nanoid();
-    updatedDeployment.url = `${updatedDeployment.id}-${updatedDeployment.project.subDomain}`;
-
-    return deploymentRepository.save(updatedDeployment);
-  }
-
   async deleteProjectById (projectId: string): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
     const project = await projectRepository.findOneOrFail({
@@ -415,16 +361,6 @@ export class Database {
 
   async deleteDomainById (domainId: string): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
-
-    const domainsRedirectedFrom = await domainRepository.find({
-      where: {
-        redirectToId: Number(domainId)
-      }
-    });
-
-    if (domainsRedirectedFrom.length > 0) {
-      throw new Error('Cannot delete domain since it has redirects from other domains');
-    }
 
     const deleteResult = await domainRepository.softDelete({ id: Number(domainId) });
 

@@ -148,28 +148,28 @@ export class GQLClient {
     return data;
   }
 
-  async addEnvironmentVariables (projectId: string, environmentVariables: AddEnvironmentVariableInput[]): Promise<AddEnvironmentVariablesResponse> {
-    const { data } = await this.client.mutate({
+  async addEnvironmentVariables (projectId: string, data: AddEnvironmentVariableInput[]): Promise<AddEnvironmentVariablesResponse> {
+    const result = await this.client.mutate({
       mutation: addEnvironmentVariables,
       variables: {
         projectId,
-        environmentVariables
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
-  async updateEnvironmentVariable (environmentVariableId: string, environmentVariable: UpdateEnvironmentVariableInput): Promise<UpdateEnvironmentVariableResponse> {
-    const { data } = await this.client.mutate({
+  async updateEnvironmentVariable (environmentVariableId: string, data: UpdateEnvironmentVariableInput): Promise<UpdateEnvironmentVariableResponse> {
+    const result = await this.client.mutate({
       mutation: updateEnvironmentVariable,
       variables: {
         environmentVariableId,
-        environmentVariable
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
   async removeEnvironmentVariable (environmentVariableId: string): Promise<RemoveEnvironmentVariableResponse> {

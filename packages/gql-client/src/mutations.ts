@@ -19,14 +19,14 @@ mutation ($projectId: String!, $data: AddProjectMemberInput) {
 `;
 
 export const addEnvironmentVariables = gql`
-mutation ($projectId: String!, $environmentVariables: [AddEnvironmentVariableInput!]) {
-  addEnvironmentVariables(projectId: $projectId, environmentVariables: $environmentVariables)
+mutation ($projectId: String!, $data: [AddEnvironmentVariableInput!]) {
+  addEnvironmentVariables(projectId: $projectId, data: $data)
 }
 `;
 
 export const updateEnvironmentVariable = gql`
-mutation ($environmentVariableId: String!, $environmentVariable: UpdateEnvironmentVariableInput!) {
-  updateEnvironmentVariable(environmentVariableId: $environmentVariableId, environmentVariable: $environmentVariable)
+mutation ($environmentVariableId: String!, $data: UpdateEnvironmentVariableInput!) {
+  updateEnvironmentVariable(environmentVariableId: $environmentVariableId, data: $data)
 }
 `;
 

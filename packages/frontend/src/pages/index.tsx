@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
+import { Organization } from 'gql-client';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
@@ -8,16 +9,16 @@ import { useGQLClient } from '../context/GQLClientContext';
 import { ProjectDetails } from '../types/project';
 import { COMMIT_DETAILS } from '../constants';
 
-// TODO: Implement organization switcher
-const USER_ORGANIZATION_ID = '1';
-
 const Projects = () => {
   const client = useGQLClient();
+  const organization = useOutletContext<Organization>();
+
   const [projects, setProjects] = useState<ProjectDetails[]>([]);
 
   const fetchProjects = useCallback(async () => {
-    const { projectsInOrganization } =
-      await client.getProjectsInOrganization(USER_ORGANIZATION_ID);
+    const { projectsInOrganization } = await client.getProjectsInOrganization(
+      organization.id,
+    );
 
     const updatedProjects = projectsInOrganization.map((project) => {
       return {

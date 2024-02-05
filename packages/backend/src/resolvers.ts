@@ -7,10 +7,10 @@ import { OAuthApp } from '@octokit/oauth-app';
 import { Service } from './service';
 import { Database } from './database';
 import { isUserOwner } from './utils';
-import { Environment } from './entity/Deployment';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
+import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
 const log = debug('snowball:database');
 
@@ -86,12 +86,7 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
           permissions: Permission[]
         }
       }) => {
-        try {
-          return await db.updateProjectMemberById(projectMemberId, data);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.updateProjectMember(projectMemberId, data);
       },
 
       addProjectMember: async (_: any, { projectId, data }: {
@@ -101,100 +96,43 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
           permissions: Permission[]
         }
       }) => {
-        try {
-          // TODO: Send invitation
-          return await db.addProjectMember(projectId, data);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.addProjectMember(projectId, data);
       },
 
-      addEnvironmentVariables: async (_: any, { projectId, environmentVariables }: { projectId: string, environmentVariables: { environments: string[], key: string, value: string}[] }) => {
-        try {
-          return await db.addEnvironmentVariablesByProjectId(projectId, environmentVariables);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+      addEnvironmentVariables: async (_: any, { projectId, data }: { projectId: string, data: { environments: string[], key: string, value: string}[] }) => {
+        return service.addEnvironmentVariables(projectId, data);
       },
 
-      updateEnvironmentVariable: async (_: any, { environmentVariableId, environmentVariable }: { environmentVariableId: string, environmentVariable : {
-        key: string
-        value: string
-      }}) => {
-        try {
-          return await db.updateEnvironmentVariable(environmentVariableId, environmentVariable);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+      updateEnvironmentVariable: async (_: any, { environmentVariableId, data }: { environmentVariableId: string, data : DeepPartial<EnvironmentVariable>}) => {
+        return service.updateEnvironmentVariable(environmentVariableId, data);
       },
 
       removeEnvironmentVariable: async (_: any, { environmentVariableId }: { environmentVariableId: string}) => {
-        try {
-          return await db.deleteEnvironmentVariable(environmentVariableId);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.removeEnvironmentVariable(environmentVariableId);
       },
 
       updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
-        try {
-          return await db.updateDeploymentById(deploymentId, {
-            environment: Environment.Production
-          });
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.updateDeploymentToProd(deploymentId);
       },
 
-      addProject: async (_: any, { projectDetails }: { projectDetails: DeepPartial<Project> }, context: any) => {
-        try {
-          await db.addProject(context.userId, projectDetails);
-          return true;
-        } catch (err) {
-          log(err);
-          return false;
-        }
+      addProject: async (_: any, { data }: { data: DeepPartial<Project> }, context: any) => {
+        return service.addProject(context.userId, data);
       },
 
       updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: DeepPartial<Project> }) => {
-        try {
-          return await db.updateProjectById(projectId, projectDetails);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.updateProject(projectId, projectDetails);
       },
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
-        try {
-          return await db.redeployToProdById(context.userId, deploymentId);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.redeployToProd(context.userId, deploymentId);
       },
 
       deleteProject: async (_: any, { projectId }: { projectId: string }) => {
-        try {
-          return await db.deleteProjectById(projectId);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.deleteProject(projectId);
       },
 
       deleteDomain: async (_: any, { domainId }: { domainId: string }) => {
-        try {
-          return await db.deleteDomainById(domainId);
-        } catch (err) {
-          log(err);
-          return false;
-        }
+        return service.deleteDomain(domainId);
       },
 
       rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {

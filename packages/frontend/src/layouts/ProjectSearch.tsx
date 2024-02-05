@@ -1,5 +1,6 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
+import { Organization } from 'gql-client';
 
 import { IconButton, Typography } from '@material-tailwind/react';
 
@@ -8,7 +9,7 @@ import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 
 const ProjectSearch = () => {
   const navigate = useNavigate();
-
+  const organization = useOutletContext<Organization>();
   return (
     <div>
       <div className="sticky top-0 bg-white z-30">
@@ -33,7 +34,7 @@ const ProjectSearch = () => {
         <HorizontalLine />
       </div>
       <div className="z-0">
-        <Outlet />
+        <Outlet context={organization} />
       </div>
     </div>
   );
