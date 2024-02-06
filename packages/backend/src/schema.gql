@@ -192,7 +192,7 @@ type Mutation {
   updateEnvironmentVariable(environmentVariableId: String!, data: UpdateEnvironmentVariableInput!): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
-  addProject(data: AddProjectInput): Boolean!
+  addProject(data: AddProjectInput): Project!
   updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!

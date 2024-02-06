@@ -8,7 +8,7 @@ import HorizontalLine from '../../components/HorizontalLine';
 import ProjectTabs from '../../components/projects/project/ProjectTabs';
 import { useGQLClient } from '../../context/GQLClientContext';
 
-const Project = () => {
+const Id = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
@@ -64,4 +64,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Id;

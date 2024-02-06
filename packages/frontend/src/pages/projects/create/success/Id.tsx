@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { Button } from '@material-tailwind/react';
 
-// TODO: Use dynamic route params for fetching project created details
-const Success = () => {
+const Id = () => {
+  const { id } = useParams();
   return (
     <div className="flex justify-center">
       <div className="w-1/2">
@@ -57,7 +57,7 @@ const Success = () => {
             </Link>
           </div>
           <div>
-            <Link to="/projects/1">
+            <Link to={`/projects/${id}`}>
               <Button className="rounded-full" variant="gradient" color="blue">
                 View project
               </Button>
@@ -69,4 +69,4 @@ const Success = () => {
   );
 };
 
-export default Success;
+export default Id;

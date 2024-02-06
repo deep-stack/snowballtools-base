@@ -3,11 +3,6 @@ import path from 'path';
 import toml from 'toml';
 import debug from 'debug';
 
-import { Project } from './entity/Project';
-import { ProjectMember } from './entity/ProjectMember';
-import { Deployment } from './entity/Deployment';
-import { EnvironmentVariable } from './entity/EnvironmentVariable';
-
 const log = debug('snowball:utils');
 
 export const getConfig = async <ConfigType>(
@@ -23,67 +18,4 @@ export const getConfig = async <ConfigType>(
   log('config', JSON.stringify(config, null, 2));
 
   return config;
-};
-
-export const projectToGqlType = (dbProject: Project, projectMembers: ProjectMember[], environmentVariables: EnvironmentVariable[]): any => {
-  return {
-    id: dbProject.id,
-    owner: dbProject.owner,
-    name: dbProject.name,
-    repository: dbProject.repository,
-    prodBranch: dbProject.prodBranch,
-    description: dbProject.description,
-    template: dbProject.template,
-    framework: dbProject.framework,
-    webhooks: dbProject.webhooks,
-    members: projectMembers,
-    environmentVariables: environmentVariables,
-    createdAt: dbProject.createdAt,
-    updatedAt: dbProject.updatedAt,
-    organization: dbProject.organization
-  };
-};
-
-// TODO: Add domain field to deployment
-export const deploymentToGqlType = (dbDeployment: Deployment): any => {
-  return {
-    id: dbDeployment.id,
-    domain: dbDeployment.domain,
-    branch: dbDeployment.branch,
-    commitHash: dbDeployment.commitHash,
-    title: dbDeployment.title,
-    url: dbDeployment.url,
-    environment: dbDeployment.environment,
-    isCurrent: dbDeployment.isCurrent,
-    status: dbDeployment.status,
-    createdBy: dbDeployment.createdBy,
-    createdAt: dbDeployment.createdAt,
-    updatedAt: dbDeployment.updatedAt
-  };
-};
-
-export const projectMemberToGqlType = (dbProjectMember: ProjectMember): any => {
-  return {
-    id: dbProjectMember.id,
-    member: dbProjectMember.member,
-    isPending: dbProjectMember.isPending,
-    permissions: dbProjectMember.permissions,
-    createdAt: dbProjectMember.createdAt,
-    updatedAt: dbProjectMember.updatedAt
-  };
-};
-
-export const environmentVariableToGqlType = (dbEnvironmentVariable: EnvironmentVariable): any => {
-  return {
-    id: dbEnvironmentVariable.id,
-    environments: dbEnvironmentVariable.environment,
-    key: dbEnvironmentVariable.key,
-    value: dbEnvironmentVariable.value,
-    createdAt: dbEnvironmentVariable.createdAt,
-    updatedAt: dbEnvironmentVariable.updatedAt
-  };
-};
-
-export const isUserOwner = (userId: string, projectOwnerId: string): boolean => {
-  return userId === projectOwnerId;
 };

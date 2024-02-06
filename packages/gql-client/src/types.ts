@@ -220,7 +220,7 @@ export type UpdateDeploymentToProdResponse = {
 }
 
 export type AddProjectResponse = {
-  addProject: boolean
+  addProject: Project
 }
 
 export type UpdateProjectResponse = {

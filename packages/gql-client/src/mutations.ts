@@ -44,7 +44,9 @@ mutation ($deploymentId: String!) {
 
 export const addProject = gql`
 mutation ($data: AddProjectInput) {
-  addProject(data: $data)
+  addProject(data: $data) {
+    id
+  }
 }`;
 
 export const updateProjectMutation = gql`

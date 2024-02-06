@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CreateProject from './Create';
-import Project from './Project';
+import Id from './Id';
 import AddDomain from './id/domain/add';
 import { createProjectRoutes } from './create/routes';
 import { addDomainRoutes } from './id/domain/add/routes';
@@ -22,6 +22,6 @@ export const projectsRoutesWithoutSearch = [
 export const projectsRoutesWithSearch = [
   {
     path: ':id',
-    element: <Project />,
+    element: <Id />,
   },
 ];

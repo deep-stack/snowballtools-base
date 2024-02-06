@@ -132,10 +132,9 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
 
       addProject: async (_: any, { data }: { data: DeepPartial<Project> }, context: any) => {
         try {
-          return Boolean(await service.addProject(context.userId, data));
+          return service.addProject(context.userId, data);
         } catch (err) {
           log(err);
-          return false;
         }
       },
 

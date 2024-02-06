@@ -39,16 +39,14 @@ const Import = () => {
 
     const { addProject } = await client.addProject({
       // TODO: Implement form for setting project name
-      name: gitRepo.name,
+      name: `${gitRepo.owner!.login}-${gitRepo.name}`,
       // TODO: Get organization id from context or URL
       organizationId: String(1),
       prodBranch: gitRepo.default_branch ?? 'main',
       repository: gitRepo.full_name,
     });
 
-    if (addProject) {
-      navigate('/projects/create/success');
-    }
+    navigate(`/projects/create/success/${addProject.id}`);
   }, [client, gitRepo]);
 
   return (

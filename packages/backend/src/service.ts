@@ -11,7 +11,6 @@ import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
-import { isUserOwner } from './utils';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -116,7 +115,7 @@ export class Service {
     const memberProject = member.project;
     assert(memberProject);
 
-    if (isUserOwner(String(userId), String(memberProject.owner.id))) {
+    if (String(userId) === String(memberProject.owner.id)) {
       return this.db.removeProjectMemberById(projectMemberId);
     } else {
       throw new Error('Invalid operation: not authorized');
@@ -182,7 +181,7 @@ export class Service {
     return updateResult;
   }
 
-  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project> {
+  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project | undefined> {
     return this.db.addProject(userId, data);
   }
 
