@@ -55,5 +55,5 @@ export class Domain {
     updatedAt!: Date;
 
   @DeleteDateColumn()
-    deletedAt?: Date;
+    deletedAt!: Date | null;
 }

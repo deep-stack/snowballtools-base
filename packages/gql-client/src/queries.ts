@@ -199,8 +199,8 @@ query ($searchText: String!) {
 `;
 
 export const getDomains = gql`
-query ($projectId: String!) {
-  domains(projectId: $projectId) {
+query ($projectId: String!, $filter: FilterDomainsInput) {
+  domains(projectId: $projectId, filter: $filter) {
     branch
     createdAt
     redirectTo {

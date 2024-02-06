@@ -67,7 +67,7 @@ export class Project {
     updatedAt!: Date;
 
   @DeleteDateColumn()
-    deletedAt?: Date;
+    deletedAt!: Date | null;
 
   @OneToMany(() => Deployment, (deployment) => deployment.project)
     deployments!: Deployment[];

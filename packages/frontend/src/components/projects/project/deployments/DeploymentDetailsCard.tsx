@@ -10,7 +10,7 @@ import {
   ChipProps,
 } from '@material-tailwind/react';
 import toast from 'react-hot-toast';
-import { Environment, Project } from 'gql-client';
+import { Environment, Project, Domain } from 'gql-client';
 
 import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
@@ -24,6 +24,7 @@ interface DeployDetailsCardProps {
   currentDeployment: DeploymentDetails;
   onUpdate: () => Promise<void>;
   project: Project;
+  prodBranchDomains: Domain[];
 }
 
 const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
@@ -37,6 +38,7 @@ const DeploymentDetailsCard = ({
   currentDeployment,
   onUpdate,
   project,
+  prodBranchDomains,
 }: DeployDetailsCardProps) => {
   const client = useGQLClient();
 
@@ -167,12 +169,14 @@ const DeploymentDetailsCard = ({
           <Typography variant="small">
             The new deployment will be associated with these domains:
           </Typography>
-          <Typography variant="small" color="blue">
-            ^ saugatt.com
-          </Typography>
-          <Typography variant="small" color="blue">
-            ^ www.saugatt.com
-          </Typography>
+          {prodBranchDomains.length > 0 &&
+            prodBranchDomains.map((value) => {
+              return (
+                <Typography variant="small" color="blue" key={value.id}>
+                  ^ {value.name}
+                </Typography>
+              );
+            })}
         </div>
       </ConfirmDialog>
       <ConfirmDialog
@@ -195,12 +199,11 @@ const DeploymentDetailsCard = ({
           <Typography variant="small">
             These domains will point to your new deployment:
           </Typography>
-          <Typography variant="small" color="blue">
-            ^ saugatt.com
-          </Typography>
-          <Typography variant="small" color="blue">
-            ^ www.saugatt.com
-          </Typography>
+          {deployment.domain?.name && (
+            <Typography variant="small" color="blue">
+              {deployment.domain?.name}
+            </Typography>
+          )}
         </div>
       </ConfirmDialog>
       <ConfirmDialog

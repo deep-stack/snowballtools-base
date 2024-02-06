@@ -272,6 +272,10 @@ export type AddDomainInput = {
   name: string
 }
 
+export type FilterDomainInput = {
+  branch: string
+}
+
 export type AddDomainResponse = {
   addDomain: true
 }

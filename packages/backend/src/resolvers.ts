@@ -1,12 +1,10 @@
 import debug from 'debug';
-import assert from 'assert';
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, FindOptionsWhere } from 'typeorm';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
 import { Service } from './service';
 import { Database } from './database';
-import { isUserOwner } from './utils';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
@@ -51,8 +49,8 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         return service.searchProjects(context.userId, searchText);
       },
 
-      domains: async (_:any, { projectId }: { projectId: string }) => {
-        return service.getDomainsByProjectId(projectId);
+      domains: async (_:any, { projectId, filter }: { projectId: string, filter?: FindOptionsWhere<Domain> }) => {
+        return service.getDomainsByProjectId(projectId, filter);
       }
     },
 
@@ -60,20 +58,7 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
     Mutation: {
       removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
         try {
-          const member = await db.getProjectMemberById(projectMemberId);
-
-          if (member.member.id === context.userId) {
-            throw new Error('Invalid operation: cannot remove self');
-          }
-
-          const memberProject = member.project;
-          assert(memberProject);
-
-          if (isUserOwner(String(context.userId), String(memberProject.owner.id))) {
-            return await db.removeProjectMemberById(projectMemberId);
-          } else {
-            throw new Error('Invalid operation: not authorized');
-          }
+          return await service.removeProjectMember(context.userId, projectMemberId);
         } catch (err) {
           log(err);
           return false;
@@ -86,7 +71,12 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
           permissions: Permission[]
         }
       }) => {
-        return service.updateProjectMember(projectMemberId, data);
+        try {
+          return await service.updateProjectMember(projectMemberId, data);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       addProjectMember: async (_: any, { projectId, data }: {
@@ -96,48 +86,97 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
           permissions: Permission[]
         }
       }) => {
-        return service.addProjectMember(projectId, data);
+        try {
+          return Boolean(await service.addProjectMember(projectId, data));
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       addEnvironmentVariables: async (_: any, { projectId, data }: { projectId: string, data: { environments: string[], key: string, value: string}[] }) => {
-        return service.addEnvironmentVariables(projectId, data);
+        try {
+          return Boolean(await service.addEnvironmentVariables(projectId, data));
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       updateEnvironmentVariable: async (_: any, { environmentVariableId, data }: { environmentVariableId: string, data : DeepPartial<EnvironmentVariable>}) => {
-        return service.updateEnvironmentVariable(environmentVariableId, data);
+        try {
+          return await service.updateEnvironmentVariable(environmentVariableId, data);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       removeEnvironmentVariable: async (_: any, { environmentVariableId }: { environmentVariableId: string}) => {
-        return service.removeEnvironmentVariable(environmentVariableId);
+        try {
+          return await service.removeEnvironmentVariable(environmentVariableId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
-        return service.updateDeploymentToProd(deploymentId);
+        try {
+          return await service.updateDeploymentToProd(deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       addProject: async (_: any, { data }: { data: DeepPartial<Project> }, context: any) => {
-        return service.addProject(context.userId, data);
+        try {
+          return Boolean(await service.addProject(context.userId, data));
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: DeepPartial<Project> }) => {
-        return service.updateProject(projectId, projectDetails);
+        try {
+          return await service.updateProject(projectId, projectDetails);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
-        return service.redeployToProd(context.userId, deploymentId);
+        try {
+          return await service.redeployToProd(context.userId, deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       deleteProject: async (_: any, { projectId }: { projectId: string }) => {
-        return service.deleteProject(projectId);
+        try {
+          return await service.deleteProject(projectId);
+        } catch (err) {
+          log(err); return false;
+        }
       },
 
       deleteDomain: async (_: any, { domainId }: { domainId: string }) => {
-        return service.deleteDomain(domainId);
+        try {
+          return await service.deleteDomain(domainId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
         try {
-          return await db.rollbackDeploymentById(projectId, deploymentId);
+          return await service.rollbackDeployment(projectId, deploymentId);
         } catch (err) {
           log(err);
           return false;
@@ -146,7 +185,7 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
 
       addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
         try {
-          return await db.addDomainByProjectId(projectId, domainDetails);
+          return Boolean(await service.addDomain(projectId, domainDetails));
         } catch (err) {
           log(err);
           return false;
@@ -155,7 +194,7 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
 
       updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: DeepPartial<Domain>}) => {
         try {
-          return await db.updateDomainById(domainId, domainDetails);
+          return await service.updateDomain(domainId, domainDetails);
         } catch (err) {
           log(err);
           return false;

@@ -43,5 +43,5 @@ export class UserOrganization {
     updatedAt!: Date;
 
   @DeleteDateColumn()
-    deletedAt?: Date;
+    deletedAt!: Date | null;
 }

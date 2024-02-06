@@ -167,6 +167,10 @@ input UpdateProjectMemberInput {
   permissions: [Permission]
 }
 
+input FilterDomainsInput {
+  branch: String
+}
+
 type Query {
   user: User!
   organizations: [Organization!]
@@ -177,7 +181,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
-  domains(projectId: String!): [Domain!]
+  domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }
 
 type Mutation {

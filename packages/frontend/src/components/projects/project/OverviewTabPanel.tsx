@@ -31,6 +31,11 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
     const fetchRepoActivity = async () => {
       const [owner, repo] = project.repository.split('/');
 
+      if (!repo) {
+        // Do not fetch branches if repo not available
+        return;
+      }
+
       // Get all branches in project repo
       const result = await octokit.rest.repos.listBranches({
         owner,

@@ -1,6 +1,7 @@
-import debug from 'debug';
+import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
+import { DeepPartial, FindOptionsWhere } from 'typeorm';
 
 import { Database } from './database';
 import { Deployment, Environment } from './entity/Deployment';
@@ -10,9 +11,7 @@ import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
-import { DeepPartial } from 'typeorm';
-
-const log = debug('snowball:service');
+import { isUserOwner } from './utils';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -66,193 +65,290 @@ export class Service {
     return dbProjects;
   }
 
-  async getDomainsByProjectId (projectId: string): Promise<Domain[]> {
-    const dbDomains = await this.db.getDomainsByProjectId(projectId);
+  async getDomainsByProjectId (projectId: string, filter?: FindOptionsWhere<Domain>): Promise<Domain[]> {
+    const dbDomains = await this.db.getDomainsByProjectId(projectId, filter);
     return dbDomains;
   }
 
   async updateProjectMember (projectMemberId: string, data: {permissions: Permission[]}): Promise<boolean> {
-    try {
-      return await this.db.updateProjectMemberById(projectMemberId, data);
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    return this.db.updateProjectMemberById(projectMemberId, data);
   }
 
   async addProjectMember (projectId: string,
     data: {
       email: string,
       permissions: Permission[]
-    }): Promise<boolean> {
-    try {
-      // TODO: Send invitation
-      let user = await this.db.getUser({
-        where: {
-          email: data.email
-        }
-      });
-
-      if (!user) {
-        user = await this.db.createUser({
-          email: data.email
-        });
+    }): Promise<ProjectMember> {
+    // TODO: Send invitation
+    let user = await this.db.getUser({
+      where: {
+        email: data.email
       }
+    });
 
-      const newProjectMember = await this.db.addProjectMember({
-        project: {
-          id: projectId
-        },
-        permissions: data.permissions,
-        isPending: true,
-        member: {
-          id: user.id
-        }
+    if (!user) {
+      user = await this.db.addUser({
+        email: data.email
       });
+    }
 
-      return Boolean(newProjectMember);
-    } catch (err) {
-      log(err);
-      return false;
+    const newProjectMember = await this.db.addProjectMember({
+      project: {
+        id: projectId
+      },
+      permissions: data.permissions,
+      isPending: true,
+      member: {
+        id: user.id
+      }
+    });
+
+    return newProjectMember;
+  }
+
+  async removeProjectMember (userId: string, projectMemberId: string): Promise<boolean> {
+    const member = await this.db.getProjectMemberById(projectMemberId);
+
+    if (String(member.member.id) === userId) {
+      throw new Error('Invalid operation: cannot remove self');
+    }
+
+    const memberProject = member.project;
+    assert(memberProject);
+
+    if (isUserOwner(String(userId), String(memberProject.owner.id))) {
+      return this.db.removeProjectMemberById(projectMemberId);
+    } else {
+      throw new Error('Invalid operation: not authorized');
     }
   }
 
-  async addEnvironmentVariables (projectId: string, data: { environments: string[], key: string, value: string}[]): Promise<boolean> {
-    try {
-      const formattedEnvironmentVariables = data.map((environmentVariable) => {
-        return environmentVariable.environments.map((environment) => {
-          return ({
-            key: environmentVariable.key,
-            value: environmentVariable.value,
-            environment: environment as Environment,
-            project: Object.assign(new Project(), {
-              id: projectId
-            })
-          });
+  async addEnvironmentVariables (projectId: string, data: { environments: string[], key: string, value: string}[]): Promise<EnvironmentVariable[]> {
+    const formattedEnvironmentVariables = data.map((environmentVariable) => {
+      return environmentVariable.environments.map((environment) => {
+        return ({
+          key: environmentVariable.key,
+          value: environmentVariable.value,
+          environment: environment as Environment,
+          project: Object.assign(new Project(), {
+            id: projectId
+          })
         });
-      }).flat();
+      });
+    }).flat();
 
-      const savedEnvironmentVariables = await this.db.addEnvironmentVariables(formattedEnvironmentVariables);
-      return savedEnvironmentVariables.length > 0;
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    const savedEnvironmentVariables = await this.db.addEnvironmentVariables(formattedEnvironmentVariables);
+    return savedEnvironmentVariables;
   }
 
   async updateEnvironmentVariable (environmentVariableId: string, data : DeepPartial<EnvironmentVariable>): Promise<boolean> {
-    try {
-      return await this.db.updateEnvironmentVariable(environmentVariableId, data);
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    return this.db.updateEnvironmentVariable(environmentVariableId, data);
   }
 
   async removeEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
-    try {
-      return await this.db.deleteEnvironmentVariable(environmentVariableId);
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    return this.db.deleteEnvironmentVariable(environmentVariableId);
   }
 
   async updateDeploymentToProd (deploymentId: string): Promise<boolean> {
-    try {
-      return await this.db.updateDeploymentById(deploymentId, {
-        environment: Environment.Production
-      });
-    } catch (err) {
-      log(err);
-      return false;
+    const deployment = await this.db.getDeployment({ where: { id: deploymentId }, relations: { project: true } });
+
+    if (!deployment) {
+      throw new Error('Deployment does not exist');
     }
+
+    const prodBranchDomains = await this.db.getDomainsByProjectId(deployment.project.id, { branch: deployment.project.prodBranch });
+
+    const oldDeployment = await this.db.getDeployment({
+      where: {
+        domain: {
+          id: prodBranchDomains[0].id
+        }
+      }
+    });
+
+    if (oldDeployment) {
+      await this.db.updateDeploymentById(oldDeployment.id, {
+        domain: null,
+        isCurrent: false
+      });
+    }
+
+    const updateResult = await this.db.updateDeploymentById(deploymentId, {
+      environment: Environment.Production,
+      domain: prodBranchDomains[0],
+      isCurrent: true
+    });
+
+    return updateResult;
   }
 
-  async addProject (userId: string, data: DeepPartial<Project>): Promise<boolean> {
-    try {
-      await this.db.addProject(userId, data);
-      return true;
-    } catch (err) {
-      log(err);
-      return false;
-    }
+  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project> {
+    return this.db.addProject(userId, data);
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
-    try {
-      return await this.db.updateProjectById(projectId, data);
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    return this.db.updateProjectById(projectId, data);
   }
 
   async deleteProject (projectId: string): Promise<boolean> {
-    try {
-      return await this.db.deleteProjectById(projectId);
-    } catch (err) {
-      log(err);
-      return false;
-    }
+    return this.db.deleteProjectById(projectId);
   }
 
   async deleteDomain (domainId: string): Promise<boolean> {
-    try {
-      const domainsRedirectedFrom = await this.db.getDomains({
-        where: {
-          redirectToId: Number(domainId)
-        }
-      });
-
-      if (domainsRedirectedFrom.length > 0) {
-        throw new Error('Cannot delete domain since it has redirects from other domains');
+    const domainsRedirectedFrom = await this.db.getDomains({
+      where: {
+        redirectToId: Number(domainId)
       }
+    });
 
-      return await this.db.deleteDomainById(domainId);
-    } catch (err) {
-      log(err);
-      return false;
+    if (domainsRedirectedFrom.length > 0) {
+      throw new Error('Cannot delete domain since it has redirects from other domains');
     }
+
+    return this.db.deleteDomainById(domainId);
   }
 
   async redeployToProd (userId: string, deploymentId: string): Promise<Deployment| boolean> {
-    try {
-      const deployment = await this.db.getDeployment({
-        relations: {
-          project: true,
-          domain: true,
-          createdBy: true
+    const deployment = await this.db.getDeployment({
+      relations: {
+        project: true,
+        domain: true,
+        createdBy: true
+      },
+      where: {
+        id: deploymentId
+      }
+    });
+
+    if (deployment === null) {
+      throw new Error('Deployment not found');
+    }
+
+    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
+
+    if (updatedDeployment.environment === Environment.Production) {
+      // TODO: Put isCurrent field in project
+      updatedDeployment.isCurrent = true;
+      updatedDeployment.createdBy = Object.assign(new User(), {
+        id: Number(userId)
+      });
+    }
+
+    updatedDeployment.id = nanoid();
+    updatedDeployment.url = `${updatedDeployment.id}-${updatedDeployment.project.subDomain}`;
+
+    const oldDeployment = await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
+    const newDeployement = await this.db.addDeployement(updatedDeployment);
+
+    return oldDeployment && Boolean(newDeployement);
+  }
+
+  async rollbackDeployment (projectId: string, deploymentId: string): Promise<boolean> {
+    // TODO: Implement transactions
+    const oldCurrentDeployment = await this.db.getDeployment({
+      relations: {
+        domain: true
+      },
+      where: {
+        project: {
+          id: projectId
         },
+        isCurrent: true
+      }
+    });
+
+    if (!oldCurrentDeployment) {
+      throw new Error('Current deployement doesnot exist');
+    }
+
+    const oldCurrentDeploymentUpdate = await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });
+
+    const newCurrentDeploymentUpdate = await this.db.updateDeploymentById(deploymentId, { isCurrent: true, domain: oldCurrentDeployment?.domain });
+
+    return newCurrentDeploymentUpdate && oldCurrentDeploymentUpdate;
+  }
+
+  async addDomain (projectId: string, domainDetails: { name: string }): Promise<{
+    primaryDomain: Domain,
+    redirectedDomain: Domain
+  }> {
+    const currentProject = await this.db.getProjectById(projectId);
+
+    if (currentProject === null) {
+      throw new Error(`Project with ${projectId} not found`);
+    }
+
+    const primaryDomainDetails = {
+      ...domainDetails,
+      branch: currentProject.prodBranch,
+      project: currentProject
+    };
+
+    const savedPrimaryDomain = await this.db.addDomain(primaryDomainDetails);
+
+    const domainArr = domainDetails.name.split('www.');
+
+    const redirectedDomainDetails = {
+      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
+      branch: currentProject.prodBranch,
+      project: currentProject,
+      redirectTo: savedPrimaryDomain
+    };
+
+    const savedRedirectedDomain = await this.db.addDomain(redirectedDomainDetails);
+
+    return { primaryDomain: savedPrimaryDomain, redirectedDomain: savedRedirectedDomain };
+  }
+
+  async updateDomain (domainId: string, domainDetails: DeepPartial<Domain>): Promise<boolean> {
+    const domain = await this.db.getDomain({
+      where: {
+        id: Number(domainId)
+      }
+    });
+
+    if (domain === null) {
+      throw new Error(`Error finding domain with id ${domainId}`);
+    }
+
+    const newDomain = {
+      ...domainDetails
+    };
+
+    const domainsRedirectedFrom = await this.db.getDomains({
+      where: {
+        project: {
+          id: domain.projectId
+        },
+        redirectToId: domain.id
+      }
+    });
+
+    // If there are domains redirecting to current domain, only branch of current domain can be updated
+    if (domainsRedirectedFrom.length > 0 && domainDetails.branch === domain.branch) {
+      throw new Error('Remove all redirects to this domain before updating');
+    }
+
+    if (domainDetails.redirectToId) {
+      const redirectedDomain = await this.db.getDomain({
         where: {
-          id: deploymentId
+          id: Number(domainDetails.redirectToId)
         }
       });
 
-      if (deployment === null) {
-        throw new Error('Deployment not found');
+      if (redirectedDomain === null) {
+        throw new Error('Could not find Domain to redirect to');
       }
 
-      const { createdAt, updatedAt, ...updatedDeployment } = deployment;
-
-      if (updatedDeployment.environment === Environment.Production) {
-        // TODO: Put isCurrent field in project
-        updatedDeployment.isCurrent = true;
-        updatedDeployment.createdBy = Object.assign(new User(), {
-          id: Number(userId)
-        });
+      if (redirectedDomain.redirectToId) {
+        throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
       }
 
-      updatedDeployment.id = nanoid();
-      updatedDeployment.url = `${updatedDeployment.id}-${updatedDeployment.project.subDomain}`;
-
-      const oldDeployment = await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
-      const newDeployement = await this.db.createDeployement(updatedDeployment);
-
-      return oldDeployment && Boolean(newDeployement);
-    } catch (err) {
-      log(err);
-      return false;
+      newDomain.redirectTo = redirectedDomain;
     }
+
+    const updateResult = await this.db.updateDomainById(domainId, newDomain);
+
+    return updateResult;
   }
 }

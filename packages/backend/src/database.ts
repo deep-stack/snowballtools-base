@@ -1,4 +1,4 @@
-import { DataSource, DeepPartial, FindManyOptions, FindOneOptions } from 'typeorm';
+import { DataSource, DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
@@ -41,7 +41,7 @@ export class Database {
     return user;
   }
 
-  async createUser (data: DeepPartial<User>): Promise<User> {
+  async addUser (data: DeepPartial<User>): Promise<User> {
     const userRepository = this.dataSource.getRepository(User);
     const user = await userRepository.save(data);
 
@@ -161,7 +161,7 @@ export class Database {
     return domains;
   }
 
-  async createDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
+  async addDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.save(data);
 
@@ -216,11 +216,7 @@ export class Database {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
     const updateResult = await projectMemberRepository.update({ id: Number(projectMemberId) }, data);
 
-    if (updateResult.affected) {
-      return updateResult.affected > 0;
-    } else {
-      return false;
-    }
+    return Boolean(updateResult.affected);
   }
 
   async addProjectMember (data: DeepPartial<ProjectMember>): Promise<ProjectMember> {
@@ -241,11 +237,7 @@ export class Database {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
     const updateResult = await environmentVariableRepository.update({ id: Number(environmentVariableId) }, update);
 
-    if (updateResult.affected) {
-      return updateResult.affected > 0;
-    } else {
-      return false;
-    }
+    return Boolean(updateResult.affected);
   }
 
   async deleteEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
@@ -302,11 +294,7 @@ export class Database {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const updateResult = await deploymentRepository.update({ id: deploymentId }, updates);
 
-    if (updateResult.affected) {
-      return updateResult.affected > 0;
-    } else {
-      return false;
-    }
+    return Boolean(updateResult.affected);
   }
 
   async addProject (userId: string, projectDetails: DeepPartial<Project>): Promise<Project> {
@@ -336,11 +324,7 @@ export class Database {
     const projectRepository = this.dataSource.getRepository(Project);
     const updateResult = await projectRepository.update({ id: projectId }, updates);
 
-    if (updateResult.affected) {
-      return updateResult.affected > 0;
-    } else {
-      return false;
-    }
+    return Boolean(updateResult.affected);
   }
 
   async deleteProjectById (projectId: string): Promise<boolean> {
@@ -371,70 +355,28 @@ export class Database {
     }
   }
 
-  async rollbackDeploymentById (projectId: string, deploymentId: string): Promise<boolean> {
-    const deploymentRepository = this.dataSource.getRepository(Deployment);
-
-    // TODO: Implement transactions
-    const oldCurrentDeployment = await deploymentRepository.findOne({
-      relations: {
-        domain: true
-      },
-      where: {
-        project: {
-          id: projectId
-        },
-        isCurrent: true
-      }
-    });
-
-    const oldCurrentDeploymentUpdate = await deploymentRepository.update({ project: { id: projectId }, isCurrent: true }, { isCurrent: false, domain: null });
-
-    const newCurrentDeploymentUpdate = await deploymentRepository.update({ id: deploymentId }, { isCurrent: true, domain: oldCurrentDeployment?.domain });
-
-    if (oldCurrentDeploymentUpdate.affected && newCurrentDeploymentUpdate.affected) {
-      return oldCurrentDeploymentUpdate.affected > 0 && newCurrentDeploymentUpdate.affected > 0;
-    } else {
-      return false;
-    }
-  }
-
-  async addDomainByProjectId (projectId: string, domainDetails: { name: string }): Promise<Domain[]> {
+  async addDomain (data: DeepPartial<Domain>): Promise<Domain> {
     const domainRepository = this.dataSource.getRepository(Domain);
-    const projectRepository = this.dataSource.getRepository(Project);
+    const newDomain = await domainRepository.save(data);
 
-    const currentProject = await projectRepository.findOneBy({
-      id: projectId
-    });
-
-    if (currentProject === null) {
-      throw new Error(`Project with ${projectId} not found`);
-    }
-
-    const primaryDomainDetails = {
-      ...domainDetails,
-      branch: currentProject.prodBranch,
-      project: currentProject
-    };
-
-    const primaryDomain = domainRepository.create(primaryDomainDetails as DeepPartial<Domain>);
-    const savedPrimaryDomain = await domainRepository.save(primaryDomain);
-
-    const domainArr = domainDetails.name.split('www.');
-
-    const redirectedDomainDetails = {
-      name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
-      branch: currentProject.prodBranch,
-      project: currentProject,
-      redirectTo: savedPrimaryDomain
-    };
-
-    const redirectedDomain = domainRepository.create(redirectedDomainDetails as DeepPartial<Domain>);
-    const savedRedirectedDomain = await domainRepository.save(redirectedDomain);
-
-    return [savedPrimaryDomain, savedRedirectedDomain];
+    return newDomain;
   }
 
-  async getDomainsByProjectId (projectId: string): Promise<Domain[]> {
+  async getDomain (options: FindOneOptions<Domain>): Promise<Domain | null> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+    const domain = await domainRepository.findOne(options);
+
+    return domain;
+  }
+
+  async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
+    const domainRepository = this.dataSource.getRepository(Domain);
+    const updateResult = await domainRepository.update({ id: Number(domainId) }, updates);
+
+    return Boolean(updateResult.affected);
+  }
+
+  async getDomainsByProjectId (projectId: string, filter?: FindOptionsWhere<Domain>): Promise<Domain[]> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const domains = await domainRepository.find({
@@ -444,68 +386,11 @@ export class Database {
       where: {
         project: {
           id: projectId
-        }
+        },
+        ...filter
       }
     });
 
     return domains;
-  }
-
-  async updateDomainById (domainId: string, data: DeepPartial<Domain>): Promise<boolean> {
-    const domainRepository = this.dataSource.getRepository(Domain);
-
-    const domain = await domainRepository.findOne({
-      where: {
-        id: Number(domainId)
-      }
-    });
-
-    const newDomain: DeepPartial<Domain> = {
-      ...data
-    };
-
-    if (domain === null) {
-      throw new Error(`Error finding domain with id ${domainId}`);
-    }
-
-    const domainsRedirectedFrom = await domainRepository.find({
-      where: {
-        project: {
-          id: domain.projectId
-        },
-        redirectToId: domain.id
-      }
-    });
-
-    // If there are domains redirecting to current domain, only branch of current domain can be updated
-    if (domainsRedirectedFrom.length > 0 && data.branch === domain.branch) {
-      throw new Error('Remove all redirects to this domain before updating');
-    }
-
-    if (data.redirectToId) {
-      const redirectedDomain = await domainRepository.findOne({
-        where: {
-          id: Number(data.redirectToId)
-        }
-      });
-
-      if (redirectedDomain === null) {
-        throw new Error('Could not find Domain to redirect to');
-      }
-
-      if (redirectedDomain.redirectToId) {
-        throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
-      }
-
-      newDomain.redirectTo = redirectedDomain;
-    }
-
-    const updateResult = await domainRepository.update({ id: Number(domainId) }, newDomain);
-
-    if (updateResult.affected) {
-      return updateResult.affected > 0;
-    } else {
-      return false;
-    }
   }
 }

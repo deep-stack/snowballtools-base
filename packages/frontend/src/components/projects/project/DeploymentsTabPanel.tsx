@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Project } from 'gql-client';
+import { Project, Domain } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -22,6 +22,7 @@ const DeploymentsTabPanel = ({ project }: { project: Project }) => {
 
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
   const [deployments, setDeployments] = useState<DeploymentDetails[]>([]);
+  const [prodBranchDomains, setProdBranchDomains] = useState<Domain[]>([]);
 
   const fetchDeployments = async () => {
     const { deployments } = await client.getDeployments(project.id);
@@ -35,8 +36,16 @@ const DeploymentsTabPanel = ({ project }: { project: Project }) => {
     setDeployments(updatedDeployments);
   };
 
+  const fetchProductionBranchDomains = useCallback(async () => {
+    const { domains } = await client.getDomains(project.id, {
+      branch: project.prodBranch,
+    });
+    setProdBranchDomains(domains);
+  }, []);
+
   useEffect(() => {
     fetchDeployments();
+    fetchProductionBranchDomains();
   }, []);
 
   const currentDeployment = useMemo(() => {
@@ -93,6 +102,7 @@ const DeploymentsTabPanel = ({ project }: { project: Project }) => {
                 currentDeployment={currentDeployment!}
                 onUpdate={onUpdateDeploymenToProd}
                 project={project}
+                prodBranchDomains={prodBranchDomains}
               />
             );
           })
