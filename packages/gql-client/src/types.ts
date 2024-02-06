@@ -163,6 +163,10 @@ export type GetOrganizationsResponse = {
   organizations: Organization[]
 }
 
+export type GetOrganizationResponse = {
+  organization: Organization
+}
+
 export type GetUserResponse = {
   user: User
 }

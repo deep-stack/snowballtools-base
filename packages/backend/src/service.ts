@@ -12,6 +12,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { PROJECT_DOMAIN } from './constants';
+import { organizationToGqlType } from './utils';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -28,6 +29,25 @@ export class Service {
         id: userId
       }
     });
+  }
+
+  async getOrganizationById (organizationId: string): Promise<Organization> {
+    const dbOrganization = await this.db.getOrganization({
+      where: {
+        id: organizationId
+      },
+      relations: {
+        userOrganizations: {
+          member: true
+        }
+      }
+    });
+
+    if (!dbOrganization) {
+      throw new Error('Organization not found');
+    }
+
+    return organizationToGqlType(dbOrganization);
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
@@ -205,7 +225,7 @@ export class Service {
           member,
           project: newProject,
           permissions: [Permission.View],
-          isPending: true
+          isPending: false
         };
         return projectMember;
       });

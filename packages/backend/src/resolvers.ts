@@ -21,6 +21,10 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         return service.getUser(context.userId);
       },
 
+      organization: async (_:any, { organizationId }: {organizationId: string}) => {
+        return service.getOrganizationById(organizationId);
+      },
+
       organizations: async (_:any, __: any, context: any) => {
         return service.getOrganizationsByUserId(context.userId);
       },
