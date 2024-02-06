@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Project } from 'gql-client';
+import { Domain, DomainStatus, Project } from 'gql-client';
 
 import { Typography, Button, Chip } from '@material-tailwind/react';
 
@@ -7,6 +7,7 @@ import ActivityCard from './ActivityCard';
 import { relativeTimeMs } from '../../../utils/time';
 import { useOctokit } from '../../../context/OctokitContext';
 import { GitCommitDetails } from '../../../types/project';
+import { useGQLClient } from '../../../context/GQLClientContext';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -15,11 +16,13 @@ interface OverviewProps {
 }
 
 // TODO: Check if any live domain is set for production branch
-const IS_DOMAIN_SETUP = false;
 
 const OverviewTabPanel = ({ project }: OverviewProps) => {
   const { octokit } = useOctokit();
   const [activities, setActivities] = useState<GitCommitDetails[]>([]);
+  const [liveDomain, setLiveDomain] = useState<Domain>();
+
+  const client = useGQLClient();
 
   useEffect(() => {
     if (!octokit) {
@@ -75,6 +78,23 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
     fetchRepoActivity();
   }, [octokit, project]);
 
+  useEffect(() => {
+    const fetchLiveProdDomain = async () => {
+      const { domains } = await client.getDomains(project.id, {
+        branch: project.prodBranch,
+        status: DomainStatus.Live,
+      });
+
+      if (domains.length === 0) {
+        return;
+      }
+
+      setLiveDomain(domains[0]);
+    };
+
+    fetchLiveProdDomain();
+  }, [project]);
+
   return (
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
@@ -88,19 +108,8 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
           </div>
         </div>
         <div className="flex justify-between p-2 text-sm items-center">
-          <div>
-            ^ Domain
-            {!IS_DOMAIN_SETUP && (
-              <Chip
-                className="normal-case ml-6 inline font-normal"
-                size="sm"
-                value="Not connected"
-                icon="^"
-                color="orange"
-              />
-            )}
-          </div>
-          {IS_DOMAIN_SETUP ? (
+          <div>^ Domain</div>
+          {liveDomain ? (
             <Chip
               className="normal-case ml-6 inline font-normal"
               size="sm"
@@ -109,9 +118,22 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
               color="green"
             />
           ) : (
-            <Button className="normal-case rounded-full" color="blue" size="sm">
-              Setup
-            </Button>
+            <div className="flex justify-between items-center w-full m-2">
+              <Chip
+                className="normal-case inline font-normal"
+                size="sm"
+                value="Not connected"
+                icon="^"
+                color="orange"
+              />
+              <Button
+                className="normal-case rounded-full"
+                color="blue"
+                size="sm"
+              >
+                Setup
+              </Button>
+            </div>
           )}
         </div>
         {project.deployments.length !== 0 ? (
@@ -122,9 +144,7 @@ const OverviewTabPanel = ({ project }: OverviewProps) => {
             </div>
             <div className="flex justify-between p-2 text-sm">
               <p>^ Deployment</p>
-              <p className="text-blue-600">
-                {project.deployments[0]?.domain?.name}
-              </p>
+              <p className="text-blue-600">{liveDomain?.name}</p>
             </div>
             <div className="flex justify-between p-2 text-sm">
               <p>^ Created</p>

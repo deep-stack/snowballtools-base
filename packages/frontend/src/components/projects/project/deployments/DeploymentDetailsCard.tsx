@@ -113,7 +113,13 @@ const DeploymentDetailsCard = ({
             <button className="self-start">...</button>
           </MenuHandler>
           <MenuList>
-            <MenuItem>^ Visit</MenuItem>
+            <a
+              href={'https://' + deployment.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MenuItem>^ Visit</MenuItem>
+            </a>
             <MenuItem
               onClick={() => setAssignDomainDialog(!assignDomainDialog)}
             >

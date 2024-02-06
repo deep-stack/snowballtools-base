@@ -18,8 +18,8 @@ enum Environment {
 
 @Entity()
 export class EnvironmentVariable {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })

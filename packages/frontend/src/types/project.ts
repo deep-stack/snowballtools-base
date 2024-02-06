@@ -71,8 +71,8 @@ export enum DomainStatus {
 }
 
 export interface DomainDetails {
-  id: number;
-  projectid: number;
+  id: string;
+  projectid: string;
   name: string;
   status: DomainStatus;
   record: {

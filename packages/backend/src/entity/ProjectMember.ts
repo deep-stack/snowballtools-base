@@ -21,8 +21,8 @@ export enum Permission {
 @Entity()
 @Unique(['project', 'member'])
 export class ProjectMember {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @ManyToOne(() => User, (user) => user.projectMembers)
   @JoinColumn({ name: 'userId' })

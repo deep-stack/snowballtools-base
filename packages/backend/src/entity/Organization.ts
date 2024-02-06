@@ -10,8 +10,8 @@ import { UserOrganization } from './UserOrganization';
 
 @Entity()
 export class Organization {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @Column('varchar', { length: 255 })
     name!: string;

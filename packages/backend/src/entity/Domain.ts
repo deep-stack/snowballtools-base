@@ -18,8 +18,8 @@ export enum Status {
 
 @Entity()
 export class Domain {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @Column('varchar')
     projectId!: string;
@@ -34,8 +34,8 @@ export class Domain {
   @Column('varchar', { length: 255 })
     name!: string;
 
-  @Column('int', { nullable: true })
-    redirectToId!: number | null;
+  @Column('string', { nullable: true })
+    redirectToId!: string | null;
 
   @ManyToOne(() => Domain)
   @JoinColumn({ name: 'redirectToId' })

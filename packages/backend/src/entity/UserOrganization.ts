@@ -20,8 +20,8 @@ enum Role {
 
 @Entity()
 export class UserOrganization {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })

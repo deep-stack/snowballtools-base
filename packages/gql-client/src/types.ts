@@ -273,7 +273,8 @@ export type AddDomainInput = {
 }
 
 export type FilterDomainInput = {
-  branch: string
+  branch?: string
+  status?: DomainStatus
 }
 
 export type AddDomainResponse = {

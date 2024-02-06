@@ -13,8 +13,8 @@ import { UserOrganization } from './UserOrganization';
 @Entity()
 @Unique(['email'])
 export class User {
-  @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
   @Column('varchar', { length: 255, nullable: true })
     name!: string | null;

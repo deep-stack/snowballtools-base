@@ -10,7 +10,7 @@
     "isCurrent": true,
     "branch": "main",
     "commitHash": "testXyz",
-    "url": "testProject-ffhae3zq.testProject.snowball.xyz"
+    "url": "testProject-ffhae3zq.snowball.xyz"
   },
   {
     "projectIndex": 0,
@@ -23,7 +23,7 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "testProject-vehagei8.testProject.snowball.xyz"
+    "url": "testProject-vehagei8.snowball.xyz"
   },
   {
     "projectIndex": 0,
@@ -36,7 +36,7 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "testProject-qmgekyte.testProject.snowball.xyz"
+    "url": "testProject-qmgekyte.snowball.xyz"
   },
   {
     "projectIndex": 0,
@@ -49,7 +49,7 @@
     "isCurrent": false,
     "branch": "prod",
     "commitHash": "testXyz",
-    "url": "testProject-f8wsyim6.testProject.snowball.xyz"
+    "url": "testProject-f8wsyim6.snowball.xyz"
   },
   {
     "projectIndex": 1,
@@ -62,7 +62,7 @@
     "isCurrent": true,
     "branch": "main",
     "commitHash": "testXyz",
-    "url": "testProject-2-eO8cckxk.testProject-2.snowball.xyz"
+    "url": "testProject-2-eO8cckxk.snowball.xyz"
   },
   {
     "projectIndex": 1,
@@ -75,7 +75,7 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "testProject-2-yaq0t5yw.testProject-2.snowball.xyz"
+    "url": "testProject-2-yaq0t5yw.snowball.xyz"
   },
   {
     "projectIndex": 1,
@@ -88,7 +88,7 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "testProject-2-hwwr6sbx.testProject-2.snowball.xyz"
+    "url": "testProject-2-hwwr6sbx.snowball.xyz"
   },
   {
     "projectIndex": 2,
@@ -101,7 +101,7 @@
     "isCurrent": true,
     "branch": "main",
     "commitHash": "testXyz",
-    "url": "iglootools-ndxje48a.iglootools.snowball.xyz"
+    "url": "iglootools-ndxje48a.snowball.xyz"
   },
   {
     "projectIndex": 2,
@@ -114,7 +114,7 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "iglootools-gtgpgvei.iglootools.snowball.xyz"
+    "url": "iglootools-gtgpgvei.snowball.xyz"
   },
   {
     "projectIndex": 2,
@@ -127,6 +127,6 @@
     "isCurrent": false,
     "branch": "test",
     "commitHash": "testXyz",
-    "url": "iglootools-b4bpthjr.iglootools.snowball.xyz"
+    "url": "iglootools-b4bpthjr.snowball.xyz"
   }
 ]

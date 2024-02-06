@@ -11,6 +11,7 @@ import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
+import { PROJECT_DOMAIN } from './constants';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -21,7 +22,7 @@ export class Service {
     this.db = db;
   }
 
-  async getUser (userId: number): Promise<User | null> {
+  async getUser (userId: string): Promise<User | null> {
     return this.db.getUser({
       where: {
         id: userId
@@ -29,7 +30,7 @@ export class Service {
     });
   }
 
-  async getOrganizationsByUserId (userId: number): Promise<Organization[]> {
+  async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
     const dbOrganizations = await this.db.getOrganizationsByUserId(userId);
     return dbOrganizations;
   }
@@ -59,8 +60,8 @@ export class Service {
     return dbProjectMembers;
   }
 
-  async searchProjects (userId:string, searchText: string): Promise<Project[]> {
-    const dbProjects = await this.db.getProjectsBySearchText(Number(userId), searchText);
+  async searchProjects (userId: string, searchText: string): Promise<Project[]> {
+    const dbProjects = await this.db.getProjectsBySearchText(userId, searchText);
     return dbProjects;
   }
 
@@ -196,7 +197,7 @@ export class Service {
   async deleteDomain (domainId: string): Promise<boolean> {
     const domainsRedirectedFrom = await this.db.getDomains({
       where: {
-        redirectToId: Number(domainId)
+        redirectToId: domainId
       }
     });
 
@@ -229,12 +230,12 @@ export class Service {
       // TODO: Put isCurrent field in project
       updatedDeployment.isCurrent = true;
       updatedDeployment.createdBy = Object.assign(new User(), {
-        id: Number(userId)
+        id: userId
       });
     }
 
     updatedDeployment.id = nanoid();
-    updatedDeployment.url = `${updatedDeployment.id}-${updatedDeployment.project.subDomain}`;
+    updatedDeployment.url = `${updatedDeployment.project.name}-${updatedDeployment.id}.${PROJECT_DOMAIN}`;
 
     const oldDeployment = await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
     const newDeployement = await this.db.addDeployement(updatedDeployment);
@@ -302,7 +303,7 @@ export class Service {
   async updateDomain (domainId: string, domainDetails: DeepPartial<Domain>): Promise<boolean> {
     const domain = await this.db.getDomain({
       where: {
-        id: Number(domainId)
+        id: domainId
       }
     });
 
@@ -331,7 +332,7 @@ export class Service {
     if (domainDetails.redirectToId) {
       const redirectedDomain = await this.db.getDomain({
         where: {
-          id: Number(domainDetails.redirectToId)
+          id: domainDetails.redirectToId
         }
       });
 

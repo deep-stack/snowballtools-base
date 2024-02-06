@@ -28,8 +28,8 @@ export class Project {
   @JoinColumn({ name: 'organizationId' })
     organization!: Organization | null;
 
-  @Column('integer')
-    organizationId!: number;
+  @Column('varchar')
+    organizationId!: string;
 
   @Column('varchar')
     name!: string;

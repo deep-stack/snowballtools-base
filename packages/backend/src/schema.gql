@@ -169,6 +169,7 @@ input UpdateProjectMemberInput {
 
 input FilterDomainsInput {
   branch: String
+  status: DomainStatus
 }
 
 type Query {

@@ -48,15 +48,15 @@ export class Database {
     return user;
   }
 
-  async updateUser (userId: number, data: DeepPartial<User>): Promise<boolean> {
+  async updateUser (userId: string, data: DeepPartial<User>): Promise<boolean> {
     const userRepository = this.dataSource.getRepository(User);
-    const updateResult = await userRepository.update({ id: Number(userId) }, data);
+    const updateResult = await userRepository.update({ id: userId }, data);
     assert(updateResult.affected);
 
     return updateResult.affected > 0;
   }
 
-  async getOrganizationsByUserId (userId: number): Promise<Organization[]> {
+  async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
 
     const userOrgs = await organizationRepository.find({
@@ -72,7 +72,7 @@ export class Database {
     return userOrgs;
   }
 
-  async getProjectsByOrganizationId (organizationId: number): Promise<Project[]> {
+  async getProjectsByOrganizationId (organizationId: string): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository.find({
@@ -203,7 +203,7 @@ export class Database {
   async removeProjectMemberById (projectMemberId: string): Promise<boolean> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
 
-    const deleteResult = await projectMemberRepository.delete({ id: Number(projectMemberId) });
+    const deleteResult = await projectMemberRepository.delete({ id: projectMemberId });
 
     if (deleteResult.affected) {
       return deleteResult.affected > 0;
@@ -214,7 +214,7 @@ export class Database {
 
   async updateProjectMemberById (projectMemberId: string, data: DeepPartial<ProjectMember>): Promise<boolean> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
-    const updateResult = await projectMemberRepository.update({ id: Number(projectMemberId) }, data);
+    const updateResult = await projectMemberRepository.update({ id: projectMemberId }, data);
 
     return Boolean(updateResult.affected);
   }
@@ -235,14 +235,14 @@ export class Database {
 
   async updateEnvironmentVariable (environmentVariableId: string, update: DeepPartial<EnvironmentVariable>): Promise<boolean> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const updateResult = await environmentVariableRepository.update({ id: Number(environmentVariableId) }, update);
+    const updateResult = await environmentVariableRepository.update({ id: environmentVariableId }, update);
 
     return Boolean(updateResult.affected);
   }
 
   async deleteEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const deleteResult = await environmentVariableRepository.delete({ id: Number(environmentVariableId) });
+    const deleteResult = await environmentVariableRepository.delete({ id: environmentVariableId });
 
     if (deleteResult.affected) {
       return deleteResult.affected > 0;
@@ -262,7 +262,7 @@ export class Database {
         member: true
       },
       where: {
-        id: Number(projectMemberId)
+        id: projectMemberId
       }
     }
     );
@@ -274,7 +274,7 @@ export class Database {
     return projectMemberWithProject[0];
   }
 
-  async getProjectsBySearchText (userId: number, searchText: string): Promise<Project[]> {
+  async getProjectsBySearchText (userId: string, searchText: string): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository
@@ -308,11 +308,11 @@ export class Database {
     newProject.icon = '';
 
     newProject.owner = Object.assign(new User(), {
-      id: Number(userId)
+      id: userId
     });
 
     newProject.organization = Object.assign(new Organization(), {
-      id: Number(projectDetails.organizationId)
+      id: projectDetails.organizationId
     });
 
     newProject.subDomain = `${newProject.name}.${PROJECT_DOMAIN}`;
@@ -346,7 +346,7 @@ export class Database {
   async deleteDomainById (domainId: string): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
-    const deleteResult = await domainRepository.softDelete({ id: Number(domainId) });
+    const deleteResult = await domainRepository.softDelete({ id: domainId });
 
     if (deleteResult.affected) {
       return deleteResult.affected > 0;
@@ -371,7 +371,7 @@ export class Database {
 
   async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
-    const updateResult = await domainRepository.update({ id: Number(domainId) }, updates);
+    const updateResult = await domainRepository.update({ id: domainId }, updates);
 
     return Boolean(updateResult.affected);
   }
