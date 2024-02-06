@@ -92,7 +92,7 @@ export class Service {
       });
     }
 
-    const newProjectMember = await this.db.addProjectMember({
+    const newProjectMembers = await this.db.addProjectMembers([{
       project: {
         id: projectId
       },
@@ -101,9 +101,9 @@ export class Service {
       member: {
         id: user.id
       }
-    });
+    }]);
 
-    return newProjectMember;
+    return newProjectMembers[0];
   }
 
   async removeProjectMember (userId: string, projectMemberId: string): Promise<boolean> {
@@ -182,8 +182,38 @@ export class Service {
     return updateResult;
   }
 
-  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project | undefined> {
-    return this.db.addProject(userId, data);
+  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project> {
+    const newProject = await this.db.addProject(userId, data);
+
+    const organization = await this.db.getOrganization({
+      where: {
+        id: newProject.organizationId
+      },
+      relations: {
+        userOrganizations: {
+          member: true
+        }
+      }
+    });
+    const organizationMembers = organization?.userOrganizations
+      .filter((value) => value.member.id !== newProject.owner.id)
+      .map((value) => value.member);
+
+    if (organizationMembers) {
+      const projectMembers = organizationMembers.map((member) => {
+        const projectMember: DeepPartial<ProjectMember> = {
+          member,
+          project: newProject,
+          permissions: [Permission.View],
+          isPending: true
+        };
+        return projectMember;
+      });
+
+      await this.db.addProjectMembers(projectMembers);
+    }
+
+    return newProject;
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {

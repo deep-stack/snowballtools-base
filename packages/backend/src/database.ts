@@ -56,6 +56,13 @@ export class Database {
     return updateResult.affected > 0;
   }
 
+  async getOrganization (options: FindOneOptions<Organization>): Promise<Organization | null> {
+    const organizationRepository = this.dataSource.getRepository(Organization);
+    const organization = await organizationRepository.findOne(options);
+
+    return organization;
+  }
+
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
 
@@ -219,11 +226,11 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async addProjectMember (data: DeepPartial<ProjectMember>): Promise<ProjectMember> {
+  async addProjectMembers (data: DeepPartial<ProjectMember>[]): Promise<ProjectMember[]> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
-    const newProjectMember = await projectMemberRepository.save(data);
+    const newProjectMembers = await projectMemberRepository.save(data);
 
-    return newProjectMember;
+    return newProjectMembers;
   }
 
   async addEnvironmentVariables (data: DeepPartial<EnvironmentVariable>[]): Promise<EnvironmentVariable[]> {
