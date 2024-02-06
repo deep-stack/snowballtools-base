@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Not } from 'typeorm';
 
 import { Database } from './database';
 import { Deployment, Environment } from './entity/Deployment';
@@ -12,7 +12,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { PROJECT_DOMAIN } from './constants';
-import { organizationToGqlType } from './utils';
+import { UserOrganization } from './entity/UserOrganization';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -31,23 +31,19 @@ export class Service {
     });
   }
 
-  async getOrganizationById (organizationId: string): Promise<Organization> {
-    const dbOrganization = await this.db.getOrganization({
+  async getOrganizationMembersByOrgId (organizationId: string): Promise<UserOrganization[]> {
+    const dbOrganizationMembers = await this.db.getOrganizationMembers({
       where: {
-        id: organizationId
+        organization: {
+          id: organizationId
+        }
       },
       relations: {
-        userOrganizations: {
-          member: true
-        }
+        member: true
       }
     });
 
-    if (!dbOrganization) {
-      throw new Error('Organization not found');
-    }
-
-    return organizationToGqlType(dbOrganization);
+    return dbOrganizationMembers;
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
@@ -205,30 +201,29 @@ export class Service {
   async addProject (userId: string, data: DeepPartial<Project>): Promise<Project> {
     const newProject = await this.db.addProject(userId, data);
 
-    const organization = await this.db.getOrganization({
+    const dbOrganizationMembers = await this.db.getOrganizationMembers({
       where: {
-        id: newProject.organizationId
+        organization: {
+          id: newProject.organizationId
+        },
+        member: Not(newProject.owner.id)
       },
       relations: {
-        userOrganizations: {
-          member: true
-        }
+        member: true
       }
     });
-    const organizationMembers = organization?.userOrganizations
-      .filter((value) => value.member.id !== newProject.owner.id)
-      .map((value) => value.member);
 
-    if (organizationMembers) {
-      const projectMembers = organizationMembers.map((member) => {
-        const projectMember: DeepPartial<ProjectMember> = {
-          member,
-          project: newProject,
-          permissions: [Permission.View],
-          isPending: false
-        };
-        return projectMember;
-      });
+    if (dbOrganizationMembers.length > 0) {
+      const projectMembers = dbOrganizationMembers
+        .map((member) => {
+          const projectMember: DeepPartial<ProjectMember> = {
+            member,
+            project: newProject,
+            permissions: [Permission.View],
+            isPending: false
+          };
+          return projectMember;
+        });
 
       await this.db.addProjectMembers(projectMembers);
     }

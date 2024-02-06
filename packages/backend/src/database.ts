@@ -12,6 +12,7 @@ import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 import { PROJECT_DOMAIN } from './constants';
+import { UserOrganization } from './entity/UserOrganization';
 
 const log = debug('snowball:database');
 
@@ -56,11 +57,11 @@ export class Database {
     return updateResult.affected > 0;
   }
 
-  async getOrganization (options: FindOneOptions<Organization>): Promise<Organization | null> {
-    const organizationRepository = this.dataSource.getRepository(Organization);
-    const organization = await organizationRepository.findOne(options);
+  async getOrganizationMembers (options: FindManyOptions<UserOrganization>): Promise<UserOrganization[]> {
+    const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
+    const userOrganizations = await userOrganizationRepository.find(options);
 
-    return organization;
+    return userOrganizations;
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {

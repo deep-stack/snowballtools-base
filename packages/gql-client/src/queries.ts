@@ -112,27 +112,21 @@ query {
 }
 `;
 
-export const getOrganization = gql`
+export const getOrganizationMembers = gql`
 query ($organizationId: String!) {
-  organization(organizationId: $organizationId) {
+  organizationMembers(organizationId: $organizationId) {
     createdAt
     id
-    members {
+    member {
+      email
       createdAt
       id
-      member {
-        id
-        createdAt
-        email
-        isVerified
-        name
-      }
+      isVerified
+      name
       updatedAt
-      role
     }
-    name
     updatedAt
-    updatedAt
+    role
   }
 }
 `;

@@ -3,8 +3,6 @@ import path from 'path';
 import toml from 'toml';
 import debug from 'debug';
 
-import { Organization } from './entity/Organization';
-
 const log = debug('snowball:utils');
 
 export const getConfig = async <ConfigType>(
@@ -20,14 +18,4 @@ export const getConfig = async <ConfigType>(
   log('config', JSON.stringify(config, null, 2));
 
   return config;
-};
-
-export const organizationToGqlType = (dbOrganization: Organization): any => {
-  return {
-    id: dbOrganization.id,
-    name: dbOrganization.name,
-    members: dbOrganization.userOrganizations,
-    createdAt: dbOrganization.createdAt,
-    updatedAt: dbOrganization.updatedAt
-  };
 };

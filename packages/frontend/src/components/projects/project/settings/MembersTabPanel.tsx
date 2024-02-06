@@ -6,6 +6,7 @@ import {
   AddProjectMemberInput,
   ProjectMember,
   User,
+  OrganizationMember,
 } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
@@ -14,15 +15,15 @@ import MemberCard from './MemberCard';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
-const FIRST_MEMBER_CARD = 0;
-
 const MembersTabPanel = ({ project }: { project: Project }) => {
   const client = useGQLClient();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
-  const [organiationMembers, setOrganiationMembers] = useState<User[]>([]);
+  const [organizationMembers, setOrganizationMembers] = useState<
+    OrganizationMember[]
+  >([]);
   const [currentUser, setCurrentUser] = useState<User>();
 
   const fetchProjectMembers = useCallback(async () => {
@@ -31,14 +32,11 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
   }, [project.id]);
 
   const fetchOrganizationMembers = useCallback(async () => {
-    const { organization } = await client.getOrganization(
+    const { organizationMembers } = await client.getOrganizationMembers(
       project.organization.id,
     );
-    const organizationMembers = organization.members.map(
-      (organiationMember) => organiationMember.member,
-    );
 
-    setOrganiationMembers(organizationMembers);
+    setOrganizationMembers(organizationMembers);
   }, [project]);
 
   const addMemberHandler = useCallback(
@@ -131,14 +129,14 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
           <MemberCard
             member={projectMember.member}
             key={projectMember.id}
-            isFirstCard={index === FIRST_MEMBER_CARD}
+            isFirstCard={index === 0}
             isOwner={projectMember.member.id === project.owner.id}
             isPending={projectMember.isPending}
             permissions={projectMember.permissions}
             isCurrentUserProjectOwner={currentUser?.id === project.owner.id}
-            isMemberPartOfOrg={organiationMembers.some(
+            isMemberPartOfOrg={organizationMembers.some(
               (organiationMember) =>
-                organiationMember.id === projectMember.member.id,
+                organiationMember.member.id === projectMember.member.id,
             )}
             onRemoveProjectMember={async () =>
               await removeMemberHandler(projectMember.id)

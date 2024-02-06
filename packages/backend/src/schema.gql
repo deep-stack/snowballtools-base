@@ -174,7 +174,6 @@ input FilterDomainsInput {
 
 type Query {
   user: User!
-  organization(organizationId: String!): Organization!
   organizations: [Organization!]
   projects: [Project!]
   projectsInOrganization(organizationId: String!): [Project!]
@@ -182,6 +181,7 @@ type Query {
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
+  organizationMembers(organizationId: String!): [OrganizationMember]
   searchProjects(searchText: String!): [Project!]
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }

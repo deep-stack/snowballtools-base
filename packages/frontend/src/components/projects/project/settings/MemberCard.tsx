@@ -103,8 +103,7 @@ const MemberCard = ({
                 key={key}
                 value={permission.value}
                 disabled={
-                  permission.value === 'remove' &&
-                  (isMemberPartOfOrg ? true : false)
+                  permission.value === 'remove' && Boolean(isMemberPartOfOrg)
                 }
               >
                 ^ {permission.label}
