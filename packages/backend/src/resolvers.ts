@@ -60,9 +60,9 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
 
     // TODO: Return error in GQL response
     Mutation: {
-      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
+      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }) => {
         try {
-          return await service.removeProjectMember(context.userId, projectMemberId);
+          return await service.removeProjectMember(projectMemberId);
         } catch (err) {
           log(err);
           return false;

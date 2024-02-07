@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
 import { DeepPartial, FindOptionsWhere, Not } from 'typeorm';
@@ -122,21 +121,27 @@ export class Service {
     return newProjectMembers[0];
   }
 
-  async removeProjectMember (userId: string, projectMemberId: string): Promise<boolean> {
-    const member = await this.db.getProjectMemberById(projectMemberId);
+  async removeProjectMember (projectMemberId: string): Promise<boolean> {
+    const projectMember = await this.db.getProjectMemberById(projectMemberId);
 
-    if (String(member.member.id) === userId) {
-      throw new Error('Invalid operation: cannot remove self');
-    }
+    const organizationMembers = await this.db.getOrganizationMembers({
+      where: {
+        organization: {
+          id: projectMember.project.organizationId
+        }
+      },
+      relations: {
+        member: true
+      }
+    });
 
-    const memberProject = member.project;
-    assert(memberProject);
+    const isOrgMember = organizationMembers.some((organizationMember) => projectMember.member.id === organizationMember.member.id);
 
-    if (String(userId) === String(memberProject.owner.id)) {
+    if (!isOrgMember) {
       return this.db.removeProjectMemberById(projectMemberId);
-    } else {
-      throw new Error('Invalid operation: not authorized');
     }
+
+    throw new Error('Invalid operation: not authorized');
   }
 
   async addEnvironmentVariables (projectId: string, data: { environments: string[], key: string, value: string}[]): Promise<EnvironmentVariable[]> {
