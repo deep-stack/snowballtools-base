@@ -12,6 +12,7 @@ import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 import { PROJECT_DOMAIN } from './constants';
+import { UserOrganization } from './entity/UserOrganization';
 
 const log = debug('snowball:database');
 
@@ -54,6 +55,13 @@ export class Database {
     assert(updateResult.affected);
 
     return updateResult.affected > 0;
+  }
+
+  async getOrganizationMembers (options: FindManyOptions<UserOrganization>): Promise<UserOrganization[]> {
+    const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
+    const userOrganizations = await userOrganizationRepository.find(options);
+
+    return userOrganizations;
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
@@ -219,11 +227,11 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async addProjectMember (data: DeepPartial<ProjectMember>): Promise<ProjectMember> {
+  async addProjectMembers (data: DeepPartial<ProjectMember>[]): Promise<ProjectMember[]> {
     const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
-    const newProjectMember = await projectMemberRepository.save(data);
+    const newProjectMembers = await projectMemberRepository.save(data);
 
-    return newProjectMember;
+    return newProjectMembers;
   }
 
   async addEnvironmentVariables (data: DeepPartial<EnvironmentVariable>[]): Promise<EnvironmentVariable[]> {

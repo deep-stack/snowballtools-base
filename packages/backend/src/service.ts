@@ -1,7 +1,6 @@
-import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Not } from 'typeorm';
 
 import { Database } from './database';
 import { Deployment, Environment } from './entity/Deployment';
@@ -12,6 +11,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { PROJECT_DOMAIN } from './constants';
+import { UserOrganization } from './entity/UserOrganization';
 
 const nanoid = customAlphabet(lowercase + numbers, 8);
 
@@ -28,6 +28,21 @@ export class Service {
         id: userId
       }
     });
+  }
+
+  async getOrganizationMembersByOrgId (organizationId: string): Promise<UserOrganization[]> {
+    const dbOrganizationMembers = await this.db.getOrganizationMembers({
+      where: {
+        organization: {
+          id: organizationId
+        }
+      },
+      relations: {
+        member: true
+      }
+    });
+
+    return dbOrganizationMembers;
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
@@ -92,7 +107,7 @@ export class Service {
       });
     }
 
-    const newProjectMember = await this.db.addProjectMember({
+    const newProjectMembers = await this.db.addProjectMembers([{
       project: {
         id: projectId
       },
@@ -101,26 +116,32 @@ export class Service {
       member: {
         id: user.id
       }
-    });
+    }]);
 
-    return newProjectMember;
+    return newProjectMembers[0];
   }
 
-  async removeProjectMember (userId: string, projectMemberId: string): Promise<boolean> {
-    const member = await this.db.getProjectMemberById(projectMemberId);
+  async removeProjectMember (projectMemberId: string): Promise<boolean> {
+    const projectMember = await this.db.getProjectMemberById(projectMemberId);
 
-    if (String(member.member.id) === userId) {
-      throw new Error('Invalid operation: cannot remove self');
-    }
+    const organizationMembers = await this.db.getOrganizationMembers({
+      where: {
+        organization: {
+          id: projectMember.project.organizationId
+        }
+      },
+      relations: {
+        member: true
+      }
+    });
 
-    const memberProject = member.project;
-    assert(memberProject);
+    const isOrgMember = organizationMembers.some((organizationMember) => projectMember.member.id === organizationMember.member.id);
 
-    if (String(userId) === String(memberProject.owner.id)) {
+    if (!isOrgMember) {
       return this.db.removeProjectMemberById(projectMemberId);
-    } else {
-      throw new Error('Invalid operation: not authorized');
     }
+
+    throw new Error('Invalid operation: not authorized');
   }
 
   async addEnvironmentVariables (projectId: string, data: { environments: string[], key: string, value: string}[]): Promise<EnvironmentVariable[]> {
@@ -182,8 +203,37 @@ export class Service {
     return updateResult;
   }
 
-  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project | undefined> {
-    return this.db.addProject(userId, data);
+  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project> {
+    const newProject = await this.db.addProject(userId, data);
+
+    const dbOrganizationMembers = await this.db.getOrganizationMembers({
+      where: {
+        organization: {
+          id: newProject.organizationId
+        },
+        member: Not(newProject.owner.id)
+      },
+      relations: {
+        member: true
+      }
+    });
+
+    if (dbOrganizationMembers.length > 0) {
+      const projectMembers = dbOrganizationMembers
+        .map((member) => {
+          const projectMember: DeepPartial<ProjectMember> = {
+            member,
+            project: newProject,
+            permissions: [Permission.View],
+            isPending: false
+          };
+          return projectMember;
+        });
+
+      await this.db.addProjectMembers(projectMembers);
+    }
+
+    return newProject;
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {

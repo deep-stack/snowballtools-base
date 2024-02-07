@@ -21,6 +21,10 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         return service.getUser(context.userId);
       },
 
+      organizationMembers: async (_:any, { organizationId }: {organizationId: string}) => {
+        return service.getOrganizationMembersByOrgId(organizationId);
+      },
+
       organizations: async (_:any, __: any, context: any) => {
         return service.getOrganizationsByUserId(context.userId);
       },
@@ -56,9 +60,9 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
 
     // TODO: Return error in GQL response
     Mutation: {
-      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
+      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }) => {
         try {
-          return await service.removeProjectMember(context.userId, projectMemberId);
+          return await service.removeProjectMember(projectMemberId);
         } catch (err) {
           log(err);
           return false;

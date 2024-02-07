@@ -112,6 +112,25 @@ query {
 }
 `;
 
+export const getOrganizationMembers = gql`
+query ($organizationId: String!) {
+  organizationMembers(organizationId: $organizationId) {
+    createdAt
+    id
+    member {
+      email
+      createdAt
+      id
+      isVerified
+      name
+      updatedAt
+    }
+    updatedAt
+    role
+  }
+}
+`;
+
 export const getDeployments = gql`
 query ($projectId: String!)  {
   deployments(projectId: $projectId) {

@@ -181,6 +181,7 @@ type Query {
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
+  organizationMembers(organizationId: String!): [OrganizationMember]
   searchProjects(searchText: String!): [Project!]
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }

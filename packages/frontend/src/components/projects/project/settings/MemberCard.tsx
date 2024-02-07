@@ -33,6 +33,8 @@ interface MemberCardProps {
   isOwner: boolean;
   isPending: boolean;
   permissions: string[];
+  isCurrentUserProjectOwner?: boolean;
+  isMemberPartOfOrg?: boolean;
   onRemoveProjectMember?: () => Promise<void>;
   onUpdateProjectMember?: (data: {
     permissions: Permission[];
@@ -45,6 +47,8 @@ const MemberCard = ({
   isOwner,
   isPending,
   permissions,
+  isCurrentUserProjectOwner,
+  isMemberPartOfOrg,
   onRemoveProjectMember,
   onUpdateProjectMember,
 }: MemberCardProps) => {
@@ -87,7 +91,7 @@ const MemberCard = ({
           <Select
             size="lg"
             label={isOwner ? 'Owner' : ''}
-            disabled={isOwner}
+            disabled={isOwner || !isCurrentUserProjectOwner}
             value={selectedPermission}
             onChange={(value) => handlePermissionChange(value!)}
             selected={(_, index) => (
@@ -95,7 +99,13 @@ const MemberCard = ({
             )}
           >
             {DROPDOWN_OPTIONS.map((permission, key) => (
-              <Option key={key} value={permission.value}>
+              <Option
+                key={key}
+                value={permission.value}
+                disabled={
+                  permission.value === 'remove' && Boolean(isMemberPartOfOrg)
+                }
+              >
                 ^ {permission.label}
                 {permission.value === selectedPermission && (
                   <p className="float-right">^</p>

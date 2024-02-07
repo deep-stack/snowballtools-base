@@ -5,6 +5,8 @@ import {
   Project,
   AddProjectMemberInput,
   ProjectMember,
+  User,
+  OrganizationMember,
 } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
@@ -13,19 +15,29 @@ import MemberCard from './MemberCard';
 import AddMemberDialog from './AddMemberDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
-const FIRST_MEMBER_CARD = 0;
-
 const MembersTabPanel = ({ project }: { project: Project }) => {
   const client = useGQLClient();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
   const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
+  const [organizationMembers, setOrganizationMembers] = useState<
+    OrganizationMember[]
+  >([]);
+  const [currentUser, setCurrentUser] = useState<User>();
 
   const fetchProjectMembers = useCallback(async () => {
     const { projectMembers } = await client.getProjectMembers(project.id);
     setProjectMembers(projectMembers);
   }, [project.id]);
+
+  const fetchOrganizationMembers = useCallback(async () => {
+    const { organizationMembers } = await client.getOrganizationMembers(
+      project.organization.id,
+    );
+
+    setOrganizationMembers(organizationMembers);
+  }, [project]);
 
   const addMemberHandler = useCallback(
     async (data: AddProjectMemberInput) => {
@@ -71,7 +83,17 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
 
   useEffect(() => {
     fetchProjectMembers();
-  }, [project.id, fetchProjectMembers]);
+    fetchOrganizationMembers();
+  }, [project]);
+
+  const fetchCurrentUser = useCallback(async () => {
+    const { user } = await client.getUser();
+    setCurrentUser(user);
+  }, [project]);
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, [project]);
 
   return (
     <div className="p-2 mb-20">
@@ -107,10 +129,15 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
           <MemberCard
             member={projectMember.member}
             key={projectMember.id}
-            isFirstCard={index === FIRST_MEMBER_CARD}
+            isFirstCard={index === 0}
             isOwner={projectMember.member.id === project.owner.id}
             isPending={projectMember.isPending}
             permissions={projectMember.permissions}
+            isCurrentUserProjectOwner={currentUser?.id === project.owner.id}
+            isMemberPartOfOrg={organizationMembers.some(
+              (organiationMember) =>
+                organiationMember.member.id === projectMember.member.id,
+            )}
             onRemoveProjectMember={async () =>
               await removeMemberHandler(projectMember.id)
             }
