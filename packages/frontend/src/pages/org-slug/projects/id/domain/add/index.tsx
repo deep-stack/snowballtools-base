@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { useParams, useLocation, Outlet, Link } from 'react-router-dom';
 import { Typography, IconButton } from '@material-tailwind/react';
 
-import Stepper from '../../../../../components/Stepper';
+import Stepper from '../../../../../../components/Stepper';
 
 const AddDomain = () => {
-  const { id } = useParams();
+  const { id, orgSlug } = useParams();
   const location = useLocation();
 
   const stepperValues = [
@@ -31,7 +31,7 @@ const AddDomain = () => {
     <div className="p-4">
       <div className="flex justify-between">
         <Typography variant="h3">Add Domain</Typography>
-        <Link to={`/projects/${id}`}>
+        <Link to={`/${orgSlug}/projects/${id}`}>
           <IconButton className="rounded-full" variant="outlined">
             X
           </IconButton>

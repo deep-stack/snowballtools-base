@@ -1,26 +1,28 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import DashboardLayout from './layouts/Dashboard';
-import Home from './pages/index';
-import Settings from './pages/Settings';
+import OrgSlug from './pages/OrgSlug';
+import Projects from './pages/org-slug';
+import Settings from './pages/org-slug/Settings';
 import {
   projectsRoutesWithSearch,
   projectsRoutesWithoutSearch,
-} from './pages/projects/routes';
+} from './pages/org-slug/projects/routes';
 import ProjectSearchLayout from './layouts/ProjectSearch';
 import { OctokitProvider } from './context/OctokitContext';
+import Index from './pages';
 
 const router = createBrowserRouter([
   {
-    element: <DashboardLayout />,
+    path: ':orgSlug',
+    element: <OrgSlug />,
     children: [
       {
         element: <ProjectSearchLayout />,
         children: [
           {
-            path: '/',
-            element: <Home />,
+            path: '',
+            element: <Projects />,
           },
           {
             path: 'projects',
@@ -37,6 +39,10 @@ const router = createBrowserRouter([
         children: projectsRoutesWithoutSearch,
       },
     ],
+  },
+  {
+    path: '/',
+    element: <Index />,
   },
 ]);
 

@@ -4,9 +4,9 @@ import { Project as ProjectType } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import HorizontalLine from '../../components/HorizontalLine';
-import ProjectTabs from '../../components/projects/project/ProjectTabs';
-import { useGQLClient } from '../../context/GQLClientContext';
+import HorizontalLine from '../../../components/HorizontalLine';
+import ProjectTabs from '../../../components/projects/project/ProjectTabs';
+import { useGQLClient } from '../../../context/GQLClientContext';
 
 const Id = () => {
   const { id } = useParams();

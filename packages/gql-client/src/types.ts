@@ -109,6 +109,7 @@ export type OrganizationProject = {
 export type Organization = {
   id: string
   name: string
+  slug: string
   projects: OrganizationProject[]
   createdAt: string
   updatedAt: string
@@ -240,7 +241,6 @@ export type DeleteDomainResponse = {
 }
 
 export type AddProjectInput = {
-  organizationId: string;
   name: string;
   repository: string;
   prodBranch: string;

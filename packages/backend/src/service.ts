@@ -40,8 +40,8 @@ export class Service {
     return dbProject;
   }
 
-  async getProjectsInOrganization (userId:string, organizationId: string): Promise<Project[]> {
-    const dbProjects = await this.db.getProjectsInOrganization(userId, organizationId);
+  async getProjectsInOrganization (userId:string, organizationSlug: string): Promise<Project[]> {
+    const dbProjects = await this.db.getProjectsInOrganization(userId, organizationSlug);
     return dbProjects;
   }
 
@@ -182,8 +182,17 @@ export class Service {
     return updateResult;
   }
 
-  async addProject (userId: string, data: DeepPartial<Project>): Promise<Project | undefined> {
-    return this.db.addProject(userId, data);
+  async addProject (userId: string, organizationSlug: string, data: DeepPartial<Project>): Promise<Project | undefined> {
+    const organization = await this.db.getOrganization({
+      where: {
+        slug: organizationSlug
+      }
+    });
+    if (!organization) {
+      throw new Error('Organization does not exist');
+    }
+
+    return this.db.addProject(userId, organization.id, data);
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {

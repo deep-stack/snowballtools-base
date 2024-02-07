@@ -1,6 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
-import { Organization } from 'gql-client';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { IconButton, Typography } from '@material-tailwind/react';
 
@@ -9,7 +8,7 @@ import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 
 const ProjectSearch = () => {
   const navigate = useNavigate();
-  const organization = useOutletContext<Organization>();
+
   return (
     <div>
       <div className="sticky top-0 bg-white z-30">
@@ -17,7 +16,9 @@ const ProjectSearch = () => {
           <div className="grow mr-2">
             <ProjectSearchBar
               onChange={(project) => {
-                navigate(`/projects/${project.id}`);
+                navigate(
+                  `/${project.organization.slug}/projects/${project.id}`,
+                );
               }}
             />
           </div>
@@ -34,7 +35,7 @@ const ProjectSearch = () => {
         <HorizontalLine />
       </div>
       <div className="z-0">
-        <Outlet context={organization} />
+        <Outlet />
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
   isGitAuth,
 }) => {
   return isGitAuth ? (
-    <Link to="/projects/create/template">
+    <Link to="template">
       <CardDetails framework={framework} />
     </Link>
   ) : (

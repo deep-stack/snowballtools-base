@@ -4,10 +4,10 @@ import toast from 'react-hot-toast';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Typography, Alert, Button } from '@material-tailwind/react';
 
-import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { useGQLClient } from '../../../../../../context/GQLClientContext';
 
 const Config = () => {
-  const { id } = useParams();
+  const { id, orgSlug } = useParams();
   const client = useGQLClient();
   const [searchParams] = useSearchParams();
   const primaryDomainName = searchParams.get('name');
@@ -70,8 +70,7 @@ const Config = () => {
         <i>^</i>It can take up to 48 hours for these updates to reflect
         globally.
       </Alert>
-
-      <Link to={`/projects/${id}`}>
+      <Link to={`/${orgSlug}/projects/${id}`}>
         <Button
           className="w-fit"
           color="blue"

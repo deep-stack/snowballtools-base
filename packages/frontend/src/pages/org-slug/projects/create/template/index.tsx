@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Typography } from '@material-tailwind/react';
 
-import Dropdown from '../../../../components/Dropdown';
+import Dropdown from '../../../../../components/Dropdown';
 
 const USER_OPTIONS = [
   { value: 'saugatyadav1', label: 'saugatyadav1' },
@@ -93,7 +93,7 @@ const CreateRepo = () => {
         </label>
       </div>
       <div className="mb-2">
-        <Link to={'/projects/create/template/deploy'}>
+        <Link to="deploy">
           <button className="bg-blue-500 rounded-xl p-2" type="submit">
             Deploy ^
           </button>

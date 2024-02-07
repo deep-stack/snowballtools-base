@@ -56,6 +56,13 @@ export class Database {
     return updateResult.affected > 0;
   }
 
+  async getOrganization (options: FindOneOptions<Organization>): Promise<Organization | null> {
+    const organizationRepository = this.dataSource.getRepository(Organization);
+    const organization = await organizationRepository.findOne(options);
+
+    return organization;
+  }
+
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
 
@@ -108,7 +115,7 @@ export class Database {
     return project;
   }
 
-  async getProjectsInOrganization (userId: string, organizationId: string): Promise<Project[]> {
+  async getProjectsInOrganization (userId: string, organizationSlug: string): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository
@@ -116,9 +123,10 @@ export class Database {
       .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoin('project.projectMembers', 'projectMembers')
-      .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND project.organizationId = :organizationId', {
+      .leftJoin('project.organization', 'organization')
+      .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND organization.slug = :organizationSlug', {
         userId,
-        organizationId
+        organizationSlug
       })
       .getMany();
 
@@ -297,7 +305,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async addProject (userId: string, projectDetails: DeepPartial<Project>): Promise<Project> {
+  async addProject (userId: string, organizationId: string, projectDetails: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     // TODO: Check if organization exists
@@ -312,7 +320,7 @@ export class Database {
     });
 
     newProject.organization = Object.assign(new Organization(), {
-      id: projectDetails.organizationId
+      id: organizationId
     });
 
     newProject.subDomain = `${newProject.name}.${PROJECT_DOMAIN}`;

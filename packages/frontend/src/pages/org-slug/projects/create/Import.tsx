@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { Button } from '@material-tailwind/react';
 
-import { useOctokit } from '../../../context/OctokitContext';
-import { GitRepositoryDetails } from '../../../types/project';
-import Deploy from '../../../components/projects/create/Deploy';
-import { useGQLClient } from '../../../context/GQLClientContext';
+import { useOctokit } from '../../../../context/OctokitContext';
+import { GitRepositoryDetails } from '../../../../types/project';
+import Deploy from '../../../../components/projects/create/Deploy';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const Import = () => {
   const [searchParams] = useSearchParams();
+  const { orgSlug } = useParams();
   const navigate = useNavigate();
   const { octokit } = useOctokit();
   const client = useGQLClient();
@@ -37,16 +38,14 @@ const Import = () => {
       return;
     }
 
-    const { addProject } = await client.addProject({
+    const { addProject } = await client.addProject(orgSlug!, {
       // TODO: Implement form for setting project name
       name: `${gitRepo.owner!.login}-${gitRepo.name}`,
-      // TODO: Get organization id from context or URL
-      organizationId: String(1),
       prodBranch: gitRepo.default_branch ?? 'main',
       repository: gitRepo.full_name,
     });
 
-    navigate(`/projects/create/success/${addProject.id}`);
+    navigate(`/${orgSlug}/projects/create/success/${addProject.id}`);
   }, [client, gitRepo]);
 
   return (

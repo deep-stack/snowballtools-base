@@ -1,8 +1,10 @@
 [
   {
-    "name": "Snowball Tools"
+    "name": "Snowball Tools",
+    "slug": "snowball-tools"
   },
   {
-    "name": "AirFoil"
+    "name": "AirFoil",
+    "slug": "airfoil"
   }
 ]

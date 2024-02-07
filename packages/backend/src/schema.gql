@@ -41,6 +41,7 @@ type User {
 type Organization {
   id: String!
   name: String!
+  slug: String!
   projects: [Project!]
   createdAt: String!
   updatedAt: String!
@@ -129,7 +130,6 @@ input AddEnvironmentVariableInput {
 }
 
 input AddProjectInput {
-  organizationId: String!
   name: String!
   repository: String!
   prodBranch: String!
@@ -176,7 +176,7 @@ type Query {
   user: User!
   organizations: [Organization!]
   projects: [Project!]
-  projectsInOrganization(organizationId: String!): [Project!]
+  projectsInOrganization(organizationSlug: String!): [Project!]
   project(projectId: String!): Project
   deployments(projectId: String!): [Deployment!]
   environmentVariables(projectId: String!): [EnvironmentVariable!]
@@ -193,7 +193,7 @@ type Mutation {
   updateEnvironmentVariable(environmentVariableId: String!, data: UpdateEnvironmentVariableInput!): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
-  addProject(data: AddProjectInput): Project!
+  addProject(organizationSlug: String!, data: AddProjectInput): Project!
   updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!

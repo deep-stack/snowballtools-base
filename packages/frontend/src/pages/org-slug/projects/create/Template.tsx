@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import Stepper from '../../../components/Stepper';
+import Stepper from '../../../../components/Stepper';
 
 const STEPPER_VALUES = [
   { step: 1, route: '/projects/create/template', label: 'Create repository' },

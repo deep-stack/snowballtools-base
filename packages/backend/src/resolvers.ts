@@ -29,8 +29,8 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         return service.getProjectById(projectId);
       },
 
-      projectsInOrganization: async (_: any, { organizationId }: {organizationId: string }, context: any) => {
-        return service.getProjectsInOrganization(context.userId, organizationId);
+      projectsInOrganization: async (_: any, { organizationSlug }: {organizationSlug: string }, context: any) => {
+        return service.getProjectsInOrganization(context.userId, organizationSlug);
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
@@ -130,9 +130,9 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         }
       },
 
-      addProject: async (_: any, { data }: { data: DeepPartial<Project> }, context: any) => {
+      addProject: async (_: any, { organizationSlug, data }: { organizationSlug: string, data: DeepPartial<Project> }, context: any) => {
         try {
-          return service.addProject(context.userId, data);
+          return service.addProject(context.userId, organizationSlug, data);
         } catch (err) {
           log(err);
         }

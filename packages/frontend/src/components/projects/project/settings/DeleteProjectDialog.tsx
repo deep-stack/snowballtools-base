@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Project } from 'gql-client';
@@ -26,6 +26,7 @@ const DeleteProjectDialog = ({
   handleOpen,
   project,
 }: DeleteProjectDialogProp) => {
+  const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
 
@@ -43,7 +44,7 @@ const DeleteProjectDialog = ({
     const { deleteProject } = await client.deleteProject(project.id);
 
     if (deleteProject) {
-      navigate('/');
+      navigate(`/${orgSlug}`);
     } else {
       toast.error('Project not deleted');
     }

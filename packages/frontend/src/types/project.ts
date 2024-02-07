@@ -2,21 +2,11 @@ import { Project, Deployment } from 'gql-client';
 
 export interface ProjectDetails extends Project {
   latestCommit: Commit;
-
-  // TODO: Move out of project
-  repositories?: RepositoryDetails[];
-  repositoryId?: number;
 }
 
 export interface DeploymentDetails extends Deployment {
   commit: Commit;
   author: string;
-}
-
-export enum Status {
-  BUILDING = 'Building',
-  READY = 'Ready',
-  ERROR = 'Error',
 }
 
 export interface GitOrgDetails {
@@ -63,27 +53,6 @@ export enum GitSelect {
   GITHUB = 'github',
   GITEA = 'gitea',
   NONE = 'none',
-}
-
-export enum DomainStatus {
-  LIVE = 'Live',
-  PENDING = 'Pending',
-}
-
-export interface DomainDetails {
-  id: string;
-  projectid: string;
-  name: string;
-  status: DomainStatus;
-  record: {
-    type: string;
-    name: string;
-    value: string;
-  };
-}
-
-export interface ProjectSearchOutletContext {
-  projects: ProjectDetails[];
 }
 
 export interface Commit {

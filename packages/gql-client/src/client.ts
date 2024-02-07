@@ -50,11 +50,11 @@ export class GQLClient {
     return data;
   }
 
-  async getProjectsInOrganization (organizationId: string) : Promise<GetProjectsInOrganizationResponse> {
+  async getProjectsInOrganization (organizationSlug: string) : Promise<GetProjectsInOrganizationResponse> {
     const { data } = await this.client.query({
       query: getProjectsInOrganization,
       variables: {
-        organizationId
+        organizationSlug
       }
     });
 
@@ -194,10 +194,11 @@ export class GQLClient {
     return data;
   }
 
-  async addProject (data: AddProjectInput): Promise<AddProjectResponse> {
+  async addProject (organizationSlug: string, data: AddProjectInput): Promise<AddProjectResponse> {
     const result = await this.client.mutate({
       mutation: addProject,
       variables: {
+        organizationSlug,
         data
       }
     });

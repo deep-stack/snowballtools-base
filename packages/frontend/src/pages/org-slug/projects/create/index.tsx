@@ -1,10 +1,10 @@
 import React from 'react';
 
-import templateDetails from '../../../assets/templates.json';
-import TemplateCard from '../../../components/projects/create/TemplateCard';
-import RepositoryList from '../../../components/projects/create/RepositoryList';
-import ConnectAccount from '../../../components/projects/create/ConnectAccount';
-import { useOctokit } from '../../../context/OctokitContext';
+import templateDetails from '../../../../assets/templates.json';
+import TemplateCard from '../../../../components/projects/create/TemplateCard';
+import RepositoryList from '../../../../components/projects/create/RepositoryList';
+import ConnectAccount from '../../../../components/projects/create/ConnectAccount';
+import { useOctokit } from '../../../../context/OctokitContext';
 
 const NewProject = () => {
   const { octokit, updateAuth } = useOctokit();

@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
 
 const Id = () => {
-  const { id } = useParams();
+  const { id, orgSlug } = useParams();
   return (
     <div className="flex justify-center">
       <div className="w-1/2">
@@ -57,7 +57,7 @@ const Id = () => {
             </Link>
           </div>
           <div>
-            <Link to={`/projects/${id}`}>
+            <Link to={`/${orgSlug}/projects/${id}`}>
               <Button className="rounded-full" variant="gradient" color="blue">
                 View project
               </Button>

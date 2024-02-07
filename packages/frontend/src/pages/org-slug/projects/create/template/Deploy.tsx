@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DeployComponent from '../../../../components/projects/create/Deploy';
+import DeployComponent from '../../../../../components/projects/create/Deploy';
 
 const Deploy = () => {
   return <DeployComponent />;

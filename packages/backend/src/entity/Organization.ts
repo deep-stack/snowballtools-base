@@ -4,17 +4,22 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  Unique
 } from 'typeorm';
 import { UserOrganization } from './UserOrganization';
 
 @Entity()
+@Unique(['slug'])
 export class Organization {
   @PrimaryGeneratedColumn('uuid')
     id!: string;
 
   @Column('varchar', { length: 255 })
     name!: string;
+
+  @Column('varchar')
+    slug!: string;
 
   @CreateDateColumn()
     createdAt!: Date;

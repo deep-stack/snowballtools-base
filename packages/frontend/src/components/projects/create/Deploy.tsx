@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -11,9 +11,10 @@ const Deploy = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
   const navigate = useNavigate();
+  const { orgSlug } = useParams();
 
   const handleCancel = useCallback(() => {
-    navigate('/projects/create');
+    navigate(`/${orgSlug}/projects/create`);
   }, []);
 
   return (

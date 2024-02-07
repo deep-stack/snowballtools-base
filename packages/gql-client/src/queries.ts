@@ -65,8 +65,8 @@ query ($projectId: String!) {
 `;
 
 export const getProjectsInOrganization = gql`
-query ($organizationId: String!) {
-  projectsInOrganization(organizationId: $organizationId) {
+query ($organizationSlug: String!) {
+  projectsInOrganization(organizationSlug: $organizationSlug) {
     id
     name
     createdAt
@@ -106,6 +106,7 @@ query {
   organizations {
     id
     name
+    slug
     createdAt
     updatedAt
   }
@@ -191,6 +192,7 @@ query ($searchText: String!) {
     organization {
       id
       name
+      slug
       createdAt
       updatedAt
     }

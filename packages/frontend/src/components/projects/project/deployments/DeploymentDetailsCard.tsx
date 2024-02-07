@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Environment, Project, Domain, DeploymentStatus } from 'gql-client';
 
 import {
   Menu,
@@ -9,14 +11,12 @@ import {
   Chip,
   ChipProps,
 } from '@material-tailwind/react';
-import toast from 'react-hot-toast';
-import { Environment, Project, Domain } from 'gql-client';
 
 import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import AssignDomainDialog from './AssignDomainDialog';
-import { DeploymentDetails, Status } from '../../../../types/project';
+import { DeploymentDetails } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeployDetailsCardProps {
@@ -27,10 +27,10 @@ interface DeployDetailsCardProps {
   prodBranchDomains: Domain[];
 }
 
-const STATUS_COLORS: { [key in Status]: ChipProps['color'] } = {
-  [Status.BUILDING]: 'blue',
-  [Status.READY]: 'green',
-  [Status.ERROR]: 'red',
+const STATUS_COLORS: { [key in DeploymentStatus]: ChipProps['color'] } = {
+  [DeploymentStatus.Building]: 'blue',
+  [DeploymentStatus.Ready]: 'green',
+  [DeploymentStatus.Error]: 'red',
 };
 
 const DeploymentDetailsCard = ({
@@ -125,14 +125,12 @@ const DeploymentDetailsCard = ({
             >
               ^ Assign domain
             </MenuItem>
-            {!(deployment.environment === Environment.Production) && (
-              <MenuItem
-                onClick={() => setChangeToProduction(!changeToProduction)}
-              >
-                ^ Change to production
-              </MenuItem>
-            )}
-
+            <MenuItem
+              onClick={() => setChangeToProduction(!changeToProduction)}
+              disabled={!(deployment.environment !== Environment.Production)}
+            >
+              ^ Change to production
+            </MenuItem>
             <hr className="my-3" />
             <MenuItem
               onClick={() => setRedeployToProduction(!redeployToProduction)}
@@ -145,14 +143,15 @@ const DeploymentDetailsCard = ({
             >
               ^ Redeploy to production
             </MenuItem>
-            {deployment.environment === Environment.Production && (
-              <MenuItem
-                onClick={() => setRollbackDeployment(!rollbackDeployment)}
-                disabled={deployment.isCurrent}
-              >
-                ^ Rollback to this version
-              </MenuItem>
-            )}
+            <MenuItem
+              onClick={() => setRollbackDeployment(!rollbackDeployment)}
+              disabled={
+                deployment.isCurrent ||
+                deployment.environment !== Environment.Production
+              }
+            >
+              ^ Rollback to this version
+            </MenuItem>
           </MenuList>
         </Menu>
       </div>
