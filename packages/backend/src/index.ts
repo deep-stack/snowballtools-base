@@ -19,10 +19,6 @@ export const main = async (): Promise<void> => {
   // TODO: get config path using cli
   const { server, database, githubOauth } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
-  const db = new Database(database);
-  await db.init();
-  const service = new Service(db);
-
   // TODO: Move to Service class
   const app = new OAuthApp({
     clientType: 'oauth-app',
@@ -30,8 +26,12 @@ export const main = async (): Promise<void> => {
     clientSecret: githubOauth.clientSecret
   });
 
+  const db = new Database(database);
+  await db.init();
+  const service = new Service(db, app);
+
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
-  const resolvers = await createResolvers(db, app, service);
+  const resolvers = await createResolvers(service);
 
   await createAndStartServer(typeDefs, resolvers, server);
 };

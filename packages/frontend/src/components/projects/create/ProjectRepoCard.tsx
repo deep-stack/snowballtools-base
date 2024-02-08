@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { Chip, IconButton } from '@material-tailwind/react';
 
-import { relativeTime } from '../../../utils/time';
+import { relativeTimeISO } from '../../../utils/time';
 import { GitRepositoryDetails } from '../../../types/project';
 import { useGQLClient } from '../../../context/GQLClientContext';
 
@@ -24,7 +24,6 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
 
     const { addProject } = await client.addProject(orgSlug!, {
       name: `${repository.owner!.login}-${repository.name}`,
-      // TODO: Get organization id from context or URL
       prodBranch: repository.default_branch!,
       repository: repository.full_name,
     });
@@ -50,7 +49,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
             />
           )}
         </div>
-        <p>{repository.updated_at && relativeTime(repository.updated_at)}</p>
+        <p>{repository.updated_at && relativeTimeISO(repository.updated_at)}</p>
       </div>
       <div className="hidden group-hover:block">
         <IconButton size="sm">{'>'}</IconButton>

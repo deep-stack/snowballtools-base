@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Typography, IconButton } from '@material-tailwind/react';
 
-import { relativeTime } from '../../../utils/time';
+import { relativeTimeISO } from '../../../utils/time';
 import { GitCommitDetails } from '../../../types/project';
 
 interface ActivityCardProps {
@@ -17,7 +17,8 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
       <div className="grow">
         <Typography>{activity.commit.author?.name}</Typography>
         <Typography variant="small" color="gray">
-          {relativeTime(activity.commit.author!.date!)} ^ {activity.branch.name}
+          {relativeTimeISO(activity.commit.author!.date!)} ^{' '}
+          {activity.branch.name}
         </Typography>
         <Typography variant="small" color="gray">
           {activity.commit.message}

@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
  * @param {string} time - The input time in ISO 8601 format.
  * @returns {string} - A human-readable relative time string.
  */
-export const relativeTime = (time: string) => {
+export const relativeTimeISO = (time: string) => {
   return DateTime.fromISO(time).toRelative();
 };
 
@@ -17,5 +17,5 @@ export const relativeTime = (time: string) => {
  * @returns {string} - A human-readable relative time string.
  */
 export const relativeTimeMs = (time: string) => {
-  return relativeTime(new Date(Number(time)).toISOString());
+  return relativeTimeISO(new Date(Number(time)).toISOString());
 };

@@ -3,6 +3,7 @@ import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 
 import Stepper from '../../../../components/Stepper';
 import templateDetails from '../../../../assets/templates.json';
+import { GIT_TEMPLATE_LINK } from '../../../../constants';
 
 const STEPPER_VALUES = [
   { step: 1, route: '/projects/create/template', label: 'Create repository' },
@@ -31,8 +32,11 @@ const CreateWithTemplate = () => {
       <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6">
         <div>^</div>
         <div className="grow">{template?.name}</div>
-        {/* TODO: Get template Git link from DB */}
-        <div>^snowball-tools/react-native-starter</div>
+        <div>
+          <a href={GIT_TEMPLATE_LINK} target="_blank" rel="noreferrer">
+            cerc-io/test-progressive-web-app
+          </a>
+        </div>
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">
         <div>

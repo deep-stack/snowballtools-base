@@ -50,7 +50,6 @@ const CreateRepo = () => {
 
         const { addProject } = await client.addProject(orgSlug!, {
           name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
-          // TODO: Get organization id from context or URL
           prodBranch: gitRepo.data.default_branch ?? 'main',
           repository: gitRepo.data.full_name,
         });
@@ -95,8 +94,6 @@ const CreateRepo = () => {
     }
   }, [gitAccounts]);
 
-  // TODO: Get users and orgs from GitHub
-
   return (
     <form onSubmit={handleSubmit(submitRepoHandler)}>
       <div className="mb-2">
@@ -135,10 +132,7 @@ const CreateRepo = () => {
             name="account"
             control={control}
             render={({ field }) => (
-              <AsyncSelect
-                {...field}
-                label={!field.value ? 'Select an account / Organization' : ''}
-              >
+              <AsyncSelect {...field}>
                 {gitAccounts.map((account, key) => (
                   <Option key={key} value={account}>
                     ^ {account}

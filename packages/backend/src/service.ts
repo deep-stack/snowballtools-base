@@ -1,7 +1,7 @@
 import assert from 'assert';
-import { customAlphabet } from 'nanoid';
-import { lowercase, numbers } from 'nanoid-dictionary';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
+
+import { OAuthApp } from '@octokit/oauth-app';
 
 import { Database } from './database';
 import { Deployment, Environment } from './entity/Deployment';
@@ -11,15 +11,13 @@ import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
-import { PROJECT_DOMAIN } from './constants';
-
-const nanoid = customAlphabet(lowercase + numbers, 8);
-
 export class Service {
   private db: Database;
+  private app: OAuthApp;
 
-  constructor (db: Database) {
+  constructor (db: Database, app: OAuthApp) {
     this.db = db;
+    this.app = app;
   }
 
   async getUser (userId: string): Promise<User | null> {
@@ -149,7 +147,7 @@ export class Service {
     return this.db.deleteEnvironmentVariable(environmentVariableId);
   }
 
-  async updateDeploymentToProd (deploymentId: string): Promise<boolean> {
+  async updateDeploymentToProd (userId: string, deploymentId: string): Promise<Deployment> {
     const deployment = await this.db.getDeployment({ where: { id: deploymentId }, relations: { project: true } });
 
     if (!deployment) {
@@ -173,13 +171,18 @@ export class Service {
       });
     }
 
-    const updateResult = await this.db.updateDeploymentById(deploymentId, {
-      environment: Environment.Production,
-      domain: prodBranchDomains[0],
-      isCurrent: true
+    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
+
+    updatedDeployment.isCurrent = true;
+    updatedDeployment.environment = Environment.Production;
+    updatedDeployment.domain = prodBranchDomains[0];
+    updatedDeployment.createdBy = Object.assign(new User(), {
+      id: userId
     });
 
-    return updateResult;
+    const newDeployement = await this.db.addDeployement(updatedDeployment);
+
+    return newDeployement;
   }
 
   async addProject (userId: string, organizationSlug: string, data: DeepPartial<Project>): Promise<Project | undefined> {
@@ -242,9 +245,6 @@ export class Service {
         id: userId
       });
     }
-
-    updatedDeployment.id = nanoid();
-    updatedDeployment.url = `${updatedDeployment.project.name}-${updatedDeployment.id}.${PROJECT_DOMAIN}`;
 
     const oldDeployment = await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
     const newDeployement = await this.db.addDeployement(updatedDeployment);
@@ -359,5 +359,19 @@ export class Service {
     const updateResult = await this.db.updateDomainById(domainId, newDomain);
 
     return updateResult;
+  }
+
+  async authenticateGitHub (code:string, userId: string): Promise<{token: string}> {
+    const { authentication: { token } } = await this.app.createToken({
+      code
+    });
+
+    await this.db.updateUser(userId, { gitHubToken: token });
+
+    return { token };
+  }
+
+  async unauthenticateGitHub (userId: string, data: DeepPartial<User>): Promise<boolean> {
+    return this.db.updateUser(userId, data);
   }
 }

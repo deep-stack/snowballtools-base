@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-import { relativeTime } from '../../utils/time';
+import { relativeTimeISO } from '../../utils/time';
 import { ProjectDetails } from '../../types/project';
 
 interface ProjectCardProps {
@@ -45,7 +45,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           {project.latestCommit.message}
         </Typography>
         <Typography variant="small" color="gray">
-          {relativeTime(project.latestCommit.createdAt)} on{' '}
+          {relativeTimeISO(project.latestCommit.createdAt)} on{' '}
           {project.latestCommit.branch}
         </Typography>
       </div>

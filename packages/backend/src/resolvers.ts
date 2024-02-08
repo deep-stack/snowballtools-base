@@ -1,10 +1,7 @@
 import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
 
-import { OAuthApp } from '@octokit/oauth-app';
-
 import { Service } from './service';
-import { Database } from './database';
 import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
@@ -13,7 +10,7 @@ import { EnvironmentVariable } from './entity/EnvironmentVariable';
 const log = debug('snowball:database');
 
 // TODO: Remove Database argument and refactor code to Service
-export const createResolvers = async (db: Database, app: OAuthApp, service: Service): Promise<any> => {
+export const createResolvers = async (service: Service): Promise<any> => {
   return {
     Query: {
       // TODO: add custom type for context
@@ -121,9 +118,9 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
         }
       },
 
-      updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }) => {
+      updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          return await service.updateDeploymentToProd(deploymentId);
+          return Boolean(await service.updateDeploymentToProd(context.userId, deploymentId));
         } catch (err) {
           log(err);
           return false;
@@ -201,19 +198,17 @@ export const createResolvers = async (db: Database, app: OAuthApp, service: Serv
       },
 
       authenticateGitHub: async (_: any, { code }: { code: string }, context: any) => {
-        // TOO: Move to Service class
-        const { authentication: { token } } = await app.createToken({
-          code
-        });
-
-        await db.updateUser(context.userId, { gitHubToken: token });
-
-        return { token };
+        try {
+          return await service.authenticateGitHub(code, context.userId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
       },
 
       unauthenticateGitHub: async (_: any, __: object, context: any) => {
         try {
-          return db.updateUser(context.userId, { gitHubToken: null });
+          return service.unauthenticateGitHub(context.userId, { gitHubToken: null });
         } catch (err) {
           log(err);
           return false;

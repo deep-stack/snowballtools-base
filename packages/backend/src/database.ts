@@ -2,6 +2,8 @@ import { DataSource, DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWh
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
+import { customAlphabet } from 'nanoid';
+import { lowercase, numbers } from 'nanoid-dictionary';
 
 import { DatabaseConfig } from './config';
 import { User } from './entity/User';
@@ -14,6 +16,8 @@ import { Domain } from './entity/Domain';
 import { PROJECT_DOMAIN } from './constants';
 
 const log = debug('snowball:database');
+
+const nanoid = customAlphabet(lowercase + numbers, 8);
 
 // TODO: Fix order of methods
 export class Database {
@@ -171,7 +175,16 @@ export class Database {
 
   async addDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const deployment = await deploymentRepository.save(data);
+
+    const id = nanoid();
+    const url = `${data.project!.name}-${id}.${PROJECT_DOMAIN}`;
+
+    const updatedData = {
+      ...data,
+      id,
+      url
+    };
+    const deployment = await deploymentRepository.save(updatedData);
 
     return deployment;
   }

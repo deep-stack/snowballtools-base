@@ -3,7 +3,7 @@ import React from 'react';
 import { Typography, Chip, Card } from '@material-tailwind/react';
 import { color } from '@material-tailwind/react/types/components/chip';
 import { DeploymentDetails } from '../../../../types/project';
-import { relativeTime } from '../../../../utils/time';
+import { relativeTimeMs } from '../../../../utils/time';
 
 interface DeploymentDialogBodyCardProps {
   deployment: DeploymentDetails;
@@ -28,14 +28,14 @@ const DeploymentDialogBodyCard = ({
         />
       )}
       <Typography variant="small" className="text-black">
-        {deployment.title}
+        {deployment.url}
       </Typography>
       <Typography variant="small">
         ^ {deployment.branch} ^ {deployment.commitHash}{' '}
         {deployment.commit.message}
       </Typography>
       <Typography variant="small">
-        ^ {relativeTime(deployment.updatedAt)} ^ {deployment.author}
+        ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
       </Typography>
     </Card>
   );
