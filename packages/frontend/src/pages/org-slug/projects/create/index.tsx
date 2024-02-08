@@ -13,12 +13,12 @@ const NewProject = () => {
     <>
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
-        {templateDetails.map((framework, key) => {
+        {templateDetails.map((template) => {
           return (
             <TemplateCard
               isGitAuth={Boolean(octokit)}
-              framework={framework}
-              key={key}
+              template={template}
+              key={template.id}
             />
           );
         })}

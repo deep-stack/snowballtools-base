@@ -6,19 +6,20 @@ import { IconButton, Typography } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 
 interface TemplateDetails {
-  framework: string;
+  id: string;
+  name: string;
   icon: string;
 }
 interface TemplateCardProps {
-  framework: TemplateDetails;
+  template: TemplateDetails;
   isGitAuth: boolean;
 }
 
-const CardDetails = ({ framework }: { framework: TemplateDetails }) => {
+const CardDetails = ({ template }: { template: TemplateDetails }) => {
   return (
     <div className="h-14 group bg-gray-200 border-gray-200 rounded-lg shadow p-4 flex items-center justify-between">
       <Typography className="grow">
-        {framework.icon} {framework.framework}
+        {template.icon} {template.name}
       </Typography>
       <div>
         <IconButton size="sm" className="rounded-full hidden group-hover:block">
@@ -29,13 +30,10 @@ const CardDetails = ({ framework }: { framework: TemplateDetails }) => {
   );
 };
 
-const TemplateCard: React.FC<TemplateCardProps> = ({
-  framework,
-  isGitAuth,
-}) => {
+const TemplateCard: React.FC<TemplateCardProps> = ({ template, isGitAuth }) => {
   return isGitAuth ? (
-    <Link to="template">
-      <CardDetails framework={framework} />
+    <Link to={`template?templateId=${template.id}`}>
+      <CardDetails template={template} />
     </Link>
   ) : (
     <a
@@ -43,7 +41,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
         toast.error('Connect Git account to start with a template')
       }
     >
-      <CardDetails framework={framework} />
+      <CardDetails template={template} />
     </a>
   );
 };

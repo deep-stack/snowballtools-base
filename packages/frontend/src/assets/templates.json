@@ -1,22 +1,27 @@
 [
   {
-    "framework": "React",
+    "id": "1",
+    "name": "Progressive Web App (PWA)",
     "icon": "^"
   },
   {
-    "framework": "Reactnative",
+    "id": "2",
+    "name": "Kotlin",
     "icon": "^"
   },
   {
-    "framework": "Kotlin",
+    "id": "3",
+    "name": "React Native",
     "icon": "^"
   },
   {
-    "framework": "Swift",
+    "id": "4",
+    "name": "Swift",
     "icon": "^"
   },
   {
-    "framework": "Webapp",
+    "id": "5",
+    "name": "Web app",
     "icon": "^"
   }
 ]

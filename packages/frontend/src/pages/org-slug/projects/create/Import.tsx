@@ -1,65 +1,37 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import assert from 'assert';
 
-import { Button } from '@material-tailwind/react';
-
-import { useOctokit } from '../../../../context/OctokitContext';
-import { GitRepositoryDetails } from '../../../../types/project';
 import Deploy from '../../../../components/projects/create/Deploy';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const Import = () => {
   const [searchParams] = useSearchParams();
-  const { orgSlug } = useParams();
-  const navigate = useNavigate();
-  const { octokit } = useOctokit();
+  const projectId = searchParams.get('projectId');
+  assert(projectId);
+
+  const [repoName, setRepoName] = useState<string>('');
   const client = useGQLClient();
-  const [gitRepo, setGitRepo] = useState<GitRepositoryDetails>();
 
   useEffect(() => {
     const fetchRepo = async () => {
-      if (!octokit) {
-        return;
-      }
+      const { project } = await client.getProject(projectId);
+      assert(project);
 
-      const result = await octokit.rest.repos.get({
-        owner: searchParams.get('owner') ?? '',
-        repo: searchParams.get('repo') ?? '',
-      });
-
-      setGitRepo(result.data);
+      setRepoName(project.repository);
     };
 
     fetchRepo();
-  }, [searchParams, octokit]);
-
-  const createProjectAndCreate = useCallback(async () => {
-    if (!gitRepo) {
-      return;
-    }
-
-    const { addProject } = await client.addProject(orgSlug!, {
-      // TODO: Implement form for setting project name
-      name: `${gitRepo.owner!.login}-${gitRepo.name}`,
-      prodBranch: gitRepo.default_branch ?? 'main',
-      repository: gitRepo.full_name,
-    });
-
-    navigate(`/${orgSlug}/projects/create/success/${addProject.id}`);
-  }, [client, gitRepo]);
+  }, [projectId]);
 
   return (
     <div className="flex flex-col items-center">
       <div className="flex w-5/6 my-4 bg-gray-200 rounded-xl p-6">
         <div>^</div>
-        <div className="grow">{gitRepo?.full_name}</div>
+        <div className="grow">{repoName}</div>
       </div>
 
       <Deploy />
-
-      <Button onClick={createProjectAndCreate}>
-        CREATE PROJECT (FOR DEMO)
-      </Button>
     </div>
   );
 };

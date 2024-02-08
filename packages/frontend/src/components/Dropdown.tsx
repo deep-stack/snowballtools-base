@@ -5,7 +5,7 @@ import {
 } from 'react-dropdown';
 import 'react-dropdown/style.css';
 
-interface Option {
+export interface Option {
   value: string;
   label: string;
 }

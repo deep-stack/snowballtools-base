@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
@@ -8,8 +8,12 @@ import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
 import ConfirmDialog from '../../shared/ConfirmDialog';
 
 const Deploy = () => {
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
+
   const navigate = useNavigate();
   const { orgSlug } = useParams();
 
@@ -70,6 +74,14 @@ const Deploy = () => {
         status={DeployStatus.NOT_STARTED}
         step="4"
       />
+
+      <Button
+        onClick={() => {
+          navigate(`/${orgSlug}/projects/create/success/${projectId}`);
+        }}
+      >
+        VIEW DEMO
+      </Button>
     </div>
   );
 };
