@@ -63,10 +63,10 @@ export class Deployment {
     url!: string;
 
   @Column('varchar')
-    recordId!: string;
+    registryRecordId!: string;
 
   @Column('simple-json')
-    recordData!: ApplicationRecord;
+    registryRecordData!: ApplicationRecord;
 
   @Column({
     enum: Environment

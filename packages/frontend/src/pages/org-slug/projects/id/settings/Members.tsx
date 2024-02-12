@@ -1,22 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import {
-  Permission,
-  Project,
-  AddProjectMemberInput,
-  ProjectMember,
-} from 'gql-client';
+import { useOutletContext } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Permission, AddProjectMemberInput, ProjectMember } from 'gql-client';
 
 import { Chip, Button, Typography } from '@material-tailwind/react';
 
-import MemberCard from './MemberCard';
-import AddMemberDialog from './AddMemberDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import MemberCard from '../../../../../components/projects/project/settings/MemberCard';
+import AddMemberDialog from '../../../../../components/projects/project/settings/AddMemberDialog';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { OutletContextType } from '../../../../../types/project';
 
 const FIRST_MEMBER_CARD = 0;
 
-const MembersTabPanel = ({ project }: { project: Project }) => {
+const MembersTabPanel = () => {
   const client = useGQLClient();
+  const { project } = useOutletContext<OutletContextType>();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
 
@@ -127,7 +125,6 @@ const MembersTabPanel = ({ project }: { project: Project }) => {
         open={addmemberDialogOpen}
         handleAddMember={addMemberHandler}
       />
-      <Toaster />
     </div>
   );
 };

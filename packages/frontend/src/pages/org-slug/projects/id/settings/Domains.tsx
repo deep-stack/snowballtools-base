@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Domain, Project } from 'gql-client';
+import { Link, useOutletContext } from 'react-router-dom';
+import { Domain } from 'gql-client';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import DomainCard from './DomainCard';
-import { useGQLClient } from '../../../../context/GQLClientContext';
-import repositories from '../../../../assets/repositories.json';
+import DomainCard from '../../../../../components/projects/project/settings/DomainCard';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import repositories from '../../../../../assets/repositories.json';
+import { OutletContextType } from '../../../../../types/project';
 
-const Domains = ({ project }: { project: Project }) => {
+const Domains = () => {
   const client = useGQLClient();
+  const { project } = useOutletContext<OutletContextType>();
+
   const [domains, setDomains] = useState<Domain[]>([]);
 
   const fetchDomains = async () => {

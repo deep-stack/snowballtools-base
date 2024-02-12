@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Organization, Project } from 'gql-client';
+import { Organization } from 'gql-client';
 
 import { Button, Typography, Input, Option } from '@material-tailwind/react';
 
-import DeleteProjectDialog from './DeleteProjectDialog';
-import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
-import AsyncSelect from '../../../shared/AsyncSelect';
+import DeleteProjectDialog from '../../../../../components/projects/project/settings/DeleteProjectDialog';
+import ConfirmDialog from '../../../../../components/shared/ConfirmDialog';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import AsyncSelect from '../../../../../components/shared/AsyncSelect';
+import { OutletContextType } from '../../../../../types/project';
 
 const CopyIcon = ({ value }: { value: string }) => {
   return (
@@ -25,14 +26,10 @@ const CopyIcon = ({ value }: { value: string }) => {
   );
 };
 
-const GeneralTabPanel = ({
-  project,
-  onUpdate,
-}: {
-  project: Project;
-  onUpdate: () => Promise<void>;
-}) => {
+const GeneralTabPanel = () => {
   const client = useGQLClient();
+  const { project, onUpdate } = useOutletContext<OutletContextType>();
+
   const [transferOrganizations, setTransferOrganizations] = useState<
     Organization[]
   >([]);

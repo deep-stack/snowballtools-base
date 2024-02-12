@@ -13,22 +13,11 @@ import {
   Chip,
 } from '@material-tailwind/react';
 
-import AddEnvironmentVariableRow from './AddEnvironmentVariableRow';
-import DisplayEnvironmentVariables from './DisplayEnvironmentVariables';
-import HorizontalLine from '../../../HorizontalLine';
-import { useGQLClient } from '../../../../context/GQLClientContext';
-
-export type EnvironmentVariablesFormValues = {
-  variables: {
-    key: string;
-    value: string;
-  }[];
-  environment: {
-    development: boolean;
-    preview: boolean;
-    production: boolean;
-  };
-};
+import AddEnvironmentVariableRow from '../../../../../components/projects/project/settings/AddEnvironmentVariableRow';
+import DisplayEnvironmentVariables from '../../../../../components/projects/project/settings/DisplayEnvironmentVariables';
+import HorizontalLine from '../../../../../components/HorizontalLine';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { EnvironmentVariablesFormValues } from '../../../../../types/project';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();

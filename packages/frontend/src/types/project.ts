@@ -65,3 +65,15 @@ export type OutletContextType = {
   project: Project;
   onUpdate: () => Promise<void>;
 };
+
+export type EnvironmentVariablesFormValues = {
+  variables: {
+    key: string;
+    value: string;
+  }[];
+  environment: {
+    development: boolean;
+    preview: boolean;
+    production: boolean;
+  };
+};

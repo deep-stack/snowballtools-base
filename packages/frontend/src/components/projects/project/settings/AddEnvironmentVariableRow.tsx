@@ -3,7 +3,7 @@ import { UseFormRegister } from 'react-hook-form';
 
 import { Typography, Input, IconButton } from '@material-tailwind/react';
 
-import { EnvironmentVariablesFormValues } from './EnvironmentVariablesTabPanel';
+import { EnvironmentVariablesFormValues } from '../../../../types/project';
 
 interface AddEnvironmentVariableRowProps {
   onDelete: () => void;

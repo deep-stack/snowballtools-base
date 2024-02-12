@@ -214,7 +214,7 @@ export class Service {
   }
 
   async createDeployment (userId: string, data: DeepPartial<Deployment>): Promise<Deployment> {
-    const { recordId, recordData } = await this.registry.createApplicationRecord({
+    const { registryRecordId, registryRecordData } = await this.registry.createApplicationRecord({
       recordName: data.project?.name ?? '',
       appType: data.project?.template ?? ''
     });
@@ -226,15 +226,15 @@ export class Service {
       environment: data.environment,
       isCurrent: data.isCurrent,
       status: DeploymentStatus.Building,
-      recordId,
-      recordData,
+      registryRecordId,
+      registryRecordData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId
       })
     });
 
-    log(`Application record ${recordId} published for deployment ${newDeployement.id}`);
+    log(`Application record ${registryRecordId} published for deployment ${newDeployement.id}`);
     return newDeployement;
   }
 
@@ -262,10 +262,10 @@ export class Service {
         domain: null
       });
 
-    const { recordId, recordData } = await this.registry.createApplicationDeploymentRequest({ appName: project.name });
+    const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest({ appName: project.name });
     await this.db.updateProjectById(project.id, {
-      recordId,
-      recordData
+      registryRecordId,
+      registryRecordData
     });
 
     return project;

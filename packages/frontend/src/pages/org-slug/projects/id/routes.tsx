@@ -1,8 +1,13 @@
 import React from 'react';
 
-import OverviewTabPanel from './OverviewTabPanel';
-import DeploymentsTabPanel from './DeploymentsTabPanel';
-import SettingsTabPanel from './SettingsTabPanel';
+import OverviewTabPanel from './Overview';
+import DeploymentsTabPanel from './Deployments';
+import SettingsTabPanel from './Settings';
+import GeneralTabPanel from './settings/General';
+import GitTabPanel from './settings/Git';
+import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariables';
+import MembersTabPanel from './settings/Members';
+import Domains from './settings/Domains';
 
 const Database = () => (
   <div>
@@ -22,6 +27,29 @@ const Integrations = () => (
     </p>
   </div>
 );
+
+export const settingsTabRoutes = [
+  {
+    index: true,
+    element: <GeneralTabPanel />,
+  },
+  {
+    path: 'domains',
+    element: <Domains />,
+  },
+  {
+    path: 'git',
+    element: <GitTabPanel />,
+  },
+  {
+    path: 'environment-variables',
+    element: <EnvironmentVariablesTabPanel />,
+  },
+  {
+    path: 'members',
+    element: <MembersTabPanel />,
+  },
+];
 
 export const projectTabRoutes = [
   {
@@ -43,5 +71,6 @@ export const projectTabRoutes = [
   {
     path: 'settings',
     element: <SettingsTabPanel />,
+    children: settingsTabRoutes,
   },
 ];

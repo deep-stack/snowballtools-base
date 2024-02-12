@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Project } from 'gql-client';
 
 import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 
-import WebhookCard from './WebhookCard';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import WebhookCard from '../../../../../components/projects/project/settings/WebhookCard';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { OutletContextType } from '../../../../../types/project';
 
 type UpdateProdBranchValues = {
   prodBranch: string;
@@ -16,14 +17,9 @@ type UpdateWebhooksValues = {
   webhookUrl: string;
 };
 
-const GitTabPanel = ({
-  project,
-  onUpdate,
-}: {
-  project: Project;
-  onUpdate: () => Promise<void>;
-}) => {
+const GitTabPanel = () => {
   const client = useGQLClient();
+  const { project, onUpdate } = useOutletContext<OutletContextType>();
 
   const {
     register: registerProdBranch,

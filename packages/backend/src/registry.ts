@@ -13,6 +13,7 @@ const APP_RECORD_TYPE = 'ApplicationRecord';
 const DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRequest';
 const AUTHORITY_NAME = 'snowball';
 
+// TODO: Move registry code to laconic-sdk/watcher-ts
 export class Registry {
   private registry: LaconicRegistry;
   private registryConfig: RegistryConfig;
@@ -22,7 +23,7 @@ export class Registry {
     this.registry = new LaconicRegistry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
   }
 
-  async createApplicationRecord (data: { recordName: string, appType: string }): Promise<{recordId: string, recordData: ApplicationRecord}> {
+  async createApplicationRecord (data: { recordName: string, appType: string }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
     // TODO: Get record name from repo package.json name
     const recordName = data.recordName;
 
@@ -77,10 +78,10 @@ export class Registry {
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` }, this.registryConfig.privateKey, this.registryConfig.fee);
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.repository_ref}` }, this.registryConfig.privateKey, this.registryConfig.fee);
 
-    return { recordId: result.data.id, recordData: applicationRecord };
+    return { registryRecordId: result.data.id, registryRecordData: applicationRecord };
   }
 
-  async createApplicationDeploymentRequest (data: { appName: string }): Promise<{recordId: string, recordData: ApplicationDeploymentRequest}> {
+  async createApplicationDeploymentRequest (data: { appName: string }): Promise<{registryRecordId: string, registryRecordData: ApplicationDeploymentRequest}> {
     const crn = this.getCrn(data.appName);
     const records = await this.registry.resolveNames([crn]);
     const applicationRecord = records[0];
@@ -124,7 +125,7 @@ export class Registry {
     log(`Application deployment request record published: ${result.data.id}`);
     log('Application deployment request data:', applicationDeploymentRequest);
 
-    return { recordId: result.data.id, recordData: applicationDeploymentRequest };
+    return { registryRecordId: result.data.id, registryRecordData: applicationDeploymentRequest };
   }
 
   getCrn (appName: string): string {

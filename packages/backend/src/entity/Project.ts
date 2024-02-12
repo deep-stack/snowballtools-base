@@ -56,10 +56,10 @@ export class Project {
     prodBranch!: string;
 
   @Column('varchar', { nullable: true })
-    recordId!: string | null;
+    registryRecordId!: string | null;
 
   @Column('simple-json', { nullable: true })
-    recordData!: ApplicationDeploymentRequest | null;
+    registryRecordData!: ApplicationDeploymentRequest | null;
 
   @Column('text', { default: '' })
     description!: string;
