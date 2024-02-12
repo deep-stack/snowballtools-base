@@ -7,9 +7,8 @@ import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 
-const log = debug('snowball:database');
+const log = debug('snowball:resolver');
 
-// TODO: Remove Database argument and refactor code to Service
 export const createResolvers = async (service: Service): Promise<any> => {
   return {
     Query: {
@@ -129,9 +128,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       addProject: async (_: any, { organizationSlug, data }: { organizationSlug: string, data: DeepPartial<Project> }, context: any) => {
         try {
-          return service.addProject(context.userId, organizationSlug, data);
+          return await service.addProject(context.userId, organizationSlug, data);
         } catch (err) {
           log(err);
+          throw err;
         }
       },
 
@@ -146,7 +146,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          return await service.redeployToProd(context.userId, deploymentId);
+          return Boolean(await service.redeployToProd(context.userId, deploymentId));
         } catch (err) {
           log(err);
           return false;

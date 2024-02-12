@@ -15,6 +15,21 @@ import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 import { Deployment } from './Deployment';
 
+export interface ApplicationDeploymentRequest {
+  type: string
+  version: string
+  name: string
+  application: string
+  config: {
+    env: {[key:string]: string}
+  },
+  meta: {
+    note: string
+    repository: string
+    repository_ref: string
+  }
+}
+
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -40,9 +55,16 @@ export class Project {
   @Column('varchar', { length: 255, default: 'main' })
     prodBranch!: string;
 
+  @Column('varchar', { nullable: true })
+    recordId!: string | null;
+
+  @Column('simple-json', { nullable: true })
+    recordData!: ApplicationDeploymentRequest | null;
+
   @Column('text', { default: '' })
     description!: string;
 
+  // TODO: Compute template & framework in import repository
   @Column('varchar', { nullable: true })
     template!: string | null;
 

@@ -10,6 +10,8 @@
     "framework": "test",
     "webhooks": [],
     "icon": "",
+    "recordId": "hbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "recordData": {},
     "subDomain": "testProject.snowball.xyz"
   },
   {
@@ -23,6 +25,8 @@
     "framework": "test-2",
     "webhooks": [],
     "icon": "",
+    "recordId": "gbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "recordData": {},
     "subDomain": "testProject-2.snowball.xyz"
   },
   {
@@ -36,6 +40,8 @@
     "framework": "test-3",
     "webhooks": [],
     "icon": "",
+    "recordId": "ebafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "recordData": {},
     "subDomain": "iglootools.snowball.xyz"
   },
   {
@@ -49,6 +55,8 @@
     "framework": "test-4",
     "webhooks": [],
     "icon": "",
+    "recordId": "qbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "recordData": {},
     "subDomain": "iglootools-2.snowball.xyz"
   },
   {
@@ -62,6 +70,8 @@
     "framework": "test-5",
     "webhooks": [],
     "icon": "",
+    "recordId": "xbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "recordData": {},
     "subDomain": "snowball-2.snowball.xyz"
   }
 ]

@@ -9,3 +9,14 @@
 [githubOauth]
   clientId = ""
   clientSecret = ""
+
+[registryConfig]
+  restEndpoint = "http://localhost:1317"
+  gqlEndpoint = "http://localhost:9473/api"
+  chainId = "laconic_9000-1"
+  privateKey = ""
+  bondId = ""
+  [registryConfig.fee]
+    amount = "200000"
+    denom = "aphoton"
+    gas = "550000"

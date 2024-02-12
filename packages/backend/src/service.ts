@@ -1,23 +1,30 @@
 import assert from 'assert';
+import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
 import { Database } from './database';
-import { Deployment, Environment } from './entity/Deployment';
+import { Deployment, DeploymentStatus, Environment } from './entity/Deployment';
 import { Domain } from './entity/Domain';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
+import { Registry } from './registry';
+
+const log = debug('snowball:service');
+
 export class Service {
   private db: Database;
   private app: OAuthApp;
+  private registry: Registry;
 
-  constructor (db: Database, app: OAuthApp) {
+  constructor (db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
     this.app = app;
+    this.registry = registry;
   }
 
   async getUser (userId: string): Promise<User | null> {
@@ -148,15 +155,21 @@ export class Service {
   }
 
   async updateDeploymentToProd (userId: string, deploymentId: string): Promise<Deployment> {
-    const deployment = await this.db.getDeployment({ where: { id: deploymentId }, relations: { project: true } });
+    const oldDeployment = await this.db.getDeployment({
+      where: { id: deploymentId },
+      relations: {
+        project: true
+      }
+    });
 
-    if (!deployment) {
+    if (!oldDeployment) {
       throw new Error('Deployment does not exist');
     }
 
-    const prodBranchDomains = await this.db.getDomainsByProjectId(deployment.project.id, { branch: deployment.project.prodBranch });
+    const prodBranchDomains = await this.db.getDomainsByProjectId(oldDeployment.project.id, { branch: oldDeployment.project.prodBranch });
 
-    const oldDeployment = await this.db.getDeployment({
+    // TODO: Fix unique constraint error for domain
+    const deploymentWithProdBranchDomain = await this.db.getDeployment({
       where: {
         domain: {
           id: prodBranchDomains[0].id
@@ -164,24 +177,64 @@ export class Service {
       }
     });
 
-    if (oldDeployment) {
-      await this.db.updateDeploymentById(oldDeployment.id, {
+    if (deploymentWithProdBranchDomain) {
+      await this.db.updateDeploymentById(deploymentWithProdBranchDomain.id, {
         domain: null,
         isCurrent: false
       });
     }
 
-    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
-
-    updatedDeployment.isCurrent = true;
-    updatedDeployment.environment = Environment.Production;
-    updatedDeployment.domain = prodBranchDomains[0];
-    updatedDeployment.createdBy = Object.assign(new User(), {
-      id: userId
+    const oldCurrentDeployment = await this.db.getDeployment({
+      relations: {
+        domain: true
+      },
+      where: {
+        project: {
+          id: oldDeployment.project.id
+        },
+        isCurrent: true
+      }
     });
 
-    const newDeployement = await this.db.addDeployement(updatedDeployment);
+    if (oldCurrentDeployment) {
+      await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });
+    }
 
+    const newDeployement = await this.createDeployment(userId,
+      {
+        project: oldDeployment.project,
+        isCurrent: true,
+        branch: oldDeployment.branch,
+        environment: Environment.Production,
+        domain: prodBranchDomains[0],
+        commitHash: oldDeployment.commitHash
+      });
+
+    return newDeployement;
+  }
+
+  async createDeployment (userId: string, data: DeepPartial<Deployment>): Promise<Deployment> {
+    const { recordId, recordData } = await this.registry.createApplicationRecord({
+      recordName: data.project?.name ?? '',
+      appType: data.project?.template ?? ''
+    });
+
+    const newDeployement = await this.db.addDeployement({
+      project: data.project,
+      branch: data.branch,
+      commitHash: data.commitHash,
+      environment: data.environment,
+      isCurrent: data.isCurrent,
+      status: DeploymentStatus.Building,
+      recordId,
+      recordData,
+      domain: data.domain,
+      createdBy: Object.assign(new User(), {
+        id: userId
+      })
+    });
+
+    log(`Application record ${recordId} published for deployment ${newDeployement.id}`);
     return newDeployement;
   }
 
@@ -195,7 +248,27 @@ export class Service {
       throw new Error('Organization does not exist');
     }
 
-    return this.db.addProject(userId, organization.id, data);
+    const project = await this.db.addProject(userId, organization.id, data);
+
+    // TODO: Get repository details from github
+    await this.createDeployment(userId,
+      {
+        project,
+        isCurrent: true,
+        branch: project.prodBranch,
+        environment: Environment.Production,
+        // TODO: Set latest commit hash
+        commitHash: '',
+        domain: null
+      });
+
+    const { recordId, recordData } = await this.registry.createApplicationDeploymentRequest({ appName: project.name });
+    await this.db.updateProjectById(project.id, {
+      recordId,
+      recordData
+    });
+
+    return project;
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
@@ -220,8 +293,8 @@ export class Service {
     return this.db.deleteDomainById(domainId);
   }
 
-  async redeployToProd (userId: string, deploymentId: string): Promise<Deployment| boolean> {
-    const deployment = await this.db.getDeployment({
+  async redeployToProd (userId: string, deploymentId: string): Promise<Deployment> {
+    const oldDeployment = await this.db.getDeployment({
       relations: {
         project: true,
         domain: true,
@@ -232,24 +305,24 @@ export class Service {
       }
     });
 
-    if (deployment === null) {
+    if (oldDeployment === null) {
       throw new Error('Deployment not found');
     }
 
-    const { createdAt, updatedAt, ...updatedDeployment } = deployment;
+    await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
 
-    if (updatedDeployment.environment === Environment.Production) {
-      // TODO: Put isCurrent field in project
-      updatedDeployment.isCurrent = true;
-      updatedDeployment.createdBy = Object.assign(new User(), {
-        id: userId
+    const newDeployement = await this.createDeployment(userId,
+      {
+        project: oldDeployment.project,
+        // TODO: Put isCurrent field in project
+        branch: oldDeployment.branch,
+        isCurrent: true,
+        environment: Environment.Production,
+        domain: oldDeployment.domain,
+        commitHash: oldDeployment.commitHash
       });
-    }
 
-    const oldDeployment = await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
-    const newDeployement = await this.db.addDeployement(updatedDeployment);
-
-    return oldDeployment && Boolean(newDeployement);
+    return newDeployement;
   }
 
   async rollbackDeployment (projectId: string, deploymentId: string): Promise<boolean> {

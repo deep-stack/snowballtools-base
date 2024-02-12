@@ -13,8 +13,22 @@ export interface GithubOauthConfig {
   clientSecret: string;
 }
 
+export interface RegistryConfig {
+  restEndpoint: string;
+  gqlEndpoint: string;
+  chainId: string;
+  privateKey: string;
+  bondId: string;
+  fee: {
+    amount: string;
+    denom: string;
+    gas: string;
+  }
+}
+
 export interface Config {
   server: ServerConfig;
   database: DatabaseConfig;
   githubOauth: GithubOauthConfig;
+  registryConfig: RegistryConfig;
 }

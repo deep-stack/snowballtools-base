@@ -19,10 +19,24 @@ export enum Environment {
   Development = 'Development',
 }
 
-enum Status {
+export enum DeploymentStatus {
   Building = 'Building',
   Ready = 'Ready',
   Error = 'Error',
+}
+
+export interface ApplicationRecord {
+  type: string;
+  version:string
+  name: string
+  description: string
+  homepage: string
+  license: string
+  author: string
+  repository: string,
+  app_version: string
+  repository_ref: string
+  app_type: string
 }
 
 @Entity()
@@ -46,10 +60,13 @@ export class Deployment {
     commitHash!: string;
 
   @Column('varchar')
-    title!: string;
+    url!: string;
 
   @Column('varchar')
-    url!: string;
+    recordId!: string;
+
+  @Column('simple-json')
+    recordData!: ApplicationRecord;
 
   @Column({
     enum: Environment
@@ -60,9 +77,9 @@ export class Deployment {
     isCurrent!: boolean;
 
   @Column({
-    enum: Status
+    enum: DeploymentStatus
   })
-    status!: Status;
+    status!: DeploymentStatus;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'createdBy' })

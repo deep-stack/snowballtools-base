@@ -42,7 +42,6 @@ query ($projectId: String!) {
       branch
       isCurrent
       status
-      title
       updatedAt
       commitHash
       createdAt
@@ -83,7 +82,6 @@ query ($organizationSlug: String!) {
       branch
       isCurrent
       status
-      title
       updatedAt
       commitHash
       createdAt
@@ -127,7 +125,6 @@ query ($projectId: String!)  {
     }
     branch
     commitHash
-    title
     url
     environment
     isCurrent

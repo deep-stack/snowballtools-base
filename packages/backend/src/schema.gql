@@ -90,7 +90,6 @@ type Deployment {
   domain: Domain
   branch: String!
   commitHash: String!
-  title: String!
   url: String!
   environment: Environment!
   isCurrent: Boolean!
@@ -133,6 +132,7 @@ input AddProjectInput {
   name: String!
   repository: String!
   prodBranch: String!
+  template: String
 }
 
 input UpdateProjectInput {

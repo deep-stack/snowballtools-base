@@ -26,6 +26,8 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       name: `${repository.owner!.login}-${repository.name}`,
       prodBranch: repository.default_branch!,
       repository: repository.full_name,
+      // TODO: Compute template from repo
+      template: 'webapp',
     });
 
     navigate(`import?projectId=${addProject.id}`);

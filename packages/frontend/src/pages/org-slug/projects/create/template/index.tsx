@@ -52,6 +52,8 @@ const CreateRepo = () => {
           name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
           prodBranch: gitRepo.data.default_branch ?? 'main',
           repository: gitRepo.data.full_name,
+          // TODO: Set selected template
+          template: 'webapp',
         });
 
         navigate(

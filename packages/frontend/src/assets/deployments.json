@@ -1,7 +1,6 @@
 [
   {
     "id": 1,
-    "title": "nextjs-boilerplate-9t44zbky4dg-bygideon-projects",
     "status": "Building",
     "isProduction": true,
     "isCurrent": false,
@@ -15,7 +14,6 @@
   },
   {
     "id": 2,
-    "title": "nextjs-boilerplate-9232dwky4dg-bygideon-projects",
     "status": "Ready",
     "isProduction": false,
     "isCurrent": false,
@@ -29,7 +27,6 @@
   },
   {
     "id": 3,
-    "title": "nextjs-boilerplate-9saa22y4dg-bygideon-projects",
     "status": "Error",
     "isProduction": false,
     "isCurrent": false,

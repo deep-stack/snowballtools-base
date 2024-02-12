@@ -62,7 +62,6 @@ export type Deployment = {
   domain: Domain
   branch: string
   commitHash: string
-  title: string
   url: string
   environment: Environment
   isCurrent: boolean
@@ -244,6 +243,7 @@ export type AddProjectInput = {
   name: string;
   repository: string;
   prodBranch: string;
+  template?: string;
 }
 
 export type UpdateProjectInput = {
