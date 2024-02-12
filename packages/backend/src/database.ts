@@ -83,24 +83,6 @@ export class Database {
     return userOrgs;
   }
 
-  async getProjectsByOrganizationId (organizationId: string): Promise<Project[]> {
-    const projectRepository = this.dataSource.getRepository(Project);
-
-    const projects = await projectRepository.find({
-      relations: {
-        organization: true,
-        owner: true
-      },
-      where: {
-        organization: {
-          id: organizationId
-        }
-      }
-    });
-
-    return projects;
-  }
-
   async getProjectById (projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 

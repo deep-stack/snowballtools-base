@@ -28,7 +28,6 @@
     "react-oauth-popup": "^1.0.5",
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
-    "react-tabs": "^6.0.2",
     "react-timer-hook": "^3.0.7",
     "typescript": "^4.9.5",
     "usehooks-ts": "^2.10.0",

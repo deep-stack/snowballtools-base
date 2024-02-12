@@ -1,5 +1,5 @@
 import React, { createElement } from 'react';
-import { Project } from 'gql-client';
+import { useOutletContext } from 'react-router-dom';
 
 import {
   Tabs,
@@ -9,11 +9,12 @@ import {
   TabPanel,
 } from '@material-tailwind/react';
 
-import Domains from './settings/Domains';
-import GeneralTabPanel from './settings/GeneralTabPanel';
-import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariablesTabPanel';
-import GitTabPanel from './settings/GitTabPanel';
-import MembersTabPanel from './settings/MembersTabPanel';
+import Domains from '../../../../components/projects/project/settings/Domains';
+import GeneralTabPanel from '../../../../components/projects/project/settings/GeneralTabPanel';
+import { EnvironmentVariablesTabPanel } from '../../../../components/projects/project/settings/EnvironmentVariablesTabPanel';
+import GitTabPanel from '../../../../components/projects/project/settings/GitTabPanel';
+import MembersTabPanel from '../../../../components/projects/project/settings/MembersTabPanel';
+import { OutletContextType } from '../../../../types/project';
 
 const tabsData = [
   {
@@ -48,13 +49,9 @@ const tabsData = [
   },
 ];
 
-const SettingsTabPanel = ({
-  project,
-  onUpdate,
-}: {
-  project: Project;
-  onUpdate: () => Promise<void>;
-}) => {
+const SettingsTabPanel = () => {
+  const { project, onUpdate } = useOutletContext<OutletContextType>();
+
   return (
     <>
       <Tabs

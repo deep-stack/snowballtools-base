@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Domain, DomainStatus, Project } from 'gql-client';
+import { Domain, DomainStatus } from 'gql-client';
+import { useOutletContext } from 'react-router-dom';
 
 import { Typography, Button, Chip } from '@material-tailwind/react';
 
-import ActivityCard from './ActivityCard';
-import { relativeTimeMs } from '../../../utils/time';
-import { useOctokit } from '../../../context/OctokitContext';
-import { GitCommitDetails } from '../../../types/project';
-import { useGQLClient } from '../../../context/GQLClientContext';
+import ActivityCard from '../../../../components/projects/project/ActivityCard';
+import { relativeTimeMs } from '../../../../utils/time';
+import { useOctokit } from '../../../../context/OctokitContext';
+import { GitCommitDetails, OutletContextType } from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const COMMITS_PER_PAGE = 4;
 
-interface OverviewProps {
-  project: Project;
-}
-
-// TODO: Check if any live domain is set for production branch
-
-const OverviewTabPanel = ({ project }: OverviewProps) => {
+const OverviewTabPanel = () => {
   const { octokit } = useOctokit();
   const [activities, setActivities] = useState<GitCommitDetails[]>([]);
   const [liveDomain, setLiveDomain] = useState<Domain>();
 
   const client = useGQLClient();
+
+  const { project } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
     if (!octokit) {

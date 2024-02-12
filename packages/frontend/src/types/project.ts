@@ -60,3 +60,8 @@ export interface Commit {
   createdAt: string;
   branch: string;
 }
+
+export type OutletContextType = {
+  project: Project;
+  onUpdate: () => Promise<void>;
+};

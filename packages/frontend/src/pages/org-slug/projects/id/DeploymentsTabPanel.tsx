@@ -1,24 +1,30 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Project, Domain } from 'gql-client';
+import { Domain } from 'gql-client';
+import { useOutletContext } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import DeploymentDetailsCard from './deployments/DeploymentDetailsCard';
+import DeploymentDetailsCard from '../../../../components/projects/project/deployments/DeploymentDetailsCard';
 import FilterForm, {
   FilterValue,
   StatusOptions,
-} from './deployments/FilterForm';
-import { DeploymentDetails } from '../../../types/project';
-import { useGQLClient } from '../../../context/GQLClientContext';
-import { COMMIT_DETAILS } from '../../../constants';
+} from '../../../../components/projects/project/deployments/FilterForm';
+import {
+  DeploymentDetails,
+  OutletContextType,
+} from '../../../../types/project';
+import { useGQLClient } from '../../../../context/GQLClientContext';
+import { COMMIT_DETAILS } from '../../../../constants';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
   status: StatusOptions.ALL_STATUS,
 };
 
-const DeploymentsTabPanel = ({ project }: { project: Project }) => {
+const DeploymentsTabPanel = () => {
   const client = useGQLClient();
+
+  const { project } = useOutletContext<OutletContextType>();
 
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
   const [deployments, setDeployments] = useState<DeploymentDetails[]>([]);
