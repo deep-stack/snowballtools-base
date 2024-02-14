@@ -1,14 +1,15 @@
 import React from 'react';
 
 import toast from 'react-hot-toast';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Typography, Alert, Button } from '@material-tailwind/react';
 
-import { useGQLClient } from '../../../../../../context/GQLClientContext';
+import { useGQLClient } from '../../../../../../../context/GQLClientContext';
 
 const Config = () => {
   const { id, orgSlug } = useParams();
   const client = useGQLClient();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const primaryDomainName = searchParams.get('name');
 
@@ -29,6 +30,7 @@ const Config = () => {
 
     if (isAdded) {
       toast.success('Domain added successfully');
+      navigate(`/${orgSlug}/projects/${id}/settings/domains`);
     } else {
       toast.error('Error adding domain');
     }
@@ -70,15 +72,9 @@ const Config = () => {
         <i>^</i>It can take up to 48 hours for these updates to reflect
         globally.
       </Alert>
-      <Link to={`/${orgSlug}/projects/${id}`}>
-        <Button
-          className="w-fit"
-          color="blue"
-          onClick={async () => await handleSubmitDomain()}
-        >
-          Finish <i>{'>'}</i>
-        </Button>
-      </Link>
+      <Button className="w-fit" color="blue" onClick={handleSubmitDomain}>
+        Finish <i>{'>'}</i>
+      </Button>
     </div>
   );
 };

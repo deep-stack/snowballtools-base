@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
-import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  Outlet,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
 import { Avatar } from '@material-tailwind/react';
 
@@ -7,13 +12,23 @@ import Stepper from '../../../../components/Stepper';
 import templateDetails from '../../../../assets/templates.json';
 import { GIT_TEMPLATE_LINK } from '../../../../constants';
 
-const STEPPER_VALUES = [
-  { step: 1, route: '/projects/create/template', label: 'Create repository' },
-  { step: 2, route: '/projects/create/template/deploy', label: 'Deploy' },
-];
-
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
+  const { orgSlug } = useParams();
+
+  const stepperValues = [
+    {
+      step: 1,
+      route: `/${orgSlug}/projects/create/template`,
+      label: 'Create repository',
+    },
+    {
+      step: 2,
+      route: `/${orgSlug}/projects/create/template/deploy`,
+      label: 'Deploy',
+    },
+  ];
+
   const location = useLocation();
 
   const [searchParams] = useSearchParams();
@@ -24,8 +39,7 @@ const CreateWithTemplate = () => {
 
   const activeStep = useMemo(
     () =>
-      STEPPER_VALUES.find((data) => data.route === location.pathname)?.step ??
-      0,
+      stepperValues.find((data) => data.route === location.pathname)?.step ?? 0,
     [location.pathname],
   );
 
@@ -42,7 +56,7 @@ const CreateWithTemplate = () => {
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">
         <div>
-          <Stepper activeStep={activeStep} stepperValues={STEPPER_VALUES} />
+          <Stepper activeStep={activeStep} stepperValues={stepperValues} />
         </div>
         <div className="col-span-2">
           <Outlet />

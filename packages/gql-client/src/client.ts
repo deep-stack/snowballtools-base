@@ -1,8 +1,8 @@
 import { ApolloClient, DefaultOptions, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-import { getUser, getOrganizations, getDeployments, getProjectMembers, searchProjects, getEnvironmentVariables, getProject, getDomains, getProjectsInOrganization } from './queries';
-import { AddEnvironmentVariableInput, AddEnvironmentVariablesResponse, GetDeploymentsResponse, GetEnvironmentVariablesResponse, GetOrganizationsResponse, GetProjectMembersResponse, SearchProjectsResponse, GetUserResponse, UpdateDeploymentToProdResponse, GetProjectResponse, UpdateProjectResponse, UpdateProjectInput, RedeployToProdResponse, DeleteProjectResponse, GetProjectsInOrganizationResponse, RollbackDeploymentResponse, AddDomainInput, AddDomainResponse, GetDomainsResponse, UpdateDomainInput, UpdateDomainResponse, AuthenticateGitHubResponse, UnauthenticateGitHubResponse, UpdateEnvironmentVariableResponse, UpdateEnvironmentVariableInput, RemoveEnvironmentVariableResponse, UpdateProjectMemberInput, RemoveProjectMemberResponse, UpdateProjectMemberResponse, DeleteDomainResponse, AddProjectMemberInput, AddProjectMemberResponse, AddProjectInput, AddProjectResponse, FilterDomainInput } from './types';
-import { removeProjectMember, addEnvironmentVariables, updateDeploymentToProd, updateProjectMutation, redeployToProd, deleteProject, addDomain, rollbackDeployment, updateDomainMutation, authenticateGitHub, unauthenticateGitHub, updateEnvironmentVariable, removeEnvironmentVariable, updateProjectMember, deleteDomain, addProjectMember, addProject } from './mutations';
+import * as queries from './queries';
+import * as types from './types';
+import * as mutations from './mutations';
 
 export interface GraphQLConfig {
   gqlEndpoint: string;
@@ -31,17 +31,17 @@ export class GQLClient {
     });
   }
 
-  async getUser () : Promise<GetUserResponse> {
+  async getUser () : Promise<types.GetUserResponse> {
     const { data } = await this.client.query({
-      query: getUser
+      query: queries.getUser
     });
 
     return data;
   }
 
-  async getProject (projectId: string) : Promise<GetProjectResponse> {
+  async getProject (projectId: string) : Promise<types.GetProjectResponse> {
     const { data } = await this.client.query({
-      query: getProject,
+      query: queries.getProject,
       variables: {
         projectId
       }
@@ -50,9 +50,9 @@ export class GQLClient {
     return data;
   }
 
-  async getProjectsInOrganization (organizationSlug: string) : Promise<GetProjectsInOrganizationResponse> {
+  async getProjectsInOrganization (organizationSlug: string) : Promise<types.GetProjectsInOrganizationResponse> {
     const { data } = await this.client.query({
-      query: getProjectsInOrganization,
+      query: queries.getProjectsInOrganization,
       variables: {
         organizationSlug
       }
@@ -61,17 +61,17 @@ export class GQLClient {
     return data;
   }
 
-  async getOrganizations () : Promise<GetOrganizationsResponse> {
+  async getOrganizations () : Promise<types.GetOrganizationsResponse> {
     const { data } = await this.client.query({
-      query: getOrganizations
+      query: queries.getOrganizations
     });
 
     return data;
   }
 
-  async getDeployments (projectId: string) : Promise<GetDeploymentsResponse> {
+  async getDeployments (projectId: string) : Promise<types.GetDeploymentsResponse> {
     const { data } = await this.client.query({
-      query: getDeployments,
+      query: queries.getDeployments,
       variables: {
         projectId
       }
@@ -80,9 +80,9 @@ export class GQLClient {
     return data;
   }
 
-  async getEnvironmentVariables (projectId: string) : Promise<GetEnvironmentVariablesResponse> {
+  async getEnvironmentVariables (projectId: string) : Promise<types.GetEnvironmentVariablesResponse> {
     const { data } = await this.client.query({
-      query: getEnvironmentVariables,
+      query: queries.getEnvironmentVariables,
       variables: {
         projectId
       }
@@ -91,9 +91,9 @@ export class GQLClient {
     return data;
   }
 
-  async getProjectMembers (projectId: string) : Promise<GetProjectMembersResponse> {
+  async getProjectMembers (projectId: string) : Promise<types.GetProjectMembersResponse> {
     const result = await this.client.query({
-      query: getProjectMembers,
+      query: queries.getProjectMembers,
       variables: {
         projectId
       }
@@ -102,9 +102,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async addProjectMember (projectId: string, data: AddProjectMemberInput) : Promise<AddProjectMemberResponse> {
+  async addProjectMember (projectId: string, data: types.AddProjectMemberInput) : Promise<types.AddProjectMemberResponse> {
     const result = await this.client.mutate({
-      mutation: addProjectMember,
+      mutation: mutations.addProjectMember,
       variables: {
         projectId,
         data
@@ -114,9 +114,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async updateProjectMember (projectMemberId: string, data: UpdateProjectMemberInput): Promise<UpdateProjectMemberResponse> {
+  async updateProjectMember (projectMemberId: string, data: types.UpdateProjectMemberInput): Promise<types.UpdateProjectMemberResponse> {
     const result = await this.client.mutate({
-      mutation: updateProjectMember,
+      mutation: mutations.updateProjectMember,
       variables: {
         projectMemberId,
         data
@@ -126,9 +126,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async removeProjectMember (projectMemberId: string): Promise<RemoveProjectMemberResponse> {
+  async removeProjectMember (projectMemberId: string): Promise<types.RemoveProjectMemberResponse> {
     const result = await this.client.mutate({
-      mutation: removeProjectMember,
+      mutation: mutations.removeProjectMember,
       variables: {
         projectMemberId
       }
@@ -137,9 +137,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async searchProjects (searchText: string) : Promise<SearchProjectsResponse> {
+  async searchProjects (searchText: string) : Promise<types.SearchProjectsResponse> {
     const { data } = await this.client.query({
-      query: searchProjects,
+      query: queries.searchProjects,
       variables: {
         searchText
       }
@@ -148,9 +148,9 @@ export class GQLClient {
     return data;
   }
 
-  async addEnvironmentVariables (projectId: string, data: AddEnvironmentVariableInput[]): Promise<AddEnvironmentVariablesResponse> {
+  async addEnvironmentVariables (projectId: string, data: types.AddEnvironmentVariableInput[]): Promise<types.AddEnvironmentVariablesResponse> {
     const result = await this.client.mutate({
-      mutation: addEnvironmentVariables,
+      mutation: mutations.addEnvironmentVariables,
       variables: {
         projectId,
         data
@@ -160,9 +160,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async updateEnvironmentVariable (environmentVariableId: string, data: UpdateEnvironmentVariableInput): Promise<UpdateEnvironmentVariableResponse> {
+  async updateEnvironmentVariable (environmentVariableId: string, data: types.UpdateEnvironmentVariableInput): Promise<types.UpdateEnvironmentVariableResponse> {
     const result = await this.client.mutate({
-      mutation: updateEnvironmentVariable,
+      mutation: mutations.updateEnvironmentVariable,
       variables: {
         environmentVariableId,
         data
@@ -172,9 +172,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async removeEnvironmentVariable (environmentVariableId: string): Promise<RemoveEnvironmentVariableResponse> {
+  async removeEnvironmentVariable (environmentVariableId: string): Promise<types.RemoveEnvironmentVariableResponse> {
     const { data } = await this.client.mutate({
-      mutation: removeEnvironmentVariable,
+      mutation: mutations.removeEnvironmentVariable,
       variables: {
         environmentVariableId
       }
@@ -183,9 +183,9 @@ export class GQLClient {
     return data;
   }
 
-  async updateDeploymentToProd (deploymentId: string): Promise<UpdateDeploymentToProdResponse> {
+  async updateDeploymentToProd (deploymentId: string): Promise<types.UpdateDeploymentToProdResponse> {
     const { data } = await this.client.mutate({
-      mutation: updateDeploymentToProd,
+      mutation: mutations.updateDeploymentToProd,
       variables: {
         deploymentId
       }
@@ -194,9 +194,9 @@ export class GQLClient {
     return data;
   }
 
-  async addProject (organizationSlug: string, data: AddProjectInput): Promise<AddProjectResponse> {
+  async addProject (organizationSlug: string, data: types.AddProjectInput): Promise<types.AddProjectResponse> {
     const result = await this.client.mutate({
-      mutation: addProject,
+      mutation: mutations.addProject,
       variables: {
         organizationSlug,
         data
@@ -206,9 +206,9 @@ export class GQLClient {
     return result.data;
   }
 
-  async updateProject (projectId: string, projectDetails: UpdateProjectInput): Promise<UpdateProjectResponse> {
+  async updateProject (projectId: string, projectDetails: types.UpdateProjectInput): Promise<types.UpdateProjectResponse> {
     const { data } = await this.client.mutate({
-      mutation: updateProjectMutation,
+      mutation: mutations.updateProjectMutation,
       variables: {
         projectId,
         projectDetails
@@ -218,9 +218,9 @@ export class GQLClient {
     return data;
   }
 
-  async updateDomain (domainId: string, domainDetails: UpdateDomainInput): Promise<UpdateDomainResponse> {
+  async updateDomain (domainId: string, domainDetails: types.UpdateDomainInput): Promise<types.UpdateDomainResponse> {
     const { data } = await this.client.mutate({
-      mutation: updateDomainMutation,
+      mutation: mutations.updateDomainMutation,
       variables: {
         domainId,
         domainDetails
@@ -230,9 +230,9 @@ export class GQLClient {
     return data;
   }
 
-  async redeployToProd (deploymentId: string): Promise<RedeployToProdResponse> {
+  async redeployToProd (deploymentId: string): Promise<types.RedeployToProdResponse> {
     const { data } = await this.client.mutate({
-      mutation: redeployToProd,
+      mutation: mutations.redeployToProd,
       variables: {
         deploymentId
       }
@@ -241,9 +241,9 @@ export class GQLClient {
     return data;
   }
 
-  async deleteProject (projectId: string): Promise<DeleteProjectResponse> {
+  async deleteProject (projectId: string): Promise<types.DeleteProjectResponse> {
     const { data } = await this.client.mutate({
-      mutation: deleteProject,
+      mutation: mutations.deleteProject,
       variables: {
         projectId
       }
@@ -252,9 +252,9 @@ export class GQLClient {
     return data;
   }
 
-  async deleteDomain (domainId: string): Promise<DeleteDomainResponse> {
+  async deleteDomain (domainId: string): Promise<types.DeleteDomainResponse> {
     const { data } = await this.client.mutate({
-      mutation: deleteDomain,
+      mutation: mutations.deleteDomain,
       variables: {
         domainId
       }
@@ -263,9 +263,9 @@ export class GQLClient {
     return data;
   }
 
-  async rollbackDeployment (projectId: string, deploymentId: string): Promise<RollbackDeploymentResponse> {
+  async rollbackDeployment (projectId: string, deploymentId: string): Promise<types.RollbackDeploymentResponse> {
     const { data } = await this.client.mutate({
-      mutation: rollbackDeployment,
+      mutation: mutations.rollbackDeployment,
       variables: {
         projectId,
         deploymentId
@@ -275,9 +275,9 @@ export class GQLClient {
     return data;
   }
 
-  async addDomain (projectId: string, domainDetails: AddDomainInput): Promise<AddDomainResponse> {
+  async addDomain (projectId: string, domainDetails: types.AddDomainInput): Promise<types.AddDomainResponse> {
     const { data } = await this.client.mutate({
-      mutation: addDomain,
+      mutation: mutations.addDomain,
       variables: {
         projectId,
         domainDetails
@@ -287,9 +287,9 @@ export class GQLClient {
     return data;
   }
 
-  async getDomains (projectId: string, filter?: FilterDomainInput): Promise<GetDomainsResponse> {
+  async getDomains (projectId: string, filter?: types.FilterDomainInput): Promise<types.GetDomainsResponse> {
     const { data } = await this.client.query({
-      query: getDomains,
+      query: queries.getDomains,
       variables: {
         projectId,
         filter
@@ -299,9 +299,9 @@ export class GQLClient {
     return data;
   }
 
-  async authenticateGitHub (code: string): Promise<AuthenticateGitHubResponse> {
+  async authenticateGitHub (code: string): Promise<types.AuthenticateGitHubResponse> {
     const { data } = await this.client.mutate({
-      mutation: authenticateGitHub,
+      mutation: mutations.authenticateGitHub,
       variables: {
         code
       }
@@ -310,9 +310,9 @@ export class GQLClient {
     return data;
   }
 
-  async unauthenticateGithub (): Promise<UnauthenticateGitHubResponse> {
+  async unauthenticateGithub (): Promise<types.UnauthenticateGitHubResponse> {
     const { data } = await this.client.mutate({
-      mutation: unauthenticateGitHub
+      mutation: mutations.unauthenticateGitHub
     });
 
     return data;

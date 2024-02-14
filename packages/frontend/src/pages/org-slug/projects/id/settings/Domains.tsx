@@ -32,7 +32,7 @@ const Domains = () => {
     <>
       <div className="flex justify-between p-2">
         <Typography variant="h3">Domain</Typography>
-        <Link to="domain/add">
+        <Link to="add">
           <Button color="blue" variant="outlined" className="rounded-full">
             <i>^</i> Add domain
           </Button>

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useParams, useLocation, Outlet, Link } from 'react-router-dom';
 import { Typography, IconButton } from '@material-tailwind/react';
 
-import Stepper from '../../../../../../components/Stepper';
+import Stepper from '../../../../../../../components/Stepper';
 
 const AddDomain = () => {
   const { id, orgSlug } = useParams();
@@ -11,12 +11,12 @@ const AddDomain = () => {
   const stepperValues = [
     {
       step: 1,
-      route: `/projects/${id}/domain/add`,
+      route: `/${orgSlug}/projects/${id}/settings/domains/add`,
       label: 'Setup',
     },
     {
       step: 2,
-      route: `/projects/${id}/domain/add/config`,
+      route: `/${orgSlug}/projects/${id}/settings/domains/add/config`,
       label: 'Configure DNS',
     },
   ];

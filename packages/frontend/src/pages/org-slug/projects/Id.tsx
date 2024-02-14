@@ -37,8 +37,9 @@ const Id = () => {
 
   const currentTab = useMemo(() => {
     if (id) {
-      const [, tabPath] = location.pathname.split(id);
-      return tabPath;
+      const regex = /projects\/[^/]+\/([^/]+)/;
+      const match = location.pathname.match(regex);
+      return match ? match[1] : '';
     } else {
       return '';
     }
@@ -90,22 +91,22 @@ const Id = () => {
                   </Tab>
                 </Link>
                 <Link to="deployments">
-                  <Tab value="/deployments" className={'p-2 cursor-pointer'}>
+                  <Tab value="deployments" className={'p-2 cursor-pointer'}>
                     Deployments
                   </Tab>
                 </Link>
                 <Link to="database">
-                  <Tab value="/database" className={'p-2 cursor-pointer'}>
+                  <Tab value="database" className={'p-2 cursor-pointer'}>
                     Database
                   </Tab>
                 </Link>
                 <Link to="integrations">
-                  <Tab value="/integrations" className={'p-2 cursor-pointer'}>
+                  <Tab value="integrations" className={'p-2 cursor-pointer'}>
                     Integrations
                   </Tab>
                 </Link>
                 <Link to="settings">
-                  <Tab value="/settings" className={'p-2 cursor-pointer'}>
+                  <Tab value="settings" className={'p-2 cursor-pointer'}>
                     Settings
                   </Tab>
                 </Link>

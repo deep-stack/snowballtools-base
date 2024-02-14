@@ -22,6 +22,7 @@ const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
       <DialogBody>
         In order to assign a domain to your production deployments, configure it
         in the{' '}
+        {/* TODO: Fix selection of project settings tab on navigation to domains */}
         <Link to="../settings/domains" className="text-light-blue-800 inline">
           project settings{' '}
         </Link>

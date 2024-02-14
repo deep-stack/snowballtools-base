@@ -2,10 +2,10 @@ import React from 'react';
 
 import CreateProject from './Create';
 import Id from './Id';
-import AddDomain from './id/domain/add';
+import AddDomain from './id/settings/domains/add';
 import { createProjectRoutes } from './create/routes';
-import { addDomainRoutes } from './id/domain/add/routes';
 import { projectTabRoutes } from './id/routes';
+import { addDomainRoutes } from './id/settings/domains/add/routes';
 
 export const projectsRoutesWithoutSearch = [
   {
@@ -14,7 +14,7 @@ export const projectsRoutesWithoutSearch = [
     children: createProjectRoutes,
   },
   {
-    path: ':id/domain/add',
+    path: ':id/settings/domains/add',
     element: <AddDomain />,
     children: addDomainRoutes,
   },
