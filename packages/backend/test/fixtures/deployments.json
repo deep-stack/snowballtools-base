@@ -10,7 +10,7 @@
     "registryRecordId": "qbafyrehvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "main",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-ffhae3zq.snowball.xyz"
   },
   {
@@ -24,7 +24,7 @@
     "registryRecordId": "wbafyreihvzya6ovp4yfpkqnddkui2iw7thbhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-vehagei8.snowball.xyz"
   },
   {
@@ -38,7 +38,7 @@
     "registryRecordId": "ebafyreihvzya6ovp4yfpkqnddkui2iw7t6bhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-qmgekyte.snowball.xyz"
   },
   {
@@ -52,7 +52,7 @@
     "registryRecordId": "rbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhw74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "prod",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-f8wsyim6.snowball.xyz"
   },
   {
@@ -66,7 +66,7 @@
     "registryRecordId": "tbafyreihvzya6ovp4yfpqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "main",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-2-eO8cckxk.snowball.xyz"
   },
   {
@@ -80,7 +80,7 @@
     "registryRecordId": "ybafyreihvzya6ovp4yfpkqnddkui2iw7t6bhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-2-yaq0t5yw.snowball.xyz"
   },
   {
@@ -94,7 +94,7 @@
     "registryRecordId": "ubafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvfhrowoi",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "testProject-2-hwwr6sbx.snowball.xyz"
   },
   {
@@ -108,7 +108,7 @@
     "registryRecordId": "ibayreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "main",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "iglootools-ndxje48a.snowball.xyz"
   },
   {
@@ -122,7 +122,7 @@
     "registryRecordId": "obafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "iglootools-gtgpgvei.snowball.xyz"
   },
   {
@@ -136,7 +136,7 @@
     "registryRecordId": "pbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowo",
     "registryRecordData": {},
     "branch": "test",
-    "commitHash": "testXyz",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
     "url": "iglootools-b4bpthjr.snowball.xyz"
   }
 ]

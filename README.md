@@ -77,21 +77,31 @@
   # 0.0.0.0:32771
   ```
 
-- Reserve authority for `snowball`
+- Reserve authorities for `snowballtools` and `cerc-io`
 
   ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority reserve snowball"
+  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority reserve snowballtools"
   # {"success":true}
   ```
 
-- Set authority bond
-
   ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority bond set snowball $BOND_ID"
+  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority reserve cerc-io"
   # {"success":true}
   ```
 
-- Start the server
+- Set authority bond for `snowballtools` and `cerc-io`
+
+  ```bash
+  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority bond set snowballtools $BOND_ID"
+  # {"success":true}
+  ```
+
+  ```bash
+  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority bond set cerc-io $BOND_ID"
+  # {"success":true}
+  ```
+
+- Start the server in `packages/backend`
 
   ```bash
   yarn start

@@ -20,14 +20,8 @@ export interface ApplicationDeploymentRequest {
   version: string
   name: string
   application: string
-  config: {
-    env: {[key:string]: string}
-  },
-  meta: {
-    note: string
-    repository: string
-    repository_ref: string
-  }
+  config: string,
+  meta: string
 }
 
 @Entity()

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Domain, DomainStatus } from 'gql-client';
 import { useOutletContext } from 'react-router-dom';
 
-import { Typography, Button, Chip } from '@material-tailwind/react';
+import { Typography, Button, Chip, Avatar } from '@material-tailwind/react';
 
 import ActivityCard from '../../../../components/projects/project/ActivityCard';
 import { relativeTimeMs } from '../../../../utils/time';
@@ -96,7 +96,7 @@ const OverviewTabPanel = () => {
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
         <div className="flex items-center gap-2 p-2 ">
-          <div>^</div>
+          <Avatar src={project.icon} variant="square" />
           <div className="grow">
             <Typography>{project.name}</Typography>
             <Typography variant="small" color="gray">
@@ -137,7 +137,7 @@ const OverviewTabPanel = () => {
           <>
             <div className="flex justify-between p-2 text-sm">
               <p>^ Source</p>
-              <p>{project.deployments[0]?.branch}</p>
+              <p>^ {project.deployments[0]?.branch}</p>
             </div>
             <div className="flex justify-between p-2 text-sm">
               <p>^ Deployment</p>

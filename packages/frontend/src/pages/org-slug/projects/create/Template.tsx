@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 
+import { Avatar } from '@material-tailwind/react';
+
 import Stepper from '../../../../components/Stepper';
 import templateDetails from '../../../../assets/templates.json';
 import { GIT_TEMPLATE_LINK } from '../../../../constants';
@@ -29,12 +31,12 @@ const CreateWithTemplate = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6">
-        <div>^</div>
-        <div className="grow">{template?.name}</div>
+      <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6 items-center">
+        <Avatar variant="square" />
+        <div className="grow px-2">{template?.name}</div>
         <div>
           <a href={GIT_TEMPLATE_LINK} target="_blank" rel="noreferrer">
-            cerc-io/test-progressive-web-app
+            ^ cerc-io/test-progressive-web-app
           </a>
         </div>
       </div>

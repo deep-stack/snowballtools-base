@@ -1,6 +1,7 @@
 import assert from 'assert';
 import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { Octokit } from 'octokit';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -18,12 +19,12 @@ const log = debug('snowball:service');
 
 export class Service {
   private db: Database;
-  private app: OAuthApp;
+  private oauthApp: OAuthApp;
   private registry: Registry;
 
   constructor (db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
-    this.app = app;
+    this.oauthApp = app;
     this.registry = registry;
   }
 
@@ -33,6 +34,13 @@ export class Service {
         id: userId
       }
     });
+  }
+
+  async getOctokit (userId: string): Promise<Octokit> {
+    const user = await this.db.getUser({ where: { id: userId } });
+    assert(user && user.gitHubToken, 'User needs to be authenticated with GitHub token');
+
+    return new Octokit({ auth: user.gitHubToken });
   }
 
   async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
@@ -200,7 +208,10 @@ export class Service {
       await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });
     }
 
+    const octokit = await this.getOctokit(userId);
+
     const newDeployement = await this.createDeployment(userId,
+      octokit,
       {
         project: oldDeployment.project,
         isCurrent: true,
@@ -213,10 +224,28 @@ export class Service {
     return newDeployement;
   }
 
-  async createDeployment (userId: string, data: DeepPartial<Deployment>): Promise<Deployment> {
+  async createDeployment (userId: string, octokit: Octokit, data: DeepPartial<Deployment>): Promise<Deployment> {
+    assert(data.project?.repository, 'Project repository not found');
+    const [owner, repo] = data.project.repository.split('/');
+
+    const { data: packageJSONData } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: 'package.json',
+      ref: data.commitHash
+    });
+
+    if (!packageJSONData) {
+      throw new Error('Package.json file not found');
+    }
+
+    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
+    const packageJSON = JSON.parse(atob(packageJSONData.content));
+
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationRecord({
-      recordName: data.project?.name ?? '',
-      appType: data.project?.template ?? ''
+      packageJSON,
+      appType: data.project!.template!,
+      commitHash: data.commitHash!
     });
 
     const newDeployement = await this.db.addDeployement({
@@ -250,23 +279,42 @@ export class Service {
 
     const project = await this.db.addProject(userId, organization.id, data);
 
-    // TODO: Get repository details from github
-    await this.createDeployment(userId,
+    const octokit = await this.getOctokit(userId);
+    const [owner, repo] = project.repository.split('/');
+
+    const { data: [latestCommit] } = await octokit.rest.repos.listCommits({
+      owner,
+      repo,
+      sha: project.prodBranch,
+      per_page: 1
+    });
+
+    const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
+
+    // Create deployment with prod branch and latest commit
+    const newDeployment = await this.createDeployment(userId,
+      octokit,
       {
         project,
         isCurrent: true,
         branch: project.prodBranch,
         environment: Environment.Production,
-        // TODO: Set latest commit hash
-        commitHash: '',
-        domain: null
+        domain: null,
+        commitHash: latestCommit.sha
       });
 
-    const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest({ appName: project.name });
+    const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        appName: newDeployment.registryRecordData.name!,
+        commitHash: latestCommit.sha,
+        repository: repoDetails.git_url
+      });
     await this.db.updateProjectById(project.id, {
       registryRecordId,
       registryRecordData
     });
+
+    // TODO: Setup repo webhook for push events
 
     return project;
   }
@@ -311,7 +359,10 @@ export class Service {
 
     await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
 
+    const octokit = await this.getOctokit(userId);
+
     const newDeployement = await this.createDeployment(userId,
+      octokit,
       {
         project: oldDeployment.project,
         // TODO: Put isCurrent field in project
@@ -435,7 +486,7 @@ export class Service {
   }
 
   async authenticateGitHub (code:string, userId: string): Promise<{token: string}> {
-    const { authentication: { token } } = await this.app.createToken({
+    const { authentication: { token } } = await this.oauthApp.createToken({
       code
     });
 

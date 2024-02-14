@@ -32,8 +32,9 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
       <div>
         <p>Connect to your git account</p>
         <p>
-          Once connected, you can create projects by importing repositories
-          under the account
+          Once connected, you can import a repository from your
+          <br />
+          account or start with one of our templates.
         </p>
       </div>
       <div className="mt-2 flex">

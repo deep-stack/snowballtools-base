@@ -22,12 +22,12 @@ const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
       <DialogBody>
         In order to assign a domain to your production deployments, configure it
         in the{' '}
-        {/* TODO: Navigate to settings tab panel after clicking on project settings */}
-        <Link to="" className="text-light-blue-800 inline">
+        <Link to="../settings/domains" className="text-light-blue-800 inline">
           project settings{' '}
         </Link>
         (recommended). If you want to assign to this specific deployment,
         however, you can do so using our command-line interface:
+        {/* https://github.com/rajinwonderland/react-code-blocks/issues/138 */}
         <CopyBlock
           text="snowball alias <deployment> <domain>"
           language=""

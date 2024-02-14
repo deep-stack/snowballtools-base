@@ -7,6 +7,7 @@ import {
   MenuList,
   MenuItem,
   Typography,
+  Avatar,
 } from '@material-tailwind/react';
 
 import { relativeTimeISO } from '../../utils/time';
@@ -20,7 +21,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow">
       <div className="flex gap-2 p-2 items-center">
-        <div>{project.icon}</div>
+        <Avatar variant="square" src={project.icon} />
         <div className="grow">
           <Link to={`projects/${project.id}`}>
             <Typography>{project.name}</Typography>
@@ -42,10 +43,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       </div>
       <div className="border-t-2 border-solid p-4 bg-gray-50">
         <Typography variant="small" color="gray">
-          {project.latestCommit.message}
+          ^ {project.latestCommit.message}
         </Typography>
         <Typography variant="small" color="gray">
-          {relativeTimeISO(project.latestCommit.createdAt)} on{' '}
+          {relativeTimeISO(project.latestCommit.createdAt)} on ^&nbsp;
           {project.latestCommit.branch}
         </Typography>
       </div>

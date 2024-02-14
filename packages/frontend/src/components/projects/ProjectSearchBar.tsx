@@ -9,6 +9,7 @@ import {
   ListItemPrefix,
   Card,
   Typography,
+  Avatar,
 } from '@material-tailwind/react';
 
 import SearchBar from '../SearchBar';
@@ -86,7 +87,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
                   {...getItemProps({ item, index })}
                 >
                   <ListItemPrefix>
-                    <i>^</i>
+                    <Avatar src={item.icon} variant="square" />
                   </ListItemPrefix>
                   <div>
                     <Typography variant="h6" color="blue-gray">

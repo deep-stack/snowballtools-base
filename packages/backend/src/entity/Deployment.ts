@@ -28,13 +28,13 @@ export enum DeploymentStatus {
 export interface ApplicationRecord {
   type: string;
   version:string
-  name: string
-  description: string
-  homepage: string
-  license: string
-  author: string
-  repository: string,
-  app_version: string
+  name?: string
+  description?: string
+  homepage?: string
+  license?: string
+  author?: string
+  repository?: string[],
+  app_version?: string
   repository_ref: string
   app_type: string
 }

@@ -30,8 +30,9 @@ const Import = () => {
         <div>^</div>
         <div className="grow">{repoName}</div>
       </div>
-
-      <Deploy />
+      <div className="w-5/6 p-6">
+        <Deploy />
+      </div>
     </div>
   );
 };

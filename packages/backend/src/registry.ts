@@ -1,17 +1,19 @@
 import debug from 'debug';
+import assert from 'assert';
 import { inc as semverInc } from 'semver';
+import { DateTime } from 'luxon';
 
 import { Registry as LaconicRegistry } from '@cerc-io/laconic-sdk';
 
 import { RegistryConfig } from './config';
 import { ApplicationDeploymentRequest } from './entity/Project';
 import { ApplicationRecord } from './entity/Deployment';
+import { PackageJSON } from './types';
 
 const log = debug('snowball:registry');
 
 const APP_RECORD_TYPE = 'ApplicationRecord';
 const DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRequest';
-const AUTHORITY_NAME = 'snowball';
 
 // TODO: Move registry code to laconic-sdk/watcher-ts
 export class Registry {
@@ -23,16 +25,21 @@ export class Registry {
     this.registry = new LaconicRegistry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
   }
 
-  async createApplicationRecord (data: { recordName: string, appType: string }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
-    // TODO: Get record name from repo package.json name
-    const recordName = data.recordName;
-
+  async createApplicationRecord ({
+    packageJSON,
+    commitHash,
+    appType
+  }: {
+    packageJSON: PackageJSON
+    appType: string,
+    commitHash: string
+  }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records
     const records = await this.registry.queryRecords({
       type: APP_RECORD_TYPE,
-      name: recordName
+      name: packageJSON.name
     }, true);
 
     // Get next version of record
@@ -40,23 +47,21 @@ export class Registry {
     const [latestBondRecord] = bondRecords.sort((a: any, b: any) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime());
     const nextVersion = semverInc(latestBondRecord?.attributes.version ?? '0.0.0', 'patch');
 
+    assert(nextVersion, 'Application record version not valid');
+
     // Create record of type ApplicationRecord and publish
     const applicationRecord = {
       type: APP_RECORD_TYPE,
-      version: nextVersion ?? '',
-      name: recordName,
-
-      // TODO: Get data from repo package.json
-      description: '',
-      homepage: '',
-      license: '',
-      author: '',
-      repository: '',
-      app_version: '0.1.0',
-
-      // TODO: Get latest commit hash from repo production branch / deployment
-      repository_ref: '10ac6678e8372a05ad5bb1c34c34',
-      app_type: data.appType
+      version: nextVersion,
+      repository_ref: commitHash,
+      app_type: appType,
+      ...(packageJSON.name && { name: packageJSON.name }),
+      ...(packageJSON.description && { description: packageJSON.description }),
+      ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
+      ...(packageJSON.license && { license: packageJSON.license }),
+      ...(packageJSON.author && { author: typeof packageJSON.author === 'object' ? JSON.stringify(packageJSON.author) : packageJSON.author }),
+      ...(packageJSON.repository && { repository: [packageJSON.repository] }),
+      ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
     const result = await this.registry.setRecord(
@@ -71,8 +76,8 @@ export class Registry {
 
     log('Application record data:', applicationRecord);
 
-    // TODO: Discuss computation of crn
-    const crn = this.getCrn(data.recordName);
+    // TODO: Discuss computation of CRN
+    const crn = this.getCrn(packageJSON.name ?? '');
 
     await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` }, this.registryConfig.privateKey, this.registryConfig.fee);
@@ -81,7 +86,14 @@ export class Registry {
     return { registryRecordId: result.data.id, registryRecordData: applicationRecord };
   }
 
-  async createApplicationDeploymentRequest (data: { appName: string }): Promise<{registryRecordId: string, registryRecordData: ApplicationDeploymentRequest}> {
+  async createApplicationDeploymentRequest (data: {
+    appName: string,
+    commitHash: string,
+    repository: string
+  }): Promise<{
+    registryRecordId: string,
+    registryRecordData: ApplicationDeploymentRequest
+  }> {
     const crn = this.getCrn(data.appName);
     const records = await this.registry.resolveNames([crn]);
     const applicationRecord = records[0];
@@ -101,16 +113,17 @@ export class Registry {
       // dns: '$CERC_REGISTRY_DEPLOYMENT_SHORT_HOSTNAME',
       // deployment: '$CERC_REGISTRY_DEPLOYMENT_CRN',
 
-      config: {
+      // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
+      config: JSON.stringify({
         env: {
           CERC_WEBAPP_DEBUG: `${applicationRecord.attributes.app_version}`
         }
-      },
-      meta: {
-        note: `Added by Snowball @ ${(new Date()).toISOString()}`,
-        repository: applicationRecord.attributes.repository,
-        repository_ref: applicationRecord.attributes.repository_ref
-      }
+      }),
+      meta: JSON.stringify({
+        note: `Added by Snowball @ ${DateTime.utc().toFormat('EEE LLL dd HH:mm:ss \'UTC\' yyyy')}`,
+        repository: data.repository,
+        repository_ref: data.commitHash
+      })
     };
 
     const result = await this.registry.setRecord(
@@ -128,7 +141,14 @@ export class Registry {
     return { registryRecordId: result.data.id, registryRecordData: applicationDeploymentRequest };
   }
 
-  getCrn (appName: string): string {
-    return `crn://${AUTHORITY_NAME}/applications/${appName}`;
+  getCrn (packageJsonName: string): string {
+    const [arg1, arg2] = packageJsonName.split('/');
+
+    if (arg2) {
+      const authority = arg1.replace('@', '');
+      return `crn://${authority}/applications/${arg2}`;
+    }
+
+    return `crn://${arg1}/applications/${arg1}`;
   }
 }

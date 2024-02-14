@@ -18,6 +18,7 @@ import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import AssignDomainDialog from './AssignDomainDialog';
 import { DeploymentDetails } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
+import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 
 interface DeployDetailsCardProps {
   deployment: DeploymentDetails;
@@ -101,12 +102,13 @@ const DeploymentDetailsCard = ({
       <div className="col-span-1">
         <Typography color="gray">^ {deployment.branch}</Typography>
         <Typography color="gray">
-          ^ {deployment.commitHash} {deployment.commit.message}
+          ^ {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
+          {deployment.commit.message}
         </Typography>
       </div>
       <div className="col-span-1 flex items-center">
         <Typography color="gray" className="grow">
-          {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
+          ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
         </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>
