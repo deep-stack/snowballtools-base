@@ -7,7 +7,7 @@ import { Button, Typography } from '@material-tailwind/react';
 import DomainCard from '../../../../../components/projects/project/settings/DomainCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import repositories from '../../../../../assets/repositories.json';
-import { OutletContextType } from '../../../../../types/project';
+import { OutletContextType } from '../../../../../types';
 
 const Domains = () => {
   const client = useGQLClient();

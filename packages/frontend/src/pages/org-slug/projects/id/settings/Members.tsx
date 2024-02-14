@@ -8,7 +8,7 @@ import { Chip, Button, Typography } from '@material-tailwind/react';
 import MemberCard from '../../../../../components/projects/project/settings/MemberCard';
 import AddMemberDialog from '../../../../../components/projects/project/settings/AddMemberDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types/project';
+import { OutletContextType } from '../../../../../types';
 
 const FIRST_MEMBER_CARD = 0;
 

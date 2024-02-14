@@ -12,7 +12,7 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import { RepositoryDetails } from '../../../../types/project';
+import { RepositoryDetails } from '../../../../types';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';

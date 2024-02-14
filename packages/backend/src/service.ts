@@ -218,7 +218,8 @@ export class Service {
         branch: oldDeployment.branch,
         environment: Environment.Production,
         domain: prodBranchDomains[0],
-        commitHash: oldDeployment.commitHash
+        commitHash: oldDeployment.commitHash,
+        commitMessage: oldDeployment.commitMessage
       });
 
     return newDeployement;
@@ -252,6 +253,7 @@ export class Service {
       project: data.project,
       branch: data.branch,
       commitHash: data.commitHash,
+      commitMessage: data.commitMessage,
       environment: data.environment,
       isCurrent: data.isCurrent,
       status: DeploymentStatus.Building,
@@ -300,7 +302,8 @@ export class Service {
         branch: project.prodBranch,
         environment: Environment.Production,
         domain: null,
-        commitHash: latestCommit.sha
+        commitHash: latestCommit.sha,
+        commitMessage: latestCommit.commit.message
       });
 
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest(
@@ -370,7 +373,8 @@ export class Service {
         isCurrent: true,
         environment: Environment.Production,
         domain: oldDeployment.domain,
-        commitHash: oldDeployment.commitHash
+        commitHash: oldDeployment.commitHash,
+        commitMessage: oldDeployment.commitMessage
       });
 
     return newDeployement;

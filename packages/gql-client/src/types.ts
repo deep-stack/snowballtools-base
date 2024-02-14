@@ -62,6 +62,7 @@ export type Deployment = {
   domain: Domain
   branch: string
   commitHash: string
+  commitMessage: string
   url: string
   environment: Environment
   isCurrent: boolean

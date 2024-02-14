@@ -84,6 +84,7 @@ query ($organizationSlug: String!) {
       status
       updatedAt
       commitHash
+      commitMessage
       createdAt
       environment
       domain {
@@ -125,6 +126,7 @@ query ($projectId: String!)  {
     }
     branch
     commitHash
+    commitMessage
     url
     environment
     isCurrent

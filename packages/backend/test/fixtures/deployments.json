@@ -11,6 +11,7 @@
     "registryRecordData": {},
     "branch": "main",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-ffhae3zq.snowball.xyz"
   },
   {
@@ -25,6 +26,7 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-vehagei8.snowball.xyz"
   },
   {
@@ -39,6 +41,7 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-qmgekyte.snowball.xyz"
   },
   {
@@ -53,6 +56,7 @@
     "registryRecordData": {},
     "branch": "prod",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-f8wsyim6.snowball.xyz"
   },
   {
@@ -67,6 +71,7 @@
     "registryRecordData": {},
     "branch": "main",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-2-eO8cckxk.snowball.xyz"
   },
   {
@@ -81,6 +86,7 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-2-yaq0t5yw.snowball.xyz"
   },
   {
@@ -95,11 +101,12 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "testProject-2-hwwr6sbx.snowball.xyz"
   },
   {
     "projectIndex": 2,
-    "domainIndex":6,
+    "domainIndex":9,
     "createdByIndex": 2,
     "id":"ndxje48a",
     "status": "Building",
@@ -109,6 +116,7 @@
     "registryRecordData": {},
     "branch": "main",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "iglootools-ndxje48a.snowball.xyz"
   },
   {
@@ -123,6 +131,7 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "iglootools-gtgpgvei.snowball.xyz"
   },
   {
@@ -137,6 +146,22 @@
     "registryRecordData": {},
     "branch": "test",
     "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
+    "url": "iglootools-b4bpthjr.snowball.xyz"
+  },
+  {
+    "projectIndex": 3,
+    "domainIndex": 6,
+    "createdByIndex": 2,
+    "id":"b4bpthjr",
+    "status": "Building",
+    "environment": "Production",
+    "isCurrent": true,
+    "registryRecordId": "pbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowo",
+    "registryRecordData": {},
+    "branch": "test",
+    "commitHash": "d5dfd7b827226b0d09d897346d291c256e113e00",
+    "commitMessage": "subscription added",
     "url": "iglootools-b4bpthjr.snowball.xyz"
   }
 ]

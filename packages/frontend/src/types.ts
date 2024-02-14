@@ -1,13 +1,4 @@
-import { Project, Deployment } from 'gql-client';
-
-export interface ProjectDetails extends Project {
-  latestCommit: Commit;
-}
-
-export interface DeploymentDetails extends Deployment {
-  commit: Commit;
-  author: string;
-}
+import { Project } from 'gql-client';
 
 export interface GitOrgDetails {
   id: number;
@@ -53,12 +44,6 @@ export enum GitSelect {
   GITHUB = 'github',
   GITEA = 'gitea',
   NONE = 'none',
-}
-
-export interface Commit {
-  message: string;
-  createdAt: string;
-  branch: string;
 }
 
 export type OutletContextType = {

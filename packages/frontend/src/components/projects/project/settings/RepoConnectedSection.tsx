@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import { GitRepositoryDetails } from '../../../../types/project';
+import { GitRepositoryDetails } from '../../../../types';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 
 const RepoConnectedSection = ({

@@ -15,7 +15,7 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import { RepositoryDetails } from '../../../../types/project';
+import { RepositoryDetails } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];

@@ -7,7 +7,7 @@ import { Button, Input, Switch, Typography } from '@material-tailwind/react';
 
 import WebhookCard from '../../../../../components/projects/project/settings/WebhookCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types/project';
+import { OutletContextType } from '../../../../../types';
 
 type UpdateProdBranchValues = {
   prodBranch: string;

@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 
 import { Tabs, TabsHeader, TabsBody, Tab } from '@material-tailwind/react';
 
-import { OutletContextType } from '../../../../types/project';
+import { OutletContextType } from '../../../../types';
 
 const tabsData = [
   {

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Chip, IconButton } from '@material-tailwind/react';
 
 import { relativeTimeISO } from '../../../utils/time';
-import { GitRepositoryDetails } from '../../../types/project';
+import { GitRepositoryDetails } from '../../../types';
 import { useGQLClient } from '../../../context/GQLClientContext';
 
 interface ProjectRepoCardProps {

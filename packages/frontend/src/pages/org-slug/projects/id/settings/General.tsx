@@ -10,7 +10,7 @@ import DeleteProjectDialog from '../../../../../components/projects/project/sett
 import ConfirmDialog from '../../../../../components/shared/ConfirmDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import AsyncSelect from '../../../../../components/shared/AsyncSelect';
-import { OutletContextType } from '../../../../../types/project';
+import { OutletContextType } from '../../../../../types';
 
 const CopyIcon = ({ value }: { value: string }) => {
   return (

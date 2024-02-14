@@ -1,13 +1,13 @@
 import React from 'react';
+import { Deployment } from 'gql-client';
 
 import { Typography, Chip, Card } from '@material-tailwind/react';
 import { color } from '@material-tailwind/react/types/components/chip';
-import { DeploymentDetails } from '../../../../types/project';
 import { relativeTimeMs } from '../../../../utils/time';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 
 interface DeploymentDialogBodyCardProps {
-  deployment: DeploymentDetails;
+  deployment: Deployment;
   chip?: {
     value: string;
     color?: color;
@@ -34,7 +34,7 @@ const DeploymentDialogBodyCard = ({
       <Typography variant="small">
         ^ {deployment.branch} ^{' '}
         {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
-        {deployment.commit.message}
+        {deployment.commitMessage}
       </Typography>
       <Typography variant="small">
         ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}

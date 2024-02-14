@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Environment, Project, Domain, DeploymentStatus } from 'gql-client';
+import {
+  Environment,
+  Project,
+  Domain,
+  DeploymentStatus,
+  Deployment,
+} from 'gql-client';
 
 import {
   Menu,
@@ -16,13 +22,12 @@ import { relativeTimeMs } from '../../../../utils/time';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import AssignDomainDialog from './AssignDomainDialog';
-import { DeploymentDetails } from '../../../../types/project';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 
 interface DeployDetailsCardProps {
-  deployment: DeploymentDetails;
-  currentDeployment: DeploymentDetails;
+  deployment: Deployment;
+  currentDeployment: Deployment;
   onUpdate: () => Promise<void>;
   project: Project;
   prodBranchDomains: Domain[];
@@ -103,7 +108,7 @@ const DeploymentDetailsCard = ({
         <Typography color="gray">^ {deployment.branch}</Typography>
         <Typography color="gray">
           ^ {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
-          {deployment.commit.message}
+          {deployment.commitMessage}
         </Typography>
       </div>
       <div className="col-span-1 flex items-center">
@@ -149,7 +154,8 @@ const DeploymentDetailsCard = ({
               onClick={() => setRollbackDeployment(!rollbackDeployment)}
               disabled={
                 deployment.isCurrent ||
-                deployment.environment !== Environment.Production
+                deployment.environment !== Environment.Production ||
+                !Boolean(currentDeployment)
               }
             >
               ^ Rollback to this version
@@ -213,44 +219,46 @@ const DeploymentDetailsCard = ({
           )}
         </div>
       </ConfirmDialog>
-      <ConfirmDialog
-        dialogTitle="Rollback to this deployment?"
-        handleOpen={() => setRollbackDeployment((preVal) => !preVal)}
-        open={rollbackDeployment}
-        confirmButtonTitle="Rollback"
-        color="blue"
-        handleConfirm={async () => {
-          await rollbackDeploymentHandler();
-          setRollbackDeployment((preVal) => !preVal);
-        }}
-      >
-        <div className="flex flex-col gap-2">
-          <Typography variant="small">
-            Upon confirmation, this deployment will replace your current
-            deployment
-          </Typography>
-          <DeploymentDialogBodyCard
-            deployment={currentDeployment}
-            chip={{
-              value: 'Live Deployment',
-              color: 'green',
-            }}
-          />
-          <DeploymentDialogBodyCard
-            deployment={deployment}
-            chip={{
-              value: 'New Deployment',
-              color: 'orange',
-            }}
-          />
-          <Typography variant="small">
-            These domains will point to your new deployment:
-          </Typography>
-          <Typography variant="small" color="blue">
-            ^ {currentDeployment.domain?.name}
-          </Typography>
-        </div>
-      </ConfirmDialog>
+      {Boolean(currentDeployment) && (
+        <ConfirmDialog
+          dialogTitle="Rollback to this deployment?"
+          handleOpen={() => setRollbackDeployment((preVal) => !preVal)}
+          open={rollbackDeployment}
+          confirmButtonTitle="Rollback"
+          color="blue"
+          handleConfirm={async () => {
+            await rollbackDeploymentHandler();
+            setRollbackDeployment((preVal) => !preVal);
+          }}
+        >
+          <div className="flex flex-col gap-2">
+            <Typography variant="small">
+              Upon confirmation, this deployment will replace your current
+              deployment
+            </Typography>
+            <DeploymentDialogBodyCard
+              deployment={currentDeployment}
+              chip={{
+                value: 'Live Deployment',
+                color: 'green',
+              }}
+            />
+            <DeploymentDialogBodyCard
+              deployment={deployment}
+              chip={{
+                value: 'New Deployment',
+                color: 'orange',
+              }}
+            />
+            <Typography variant="small">
+              These domains will point to your new deployment:
+            </Typography>
+            <Typography variant="small" color="blue">
+              ^ {currentDeployment.domain?.name}
+            </Typography>
+          </div>
+        </ConfirmDialog>
+      )}
       <AssignDomainDialog
         open={assignDomainDialog}
         handleOpen={() => setAssignDomainDialog(!assignDomainDialog)}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GitSelect } from '../../../../types/project';
+import { GitSelect } from '../../../../types';
 
 const GitSelectionSection = ({
   gitSelectionHandler,

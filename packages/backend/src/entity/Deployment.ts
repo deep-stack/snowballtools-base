@@ -60,6 +60,9 @@ export class Deployment {
     commitHash!: string;
 
   @Column('varchar')
+    commitMessage!: string;
+
+  @Column('varchar')
     url!: string;
 
   @Column('varchar')

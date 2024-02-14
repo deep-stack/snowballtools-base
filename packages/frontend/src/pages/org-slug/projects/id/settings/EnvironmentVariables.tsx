@@ -17,7 +17,7 @@ import AddEnvironmentVariableRow from '../../../../../components/projects/projec
 import DisplayEnvironmentVariables from '../../../../../components/projects/project/settings/DisplayEnvironmentVariables';
 import HorizontalLine from '../../../../../components/HorizontalLine';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { EnvironmentVariablesFormValues } from '../../../../../types/project';
+import { EnvironmentVariablesFormValues } from '../../../../../types';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();

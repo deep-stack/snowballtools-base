@@ -3,7 +3,7 @@ import React from 'react';
 import { Typography, IconButton } from '@material-tailwind/react';
 
 import { relativeTimeISO } from '../../../utils/time';
-import { GitCommitDetails } from '../../../types/project';
+import { GitCommitDetails } from '../../../types';
 
 interface ActivityCardProps {
   activity: GitCommitDetails;

@@ -90,6 +90,7 @@ type Deployment {
   domain: Domain
   branch: String!
   commitHash: String!
+  commitMessage: String!
   url: String!
   environment: Environment!
   isCurrent: Boolean!

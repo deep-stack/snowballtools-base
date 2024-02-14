@@ -7,7 +7,7 @@ import { Button, Typography, Option, Select } from '@material-tailwind/react';
 
 import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
-import { GitOrgDetails, GitRepositoryDetails } from '../../../types/project';
+import { GitOrgDetails, GitRepositoryDetails } from '../../../types';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;

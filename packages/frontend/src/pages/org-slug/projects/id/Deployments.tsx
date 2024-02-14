@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Domain } from 'gql-client';
+import { Deployment, Domain } from 'gql-client';
 import { useOutletContext } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
@@ -9,12 +9,8 @@ import FilterForm, {
   FilterValue,
   StatusOptions,
 } from '../../../../components/projects/project/deployments/FilterForm';
-import {
-  DeploymentDetails,
-  OutletContextType,
-} from '../../../../types/project';
+import { OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
-import { COMMIT_DETAILS } from '../../../../constants';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
@@ -27,19 +23,12 @@ const DeploymentsTabPanel = () => {
   const { project } = useOutletContext<OutletContextType>();
 
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
-  const [deployments, setDeployments] = useState<DeploymentDetails[]>([]);
+  const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [prodBranchDomains, setProdBranchDomains] = useState<Domain[]>([]);
 
   const fetchDeployments = async () => {
     const { deployments } = await client.getDeployments(project.id);
-    const updatedDeployments = deployments.map((deployment) => {
-      return {
-        ...deployment,
-        author: '',
-        commit: COMMIT_DETAILS,
-      };
-    });
-    setDeployments(updatedDeployments);
+    setDeployments(deployments);
   };
 
   const fetchProductionBranchDomains = useCallback(async () => {
@@ -60,7 +49,7 @@ const DeploymentsTabPanel = () => {
     });
   }, [deployments]);
 
-  const filteredDeployments = useMemo<DeploymentDetails[]>(() => {
+  const filteredDeployments = useMemo<Deployment[]>(() => {
     return deployments.filter((deployment) => {
       // Searched branch filter
       const branchMatch =
@@ -81,7 +70,7 @@ const DeploymentsTabPanel = () => {
           new Date(deployment.updatedAt) <= filterValue.updateAtRange!.to!);
 
       return branchMatch && statusMatch && dateMatch;
-    }) as DeploymentDetails[];
+    });
   }, [filterValue, deployments]);
 
   const handleResetFilters = useCallback(() => {

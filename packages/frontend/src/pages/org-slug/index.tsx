@@ -1,32 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Project } from 'gql-client';
 
 import { Button, Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../../components/projects/ProjectCard';
 import { useGQLClient } from '../../context/GQLClientContext';
-import { ProjectDetails } from '../../types/project';
-import { COMMIT_DETAILS } from '../../constants';
 
 const Projects = () => {
   const client = useGQLClient();
   const { orgSlug } = useParams();
-  const [projects, setProjects] = useState<ProjectDetails[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const fetchProjects = useCallback(async () => {
     const { projectsInOrganization } = await client.getProjectsInOrganization(
       orgSlug!,
     );
-
-    const updatedProjects = projectsInOrganization.map((project) => {
-      return {
-        ...project,
-        // TODO: Populate from github API
-        latestCommit: COMMIT_DETAILS,
-      };
-    });
-
-    setProjects(updatedProjects);
+    setProjects(projectsInOrganization);
   }, [orgSlug]);
 
   useEffect(() => {

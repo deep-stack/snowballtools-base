@@ -34,5 +34,11 @@
     "name": "saugatt.com",
     "status": "Pending",
     "branch": "test"
+  },
+  {
+    "projectIndex": 3,
+    "name": "iglootools-2.com",
+    "status": "Pending",
+    "branch": "test"
   }
 ]

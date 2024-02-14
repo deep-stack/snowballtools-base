@@ -7,7 +7,7 @@ import { Typography, Button, Chip, Avatar } from '@material-tailwind/react';
 import ActivityCard from '../../../../components/projects/project/ActivityCard';
 import { relativeTimeMs } from '../../../../utils/time';
 import { useOctokit } from '../../../../context/OctokitContext';
-import { GitCommitDetails, OutletContextType } from '../../../../types/project';
+import { GitCommitDetails, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const COMMITS_PER_PAGE = 4;
