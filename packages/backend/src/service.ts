@@ -405,7 +405,7 @@ export class Service {
     return newCurrentDeploymentUpdate && oldCurrentDeploymentUpdate;
   }
 
-  async addDomain (projectId: string, domainDetails: { name: string }): Promise<{
+  async addDomain (projectId: string, data: { name: string }): Promise<{
     primaryDomain: Domain,
     redirectedDomain: Domain
   }> {
@@ -416,14 +416,14 @@ export class Service {
     }
 
     const primaryDomainDetails = {
-      ...domainDetails,
+      ...data,
       branch: currentProject.prodBranch,
       project: currentProject
     };
 
     const savedPrimaryDomain = await this.db.addDomain(primaryDomainDetails);
 
-    const domainArr = domainDetails.name.split('www.');
+    const domainArr = data.name.split('www.');
 
     const redirectedDomainDetails = {
       name: domainArr.length > 1 ? domainArr[1] : `www.${domainArr[0]}`,
@@ -437,7 +437,7 @@ export class Service {
     return { primaryDomain: savedPrimaryDomain, redirectedDomain: savedRedirectedDomain };
   }
 
-  async updateDomain (domainId: string, domainDetails: DeepPartial<Domain>): Promise<boolean> {
+  async updateDomain (domainId: string, data: DeepPartial<Domain>): Promise<boolean> {
     const domain = await this.db.getDomain({
       where: {
         id: domainId
@@ -449,7 +449,7 @@ export class Service {
     }
 
     const newDomain = {
-      ...domainDetails
+      ...data
     };
 
     const domainsRedirectedFrom = await this.db.getDomains({
@@ -462,14 +462,14 @@ export class Service {
     });
 
     // If there are domains redirecting to current domain, only branch of current domain can be updated
-    if (domainsRedirectedFrom.length > 0 && domainDetails.branch === domain.branch) {
+    if (domainsRedirectedFrom.length > 0 && data.branch === domain.branch) {
       throw new Error('Remove all redirects to this domain before updating');
     }
 
-    if (domainDetails.redirectToId) {
+    if (data.redirectToId) {
       const redirectedDomain = await this.db.getDomain({
         where: {
-          id: domainDetails.redirectToId
+          id: data.redirectToId
         }
       });
 

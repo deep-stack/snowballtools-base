@@ -135,9 +135,9 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      updateProject: async (_: any, { projectId, projectDetails }: { projectId: string, projectDetails: DeepPartial<Project> }) => {
+      updateProject: async (_: any, { projectId, data }: { projectId: string, data: DeepPartial<Project> }) => {
         try {
-          return await service.updateProject(projectId, projectDetails);
+          return await service.updateProject(projectId, data);
         } catch (err) {
           log(err);
           return false;
@@ -179,18 +179,18 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      addDomain: async (_: any, { projectId, domainDetails }: { projectId: string, domainDetails: { name: string } }) => {
+      addDomain: async (_: any, { projectId, data }: { projectId: string, data: { name: string } }) => {
         try {
-          return Boolean(await service.addDomain(projectId, domainDetails));
+          return Boolean(await service.addDomain(projectId, data));
         } catch (err) {
           log(err);
           return false;
         }
       },
 
-      updateDomain: async (_: any, { domainId, domainDetails }: { domainId: string, domainDetails: DeepPartial<Domain>}) => {
+      updateDomain: async (_: any, { domainId, data }: { domainId: string, data: DeepPartial<Domain>}) => {
         try {
-          return await service.updateDomain(domainId, domainDetails);
+          return await service.updateDomain(domainId, data);
         } catch (err) {
           log(err);
           return false;

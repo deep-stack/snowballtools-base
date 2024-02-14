@@ -50,13 +50,13 @@ mutation ($organizationSlug: String!, $data: AddProjectInput) {
 }`;
 
 export const updateProjectMutation = gql`
-mutation ($projectId: String!, $projectDetails: UpdateProjectInput) {
-  updateProject(projectId: $projectId, projectDetails: $projectDetails)
+mutation ($projectId: String!, $data: UpdateProjectInput) {
+  updateProject(projectId: $projectId, data: $data)
 }`;
 
 export const updateDomainMutation = gql`
-mutation ($domainId: String!, $domainDetails: UpdateDomainInput!) {
-  updateDomain(domainId: $domainId, domainDetails: $domainDetails)
+mutation ($domainId: String!, $data: UpdateDomainInput!) {
+  updateDomain(domainId: $domainId, data: $data)
 }`;
 
 export const redeployToProd = gql`
@@ -83,8 +83,8 @@ mutation ($projectId: String! ,$deploymentId: String!) {
 `;
 
 export const addDomain = gql`
-mutation ($projectId: String!, $domainDetails: AddDomainInput!) {
-  addDomain(projectId: $projectId, domainDetails: $domainDetails)
+mutation ($projectId: String!, $data: AddDomainInput!) {
+  addDomain(projectId: $projectId, data: $data)
 }
 `;
 

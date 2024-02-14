@@ -195,13 +195,13 @@ type Mutation {
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
   addProject(organizationSlug: String!, data: AddProjectInput): Project!
-  updateProject(projectId: String!, projectDetails: UpdateProjectInput): Boolean!
+  updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
   deleteDomain(domainId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
-  addDomain(projectId: String!, domainDetails: AddDomainInput!): Boolean!
-  updateDomain(domainId: String!, domainDetails: UpdateDomainInput!): Boolean!
+  addDomain(projectId: String!, data: AddDomainInput!): Boolean!
+  updateDomain(domainId: String!, data: UpdateDomainInput!): Boolean!
   authenticateGitHub(code: String!): AuthResult!
   unauthenticateGitHub: Boolean!
 }

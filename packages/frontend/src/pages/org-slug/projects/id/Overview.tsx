@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Domain, DomainStatus } from 'gql-client';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { RequestError } from 'octokit';
 
 import { Typography, Button, Chip, Avatar } from '@material-tailwind/react';
 
@@ -14,6 +15,7 @@ const COMMITS_PER_PAGE = 4;
 
 const OverviewTabPanel = () => {
   const { octokit } = useOctokit();
+  const navigate = useNavigate();
   const [activities, setActivities] = useState<GitCommitDetails[]>([]);
   const [liveDomain, setLiveDomain] = useState<Domain>();
 
@@ -29,47 +31,55 @@ const OverviewTabPanel = () => {
     // TODO: Save repo commits in DB and avoid using GitHub API in frontend
     // TODO: Figure out fetching latest commits for all branches
     const fetchRepoActivity = async () => {
-      const [owner, repo] = project.repository.split('/');
+      try {
+        const [owner, repo] = project.repository.split('/');
 
-      if (!repo) {
-        // Do not fetch branches if repo not available
-        return;
-      }
+        if (!repo) {
+          // Do not fetch branches if repo not available
+          return;
+        }
 
-      // Get all branches in project repo
-      const result = await octokit.rest.repos.listBranches({
-        owner,
-        repo,
-      });
-
-      // Get first 4 commits from repo branches
-      const commitsByBranchPromises = result.data.map(async (branch) => {
-        const result = await octokit.rest.repos.listCommits({
+        // Get all branches in project repo
+        const result = await octokit.rest.repos.listBranches({
           owner,
           repo,
-          sha: branch.commit.sha,
-          per_page: COMMITS_PER_PAGE,
         });
 
-        return result.data.map((data) => ({
-          ...data,
-          branch,
-        }));
-      });
+        // Get first 4 commits from repo branches
+        const commitsByBranchPromises = result.data.map(async (branch) => {
+          const result = await octokit.rest.repos.listCommits({
+            owner,
+            repo,
+            sha: branch.commit.sha,
+            per_page: COMMITS_PER_PAGE,
+          });
 
-      const commitsByBranch = await Promise.all(commitsByBranchPromises);
-      const commitsWithBranch = commitsByBranch.flat();
+          return result.data.map((data) => ({
+            ...data,
+            branch,
+          }));
+        });
 
-      // Order commits by date and set latest 4 commits in activity section
-      const orderedCommits = commitsWithBranch
-        .sort(
-          (a, b) =>
-            new Date(b.commit.author!.date!).getTime() -
-            new Date(a.commit.author!.date!).getTime(),
-        )
-        .slice(0, COMMITS_PER_PAGE);
+        const commitsByBranch = await Promise.all(commitsByBranchPromises);
+        const commitsWithBranch = commitsByBranch.flat();
 
-      setActivities(orderedCommits);
+        // Order commits by date and set latest 4 commits in activity section
+        const orderedCommits = commitsWithBranch
+          .sort(
+            (a, b) =>
+              new Date(b.commit.author!.date!).getTime() -
+              new Date(a.commit.author!.date!).getTime(),
+          )
+          .slice(0, COMMITS_PER_PAGE);
+
+        setActivities(orderedCommits);
+      } catch (err) {
+        if (!(err instanceof RequestError)) {
+          throw err;
+        }
+
+        console.log(err.message);
+      }
     };
 
     fetchRepoActivity();
@@ -127,6 +137,9 @@ const OverviewTabPanel = () => {
                 className="normal-case rounded-full"
                 color="blue"
                 size="sm"
+                onClick={() => {
+                  navigate('settings/domains');
+                }}
               >
                 Setup
               </Button>

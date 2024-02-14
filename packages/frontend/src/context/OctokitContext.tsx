@@ -15,16 +15,20 @@ const UNAUTHORIZED_ERROR_CODE = 401;
 
 interface ContextValue {
   octokit: Octokit | null;
+  isAuth: boolean;
   updateAuth: () => void;
 }
 
 const OctokitContext = createContext<ContextValue>({
   octokit: null,
+  isAuth: false,
   updateAuth: () => {},
 });
 
 export const OctokitProvider = ({ children }: { children: ReactNode }) => {
   const [authToken, setAuthToken] = useState<string>('');
+  const [isAuth, setIsAuth] = useState(false);
+
   const client = useGQLClient();
 
   const fetchUser = useCallback(async () => {
@@ -41,9 +45,11 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
 
   const octokit = useMemo(() => {
     if (!authToken) {
-      return null;
+      setIsAuth(false);
+      return new Octokit();
     }
 
+    setIsAuth(true);
     return new Octokit({ auth: authToken });
   }, [authToken]);
 
@@ -52,10 +58,6 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (!octokit) {
-      return;
-    }
-
     // TODO: Handle React component error
     const interceptor = async (error: RequestError | Error) => {
       if (
@@ -78,14 +80,14 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
   }, [octokit, client]);
 
   return (
-    <OctokitContext.Provider value={{ octokit, updateAuth }}>
+    <OctokitContext.Provider value={{ octokit, updateAuth, isAuth }}>
       {children}
     </OctokitContext.Provider>
   );
 };
 
 export const useOctokit = () => {
-  const { octokit, updateAuth } = useContext(OctokitContext);
+  const { octokit, updateAuth, isAuth } = useContext(OctokitContext);
 
-  return { octokit, updateAuth };
+  return { octokit, updateAuth, isAuth };
 };

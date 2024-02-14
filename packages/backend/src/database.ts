@@ -236,9 +236,9 @@ export class Database {
     return savedEnvironmentVariables;
   }
 
-  async updateEnvironmentVariable (environmentVariableId: string, update: DeepPartial<EnvironmentVariable>): Promise<boolean> {
+  async updateEnvironmentVariable (environmentVariableId: string, data: DeepPartial<EnvironmentVariable>): Promise<boolean> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const updateResult = await environmentVariableRepository.update({ id: environmentVariableId }, update);
+    const updateResult = await environmentVariableRepository.update({ id: environmentVariableId }, data);
 
     return Boolean(updateResult.affected);
   }
@@ -293,18 +293,18 @@ export class Database {
     return projects;
   }
 
-  async updateDeploymentById (deploymentId: string, updates: DeepPartial<Deployment>): Promise<boolean> {
+  async updateDeploymentById (deploymentId: string, data: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const updateResult = await deploymentRepository.update({ id: deploymentId }, updates);
+    const updateResult = await deploymentRepository.update({ id: deploymentId }, data);
 
     return Boolean(updateResult.affected);
   }
 
-  async addProject (userId: string, organizationId: string, projectDetails: DeepPartial<Project>): Promise<Project> {
+  async addProject (userId: string, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     // TODO: Check if organization exists
-    const newProject = projectRepository.create(projectDetails);
+    const newProject = projectRepository.create(data);
     // TODO: Set default empty array for webhooks in TypeORM
     newProject.webhooks = [];
     // TODO: Set icon according to framework
@@ -323,9 +323,9 @@ export class Database {
     return projectRepository.save(newProject);
   }
 
-  async updateProjectById (projectId: string, updates: DeepPartial<Project>): Promise<boolean> {
+  async updateProjectById (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
-    const updateResult = await projectRepository.update({ id: projectId }, updates);
+    const updateResult = await projectRepository.update({ id: projectId }, data);
 
     return Boolean(updateResult.affected);
   }
@@ -372,9 +372,9 @@ export class Database {
     return domain;
   }
 
-  async updateDomainById (domainId: string, updates: DeepPartial<Domain>): Promise<boolean> {
+  async updateDomainById (domainId: string, data: DeepPartial<Domain>): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
-    const updateResult = await domainRepository.update({ id: domainId }, updates);
+    const updateResult = await domainRepository.update({ id: domainId }, data);
 
     return Boolean(updateResult.affected);
   }

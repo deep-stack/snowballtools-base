@@ -206,28 +206,28 @@ export class GQLClient {
     return result.data;
   }
 
-  async updateProject (projectId: string, projectDetails: types.UpdateProjectInput): Promise<types.UpdateProjectResponse> {
-    const { data } = await this.client.mutate({
+  async updateProject (projectId: string, data: types.UpdateProjectInput): Promise<types.UpdateProjectResponse> {
+    const result = await this.client.mutate({
       mutation: mutations.updateProjectMutation,
       variables: {
         projectId,
-        projectDetails
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
-  async updateDomain (domainId: string, domainDetails: types.UpdateDomainInput): Promise<types.UpdateDomainResponse> {
-    const { data } = await this.client.mutate({
+  async updateDomain (domainId: string, data: types.UpdateDomainInput): Promise<types.UpdateDomainResponse> {
+    const result = await this.client.mutate({
       mutation: mutations.updateDomainMutation,
       variables: {
         domainId,
-        domainDetails
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
   async redeployToProd (deploymentId: string): Promise<types.RedeployToProdResponse> {
@@ -275,16 +275,16 @@ export class GQLClient {
     return data;
   }
 
-  async addDomain (projectId: string, domainDetails: types.AddDomainInput): Promise<types.AddDomainResponse> {
-    const { data } = await this.client.mutate({
+  async addDomain (projectId: string, data: types.AddDomainInput): Promise<types.AddDomainResponse> {
+    const result = await this.client.mutate({
       mutation: mutations.addDomain,
       variables: {
         projectId,
-        domainDetails
+        data
       }
     });
 
-    return data;
+    return result.data;
   }
 
   async getDomains (projectId: string, filter?: types.FilterDomainInput): Promise<types.GetDomainsResponse> {

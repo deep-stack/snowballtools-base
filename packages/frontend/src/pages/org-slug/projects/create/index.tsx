@@ -7,9 +7,9 @@ import ConnectAccount from '../../../../components/projects/create/ConnectAccoun
 import { useOctokit } from '../../../../context/OctokitContext';
 
 const NewProject = () => {
-  const { octokit, updateAuth } = useOctokit();
+  const { octokit, updateAuth, isAuth } = useOctokit();
 
-  return Boolean(octokit) ? (
+  return isAuth ? (
     <>
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
