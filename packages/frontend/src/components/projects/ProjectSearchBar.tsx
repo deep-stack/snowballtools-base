@@ -87,7 +87,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
                   {...getItemProps({ item, index })}
                 >
                   <ListItemPrefix>
-                    <Avatar src={item.icon} variant="square" />
+                    <Avatar src={item.icon || '/gray.png'} variant="rounded" />
                   </ListItemPrefix>
                   <div>
                     <Typography variant="h6" color="blue-gray">

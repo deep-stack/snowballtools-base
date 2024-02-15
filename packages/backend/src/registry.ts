@@ -92,7 +92,8 @@ export class Registry {
   async createApplicationDeploymentRequest (data: {
     appName: string,
     commitHash: string,
-    repository: string
+    repository: string,
+    environmentVariables: { [key: string]: string }
   }): Promise<{
     registryRecordId: string,
     registryRecordData: ApplicationDeploymentRequest
@@ -118,9 +119,7 @@ export class Registry {
 
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({
-        env: {
-          CERC_WEBAPP_DEBUG: `${applicationRecord.attributes.app_version}`
-        }
+        env: data.environmentVariables
       }),
       meta: JSON.stringify({
         note: `Added by Snowball @ ${DateTime.utc().toFormat('EEE LLL dd HH:mm:ss \'UTC\' yyyy')}`,

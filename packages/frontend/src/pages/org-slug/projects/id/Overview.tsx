@@ -107,7 +107,7 @@ const OverviewTabPanel = () => {
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
         <div className="flex items-center gap-2 p-2 ">
-          <Avatar src={project.icon} variant="square" />
+          <Avatar src={project.icon || '/gray.png'} variant="rounded" />
           <div className="grow">
             <Typography>{project.name}</Typography>
             <Typography variant="small" color="gray">

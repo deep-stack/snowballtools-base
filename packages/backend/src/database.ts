@@ -196,14 +196,15 @@ export class Database {
     return projectMembers;
   }
 
-  async getEnvironmentVariablesByProjectId (projectId: string): Promise<EnvironmentVariable[]> {
+  async getEnvironmentVariablesByProjectId (projectId: string, filter?: FindOptionsWhere<EnvironmentVariable>): Promise<EnvironmentVariable[]> {
     const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
 
     const environmentVariables = await environmentVariableRepository.find({
       where: {
         project: {
           id: projectId
-        }
+        },
+        ...filter
       }
     });
 

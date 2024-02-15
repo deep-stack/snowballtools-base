@@ -21,7 +21,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow">
       <div className="flex gap-2 p-2 items-center">
-        <Avatar variant="square" src={project.icon} />
+        <Avatar variant="rounded" src={project.icon || '/gray.png'} />
         <div className="grow">
           <Link to={`projects/${project.id}`}>
             <Typography>{project.name}</Typography>

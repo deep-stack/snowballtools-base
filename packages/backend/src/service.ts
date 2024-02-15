@@ -231,6 +231,7 @@ export class Service {
       recordData.repoUrl = repoDetails.html_url;
     }
 
+    // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationRecord({
       packageJSON,
       appType: data.project!.template!,
@@ -318,12 +319,22 @@ export class Service {
       }
     );
 
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(project.id, { environment: Environment.Production });
+
+    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
+      acc[env.key] = env.value;
+
+      return acc;
+    }, {} as { [key: string]: string });
+
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest(
       {
         appName: newDeployment.registryRecordData.name!,
         commitHash: latestCommit.sha,
-        repository: repoDetails.html_url
+        repository: repoDetails.html_url,
+        environmentVariables: environmentVariablesObj
       });
+
     await this.db.updateProjectById(project.id, {
       registryRecordId,
       registryRecordData
@@ -351,7 +362,8 @@ export class Service {
       if (
         !(err instanceof RequestError &&
         err.status === 422 &&
-        (err.response?.data as any).errors.some((err: any) => err.message === GITHUB_UNIQUE_WEBHOOK_ERROR))) {
+        (err.response?.data as any).errors.some((err: any) => err.message === GITHUB_UNIQUE_WEBHOOK_ERROR))
+      ) {
         throw err;
       }
 
