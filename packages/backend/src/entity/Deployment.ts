@@ -49,6 +49,9 @@ export class Deployment {
   @JoinColumn({ name: 'projectId' })
     project!: Project;
 
+  @Column({ nullable: true })
+    domainId!: string | null;
+
   @OneToOne(() => Domain)
   @JoinColumn({ name: 'domainId' })
     domain!: Domain | null;

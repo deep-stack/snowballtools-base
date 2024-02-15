@@ -33,6 +33,9 @@ export class Project {
   @JoinColumn({ name: 'ownerId' })
     owner!: User;
 
+  @Column({ nullable: false })
+    ownerId!: string;
+
   @ManyToOne(() => Organization, { nullable: true })
   @JoinColumn({ name: 'organizationId' })
     organization!: Organization | null;

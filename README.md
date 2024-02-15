@@ -38,24 +38,10 @@
   - Client ID and secret will be available after creating Github OAuth app
     - https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
     - In "Homepage URL", type `http://localhost:3000`
-    - In "Authorization callback URL", type `http://localhost:3000/projects/create`
+    - In "Authorization callback URL", type `http://localhost:3000/organization/projects/create`
     - Generate a new client secret after app is created
 
 - Run the laconicd stack following this [doc](https://git.vdb.to/cerc-io/stack-orchestrator/src/branch/main/docs/laconicd-with-console.md)
-
-- Create the bond and set `registryConfig.bondId` in backend [config file](packages/backend/environments/local.toml)
-
-  ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns bond create --type aphoton --quantity 1000000000 --gas 200000 --fees 200000aphoton"
-
-  # {"bondId":"b40f1308510f799860fb6f1ede47245a2d59f336631158f25ae0eec30aabaf89"}
-  ```
-
-  - Export the bond id that is generated
-
-    ```bash
-    export BOND_ID=<BOND-ID>
-    ```
 
 - Get the private key and set `registryConfig.privateKey` in backend [config file](packages/backend/environments/local.toml)
 
@@ -65,7 +51,7 @@
   # 754cca7b4b729a99d156913aea95366411d072856666e95ba09ef6c664357d81
   ```
 
-- Get the rest and GQL endpoint of laconicd and set it to `registryConfig.restEndpoint` and `registryConfig.gqlEndpoint` in backend [config file](packages/backend/environments/local.toml)
+- Get the REST and GQL endpoint ports of Laconicd and replace the ports for `registryConfig.restEndpoint` and `registryConfig.gqlEndpoint` in backend [config file](packages/backend/environments/local.toml)
 
   ```bash
   # For registryConfig.restEndpoint
@@ -77,29 +63,34 @@
   # 0.0.0.0:32771
   ```
 
-- Reserve authorities for `snowballtools` and `cerc-io`
+- Run the script to create bond, reserve the authority and set authority bond
 
   ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority reserve snowballtools"
-  # {"success":true}
+  yarn registry:init
+  # snowball:initialize-registry bondId: 6af0ab81973b93d3511ae79841756fb5da3fd2f70ea1279e81fae7c9b19af6c4 +0ms
   ```
 
-  ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority reserve cerc-io"
-  # {"success":true}
-  ```
+  - Get the bond id and set `registryConfig.bondId` in backend [config file](packages/backend/environments/local.toml)
 
-- Set authority bond for `snowballtools` and `cerc-io`
-
-  ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority bond set snowballtools $BOND_ID"
-  # {"success":true}
-  ```
-
-  ```bash
-  laconic-so --stack fixturenet-laconic-loaded deploy exec cli "laconic cns authority bond set cerc-io $BOND_ID"
-  # {"success":true}
-  ```
+- Setup ngrok for GitHub webhooks
+  - https://ngrok.com/docs/getting-started/
+  - Start ngrok and point to backend server endpoint
+    ```bash
+    ngrok http http://localhost:8000
+    ```
+  - Look for the forwarding URL in ngrok
+    ```
+    ...
+    Forwarding                    https://19c1-61-95-158-116.ngrok-free.app -> http://localhost:8000
+    ...
+    ```
+  - Set `gitHub.webhookUrl` in backend [config file](packages/backend/environments/local.toml)
+    ```toml
+    ...
+    [gitHub]
+      webhookUrl = "https://19c1-61-95-158-116.ngrok-free.app"
+    ...
+    ```
 
 - Start the server in `packages/backend`
 
@@ -125,6 +116,12 @@
 
   ```env
   REACT_APP_GITHUB_CLIENT_ID = <CLIENT_ID>
+  ```
+
+- Set `REACT_APP_GITHUB_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
+
+  ```env
+  REACT_APP_GITHUB_TEMPLATE_REPO = cerc-io/test-progressive-web-app
   ```
 
 ### Development

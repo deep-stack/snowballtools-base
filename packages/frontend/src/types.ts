@@ -29,7 +29,7 @@ export interface GitBranchDetails {
   name: string;
 }
 
-export interface GitCommitDetails {
+export interface GitCommitWithBranch {
   branch: GitBranchDetails;
   commit: {
     author: {

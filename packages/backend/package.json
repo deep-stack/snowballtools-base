@@ -36,6 +36,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "registry:init": "DEBUG=snowball:* ts-node scripts/initialize-registry.ts",
     "db:load:fixtures": "DEBUG=snowball:* ts-node ./test/initialize-db.ts",
     "db:delete": "DEBUG=snowball:* ts-node ./test/delete-db.ts"
   },

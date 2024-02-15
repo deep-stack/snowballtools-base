@@ -6,9 +6,11 @@
 [database]
   dbPath = "db/snowball"
 
-[githubOauth]
-  clientId = ""
-  clientSecret = ""
+[gitHub]
+  webhookUrl = ""
+  [gitHub.oAuth]
+    clientId = ""
+    clientSecret = ""
 
 [registryConfig]
   restEndpoint = "http://localhost:1317"

@@ -8,7 +8,7 @@ import { Typography, Button, Chip, Avatar } from '@material-tailwind/react';
 import ActivityCard from '../../../../components/projects/project/ActivityCard';
 import { relativeTimeMs } from '../../../../utils/time';
 import { useOctokit } from '../../../../context/OctokitContext';
-import { GitCommitDetails, OutletContextType } from '../../../../types';
+import { GitCommitWithBranch, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const COMMITS_PER_PAGE = 4;
@@ -16,7 +16,7 @@ const COMMITS_PER_PAGE = 4;
 const OverviewTabPanel = () => {
   const { octokit } = useOctokit();
   const navigate = useNavigate();
-  const [activities, setActivities] = useState<GitCommitDetails[]>([]);
+  const [activities, setActivities] = useState<GitCommitWithBranch[]>([]);
   const [liveDomain, setLiveDomain] = useState<Domain>();
 
   const client = useGQLClient();
@@ -78,6 +78,7 @@ const OverviewTabPanel = () => {
           throw err;
         }
 
+        // TODO: Show warning in activity section on request error
         console.log(err.message);
       }
     };

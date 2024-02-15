@@ -12,13 +12,16 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 
 import { ServerConfig } from './config';
 import { DEFAULT_GQL_PATH, USER_ID } from './constants';
+import githubRouter from './routes/github';
+import { Service } from './service';
 
 const log = debug('snowball:server');
 
 export const createAndStartServer = async (
+  serverConfig: ServerConfig,
   typeDefs: TypeSource,
   resolvers: any,
-  serverConfig: ServerConfig
+  service: Service
 ): Promise<ApolloServer> => {
   const { host, port, gqlPath = DEFAULT_GQL_PATH } = serverConfig;
 
@@ -53,6 +56,10 @@ export const createAndStartServer = async (
     app,
     path: gqlPath
   });
+
+  app.set('service', service);
+  app.use(express.json());
+  app.use('/api/github', githubRouter);
 
   httpServer.listen(port, host, () => {
     log(`Server is listening on ${host}:${port}${server.graphqlPath}`);

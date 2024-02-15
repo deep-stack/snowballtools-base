@@ -1,7 +1,7 @@
 import assert from 'assert';
 import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
-import { Octokit } from 'octokit';
+import { Octokit, RequestError } from 'octokit';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -14,18 +14,27 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
+import { GitHubConfig } from './config';
+import { GitPushEventPayload } from './types';
 
 const log = debug('snowball:service');
+const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
+
+interface Config {
+  gitHubConfig: GitHubConfig
+}
 
 export class Service {
   private db: Database;
   private oauthApp: OAuthApp;
   private registry: Registry;
+  private config: Config;
 
-  constructor (db: Database, app: OAuthApp, registry: Registry) {
+  constructor (config: Config, db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
     this.oauthApp = app;
     this.registry = registry;
+    this.config = config;
   }
 
   async getUser (userId: string): Promise<User | null> {
@@ -176,38 +185,6 @@ export class Service {
 
     const prodBranchDomains = await this.db.getDomainsByProjectId(oldDeployment.project.id, { branch: oldDeployment.project.prodBranch });
 
-    // TODO: Fix unique constraint error for domain
-    const deploymentWithProdBranchDomain = await this.db.getDeployment({
-      where: {
-        domain: {
-          id: prodBranchDomains[0].id
-        }
-      }
-    });
-
-    if (deploymentWithProdBranchDomain) {
-      await this.db.updateDeploymentById(deploymentWithProdBranchDomain.id, {
-        domain: null,
-        isCurrent: false
-      });
-    }
-
-    const oldCurrentDeployment = await this.db.getDeployment({
-      relations: {
-        domain: true
-      },
-      where: {
-        project: {
-          id: oldDeployment.project.id
-        },
-        isCurrent: true
-      }
-    });
-
-    if (oldCurrentDeployment) {
-      await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });
-    }
-
     const octokit = await this.getOctokit(userId);
 
     const newDeployement = await this.createDeployment(userId,
@@ -225,8 +202,14 @@ export class Service {
     return newDeployement;
   }
 
-  async createDeployment (userId: string, octokit: Octokit, data: DeepPartial<Deployment>): Promise<Deployment> {
+  async createDeployment (
+    userId: string,
+    octokit: Octokit,
+    data: DeepPartial<Deployment>,
+    recordData: { repoUrl?: string } = {}
+  ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
+    log(`Creating deployment in project ${data.project.name} from branch ${data.branch}`);
     const [owner, repo] = data.project.repository.split('/');
 
     const { data: packageJSONData } = await octokit.rest.repos.getContent({
@@ -243,10 +226,35 @@ export class Service {
     assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
     const packageJSON = JSON.parse(atob(packageJSONData.content));
 
+    if (!recordData.repoUrl) {
+      const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
+      recordData.repoUrl = repoDetails.html_url;
+    }
+
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationRecord({
       packageJSON,
       appType: data.project!.template!,
-      commitHash: data.commitHash!
+      commitHash: data.commitHash!,
+      repoUrl: recordData.repoUrl
+    });
+
+    // Check if new deployment is set to current
+    if (data.isCurrent) {
+      // Update previous current deployment
+      await this.db.updateDeployment({
+        project: {
+          id: data.project.id
+        },
+        isCurrent: true
+      }, { isCurrent: false });
+    }
+
+    // Update previous deployment with prod branch domain
+    // TODO: Fix unique constraint error for domain
+    await this.db.updateDeployment({
+      domainId: data.domain?.id
+    }, {
+      domain: null
     });
 
     const newDeployement = await this.db.addDeployement({
@@ -265,7 +273,7 @@ export class Service {
       })
     });
 
-    log(`Application record ${registryRecordId} published for deployment ${newDeployement.id}`);
+    log(`Created deployment ${newDeployement.id} and published application record ${registryRecordId}`);
     return newDeployement;
   }
 
@@ -304,22 +312,83 @@ export class Service {
         domain: null,
         commitHash: latestCommit.sha,
         commitMessage: latestCommit.commit.message
-      });
+      },
+      {
+        repoUrl: repoDetails.html_url
+      }
+    );
 
     const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest(
       {
         appName: newDeployment.registryRecordData.name!,
         commitHash: latestCommit.sha,
-        repository: repoDetails.git_url
+        repository: repoDetails.html_url
       });
     await this.db.updateProjectById(project.id, {
       registryRecordId,
       registryRecordData
     });
 
-    // TODO: Setup repo webhook for push events
+    await this.createRepoHook(octokit, project);
 
     return project;
+  }
+
+  async createRepoHook (octokit: Octokit, project: Project): Promise<void> {
+    try {
+      const [owner, repo] = project.repository.split('/');
+      await octokit.rest.repos.createWebhook({
+        owner,
+        repo,
+        config: {
+          url: new URL('api/github/webhook', this.config.gitHubConfig.webhookUrl).href,
+          content_type: 'json'
+        },
+        events: ['push']
+      });
+    } catch (err) {
+      // https://docs.github.com/en/rest/repos/webhooks?apiVersion=2022-11-28#create-a-repository-webhook--status-codes
+      if (
+        !(err instanceof RequestError &&
+        err.status === 422 &&
+        (err.response?.data as any).errors.some((err: any) => err.message === GITHUB_UNIQUE_WEBHOOK_ERROR))) {
+        throw err;
+      }
+
+      log(GITHUB_UNIQUE_WEBHOOK_ERROR);
+    }
+  }
+
+  async handleGitHubPush (data: GitPushEventPayload): Promise<void> {
+    const { repository, ref, head_commit: headCommit } = data;
+    log(`Handling GitHub push event from repository: ${repository.full_name}`);
+    const projects = await this.db.getProjects({ where: { repository: repository.full_name } });
+
+    if (!projects.length) {
+      log(`No projects found for repository ${repository.full_name}`);
+    }
+
+    // The `ref` property contains the full reference, including the branch name
+    // For example, "refs/heads/main" or "refs/heads/feature-branch"
+    const branch = ref.split('/').pop();
+
+    for await (const project of projects) {
+      const octokit = await this.getOctokit(project.ownerId);
+      const [domain] = await this.db.getDomainsByProjectId(project.id, { branch });
+
+      // Create deployment with branch and latest commit in GitHub data
+      await this.createDeployment(project.ownerId,
+        octokit,
+        {
+          project,
+          isCurrent: project.prodBranch === branch,
+          branch,
+          environment: project.prodBranch === branch ? Environment.Production : Environment.Preview,
+          domain,
+          commitHash: headCommit.id,
+          commitMessage: headCommit.message
+        });
+    }
   }
 
   async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
@@ -327,6 +396,7 @@ export class Service {
   }
 
   async deleteProject (projectId: string): Promise<boolean> {
+    // TODO: Remove GitHub repo hook
     return this.db.deleteProjectById(projectId);
   }
 
@@ -359,8 +429,6 @@ export class Service {
     if (oldDeployment === null) {
       throw new Error('Deployment not found');
     }
-
-    await this.db.updateDeploymentById(deploymentId, { domain: null, isCurrent: false });
 
     const octokit = await this.getOctokit(userId);
 

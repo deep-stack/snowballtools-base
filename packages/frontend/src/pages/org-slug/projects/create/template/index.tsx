@@ -33,13 +33,19 @@ const CreateRepo = () => {
       assert(data.account);
 
       try {
+        assert(
+          process.env.REACT_APP_GITHUB_TEMPLATE_REPO,
+          'Config REACT_APP_GITHUB_TEMPLATE_REPO is not set in .env',
+        );
+        const [owner, repo] =
+          process.env.REACT_APP_GITHUB_TEMPLATE_REPO.split('/');
+
         // TODO: Handle this functionality in backend
         const gitRepo = await octokit?.rest.repos.createUsingTemplate({
-          template_owner: 'github-rest',
-          template_repo: 'test-progressive-web-app',
+          template_owner: owner,
+          template_repo: repo,
           owner: data.account,
           name: data.repoName,
-          description: 'This is your first repository',
           include_all_branches: false,
           private: data.isPrivate,
         });
@@ -60,6 +66,7 @@ const CreateRepo = () => {
           `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}`,
         );
       } catch (err) {
+        console.error(err);
         toast.error('Error deploying project');
       }
     },

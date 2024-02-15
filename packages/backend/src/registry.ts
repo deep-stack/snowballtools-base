@@ -28,11 +28,13 @@ export class Registry {
   async createApplicationRecord ({
     packageJSON,
     commitHash,
-    appType
+    appType,
+    repoUrl
   }: {
     packageJSON: PackageJSON
+    commitHash: string,
     appType: string,
-    commitHash: string
+    repoUrl: string
   }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
@@ -54,13 +56,13 @@ export class Registry {
       type: APP_RECORD_TYPE,
       version: nextVersion,
       repository_ref: commitHash,
+      repository: [repoUrl],
       app_type: appType,
       ...(packageJSON.name && { name: packageJSON.name }),
       ...(packageJSON.description && { description: packageJSON.description }),
       ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
       ...(packageJSON.license && { license: packageJSON.license }),
       ...(packageJSON.author && { author: typeof packageJSON.author === 'object' ? JSON.stringify(packageJSON.author) : packageJSON.author }),
-      ...(packageJSON.repository && { repository: [packageJSON.repository] }),
       ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
@@ -78,6 +80,7 @@ export class Registry {
 
     // TODO: Discuss computation of CRN
     const crn = this.getCrn(packageJSON.name ?? '');
+    log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
     await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` }, this.registryConfig.privateKey, this.registryConfig.fee);

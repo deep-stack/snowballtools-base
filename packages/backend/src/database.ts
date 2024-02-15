@@ -83,6 +83,13 @@ export class Database {
     return userOrgs;
   }
 
+  async getProjects (options: FindManyOptions<Project>): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
+    const projects = await projectRepository.find(options);
+
+    return projects;
+  }
+
   async getProjectById (projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 
@@ -294,8 +301,12 @@ export class Database {
   }
 
   async updateDeploymentById (deploymentId: string, data: DeepPartial<Deployment>): Promise<boolean> {
+    return this.updateDeployment({ id: deploymentId }, data);
+  }
+
+  async updateDeployment (criteria: FindOptionsWhere<Deployment>, data: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const updateResult = await deploymentRepository.update({ id: deploymentId }, data);
+    const updateResult = await deploymentRepository.update(criteria, data);
 
     return Boolean(updateResult.affected);
   }
