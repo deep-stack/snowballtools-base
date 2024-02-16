@@ -127,9 +127,7 @@ export class Database {
   }
 
   async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
-    const deploymentRepository = this.dataSource.getRepository(Deployment);
-
-    const deployments = await deploymentRepository.find({
+    const deployments = await this.getDeployments({
       relations: {
         project: true,
         domain: true,
@@ -144,6 +142,13 @@ export class Database {
         createdAt: 'DESC'
       }
     });
+
+    return deployments;
+  }
+
+  async getDeployments (options: FindManyOptions<Deployment>): Promise<Deployment[]> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployments = await deploymentRepository.find(options);
 
     return deployments;
   }
@@ -166,12 +171,10 @@ export class Database {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     const id = nanoid();
-    const url = `${data.project!.name}-${id}.${PROJECT_DOMAIN}`;
 
     const updatedData = {
       ...data,
-      id,
-      url
+      id
     };
     const deployment = await deploymentRepository.save(updatedData);
 

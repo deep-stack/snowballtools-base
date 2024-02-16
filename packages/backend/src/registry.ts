@@ -36,6 +36,7 @@ export class Registry {
     appType: string,
     repoUrl: string
   }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
+    assert(packageJSON.name, "name field doesn't exist in package.json");
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records
@@ -58,7 +59,7 @@ export class Registry {
       repository_ref: commitHash,
       repository: [repoUrl],
       app_type: appType,
-      ...(packageJSON.name && { name: packageJSON.name }),
+      name: packageJSON.name,
       ...(packageJSON.description && { description: packageJSON.description }),
       ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
       ...(packageJSON.license && { license: packageJSON.license }),
@@ -79,7 +80,7 @@ export class Registry {
     log('Application record data:', applicationRecord);
 
     // TODO: Discuss computation of CRN
-    const crn = this.getCrn(packageJSON.name ?? '');
+    const crn = this.getCrn(packageJSON.name);
     log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
     await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);

@@ -28,7 +28,7 @@ export enum DeploymentStatus {
 export interface ApplicationRecord {
   type: string;
   version:string
-  name?: string
+  name: string
   description?: string
   homepage?: string
   license?: string
@@ -65,8 +65,8 @@ export class Deployment {
   @Column('varchar')
     commitMessage!: string;
 
-  @Column('varchar')
-    url!: string;
+  @Column('varchar', { nullable: true })
+    url!: string | null;
 
   @Column('varchar')
     registryRecordId!: string;
