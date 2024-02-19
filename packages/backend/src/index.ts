@@ -31,7 +31,7 @@ export const main = async (): Promise<void> => {
   await db.init();
 
   const registry = new Registry(registryConfig);
-  const service = new Service({ gitHubConfig: gitHub }, db, app, registry);
+  const service = new Service({ gitHubConfig: gitHub, registryConfig }, db, app, registry);
 
   const typeDefs = fs.readFileSync(path.join(__dirname, 'schema.gql')).toString();
   const resolvers = await createResolvers(service);

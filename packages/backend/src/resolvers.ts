@@ -30,7 +30,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
-        return service.getDeployementsByProjectId(projectId);
+        return service.getDeploymentsByProjectId(projectId);
       },
 
       environmentVariables: async (_: any, { projectId }: { projectId: string }) => {

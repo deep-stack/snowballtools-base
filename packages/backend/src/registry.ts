@@ -7,13 +7,14 @@ import { Registry as LaconicRegistry } from '@cerc-io/laconic-sdk';
 
 import { RegistryConfig } from './config';
 import { ApplicationDeploymentRequest } from './entity/Project';
-import { ApplicationRecord } from './entity/Deployment';
-import { PackageJSON } from './types';
+import { ApplicationRecord, Deployment } from './entity/Deployment';
+import { AppDeploymentRecord, PackageJSON } from './types';
 
 const log = debug('snowball:registry');
 
 const APP_RECORD_TYPE = 'ApplicationRecord';
-const DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRequest';
+const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
+const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
 
 // TODO: Move registry code to laconic-sdk/watcher-ts
 export class Registry {
@@ -35,7 +36,7 @@ export class Registry {
     commitHash: string,
     appType: string,
     repoUrl: string
-  }): Promise<{registryRecordId: string, registryRecordData: ApplicationRecord}> {
+  }): Promise<{applicationRecordId: string, applicationRecordData: ApplicationRecord}> {
     assert(packageJSON.name, "name field doesn't exist in package.json");
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
@@ -87,7 +88,7 @@ export class Registry {
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` }, this.registryConfig.privateKey, this.registryConfig.fee);
     await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.repository_ref}` }, this.registryConfig.privateKey, this.registryConfig.fee);
 
-    return { registryRecordId: result.data.id, registryRecordData: applicationRecord };
+    return { applicationRecordId: result.data.id, applicationRecordData: applicationRecord };
   }
 
   async createApplicationDeploymentRequest (data: {
@@ -96,8 +97,8 @@ export class Registry {
     repository: string,
     environmentVariables: { [key: string]: string }
   }): Promise<{
-    registryRecordId: string,
-    registryRecordData: ApplicationDeploymentRequest
+    applicationDeploymentRequestId: string,
+    applicationDeploymentRequestData: ApplicationDeploymentRequest
   }> {
     const crn = this.getCrn(data.appName);
     const records = await this.registry.resolveNames([crn]);
@@ -109,7 +110,7 @@ export class Registry {
 
     // Create record of type ApplicationDeploymentRequest and publish
     const applicationDeploymentRequest = {
-      type: DEPLOYMENT_RECORD_TYPE,
+      type: APP_DEPLOYMENT_REQUEST_TYPE,
       version: '1.0.0',
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
       application: `${crn}@${applicationRecord.attributes.app_version}`,
@@ -141,7 +142,21 @@ export class Registry {
     log(`Application deployment request record published: ${result.data.id}`);
     log('Application deployment request data:', applicationDeploymentRequest);
 
-    return { registryRecordId: result.data.id, registryRecordData: applicationDeploymentRequest };
+    return { applicationDeploymentRequestId: result.data.id, applicationDeploymentRequestData: applicationDeploymentRequest };
+  }
+
+  /**
+   * Fetch ApplicationDeploymentRecords for deployments
+   */
+  async getDeploymentRecords (deployments: Deployment[]): Promise<AppDeploymentRecord[]> {
+    // Fetch ApplicationDeploymentRecords for corresponding ApplicationRecord set in deployments
+    // TODO: Implement Laconicd GQL query to filter records by multiple values for an attribute
+    const records = await this.registry.queryRecords({
+      type: APP_DEPLOYMENT_RECORD_TYPE
+    }, true);
+
+    // Filter records with ApplicationRecord ids
+    return records.filter((record: AppDeploymentRecord) => deployments.some(deployment => deployment.applicationRecordId === record.attributes.application));
   }
 
   getCrn (packageJsonName: string): string {

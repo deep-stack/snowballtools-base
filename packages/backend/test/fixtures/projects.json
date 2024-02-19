@@ -10,8 +10,8 @@
     "framework": "test",
     "webhooks": [],
     "icon": "",
-    "registryRecordId": "hbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "registryRecordData": {},
+    "applicationDeploymentRequestId": "hbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "applicationDeploymentRequestData": {},
     "subDomain": "testProject.snowball.xyz"
   },
   {
@@ -25,8 +25,8 @@
     "framework": "test-2",
     "webhooks": [],
     "icon": "",
-    "registryRecordId": "gbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "registryRecordData": {},
+    "applicationDeploymentRequestId": "gbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "applicationDeploymentRequestData": {},
     "subDomain": "testProject-2.snowball.xyz"
   },
   {
@@ -40,8 +40,8 @@
     "framework": "test-3",
     "webhooks": [],
     "icon": "",
-    "registryRecordId": "ebafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "registryRecordData": {},
+    "applicationDeploymentRequestId": "ebafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "applicationDeploymentRequestData": {},
     "subDomain": "iglootools.snowball.xyz"
   },
   {
@@ -55,8 +55,8 @@
     "framework": "test-4",
     "webhooks": [],
     "icon": "",
-    "registryRecordId": "qbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "registryRecordData": {},
+    "applicationDeploymentRequestId": "qbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "applicationDeploymentRequestData": {},
     "subDomain": "iglootools-2.snowball.xyz"
   },
   {
@@ -70,8 +70,8 @@
     "framework": "test-5",
     "webhooks": [],
     "icon": "",
-    "registryRecordId": "xbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "registryRecordData": {},
+    "applicationDeploymentRequestId": "xbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
+    "applicationDeploymentRequestData": {},
     "subDomain": "snowball-2.snowball.xyz"
   }
 ]

@@ -126,8 +126,18 @@ export class Database {
     return projects;
   }
 
+  /**
+   * Get deployments with specified filter
+   */
+  async getDeployments (options: FindManyOptions<Deployment>): Promise<Deployment[]> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployments = await deploymentRepository.find(options);
+
+    return deployments;
+  }
+
   async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
-    const deployments = await this.getDeployments({
+    return this.getDeployments({
       relations: {
         project: true,
         domain: true,
@@ -142,15 +152,6 @@ export class Database {
         createdAt: 'DESC'
       }
     });
-
-    return deployments;
-  }
-
-  async getDeployments (options: FindManyOptions<Deployment>): Promise<Deployment[]> {
-    const deploymentRepository = this.dataSource.getRepository(Deployment);
-    const deployments = await deploymentRepository.find(options);
-
-    return deployments;
   }
 
   async getDeployment (options: FindOneOptions<Deployment>): Promise<Deployment | null> {
@@ -167,7 +168,7 @@ export class Database {
     return domains;
   }
 
-  async addDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
+  async addDeployment (data: DeepPartial<Deployment>): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     const id = nanoid();

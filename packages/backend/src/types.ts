@@ -25,3 +25,27 @@ export interface GitPushEventPayload {
     message: string;
   };
 }
+
+export interface AppDeploymentRecordAttributes {
+  application: string;
+  dns: string;
+  meta: string;
+  name: string;
+  request: string;
+  type: string;
+  url: string;
+  version: string;
+}
+
+interface RegistryRecord {
+  id: string;
+  names: string[] | null;
+  owners: string[];
+  bondId: string;
+  createTime: string;
+  expiryTime: string;
+}
+
+export interface AppDeploymentRecord extends RegistryRecord {
+  attributes: AppDeploymentRecordAttributes
+}

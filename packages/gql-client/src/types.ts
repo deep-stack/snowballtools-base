@@ -63,7 +63,7 @@ export type Deployment = {
   branch: string
   commitHash: string
   commitMessage: string
-  url: string
+  url?: string
   environment: Environment
   isCurrent: boolean
   status: DeploymentStatus

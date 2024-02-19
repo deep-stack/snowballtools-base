@@ -41,8 +41,8 @@ async function main () {
     const applicationDeploymentRecord = {
       type: 'ApplicationDeploymentRecord',
       version: '0.0.1',
-      name: deployment.registryRecordData.name,
-      application: deployment.registryRecordId,
+      name: deployment.applicationRecordData.name,
+      application: deployment.applicationRecordId,
 
       // TODO: Create DNS record
       dns: 'bafyreihlymqggsgqiqawvehkpr2imt4l3u6q7um7xzjrux5rhsvwnuyewm',
@@ -53,7 +53,7 @@ async function main () {
         so: '66fcfa49a1664d4cb4ce4f72c1c0e151'
       }),
 
-      request: deployment.project.registryRecordId,
+      request: deployment.project.applicationDeploymentRequestId,
       url
     };
 

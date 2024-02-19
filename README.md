@@ -31,7 +31,7 @@
 - Load fixtures in database
 
   ```bash
-  yarn db:load:fixtures
+  yarn test:db:load:fixtures
   ```
 
 - Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
@@ -66,7 +66,7 @@
 - Run the script to create bond, reserve the authority and set authority bond
 
   ```bash
-  yarn registry:init
+  yarn test:registry:init
   # snowball:initialize-registry bondId: 6af0ab81973b93d3511ae79841756fb5da3fd2f70ea1279e81fae7c9b19af6c4 +0ms
   ```
 
