@@ -1,4 +1,5 @@
-import { Button } from 'components/shared/Button';
+import { Button, ButtonOrLinkProps } from 'components/shared/Button';
+import { PlusIcon } from 'components/shared/CustomIcon';
 import React from 'react';
 
 const Page = () => {
@@ -17,13 +18,55 @@ const Page = () => {
         {/* Insert Components here */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Button</h1>
-          <div className="flex gap-10 flex-wrap">
-            <Button size="lg" disabled>
-              Button
-            </Button>
-            <Button size="md">Button</Button>
-            <Button size="sm">Button</Button>
-            <Button size="xs">Button</Button>
+          <div className="flex flex-col gap-10">
+            {['primary', 'secondary', 'tertiary', 'danger'].map(
+              (variant, index) => (
+                <div className="flex gap-5 flex-wrap" key={index}>
+                  {['lg', 'md', 'sm', 'xs', 'disabled'].map((size) => (
+                    <Button
+                      leftIcon={<PlusIcon />}
+                      rightIcon={<PlusIcon />}
+                      variant={variant as ButtonOrLinkProps['variant']}
+                      size={
+                        size !== 'disabled'
+                          ? (size as ButtonOrLinkProps['size'])
+                          : 'md'
+                      }
+                      key={`${variant}-${size}`}
+                      disabled={size === 'disabled'}
+                    >
+                      Button
+                    </Button>
+                  ))}
+                </div>
+              ),
+            )}
+            {[
+              'primary',
+              'secondary',
+              'tertiary',
+              'ghost',
+              'danger',
+              'danger-ghost',
+            ].map((variant, index) => (
+              <div className="flex gap-5 flex-wrap" key={index}>
+                {['lg', 'md', 'sm', 'xs', 'disabled'].map((size) => (
+                  <Button
+                    iconOnly
+                    variant={variant as ButtonOrLinkProps['variant']}
+                    size={
+                      size !== 'disabled'
+                        ? (size as ButtonOrLinkProps['size'])
+                        : 'md'
+                    }
+                    key={`${variant}-${size}`}
+                    disabled={size === 'disabled'}
+                  >
+                    <PlusIcon />
+                  </Button>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>
