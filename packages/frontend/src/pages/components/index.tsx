@@ -18,10 +18,22 @@ const Page = () => {
           <h1 className="text-2xl font-bold">Component A</h1>
 
           <div className="flex flex-row gap-10 items-center justify-center">
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
+            <div
+              tabIndex={0}
+              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
+            />
+            <div
+              tabIndex={0}
+              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
+            />
+            <div
+              tabIndex={0}
+              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
+            />
+            <div
+              tabIndex={0}
+              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
+            />
           </div>
 
           <div className="flex flex-row gap-10 items-center justify-center">

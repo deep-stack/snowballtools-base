@@ -8,7 +8,14 @@ export default withMT({
     '../../node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        snowball: {
+          200: '#DDEEFD',
+          500: '#47A4FA',
+        },
+      },
+    },
   },
   plugins: [],
 });
