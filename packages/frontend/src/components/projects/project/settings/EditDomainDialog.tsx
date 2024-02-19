@@ -15,7 +15,6 @@ import {
   Option,
 } from '@material-tailwind/react';
 
-import { RepositoryDetails } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
@@ -25,7 +24,7 @@ interface EditDomainDialogProp {
   open: boolean;
   handleOpen: () => void;
   domain: Domain;
-  repo: RepositoryDetails;
+  branches: string[];
   onUpdate: () => Promise<void>;
 }
 
@@ -40,7 +39,7 @@ const EditDomainDialog = ({
   open,
   handleOpen,
   domain,
-  repo,
+  branches,
   onUpdate,
 }: EditDomainDialogProp) => {
   const client = useGQLClient();
@@ -120,7 +119,7 @@ const EditDomainDialog = ({
       branch: domain.branch,
       redirectedTo: getRedirectUrl(domain),
     });
-  }, [domain, repo]);
+  }, [domain]);
 
   return (
     <Dialog open={open} handler={handleOpen}>
@@ -166,9 +165,13 @@ const EditDomainDialog = ({
           <Input
             crossOrigin={undefined}
             {...register('branch', {
-              validate: (value) => repo.branch.includes(value),
+              validate: (value) =>
+                Boolean(branches.length) ? branches.includes(value) : true,
             })}
-            disabled={watch('redirectedTo') !== DEFAULT_REDIRECT_OPTIONS[0]}
+            disabled={
+              !Boolean(branches.length) ||
+              watch('redirectedTo') !== DEFAULT_REDIRECT_OPTIONS[0]
+            }
           />
           {!isValid && (
             <Typography variant="small" className="text-red-500">

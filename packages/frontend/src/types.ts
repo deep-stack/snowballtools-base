@@ -6,15 +6,6 @@ export interface GitOrgDetails {
   avatar_url: string;
 }
 
-// TODO: Use GitRepositoryDetails
-export interface RepositoryDetails {
-  title: string;
-  updatedAt: string;
-  user: string;
-  private: boolean;
-  branch: string[];
-}
-
 export interface GitRepositoryDetails {
   id: number;
   name: string;

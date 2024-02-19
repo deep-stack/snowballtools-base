@@ -24,7 +24,7 @@ const NewProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      <RepositoryList octokit={octokit!} />
+      <RepositoryList octokit={octokit} />
     </>
   ) : (
     <ConnectAccount onAuth={updateAuth} />
