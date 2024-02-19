@@ -4,6 +4,7 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { buttonTheme } from './Button.theme';
 import type { ButtonTheme } from './Button.theme';
 import { Link } from 'react-router-dom';
+import { cloneIcon } from 'utils/cloneIcon';
 
 /**
  * Represents the properties of a base button component.
@@ -69,6 +70,7 @@ const Button = ({
   leftIcon,
   rightIcon,
   fullWidth,
+  iconOnly,
   shape,
   variant,
   ...props
@@ -114,15 +116,17 @@ const Button = ({
     variant = 'primary',
     size = 'md',
     fullWidth = false,
+    iconOnly = false,
     shape = 'rounded',
     as,
   }) => ({
     variant,
     size,
     fullWidth,
+    iconOnly,
     shape,
     as,
-  }))({ ...props, fullWidth, shape, variant });
+  }))({ ...props, fullWidth, iconOnly, shape, variant });
 
   /**
    * Validates that a button component has either children or an aria-label prop.
@@ -133,14 +137,28 @@ const Button = ({
     );
   }
 
+  const iconSize = useCallback(() => {
+    switch (styleProps.size) {
+      case 'lg':
+        return { width: 20, height: 20 };
+      case 'sm':
+      case 'xs':
+        return { width: 16, height: 16 };
+      case 'md':
+      default: {
+        return { width: 18, height: 18 };
+      }
+    }
+  }, [styleProps.size])();
+
   return (
     <Component
       {...props}
       className={buttonTheme({ ...styleProps, class: className })}
     >
-      {leftIcon}
+      {cloneIcon(leftIcon, { ...iconSize })}
       {children}
-      {rightIcon}
+      {cloneIcon(rightIcon, { ...iconSize })}
     </Component>
   );
 };
