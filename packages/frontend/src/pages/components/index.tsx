@@ -1,3 +1,4 @@
+import { Button } from 'components/shared/Button';
 import React from 'react';
 
 const Page = () => {
@@ -15,20 +16,14 @@ const Page = () => {
 
         {/* Insert Components here */}
         <div className="flex flex-col gap-10 items-center justify-between">
-          <h1 className="text-2xl font-bold">Component A</h1>
-
-          <div className="flex flex-row gap-10 items-center justify-center">
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-          </div>
-
-          <div className="flex flex-row gap-10 items-center justify-center">
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
+          <h1 className="text-2xl font-bold">Button</h1>
+          <div className="flex gap-10 flex-wrap">
+            <Button size="lg" disabled>
+              Button
+            </Button>
+            <Button size="md">Button</Button>
+            <Button size="sm">Button</Button>
+            <Button size="xs">Button</Button>
           </div>
         </div>
       </div>
