@@ -6,8 +6,7 @@ import { DateTime } from 'luxon';
 import { Registry as LaconicRegistry } from '@cerc-io/laconic-sdk';
 
 import { RegistryConfig } from './config';
-import { ApplicationDeploymentRequest } from './entity/Project';
-import { ApplicationRecord, Deployment } from './entity/Deployment';
+import { ApplicationRecord, Deployment, ApplicationDeploymentRequest } from './entity/Deployment';
 import { AppDeploymentRecord, PackageJSON } from './types';
 
 const log = debug('snowball:registry');
@@ -37,7 +36,6 @@ export class Registry {
     appType: string,
     repoUrl: string
   }): Promise<{applicationRecordId: string, applicationRecordData: ApplicationRecord}> {
-    assert(packageJSON.name, "name field doesn't exist in package.json");
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records

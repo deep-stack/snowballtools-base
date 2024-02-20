@@ -15,7 +15,7 @@ import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
-import { AppDeploymentRecord, GitPushEventPayload } from './types';
+import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
 
 const log = debug('snowball:service');
 
@@ -326,7 +326,9 @@ export class Service {
     }
 
     assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON = JSON.parse(atob(packageJSONData.content));
+    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
+
+    assert(packageJSON.name, "name field doesn't exist in package.json");
 
     if (!recordData.repoUrl) {
       const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
@@ -340,6 +342,22 @@ export class Service {
       commitHash: data.commitHash!,
       repoUrl: recordData.repoUrl
     });
+
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
+
+    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
+      acc[env.key] = env.value;
+
+      return acc;
+    }, {} as { [key: string]: string });
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        appName: packageJSON.name,
+        commitHash: data.commitHash!,
+        repository: recordData.repoUrl,
+        environmentVariables: environmentVariablesObj
+      });
 
     // Update previous deployment with prod branch domain
     // TODO: Fix unique constraint error for domain
@@ -358,31 +376,12 @@ export class Service {
       status: DeploymentStatus.Building,
       applicationRecordId,
       applicationRecordData,
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId
       })
-    });
-
-    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
-
-    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
-      acc[env.key] = env.value;
-
-      return acc;
-    }, {} as { [key: string]: string });
-
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        appName: newDeployment.applicationRecordData.name!,
-        commitHash: data.commitHash!,
-        repository: recordData.repoUrl,
-        environmentVariables: environmentVariablesObj
-      });
-
-    await this.db.updateProjectById(data.project.id!, {
-      applicationDeploymentRequestId,
-      applicationDeploymentRequestData
     });
 
     log(`Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`);
