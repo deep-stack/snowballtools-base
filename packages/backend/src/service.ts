@@ -364,6 +364,27 @@ export class Service {
       })
     });
 
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
+
+    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
+      acc[env.key] = env.value;
+
+      return acc;
+    }, {} as { [key: string]: string });
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        appName: newDeployment.applicationRecordData.name!,
+        commitHash: data.commitHash!,
+        repository: recordData.repoUrl,
+        environmentVariables: environmentVariablesObj
+      });
+
+    await this.db.updateProjectById(data.project.id!, {
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData
+    });
+
     log(`Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`);
     return newDeployment;
   }
@@ -393,7 +414,7 @@ export class Service {
     const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
 
     // Create deployment with prod branch and latest commit
-    const newDeployment = await this.createDeployment(userId,
+    await this.createDeployment(userId,
       octokit,
       {
         project,
@@ -407,27 +428,6 @@ export class Service {
         repoUrl: repoDetails.html_url
       }
     );
-
-    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(project.id, { environment: Environment.Production });
-
-    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
-      acc[env.key] = env.value;
-
-      return acc;
-    }, {} as { [key: string]: string });
-
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        appName: newDeployment.applicationRecordData.name!,
-        commitHash: latestCommit.sha,
-        repository: repoDetails.html_url,
-        environmentVariables: environmentVariablesObj
-      });
-
-    await this.db.updateProjectById(project.id, {
-      applicationDeploymentRequestId,
-      applicationDeploymentRequestData
-    });
 
     await this.createRepoHook(octokit, project);
 
