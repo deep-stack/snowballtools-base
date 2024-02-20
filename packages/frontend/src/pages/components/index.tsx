@@ -1,3 +1,4 @@
+import { Badge, BadgeProps } from 'components/shared/Badge';
 import { Button, ButtonOrLinkProps } from 'components/shared/Button';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import React from 'react';
@@ -67,6 +68,29 @@ const Page = () => {
                 ))}
               </div>
             ))}
+          </div>
+        </div>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Badge</h1>
+          <div className="space-y-5">
+            {['primary', 'secondary', 'tertiary', 'inset'].map(
+              (variant, index) => (
+                <div className="flex gap-5" key={index}>
+                  {['sm', 'xs'].map((size) => (
+                    <Badge
+                      key={size}
+                      variant={variant as BadgeProps['variant']}
+                      size={size as BadgeProps['size']}
+                    >
+                      1
+                    </Badge>
+                  ))}
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
