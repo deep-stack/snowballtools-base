@@ -1,9 +1,13 @@
 import { Button, ButtonOrLinkProps } from 'components/shared/Button';
 import { Calendar } from 'components/shared/Calendar';
 import { PlusIcon } from 'components/shared/CustomIcon';
-import React from 'react';
+import React, { useState } from 'react';
+import { Value } from 'react-calendar/dist/cjs/shared/types';
 
 const Page = () => {
+  const [singleDate, setSingleDate] = useState<Value>();
+  const [dateRange, setDateRange] = useState<Value>();
+
   return (
     <div className="relative h-full min-h-full">
       <div className="flex flex-col items-center justify-center max-w-7xl mx-auto px-20 py-20">
@@ -75,9 +79,25 @@ const Page = () => {
         <div className="w-full h border border-gray-200 px-20 my-10" />
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Calendar</h1>
-          <div className="flex gap-10 flex-wrap">
-            <Calendar />
-            <Calendar selectRange />
+          <div className="flex flex-col gap-10">
+            <div className="space-y-5 flex flex-col items-center">
+              <p>Selected date: {singleDate?.toString()}</p>
+              <Calendar
+                value={singleDate}
+                onChange={setSingleDate}
+                onSelect={setSingleDate}
+              />
+            </div>
+            <div className="space-y-5 flex flex-col items-center">
+              <p>
+                Start date:{' '}
+                {dateRange instanceof Array ? dateRange[0]?.toString() : ''}{' '}
+                <br />
+                End date:{' '}
+                {dateRange instanceof Array ? dateRange[1]?.toString() : ''}
+              </p>
+              <Calendar selectRange value={dateRange} onChange={setDateRange} />
+            </div>
           </div>
         </div>
       </div>
