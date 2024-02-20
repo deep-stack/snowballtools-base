@@ -1,3 +1,5 @@
+import { Button, ButtonOrLinkProps } from 'components/shared/Button';
+import { PlusIcon } from 'components/shared/CustomIcon';
 import React from 'react';
 
 const Page = () => {
@@ -15,32 +17,56 @@ const Page = () => {
 
         {/* Insert Components here */}
         <div className="flex flex-col gap-10 items-center justify-between">
-          <h1 className="text-2xl font-bold">Component A</h1>
-
-          <div className="flex flex-row gap-10 items-center justify-center">
-            <div
-              tabIndex={0}
-              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
-            />
-            <div
-              tabIndex={0}
-              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
-            />
-            <div
-              tabIndex={0}
-              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
-            />
-            <div
-              tabIndex={0}
-              className="h-20 w-40 bg-red-400 rounded-md focus-ring"
-            />
-          </div>
-
-          <div className="flex flex-row gap-10 items-center justify-center">
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
-            <div className="h-20 w-40 bg-red-400 rounded-md" />
+          <h1 className="text-2xl font-bold">Button</h1>
+          <div className="flex flex-col gap-10">
+            {['primary', 'secondary', 'tertiary', 'danger'].map(
+              (variant, index) => (
+                <div className="flex gap-5 flex-wrap" key={index}>
+                  {['lg', 'md', 'sm', 'xs', 'disabled'].map((size) => (
+                    <Button
+                      leftIcon={<PlusIcon />}
+                      rightIcon={<PlusIcon />}
+                      variant={variant as ButtonOrLinkProps['variant']}
+                      size={
+                        size !== 'disabled'
+                          ? (size as ButtonOrLinkProps['size'])
+                          : 'md'
+                      }
+                      key={`${variant}-${size}`}
+                      disabled={size === 'disabled'}
+                    >
+                      Button
+                    </Button>
+                  ))}
+                </div>
+              ),
+            )}
+            {[
+              'primary',
+              'secondary',
+              'tertiary',
+              'ghost',
+              'danger',
+              'danger-ghost',
+            ].map((variant, index) => (
+              <div className="flex gap-5 flex-wrap" key={index}>
+                {['lg', 'md', 'sm', 'xs', 'disabled'].map((size) => (
+                  <Button
+                    iconOnly
+                    variant={variant as ButtonOrLinkProps['variant']}
+                    size={
+                      size !== 'disabled'
+                        ? (size as ButtonOrLinkProps['size'])
+                        : 'md'
+                    }
+                    key={`${variant}-${size}`}
+                    disabled={size === 'disabled'}
+                  >
+                    <PlusIcon />
+                  </Button>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

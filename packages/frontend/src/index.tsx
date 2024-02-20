@@ -7,6 +7,7 @@ import { GQLClient } from 'gql-client';
 import { ThemeProvider } from '@material-tailwind/react';
 
 import './index.css';
+import '@fontsource/inter';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';

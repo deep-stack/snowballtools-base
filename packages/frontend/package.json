@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fontsource/inter": "^5.0.16",
     "@material-tailwind/react": "^2.1.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -29,6 +30,7 @@
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "react-timer-hook": "^3.0.7",
+    "tailwind-variants": "^0.2.0",
     "typescript": "^4.9.5",
     "usehooks-ts": "^2.10.0",
     "vertical-stepper-nav": "^1.0.2",

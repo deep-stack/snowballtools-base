@@ -8,6 +8,9 @@ export default withMT({
     '../../node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+    },
     extend: {
       colors: {
         emerald: {
@@ -137,6 +140,15 @@ export default withMT({
           'floating-hovered': '#f1f5f9',
           'high-contrast': '#0b1d2e',
         },
+      },
+      boxShadow: {
+        button:
+          'inset 0px 0px 4px rgba(255, 255, 255, 0.25), inset 0px -2px 0px rgba(0, 0, 0, 0.04)',
+      },
+      spacing: {
+        2.5: '0.625rem',
+        3.25: '0.8125rem',
+        3.5: '0.875rem',
       },
     },
   },
