@@ -54,7 +54,7 @@ export const getCheckboxVariant = tv({
     disabled: {
       true: {
         wrapper: ['cursor-not-allowed'],
-        indicator: ['group-hover:text-current'],
+        indicator: ['group-hover:text-transparent'],
         input: [
           'group-hover:border-border-interactive/[0.14]',
           'group-hover:bg-controls-disabled',
