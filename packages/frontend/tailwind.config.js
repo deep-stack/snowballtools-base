@@ -12,6 +12,10 @@ export default withMT({
       sans: ['Inter', 'sans-serif'],
     },
     extend: {
+      fontSize: {
+        '2xs': '0.625rem',
+        '3xs': '0.5rem',
+      },
       colors: {
         emerald: {
           100: '#d1fae5',
