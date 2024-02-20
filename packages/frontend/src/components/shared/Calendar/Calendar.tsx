@@ -21,7 +21,7 @@ import {
 import './Calendar.css';
 import { format } from 'date-fns';
 
-const CALENDAR_VIEW = ['month', 'year', 'decade', 'century'] as const;
+const CALENDAR_VIEW = ['month', 'year', 'decade'] as const;
 export type CalendarView = (typeof CALENDAR_VIEW)[number];
 
 /**
@@ -82,12 +82,18 @@ export const Calendar = ({
   onChange: onChangeProp,
   ...props
 }: CalendarProps): JSX.Element => {
-  const { wrapper, calendar, navigation, dropdowns, dropdown, footer } =
-    calendarTheme();
+  const {
+    wrapper,
+    calendar,
+    navigation,
+    actions: actionsClass,
+    button,
+    footer,
+  } = calendarTheme();
 
   const today = new Date();
   const currentMonth = format(today, 'MMM');
-  const currentyear = format(today, 'yyyy');
+  const currentYear = format(today, 'yyyy');
 
   const [view, setView] = useState<CalendarView>('month');
   const [activeDate, setActiveDate] = useState<Date>(
@@ -95,7 +101,7 @@ export const Calendar = ({
   );
   const [value, setValue] = useState<Value>(valueProp as Value);
   const [month, setMonth] = useState(currentMonth);
-  const [year, setYear] = useState(currentyear);
+  const [year, setYear] = useState(currentYear);
 
   /**
    * Update the navigation label based on the active date
@@ -112,10 +118,10 @@ export const Calendar = ({
    * Change the active date base on the action and range
    */
   const handleNavigate = useCallback(
-    (action: 'previous' | 'next', range: 'month' | 'year' | 'decade') => {
+    (action: 'previous' | 'next', view: CalendarView) => {
       setActiveDate((date) => {
         const newDate = new Date(date);
-        switch (range) {
+        switch (view) {
           case 'month':
             newDate.setMonth(
               action === 'previous' ? date.getMonth() - 1 : date.getMonth() + 1,
@@ -158,10 +164,10 @@ export const Calendar = ({
    * and also update the navigation label
    */
   const handleChangeNavigation = useCallback(
-    (type: 'month' | 'year', date: Date) => {
+    (view: 'month' | 'year', date: Date) => {
       setActiveDate(date);
       changeNavigationLabel(date);
-      setView(type);
+      setView(view);
     },
     [setActiveDate, changeNavigationLabel, setView],
   );
@@ -225,10 +231,10 @@ export const Calendar = ({
           <Button iconOnly size="sm" variant="ghost" onClick={handlePrevious}>
             <ChevronLeft />
           </Button>
-          <div className={dropdowns()}>
+          <div className={actionsClass()}>
             <Button
               variant="unstyled"
-              className={dropdown()}
+              className={button()}
               rightIcon={
                 <ChevronGrabberHorizontal className="text-elements-low-em" />
               }
@@ -238,7 +244,7 @@ export const Calendar = ({
             </Button>
             <Button
               variant="unstyled"
-              className={dropdown()}
+              className={button()}
               rightIcon={
                 <ChevronGrabberHorizontal className="text-elements-low-em" />
               }

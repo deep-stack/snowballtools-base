@@ -17,8 +17,8 @@ export const calendarTheme = tv({
       'py-2.5',
       'px-1',
     ],
-    dropdowns: ['flex', 'items-center', 'justify-center', 'gap-1.5', 'flex-1'],
-    dropdown: [
+    actions: ['flex', 'items-center', 'justify-center', 'gap-1.5', 'flex-1'],
+    button: [
       'flex',
       'items-center',
       'gap-2',
