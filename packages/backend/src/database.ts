@@ -316,6 +316,19 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
+  async updateDeploymentsByProjectIds (projectIds: string[], data: DeepPartial<Deployment>): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+
+    const updateResult = await deploymentRepository
+      .createQueryBuilder()
+      .update(Deployment)
+      .set(data)
+      .where('projectId IN (:...projectIds)', { projectIds })
+      .execute();
+
+    return Boolean(updateResult.affected);
+  }
+
   async addProject (userId: string, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 

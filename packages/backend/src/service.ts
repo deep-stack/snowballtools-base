@@ -78,7 +78,9 @@ export class Service {
       log(`Found ${records.length} ApplicationDeploymentRecords`);
 
       // Update deployments for which ApplicationDeploymentRecords were returned
-      await this.updateDeploymentsWithRecordData(records);
+      if (records.length) {
+        await this.updateDeploymentsWithRecordData(records);
+      }
     }
 
     this.deployRecordCheckTimeout = setTimeout(() => {
@@ -110,10 +112,7 @@ export class Service {
     }, new Set<string>());
 
     // Set old deployments isCurrent to false
-    await Promise.all(Array.from(productionDeploymentProjectIds).map(
-      // TODO: Add DB method to update multiple deployments in single query
-      async (projectId) => this.db.updateDeployment({ projectId }, { isCurrent: false })
-    ));
+    await this.db.updateDeploymentsByProjectIds(Array.from(productionDeploymentProjectIds), { isCurrent: false });
 
     const recordToDeploymentsMap = deployments.reduce((acc: {[key: string]: Deployment}, deployment) => {
       acc[deployment.applicationRecordId] = deployment;
@@ -135,7 +134,7 @@ export class Service {
         }
       );
 
-      log(`Updated deployment deployment ${deployment.id} with URL ${record.attributes.url}`);
+      log(`Updated deployment ${deployment.id} with URL ${record.attributes.url}`);
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -295,7 +294,6 @@ export class Service {
       octokit,
       {
         project: oldDeployment.project,
-        isCurrent: true,
         branch: oldDeployment.branch,
         environment: Environment.Production,
         domain: prodBranchDomains[0],
@@ -357,7 +355,6 @@ export class Service {
       commitHash: data.commitHash,
       commitMessage: data.commitMessage,
       environment: data.environment,
-      isCurrent: data.isCurrent,
       status: DeploymentStatus.Building,
       applicationRecordId,
       applicationRecordData,
@@ -400,7 +397,6 @@ export class Service {
       octokit,
       {
         project,
-        isCurrent: true,
         branch: project.prodBranch,
         environment: Environment.Production,
         domain: null,
@@ -486,7 +482,6 @@ export class Service {
         octokit,
         {
           project,
-          isCurrent: project.prodBranch === branch,
           branch,
           environment: project.prodBranch === branch ? Environment.Production : Environment.Preview,
           domain,
@@ -543,7 +538,6 @@ export class Service {
         project: oldDeployment.project,
         // TODO: Put isCurrent field in project
         branch: oldDeployment.branch,
-        isCurrent: true,
         environment: Environment.Production,
         domain: oldDeployment.domain,
         commitHash: oldDeployment.commitHash,

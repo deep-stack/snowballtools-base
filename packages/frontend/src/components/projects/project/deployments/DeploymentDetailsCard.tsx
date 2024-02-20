@@ -122,11 +122,7 @@ const DeploymentDetailsCard = ({
             <button className="self-start">...</button>
           </MenuHandler>
           <MenuList>
-            <a
-              href={'https://' + deployment.url}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={deployment.url} target="_blank" rel="noreferrer">
               <MenuItem disabled={!Boolean(deployment.url)}>^ Visit</MenuItem>
             </a>
             <MenuItem
