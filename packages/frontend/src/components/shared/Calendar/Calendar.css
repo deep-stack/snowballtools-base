@@ -1,0 +1,128 @@
+/*  React Calendar */
+.react-calendar {
+  @apply border-none font-sans;
+}
+
+/* Weekdays -- START */
+.react-calendar__month-view__weekdays {
+  @apply p-0 flex items-center justify-center;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  @apply h-8 w-12 flex items-center justify-center p-0 font-medium text-xs text-elements-disabled mb-2;
+}
+
+abbr[title] {
+  text-decoration: none;
+}
+/* Weekdays -- END  */
+
+/* Days -- START */
+.react-calendar__month-view__days {
+  @apply p-0 gap-0;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  @apply !text-elements-disabled;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth:hover {
+  @apply !text-elements-disabled !bg-transparent;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  @apply !text-elements-disabled !bg-transparent;
+}
+
+/* For weekend days */
+.react-calendar__month-view__days__day--weekend {
+  /* color: ${colors.grey[950]} !important; */
+}
+
+.react-calendar__tile {
+  @apply h-12 w-12 text-elements-high-em;
+}
+
+.react-calendar__tile:hover {
+  @apply bg-base-bg-emphasized rounded-lg;
+}
+
+.react-calendar__tile:focus-visible {
+  @apply bg-base-bg-emphasized rounded-lg focus-ring z-10;
+}
+
+.react-calendar__tile--now {
+  @apply bg-base-bg-emphasized text-elements-high-em rounded-lg;
+}
+
+.react-calendar__tile--now:hover {
+  @apply bg-base-bg-emphasized text-elements-high-em rounded-lg;
+}
+
+.react-calendar__tile--now:focus-visible {
+  @apply bg-base-bg-emphasized text-elements-high-em rounded-lg focus-ring;
+}
+
+.react-calendar__tile--active {
+  @apply bg-controls-primary text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--active:hover {
+  @apply bg-controls-primary-hovered;
+}
+
+.react-calendar__tile--active:focus-visible {
+  @apply bg-controls-primary-hovered focus-ring;
+}
+
+/* Range -- START */
+.react-calendar__tile--range {
+  @apply bg-controls-secondary text-elements-on-secondary rounded-none;
+}
+
+.react-calendar__tile--range:hover {
+  @apply bg-controls-secondary-hovered text-elements-on-secondary rounded-none;
+}
+
+.react-calendar__tile--range:focus-visible {
+  @apply bg-controls-secondary-hovered text-elements-on-secondary rounded-lg;
+}
+
+.react-calendar__tile--rangeStart {
+  @apply bg-controls-primary text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--rangeStart:hover {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--rangeStart:focus-visible {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg focus-ring;
+}
+
+.react-calendar__tile--rangeEnd {
+  @apply bg-controls-primary text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--rangeEnd:hover {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--rangeEnd:focus-visible {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg focus-ring;
+}
+/* Range -- END */
+/* Days -- END  */
+
+/* Months -- START */
+.react-calendar__tile--hasActive {
+  @apply bg-controls-primary text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--hasActive:hover {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg;
+}
+
+.react-calendar__tile--hasActive:focus-visible {
+  @apply bg-controls-primary-hovered text-elements-on-primary rounded-lg focus-ring;
+}
