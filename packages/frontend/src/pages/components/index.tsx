@@ -1,4 +1,5 @@
 import { Button, ButtonOrLinkProps } from 'components/shared/Button';
+import { Calendar } from 'components/shared/Calendar';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import React from 'react';
 
@@ -13,6 +14,7 @@ const Page = () => {
             packages/frontend/src/pages/components/index.tsx
           </code>
         </p>
+
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
         {/* Insert Components here */}
@@ -67,6 +69,15 @@ const Page = () => {
                 ))}
               </div>
             ))}
+          </div>
+        </div>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Calendar</h1>
+          <div className="flex gap-10 flex-wrap">
+            <Calendar />
+            <Calendar selectRange />
           </div>
         </div>
       </div>
