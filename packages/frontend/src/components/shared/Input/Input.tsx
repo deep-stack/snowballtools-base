@@ -1,9 +1,9 @@
 import React, { ReactNode, useMemo } from 'react';
 import { ComponentPropsWithoutRef } from 'react';
 import { InputTheme, inputTheme } from './Input.theme';
+import { WarningIcon } from 'components/shared/CustomIcon';
 import { cloneIcon } from 'utils/cloneIcon';
 import { cn } from 'utils/classnames';
-import { WarningIcon } from '../CustomIcon';
 
 export interface InputProps
   extends InputTheme,
