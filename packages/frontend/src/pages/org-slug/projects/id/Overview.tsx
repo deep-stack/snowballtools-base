@@ -24,10 +24,6 @@ const OverviewTabPanel = () => {
   const { project } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    if (!octokit) {
-      return;
-    }
-
     // TODO: Save repo commits in DB and avoid using GitHub API in frontend
     // TODO: Figure out fetching latest commits for all branches
     const fetchRepoActivity = async () => {

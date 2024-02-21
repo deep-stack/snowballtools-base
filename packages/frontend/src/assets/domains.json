@@ -2,7 +2,7 @@
   {
     "id": 1,
     "projectid": 1,
-    "name": "randomurl.snowballtools.xyz",
+    "name": "example.snowballtools.xyz",
     "status": "live",
     "record": null,
     "isRedirectedto": false
@@ -10,7 +10,7 @@
   {
     "id": 2,
     "projectid": 1,
-    "name": "saugatt.com",
+    "name": "example.org",
     "status": "pending",
     "record": {
       "type": "A",
@@ -22,7 +22,7 @@
   {
     "id": 3,
     "projectid": 1,
-    "name": "www.saugatt.com",
+    "name": "www.example.org",
     "status": "pending",
     "record": {
       "type": "CNAME",

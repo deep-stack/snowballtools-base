@@ -3,11 +3,12 @@ import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
 
-import { Button, Typography, Option, Select } from '@material-tailwind/react';
+import { Button, Typography, Option } from '@material-tailwind/react';
 
 import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
 import { GitOrgDetails, GitRepositoryDetails } from '../../../types';
+import AsyncSelect from '../../shared/AsyncSelect';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
@@ -109,8 +110,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
     <div className="p-4">
       <div className="flex gap-2 mb-2">
         <div className="basis-1/3">
-          {/* TODO: Fix selection of Git user at start */}
-          <Select
+          <AsyncSelect
             value={selectedAccount}
             onChange={(value) => setSelectedAccount(value!)}
           >
@@ -119,7 +119,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
                 ^ {account.login}
               </Option>
             ))}
-          </Select>
+          </AsyncSelect>
         </div>
         <div className="basis-2/3">
           <SearchBar

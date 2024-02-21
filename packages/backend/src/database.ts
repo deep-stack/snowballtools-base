@@ -126,10 +126,18 @@ export class Database {
     return projects;
   }
 
-  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
+  /**
+   * Get deployments with specified filter
+   */
+  async getDeployments (options: FindManyOptions<Deployment>): Promise<Deployment[]> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployments = await deploymentRepository.find(options);
 
-    const deployments = await deploymentRepository.find({
+    return deployments;
+  }
+
+  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
+    return this.getDeployments({
       relations: {
         project: true,
         domain: true,
@@ -144,8 +152,6 @@ export class Database {
         createdAt: 'DESC'
       }
     });
-
-    return deployments;
   }
 
   async getDeployment (options: FindOneOptions<Deployment>): Promise<Deployment | null> {
@@ -162,16 +168,14 @@ export class Database {
     return domains;
   }
 
-  async addDeployement (data: DeepPartial<Deployment>): Promise<Deployment> {
+  async addDeployment (data: DeepPartial<Deployment>): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     const id = nanoid();
-    const url = `${data.project!.name}-${id}.${PROJECT_DOMAIN}`;
 
     const updatedData = {
       ...data,
-      id,
-      url
+      id
     };
     const deployment = await deploymentRepository.save(updatedData);
 
@@ -308,6 +312,19 @@ export class Database {
   async updateDeployment (criteria: FindOptionsWhere<Deployment>, data: DeepPartial<Deployment>): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const updateResult = await deploymentRepository.update(criteria, data);
+
+    return Boolean(updateResult.affected);
+  }
+
+  async updateDeploymentsByProjectIds (projectIds: string[], data: DeepPartial<Deployment>): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+
+    const updateResult = await deploymentRepository
+      .createQueryBuilder()
+      .update(Deployment)
+      .set(data)
+      .where('projectId IN (:...projectIds)', { projectIds })
+      .execute();
 
     return Boolean(updateResult.affected);
   }

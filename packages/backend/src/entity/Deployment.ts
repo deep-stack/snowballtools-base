@@ -12,6 +12,7 @@ import {
 import { Project } from './Project';
 import { Domain } from './Domain';
 import { User } from './User';
+import { AppDeploymentRecordAttributes } from '../types';
 
 export enum Environment {
   Production = 'Production',
@@ -28,7 +29,7 @@ export enum DeploymentStatus {
 export interface ApplicationRecord {
   type: string;
   version:string
-  name?: string
+  name: string
   description?: string
   homepage?: string
   license?: string
@@ -44,6 +45,9 @@ export class Deployment {
   // TODO: set custom generated id
   @PrimaryColumn('varchar')
     id!: string;
+
+  @Column()
+    projectId!: string;
 
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
@@ -65,14 +69,20 @@ export class Deployment {
   @Column('varchar')
     commitMessage!: string;
 
-  @Column('varchar')
-    url!: string;
+  @Column('varchar', { nullable: true })
+    url!: string | null;
 
   @Column('varchar')
-    registryRecordId!: string;
+    applicationRecordId!: string;
 
   @Column('simple-json')
-    registryRecordData!: ApplicationRecord;
+    applicationRecordData!: ApplicationRecord;
+
+  @Column('varchar', { nullable: true })
+    applicationDeploymentRecordId!: string | null;
+
+  @Column('simple-json', { nullable: true })
+    applicationDeploymentRecordData!: AppDeploymentRecordAttributes | null;
 
   @Column({
     enum: Environment

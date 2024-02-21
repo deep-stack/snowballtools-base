@@ -171,7 +171,8 @@ export const EnvironmentVariablesTabPanel = () => {
                 >
                   + Add variable
                 </Button>
-                <Button variant="outlined" size="sm">
+                {/* TODO: Implement import environment varible functionality */}
+                <Button variant="outlined" size="sm" disabled>
                   ^ Import .env
                 </Button>
               </div>

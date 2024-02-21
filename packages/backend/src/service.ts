@@ -14,14 +14,16 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
-import { GitHubConfig } from './config';
-import { GitPushEventPayload } from './types';
+import { GitHubConfig, RegistryConfig } from './config';
+import { AppDeploymentRecord, GitPushEventPayload } from './types';
 
 const log = debug('snowball:service');
+
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
 
 interface Config {
   gitHubConfig: GitHubConfig
+  registryConfig: RegistryConfig
 }
 
 export class Service {
@@ -30,11 +32,112 @@ export class Service {
   private registry: Registry;
   private config: Config;
 
+  private deployRecordCheckTimeout?: NodeJS.Timeout;
+
   constructor (config: Config, db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
     this.oauthApp = app;
     this.registry = registry;
     this.config = config;
+    this.init();
+  }
+
+  /**
+   * Initialize services
+   */
+  init (): void {
+    // Start check for ApplicationDeploymentRecords asynchronously
+    this.checkDeployRecordsAndUpdate();
+  }
+
+  /**
+   * Destroy services
+   */
+  destroy (): void {
+    clearTimeout(this.deployRecordCheckTimeout);
+  }
+
+  /**
+   * Checks for ApplicationDeploymentRecord and update corresponding deployments
+   * Continues check in loop after a delay of DEPLOY_RECORD_CHECK_DELAY_MS
+   */
+  async checkDeployRecordsAndUpdate (): Promise<void> {
+    // Fetch deployments in building state
+    const deployments = await this.db.getDeployments({
+      where: {
+        status: DeploymentStatus.Building
+        // TODO: Fetch and check records for recent deployments
+      }
+    });
+
+    if (deployments.length) {
+      log(`Found ${deployments.length} deployments in ${DeploymentStatus.Building} state`);
+
+      // Fetch ApplicationDeploymentRecord for deployments
+      const records = await this.registry.getDeploymentRecords(deployments);
+      log(`Found ${records.length} ApplicationDeploymentRecords`);
+
+      // Update deployments for which ApplicationDeploymentRecords were returned
+      if (records.length) {
+        await this.updateDeploymentsWithRecordData(records);
+      }
+    }
+
+    this.deployRecordCheckTimeout = setTimeout(() => {
+      this.checkDeployRecordsAndUpdate();
+    }, this.config.registryConfig.fetchDeploymentRecordDelay);
+  }
+
+  /**
+   * Update deployments with ApplicationDeploymentRecord data
+   */
+  async updateDeploymentsWithRecordData (records: AppDeploymentRecord[]): Promise<void> {
+    // Get deployments for ApplicationDeploymentRecords
+    const deployments = await this.db.getDeployments({
+      where: records.map(record => ({
+        applicationRecordId: record.attributes.application
+      })),
+      order: {
+        createdAt: 'DESC'
+      }
+    });
+
+    // Get project IDs of deployments that are in production environment
+    const productionDeploymentProjectIds = deployments.reduce((acc, deployment): Set<string> => {
+      if (deployment.environment === Environment.Production) {
+        acc.add(deployment.projectId);
+      }
+
+      return acc;
+    }, new Set<string>());
+
+    // Set old deployments isCurrent to false
+    await this.db.updateDeploymentsByProjectIds(Array.from(productionDeploymentProjectIds), { isCurrent: false });
+
+    const recordToDeploymentsMap = deployments.reduce((acc: {[key: string]: Deployment}, deployment) => {
+      acc[deployment.applicationRecordId] = deployment;
+      return acc;
+    }, {});
+
+    // Update deployment data for ApplicationDeploymentRecords
+    const deploymentUpdatePromises = records.map(async (record) => {
+      const deployment = recordToDeploymentsMap[record.attributes.application];
+
+      await this.db.updateDeploymentById(
+        deployment.id,
+        {
+          applicationDeploymentRecordId: record.id,
+          applicationDeploymentRecordData: record.attributes,
+          url: record.attributes.url,
+          status: DeploymentStatus.Ready,
+          isCurrent: deployment.environment === Environment.Production
+        }
+      );
+
+      log(`Updated deployment ${deployment.id} with URL ${record.attributes.url}`);
+    });
+
+    await Promise.all(deploymentUpdatePromises);
   }
 
   async getUser (userId: string): Promise<User | null> {
@@ -67,7 +170,7 @@ export class Service {
     return dbProjects;
   }
 
-  async getDeployementsByProjectId (projectId: string): Promise<Deployment[]> {
+  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
     const dbDeployments = await this.db.getDeploymentsByProjectId(projectId);
     return dbDeployments;
   }
@@ -187,11 +290,10 @@ export class Service {
 
     const octokit = await this.getOctokit(userId);
 
-    const newDeployement = await this.createDeployment(userId,
+    const newDeployment = await this.createDeployment(userId,
       octokit,
       {
         project: oldDeployment.project,
-        isCurrent: true,
         branch: oldDeployment.branch,
         environment: Environment.Production,
         domain: prodBranchDomains[0],
@@ -199,7 +301,7 @@ export class Service {
         commitMessage: oldDeployment.commitMessage
       });
 
-    return newDeployement;
+    return newDeployment;
   }
 
   async createDeployment (
@@ -232,23 +334,12 @@ export class Service {
     }
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
-    const { registryRecordId, registryRecordData } = await this.registry.createApplicationRecord({
+    const { applicationRecordId, applicationRecordData } = await this.registry.createApplicationRecord({
       packageJSON,
       appType: data.project!.template!,
       commitHash: data.commitHash!,
       repoUrl: recordData.repoUrl
     });
-
-    // Check if new deployment is set to current
-    if (data.isCurrent) {
-      // Update previous current deployment
-      await this.db.updateDeployment({
-        project: {
-          id: data.project.id
-        },
-        isCurrent: true
-      }, { isCurrent: false });
-    }
 
     // Update previous deployment with prod branch domain
     // TODO: Fix unique constraint error for domain
@@ -258,24 +349,23 @@ export class Service {
       domain: null
     });
 
-    const newDeployement = await this.db.addDeployement({
+    const newDeployment = await this.db.addDeployment({
       project: data.project,
       branch: data.branch,
       commitHash: data.commitHash,
       commitMessage: data.commitMessage,
       environment: data.environment,
-      isCurrent: data.isCurrent,
       status: DeploymentStatus.Building,
-      registryRecordId,
-      registryRecordData,
+      applicationRecordId,
+      applicationRecordData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId
       })
     });
 
-    log(`Created deployment ${newDeployement.id} and published application record ${registryRecordId}`);
-    return newDeployement;
+    log(`Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`);
+    return newDeployment;
   }
 
   async addProject (userId: string, organizationSlug: string, data: DeepPartial<Project>): Promise<Project | undefined> {
@@ -307,7 +397,6 @@ export class Service {
       octokit,
       {
         project,
-        isCurrent: true,
         branch: project.prodBranch,
         environment: Environment.Production,
         domain: null,
@@ -327,17 +416,17 @@ export class Service {
       return acc;
     }, {} as { [key: string]: string });
 
-    const { registryRecordId, registryRecordData } = await this.registry.createApplicationDeploymentRequest(
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
       {
-        appName: newDeployment.registryRecordData.name!,
+        appName: newDeployment.applicationRecordData.name!,
         commitHash: latestCommit.sha,
         repository: repoDetails.html_url,
         environmentVariables: environmentVariablesObj
       });
 
     await this.db.updateProjectById(project.id, {
-      registryRecordId,
-      registryRecordData
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData
     });
 
     await this.createRepoHook(octokit, project);
@@ -393,7 +482,6 @@ export class Service {
         octokit,
         {
           project,
-          isCurrent: project.prodBranch === branch,
           branch,
           environment: project.prodBranch === branch ? Environment.Production : Environment.Preview,
           domain,
@@ -444,20 +532,19 @@ export class Service {
 
     const octokit = await this.getOctokit(userId);
 
-    const newDeployement = await this.createDeployment(userId,
+    const newDeployment = await this.createDeployment(userId,
       octokit,
       {
         project: oldDeployment.project,
         // TODO: Put isCurrent field in project
         branch: oldDeployment.branch,
-        isCurrent: true,
         environment: Environment.Production,
         domain: oldDeployment.domain,
         commitHash: oldDeployment.commitHash,
         commitMessage: oldDeployment.commitMessage
       });
 
-    return newDeployement;
+    return newDeployment;
   }
 
   async rollbackDeployment (projectId: string, deploymentId: string): Promise<boolean> {
@@ -475,7 +562,7 @@ export class Service {
     });
 
     if (!oldCurrentDeployment) {
-      throw new Error('Current deployement doesnot exist');
+      throw new Error('Current deployment doesnot exist');
     }
 
     const oldCurrentDeploymentUpdate = await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });

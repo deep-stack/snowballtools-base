@@ -28,9 +28,11 @@ const DeploymentDialogBodyCard = ({
           color={chip.color}
         />
       )}
-      <Typography variant="small" className="text-black">
-        {deployment.url}
-      </Typography>
+      {deployment.url && (
+        <Typography variant="small" className="text-black">
+          {deployment.url}
+        </Typography>
+      )}
       <Typography variant="small">
         ^ {deployment.branch} ^{' '}
         {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}

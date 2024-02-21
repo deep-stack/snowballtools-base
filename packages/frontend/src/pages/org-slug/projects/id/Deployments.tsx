@@ -66,8 +66,10 @@ const DeploymentsTabPanel = () => {
 
       const dateMatch =
         !filterValue.updateAtRange ||
-        (new Date(deployment.updatedAt) >= filterValue.updateAtRange!.from! &&
-          new Date(deployment.updatedAt) <= filterValue.updateAtRange!.to!);
+        (new Date(Number(deployment.createdAt)) >=
+          filterValue.updateAtRange!.from! &&
+          new Date(Number(deployment.createdAt)) <=
+            filterValue.updateAtRange!.to!);
 
       return branchMatch && statusMatch && dateMatch;
     });

@@ -1,21 +1,21 @@
 [
   {
     "projectIndex": 0,
-    "name": "www.saugatt.com",
+    "name": "www.example.org",
     "status": "Pending",
     "redirectToIndex": 1,
     "branch": "test"
   },
   {
     "projectIndex": 1,
-    "name": "www.saugatt.com",
+    "name": "www.example.org",
     "status": "Pending",
     "redirectToIndex": 3,
     "branch": "test"
   },
   {
     "projectIndex": 2,
-    "name": "www.saugatt.com",
+    "name": "www.example.org",
     "status": "Pending",
     "redirectToIndex": 5,
     "branch": "test"

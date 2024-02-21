@@ -22,6 +22,7 @@ export interface RegistryConfig {
   chainId: string;
   privateKey: string;
   bondId: string;
+  fetchDeploymentRecordDelay: number;
   fee: {
     amount: string;
     denom: string;

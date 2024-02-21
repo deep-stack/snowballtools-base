@@ -12,7 +12,6 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import { RepositoryDetails } from '../../../../types';
 import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
@@ -27,7 +26,7 @@ enum RefreshStatus {
 interface DomainCardProps {
   domains: Domain[];
   domain: Domain;
-  repo: RepositoryDetails;
+  branches: string[];
   project: Project;
   onUpdate: () => Promise<void>;
 }
@@ -44,7 +43,7 @@ const DOMAIN_RECORD = {
 const DomainCard = ({
   domains,
   domain,
-  repo,
+  branches,
   project,
   onUpdate,
 }: DomainCardProps) => {
@@ -188,7 +187,7 @@ const DomainCard = ({
         domains={domains}
         open={editDialogOpen}
         domain={domain}
-        repo={repo}
+        branches={branches}
         onUpdate={onUpdate}
       />
     </>

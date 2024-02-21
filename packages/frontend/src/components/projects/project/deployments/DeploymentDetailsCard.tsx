@@ -90,7 +90,9 @@ const DeploymentDetailsCard = ({
     <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
       <div className="col-span-2">
         <div className="flex">
-          <Typography className=" basis-3/4">{deployment.url}</Typography>
+          {deployment.url && (
+            <Typography className=" basis-3/4">{deployment.url}</Typography>
+          )}
           <Chip
             value={deployment.status}
             color={STATUS_COLORS[deployment.status] ?? 'gray'}
@@ -120,12 +122,8 @@ const DeploymentDetailsCard = ({
             <button className="self-start">...</button>
           </MenuHandler>
           <MenuList>
-            <a
-              href={'https://' + deployment.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <MenuItem>^ Visit</MenuItem>
+            <a href={deployment.url} target="_blank" rel="noreferrer">
+              <MenuItem disabled={!Boolean(deployment.url)}>^ Visit</MenuItem>
             </a>
             <MenuItem
               onClick={() => setAssignDomainDialog(!assignDomainDialog)}

@@ -14,13 +14,13 @@ import { useGQLClient } from './GQLClientContext';
 const UNAUTHORIZED_ERROR_CODE = 401;
 
 interface ContextValue {
-  octokit: Octokit | null;
+  octokit: Octokit;
   isAuth: boolean;
   updateAuth: () => void;
 }
 
 const OctokitContext = createContext<ContextValue>({
-  octokit: null,
+  octokit: new Octokit(),
   isAuth: false,
   updateAuth: () => {},
 });
