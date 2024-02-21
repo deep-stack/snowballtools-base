@@ -3,7 +3,8 @@ import { Badge, BadgeProps } from 'components/shared/Badge';
 import { Button, ButtonOrLinkProps } from 'components/shared/Button';
 import { Calendar } from 'components/shared/Calendar';
 import { Checkbox } from 'components/shared/Checkbox';
-import { PlusIcon } from 'components/shared/CustomIcon';
+import { SearchIcon, CrossIcon, PlusIcon } from 'components/shared/CustomIcon';
+import { Input } from 'components/shared/Input';
 import React, { useState } from 'react';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 
@@ -53,6 +54,59 @@ const Page = () => {
 
         {/* Insert Components here */}
         <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Input</h1>
+          <div className="flex w-full flex-col gap-10">
+            <div className="flex w-full gap-10">
+              <Input
+                label="Label"
+                description="Additional information or context"
+                leftIcon={<SearchIcon />}
+                rightIcon={<CrossIcon />}
+                placeholder="Placeholder text"
+              />
+              <Input
+                disabled
+                label="Label"
+                description="Additional information or context"
+                placeholder="Placeholder text"
+              />
+              <Input
+                state="error"
+                label="Label"
+                description="Additional information or context"
+                placeholder="Placeholder text"
+                helperText="The error goes here"
+              />
+            </div>
+            <div className="flex w-full gap-10">
+              <Input
+                label="Label"
+                leftIcon={<SearchIcon />}
+                rightIcon={<CrossIcon />}
+                description="Additional information or context"
+                placeholder="Placeholder text"
+                size="sm"
+              />
+              <Input
+                disabled
+                label="Label"
+                description="Additional information or context"
+                placeholder="Placeholder text"
+                size="sm"
+              />
+              <Input
+                state="error"
+                label="Label"
+                description="Additional information or context"
+                placeholder="Placeholder text"
+                size="sm"
+                helperText="The error goes here"
+              />
+            </div>
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
           <h1 className="text-2xl font-bold">Button</h1>
           <div className="flex flex-col gap-10">
             {['primary', 'secondary', 'tertiary', 'danger'].map(
