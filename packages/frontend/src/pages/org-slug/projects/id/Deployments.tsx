@@ -30,14 +30,14 @@ const DeploymentsTabPanel = () => {
   const fetchDeployments = useCallback(async () => {
     const { deployments } = await client.getDeployments(project.id);
     setDeployments(deployments);
-  }, [client]);
+  }, [client, project]);
 
   const fetchProductionBranchDomains = useCallback(async () => {
     const { domains } = await client.getDomains(project.id, {
       branch: project.prodBranch,
     });
     setProdBranchDomains(domains);
-  }, [client]);
+  }, [client, project]);
 
   useEffect(() => {
     fetchProductionBranchDomains();
