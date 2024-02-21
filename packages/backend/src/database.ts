@@ -14,6 +14,12 @@ import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 import { PROJECT_DOMAIN } from './constants';
+import { getEntities, loadAndSaveData } from './utils';
+import { UserOrganization } from './entity/UserOrganization';
+
+const ORGANIZATION_DATA_PATH = '../test/fixtures/organizations.json';
+const USER_DATA_PATH = '../test/fixtures/users.json';
+const USER_ORGANIZATION_DATA_PATH = '../test/fixtures/user-organizations.json';
 
 const log = debug('snowball:database');
 
@@ -36,6 +42,25 @@ export class Database {
   async init (): Promise<void> {
     await this.dataSource.initialize();
     log('database initialized');
+
+    const organizations = await this.getOrganizations({});
+
+    if (!organizations.length) {
+      const orgEntities = await getEntities(path.resolve(__dirname, ORGANIZATION_DATA_PATH));
+      const savedOrgs = await loadAndSaveData(Organization, this.dataSource, [orgEntities[0]]);
+
+      // TODO: Remove user once authenticated
+      const userEntities = await getEntities(path.resolve(__dirname, USER_DATA_PATH));
+      const savedUsers = await loadAndSaveData(User, this.dataSource, [userEntities[0]]);
+
+      const userOrganizationRelations = {
+        member: savedUsers,
+        organization: savedOrgs
+      };
+
+      const userOrgEntities = await getEntities(path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH));
+      await loadAndSaveData(UserOrganization, this.dataSource, [userOrgEntities[0]], userOrganizationRelations);
+    }
   }
 
   async getUser (options: FindOneOptions<User>): Promise<User | null> {
@@ -58,6 +83,13 @@ export class Database {
     assert(updateResult.affected);
 
     return updateResult.affected > 0;
+  }
+
+  async getOrganizations (options: FindManyOptions<Organization>): Promise<Organization[]> {
+    const organizationRepository = this.dataSource.getRepository(Organization);
+    const organizations = await organizationRepository.find(options);
+
+    return organizations;
   }
 
   async getOrganization (options: FindOneOptions<Organization>): Promise<Organization | null> {

@@ -1,5 +1,4 @@
-import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
-import * as fs from 'fs/promises';
+import { DataSource } from 'typeorm';
 import debug from 'debug';
 import path from 'path';
 
@@ -11,7 +10,7 @@ import { EnvironmentVariable } from '../src/entity/EnvironmentVariable';
 import { Domain } from '../src/entity/Domain';
 import { ProjectMember } from '../src/entity/ProjectMember';
 import { Deployment } from '../src/entity/Deployment';
-import { getConfig } from '../src/utils';
+import { checkFileExists, getConfig, getEntities, loadAndSaveData } from '../src/utils';
 import { Config } from '../src/config';
 import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 
@@ -27,43 +26,20 @@ const DEPLOYMENT_DATA_PATH = './fixtures/deployments.json';
 const ENVIRONMENT_VARIABLE_DATA_PATH = './fixtures/environment-variables.json';
 const REDIRECTED_DOMAIN_DATA_PATH = './fixtures/redirected-domains.json';
 
-const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, filePath: string, relations?: any | undefined) => {
-  const entitiesData = await fs.readFile(filePath, 'utf-8');
-  const entities = JSON.parse(entitiesData);
-  const entityRepository = dataSource.getRepository(entityType);
-
-  const savedEntity:Entity[] = [];
-
-  for (const entityData of entities) {
-    let entity = entityRepository.create(entityData as DeepPartial<Entity>);
-
-    if (relations) {
-      for (const field in relations) {
-        const valueIndex = String(field + 'Index');
-
-        entity = {
-          ...entity,
-          [field]: relations[field][entityData[valueIndex]]
-        };
-      }
-    }
-    const dbEntity = await entityRepository.save(entity);
-    savedEntity.push(dbEntity);
-  }
-
-  return savedEntity;
-};
-
 const generateTestData = async (dataSource: DataSource) => {
-  const savedUsers = await loadAndSaveData(User, dataSource, path.resolve(__dirname, USER_DATA_PATH));
-  const savedOrgs = await loadAndSaveData(Organization, dataSource, path.resolve(__dirname, ORGANIZATION_DATA_PATH));
+  const userEntities = await getEntities(path.resolve(__dirname, USER_DATA_PATH));
+  const savedUsers = await loadAndSaveData(User, dataSource, userEntities);
+
+  const orgEntities = await getEntities(path.resolve(__dirname, ORGANIZATION_DATA_PATH));
+  const savedOrgs = await loadAndSaveData(Organization, dataSource, orgEntities);
 
   const projectRelations = {
     owner: savedUsers,
     organization: savedOrgs
   };
 
-  const savedProjects = await loadAndSaveData(Project, dataSource, path.resolve(__dirname, PROJECT_DATA_PATH), projectRelations);
+  const projectEntities = await getEntities(path.resolve(__dirname, PROJECT_DATA_PATH));
+  const savedProjects = await loadAndSaveData(Project, dataSource, projectEntities, projectRelations);
 
   const domainRepository = dataSource.getRepository(Domain);
 
@@ -71,14 +47,16 @@ const generateTestData = async (dataSource: DataSource) => {
     project: savedProjects
   };
 
-  const savedPrimaryDomains = await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, PRIMARY_DOMAIN_DATA_PATH), domainPrimaryRelations);
+  const primaryDomainsEntities = await getEntities(path.resolve(__dirname, PRIMARY_DOMAIN_DATA_PATH));
+  const savedPrimaryDomains = await loadAndSaveData(Domain, dataSource, primaryDomainsEntities, domainPrimaryRelations);
 
   const domainRedirectedRelations = {
     project: savedProjects,
     redirectTo: savedPrimaryDomains
   };
 
-  await loadAndSaveData(Domain, dataSource, path.resolve(__dirname, REDIRECTED_DOMAIN_DATA_PATH), domainRedirectedRelations);
+  const redirectDomainsEntities = await getEntities(path.resolve(__dirname, REDIRECTED_DOMAIN_DATA_PATH));
+  await loadAndSaveData(Domain, dataSource, redirectDomainsEntities, domainRedirectedRelations);
 
   const savedDomains = await domainRepository.find();
 
@@ -87,14 +65,16 @@ const generateTestData = async (dataSource: DataSource) => {
     organization: savedOrgs
   };
 
-  await loadAndSaveData(UserOrganization, dataSource, path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH), userOrganizationRelations);
+  const userOrganizationsEntities = await getEntities(path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH));
+  await loadAndSaveData(UserOrganization, dataSource, userOrganizationsEntities, userOrganizationRelations);
 
   const projectMemberRelations = {
     member: savedUsers,
     project: savedProjects
   };
 
-  await loadAndSaveData(ProjectMember, dataSource, path.resolve(__dirname, PROJECT_MEMBER_DATA_PATH), projectMemberRelations);
+  const projectMembersEntities = await getEntities(path.resolve(__dirname, PROJECT_MEMBER_DATA_PATH));
+  await loadAndSaveData(ProjectMember, dataSource, projectMembersEntities, projectMemberRelations);
 
   const deploymentRelations = {
     project: savedProjects,
@@ -102,23 +82,15 @@ const generateTestData = async (dataSource: DataSource) => {
     createdBy: savedUsers
   };
 
-  await loadAndSaveData(Deployment, dataSource, path.resolve(__dirname, DEPLOYMENT_DATA_PATH), deploymentRelations);
+  const deploymentsEntities = await getEntities(path.resolve(__dirname, DEPLOYMENT_DATA_PATH));
+  await loadAndSaveData(Deployment, dataSource, deploymentsEntities, deploymentRelations);
 
   const environmentVariableRelations = {
     project: savedProjects
   };
 
-  await loadAndSaveData(EnvironmentVariable, dataSource, path.resolve(__dirname, ENVIRONMENT_VARIABLE_DATA_PATH), environmentVariableRelations);
-};
-
-const checkFileExists = async (filePath: string) => {
-  try {
-    await fs.access(filePath, fs.constants.F_OK);
-    return true;
-  } catch (err) {
-    log(err);
-    return false;
-  }
+  const environmentVariablesEntities = await getEntities(path.resolve(__dirname, ENVIRONMENT_VARIABLE_DATA_PATH));
+  await loadAndSaveData(EnvironmentVariable, dataSource, environmentVariablesEntities, environmentVariableRelations);
 };
 
 const main = async () => {

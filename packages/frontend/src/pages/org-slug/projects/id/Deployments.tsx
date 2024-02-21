@@ -16,6 +16,7 @@ const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
   status: StatusOptions.ALL_STATUS,
 };
+const FETCH_DEPLOYMENTS_INTERVAL = 5000;
 
 const DeploymentsTabPanel = () => {
   const client = useGQLClient();
@@ -26,22 +27,30 @@ const DeploymentsTabPanel = () => {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [prodBranchDomains, setProdBranchDomains] = useState<Domain[]>([]);
 
-  const fetchDeployments = async () => {
+  const fetchDeployments = useCallback(async () => {
     const { deployments } = await client.getDeployments(project.id);
     setDeployments(deployments);
-  };
+  }, [client]);
 
   const fetchProductionBranchDomains = useCallback(async () => {
     const { domains } = await client.getDomains(project.id, {
       branch: project.prodBranch,
     });
     setProdBranchDomains(domains);
-  }, []);
+  }, [client]);
 
   useEffect(() => {
-    fetchDeployments();
     fetchProductionBranchDomains();
-  }, []);
+    fetchDeployments();
+
+    const interval = setInterval(() => {
+      fetchDeployments();
+    }, FETCH_DEPLOYMENTS_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [fetchDeployments, fetchProductionBranchDomains]);
 
   const currentDeployment = useMemo(() => {
     return deployments.find((deployment) => {
