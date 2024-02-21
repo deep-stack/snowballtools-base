@@ -337,6 +337,7 @@ export class Service {
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } = await this.registry.createApplicationRecord({
+      appName: repo,
       packageJSON,
       appType: data.project!.template!,
       commitHash: data.commitHash!,
@@ -353,7 +354,8 @@ export class Service {
 
     const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
       {
-        appName: packageJSON.name,
+        appName: repo,
+        packageJsonName: packageJSON.name,
         commitHash: data.commitHash!,
         repository: recordData.repoUrl,
         environmentVariables: environmentVariablesObj

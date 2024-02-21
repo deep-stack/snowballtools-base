@@ -26,11 +26,13 @@ export class Registry {
   }
 
   async createApplicationRecord ({
+    appName,
     packageJSON,
     commitHash,
     appType,
     repoUrl
   }: {
+    appName: string,
     packageJSON: PackageJSON
     commitHash: string,
     appType: string,
@@ -58,7 +60,7 @@ export class Registry {
       repository_ref: commitHash,
       repository: [repoUrl],
       app_type: appType,
-      name: packageJSON.name,
+      name: appName,
       ...(packageJSON.description && { description: packageJSON.description }),
       ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
       ...(packageJSON.license && { license: packageJSON.license }),
@@ -79,7 +81,7 @@ export class Registry {
     log('Application record data:', applicationRecord);
 
     // TODO: Discuss computation of CRN
-    const crn = this.getCrn(packageJSON.name);
+    const crn = this.getCrn(packageJSON.name, appName);
     log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
     await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);
@@ -91,6 +93,7 @@ export class Registry {
 
   async createApplicationDeploymentRequest (data: {
     appName: string,
+    packageJsonName: string,
     commitHash: string,
     repository: string,
     environmentVariables: { [key: string]: string }
@@ -98,7 +101,7 @@ export class Registry {
     applicationDeploymentRequestId: string,
     applicationDeploymentRequestData: ApplicationDeploymentRequest
   }> {
-    const crn = this.getCrn(data.appName);
+    const crn = this.getCrn(data.packageJsonName, data.appName);
     const records = await this.registry.resolveNames([crn]);
     const applicationRecord = records[0];
 
@@ -157,14 +160,10 @@ export class Registry {
     return records.filter((record: AppDeploymentRecord) => deployments.some(deployment => deployment.applicationRecordId === record.attributes.application));
   }
 
-  getCrn (packageJsonName: string): string {
-    const [arg1, arg2] = packageJsonName.split('/');
+  getCrn (packageJsonName: string, appName: string): string {
+    const [arg1] = packageJsonName.split('/');
+    const authority = arg1.replace('@', '');
 
-    if (arg2) {
-      const authority = arg1.replace('@', '');
-      return `crn://${authority}/applications/${arg2}`;
-    }
-
-    return `crn://${arg1}/applications/${arg1}`;
+    return `crn://${authority}/applications/${appName}`;
   }
 }
