@@ -57,17 +57,17 @@ export const inputTheme = tv(
       size: {
         md: {
           container: 'h-11',
-          input: 'text-sm pl-4 pr-4',
-          icon: 'h-[18px] w-[18px]',
+          input: ['text-sm pl-4 pr-4'],
+          icon: ['h-[18px] w-[18px]'],
           helperText: 'text-sm',
-          helperIcon: 'h-5 w-5',
+          helperIcon: ['h-5 w-5'],
         },
         sm: {
           container: 'h-8',
-          input: 'text-xs pl-3 pr-3',
-          icon: 'h-4 w-4',
+          input: ['text-xs pl-3 pr-3'],
+          icon: ['h-4 w-4'],
           helperText: 'text-xs',
-          helperIcon: 'h-4 w-4',
+          helperIcon: ['h-4 w-4'],
         },
       },
     },
