@@ -4,26 +4,40 @@ export const inputTheme = tv(
   {
     slots: {
       container: [
-        'flex items-center rounded-lg relative',
+        'flex',
+        'items-center',
+        'rounded-lg',
+        'relative',
         'placeholder:text-elements-disabled',
-        'disabled:cursor-not-allowed disabled:bg-controls-disabled',
+        'disabled:cursor-not-allowed',
+        'disabled:bg-controls-disabled',
       ],
       label: ['text-sm', 'text-elements-high-em'],
       description: ['text-xs', 'text-elements-low-em'],
       input: [
         'focus-ring',
-        'block w-full h-full rounded-lg text-elements-mid-em',
+        'block',
+        'w-full',
+        'h-full',
+        'rounded-lg',
+        'text-elements-mid-em',
         'shadow-sm',
-        'border border-border-interactive',
+        'border',
+        'border-border-interactive',
         'disabled:shadow-none',
         'disabled:border-none',
       ],
       icon: ['text-elements-mid-em'],
       iconContainer: [
-        'absolute inset-y-0 flex items-center z-10 cursor-pointer',
+        'absolute',
+        'inset-y-0',
+        'flex',
+        'items-center',
+        'z-10',
+        'cursor-pointer',
       ],
       helperIcon: [],
-      helperText: ['flex gap-2 items-center text-elements-danger'],
+      helperText: ['flex', 'gap-2', 'items-center', 'text-elements-danger'],
     },
     variants: {
       state: {
@@ -32,10 +46,12 @@ export const inputTheme = tv(
         },
         error: {
           input: [
-            'outline outline-offset-0 outline-border-danger',
+            'outline',
+            'outline-offset-0',
+            'outline-border-danger',
             'shadow-none',
           ],
-          helperText: ['text-elements-danger'],
+          helperText: 'text-elements-danger',
         },
       },
       size: {
