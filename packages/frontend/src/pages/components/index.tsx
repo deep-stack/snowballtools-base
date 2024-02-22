@@ -23,7 +23,7 @@ import {
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
-import { renderDefaultTag, renderMinimalTag } from './renders/Tag';
+import { renderDefaultTag, renderMinimalTag } from './renders/tag';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
