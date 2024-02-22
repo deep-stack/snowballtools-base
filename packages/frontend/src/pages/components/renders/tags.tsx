@@ -1,15 +1,15 @@
 import React from 'react';
-import { Tags } from 'components/shared/Tags';
+import { Tag } from 'components/shared/Tag';
 import { PlusIcon } from 'components/shared/CustomIcon';
 
-export const renderDefaultTags = () =>
+export const renderDefaultTag = () =>
   (['default'] as const).map((style) => (
     <div key={style} className="flex gap-4 items-center">
       {(
         ['attention', 'negative', 'positive', 'emphasized', 'neutral'] as const
       ).map((type) => (
         <div key={type} className="flex flex-col gap-4">
-          <Tags
+          <Tag
             leftIcon={<PlusIcon />}
             rightIcon={<PlusIcon />}
             style={style}
@@ -17,8 +17,8 @@ export const renderDefaultTags = () =>
             size="sm"
           >
             Label
-          </Tags>
-          <Tags
+          </Tag>
+          <Tag
             leftIcon={<PlusIcon />}
             rightIcon={<PlusIcon />}
             size="xs"
@@ -26,20 +26,20 @@ export const renderDefaultTags = () =>
             type={type}
           >
             Label
-          </Tags>
+          </Tag>
         </div>
       ))}
     </div>
   ));
 
-export const renderMinimalTags = () =>
+export const renderMinimalTag = () =>
   (['minimal'] as const).map((style) => (
     <div key={style} className="flex gap-4 items-center">
       {(
         ['attention', 'negative', 'positive', 'emphasized', 'neutral'] as const
       ).map((type) => (
         <div key={type} className="flex flex-col gap-4">
-          <Tags
+          <Tag
             leftIcon={<PlusIcon />}
             rightIcon={<PlusIcon />}
             style={style}
@@ -47,8 +47,8 @@ export const renderMinimalTags = () =>
             size="sm"
           >
             Label
-          </Tags>
-          <Tags
+          </Tag>
+          <Tag
             leftIcon={<PlusIcon />}
             rightIcon={<PlusIcon />}
             size="xs"
@@ -56,7 +56,7 @@ export const renderMinimalTags = () =>
             type={type}
           >
             Label
-          </Tags>
+          </Tag>
         </div>
       ))}
     </div>

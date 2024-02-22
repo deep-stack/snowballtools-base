@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants';
 import type { VariantProps } from 'tailwind-variants';
 
-export const tagsTheme = tv(
+export const tagTheme = tv(
   {
     slots: {
       wrapper: ['flex', 'gap-1.5', 'rounded-lg', 'border'],
@@ -90,4 +90,4 @@ export const tagsTheme = tv(
   },
 );
 
-export type TagsTheme = VariantProps<typeof tagsTheme>;
+export type TagTheme = VariantProps<typeof tagTheme>;

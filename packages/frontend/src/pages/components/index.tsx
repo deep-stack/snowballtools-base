@@ -23,7 +23,7 @@ import {
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
-import { renderDefaultTags, renderMinimalTags } from './renders/tags';
+import { renderDefaultTag, renderMinimalTag } from './renders/Tag';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
@@ -42,13 +42,13 @@ const Page = () => {
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
-        {/* Tags */}
+        {/* Tag */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <div className="flex flex-col gap-10 items-center justify-between">
-            <h1 className="text-2xl font-bold">Tags</h1>
+            <h1 className="text-2xl font-bold">Tag</h1>
             <div className="flex flex-col gap-10 items-center justify-center">
-              {renderDefaultTags()}
-              {renderMinimalTags()}
+              {renderDefaultTag()}
+              {renderMinimalTag()}
             </div>
           </div>
         </div>

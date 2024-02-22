@@ -3,11 +3,11 @@ import React, {
   type ComponentPropsWithoutRef,
   useMemo,
 } from 'react';
-import { TagsTheme, tagsTheme } from './Tags.theme';
+import { tagTheme, type TagTheme } from './Tag.theme';
 import { cloneIcon } from 'utils/cloneIcon';
 
-type TagsProps = ComponentPropsWithoutRef<'div'> &
-  TagsTheme & {
+type TagProps = ComponentPropsWithoutRef<'div'> &
+  TagTheme & {
     /**
      * The optional left icon element for a component.
      * @type {ReactNode}
@@ -18,36 +18,21 @@ type TagsProps = ComponentPropsWithoutRef<'div'> &
      * @type {ReactNode}
      */
     rightIcon?: ReactNode;
-    /**
-     * The optional type of the tags component.
-     * @type {TagsTheme['type']}
-     **/
-    type?: TagsTheme['type'];
-    /**
-     * The optional style of the tags component.
-     * @type {TagsTheme['style']}
-     */
-    style?: TagsTheme['style'];
-    /**
-     * The optional size of the tags component.
-     * @type {TagsTheme['size']}
-     */
-    size?: TagsTheme['size'];
   };
 
-export const Tags = ({
+export const Tag = ({
   children,
   leftIcon,
   rightIcon,
   type = 'attention',
   style = 'default',
   size = 'sm',
-}: TagsProps) => {
+}: TagProps) => {
   const {
     wrapper: wrapperCls,
     icon: iconCls,
     label: labelCls,
-  } = tagsTheme({
+  } = tagTheme({
     type,
     style,
     size,
