@@ -5,3 +5,4 @@ export * from './ChevronGrabberHorizontal';
 export * from './ChevronLeft';
 export * from './ChevronRight';
 export * from './GlobeIcon';
+export * from './CheckRoundFilledIcon';
