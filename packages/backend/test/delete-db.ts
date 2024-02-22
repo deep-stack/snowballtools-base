@@ -18,4 +18,4 @@ const main = async () => {
   deleteFile(config.database.dbPath);
 };
 
-main().catch(err => log(err));
+main().catch((err) => log(err));

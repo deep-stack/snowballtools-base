@@ -12,9 +12,15 @@ import { Deployment, DeploymentStatus } from '../src/entity/Deployment';
 const log = debug('snowball:publish-deploy-records');
 
 async function main () {
-  const { registryConfig, database } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { registryConfig, database } = await getConfig<Config>(
+    DEFAULT_CONFIG_FILE_PATH
+  );
 
-  const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
+  const registry = new Registry(
+    registryConfig.gqlEndpoint,
+    registryConfig.restEndpoint,
+    registryConfig.chainId
+  );
 
   const dataSource = new DataSource({
     type: 'better-sqlite3',
@@ -53,7 +59,7 @@ async function main () {
         so: '66fcfa49a1664d4cb4ce4f72c1c0e151'
       }),
 
-      request: deployment.project.applicationDeploymentRequestId,
+      request: deployment.applicationDeploymentRequestId,
       url
     };
 

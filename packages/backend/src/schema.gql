@@ -188,10 +188,19 @@ type Query {
 
 type Mutation {
   addProjectMember(projectId: String!, data: AddProjectMemberInput): Boolean!
-  updateProjectMember(projectMemberId: String!, data: UpdateProjectMemberInput): Boolean!
+  updateProjectMember(
+    projectMemberId: String!
+    data: UpdateProjectMemberInput
+  ): Boolean!
   removeProjectMember(projectMemberId: String!): Boolean!
-  addEnvironmentVariables(projectId: String!, data: [AddEnvironmentVariableInput!]): Boolean!
-  updateEnvironmentVariable(environmentVariableId: String!, data: UpdateEnvironmentVariableInput!): Boolean!
+  addEnvironmentVariables(
+    projectId: String!
+    data: [AddEnvironmentVariableInput!]
+  ): Boolean!
+  updateEnvironmentVariable(
+    environmentVariableId: String!
+    data: UpdateEnvironmentVariableInput!
+  ): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
   addProject(organizationSlug: String!, data: AddProjectInput): Project!

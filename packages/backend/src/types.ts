@@ -1,6 +1,6 @@
 export interface PackageJSON {
-  name?: string;
-  version?: string;
+  name: string;
+  version: string;
   author?: string;
   description?: string;
   homepage?: string;
@@ -47,5 +47,5 @@ interface RegistryRecord {
 }
 
 export interface AppDeploymentRecord extends RegistryRecord {
-  attributes: AppDeploymentRecordAttributes
+  attributes: AppDeploymentRecordAttributes;
 }
