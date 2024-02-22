@@ -1,6 +1,6 @@
 export interface PackageJSON {
-  name?: string;
-  version?: string;
+  name: string;
+  version: string;
   author?: string;
   description?: string;
   homepage?: string;

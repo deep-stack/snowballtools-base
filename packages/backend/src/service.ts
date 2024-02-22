@@ -15,7 +15,7 @@ import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
-import { AppDeploymentRecord, GitPushEventPayload } from './types';
+import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
 
 const log = debug('snowball:service');
 
@@ -326,7 +326,9 @@ export class Service {
     }
 
     assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON = JSON.parse(atob(packageJSONData.content));
+    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
+
+    assert(packageJSON.name, "name field doesn't exist in package.json");
 
     if (!recordData.repoUrl) {
       const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
@@ -335,11 +337,29 @@ export class Service {
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } = await this.registry.createApplicationRecord({
+      appName: repo,
       packageJSON,
       appType: data.project!.template!,
       commitHash: data.commitHash!,
       repoUrl: recordData.repoUrl
     });
+
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
+
+    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
+      acc[env.key] = env.value;
+
+      return acc;
+    }, {} as { [key: string]: string });
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        appName: repo,
+        packageJsonName: packageJSON.name,
+        commitHash: data.commitHash!,
+        repository: recordData.repoUrl,
+        environmentVariables: environmentVariablesObj
+      });
 
     // Update previous deployment with prod branch domain
     // TODO: Fix unique constraint error for domain
@@ -358,6 +378,8 @@ export class Service {
       status: DeploymentStatus.Building,
       applicationRecordId,
       applicationRecordData,
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId
@@ -393,7 +415,7 @@ export class Service {
     const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
 
     // Create deployment with prod branch and latest commit
-    const newDeployment = await this.createDeployment(userId,
+    await this.createDeployment(userId,
       octokit,
       {
         project,
@@ -407,27 +429,6 @@ export class Service {
         repoUrl: repoDetails.html_url
       }
     );
-
-    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(project.id, { environment: Environment.Production });
-
-    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
-      acc[env.key] = env.value;
-
-      return acc;
-    }, {} as { [key: string]: string });
-
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        appName: newDeployment.applicationRecordData.name!,
-        commitHash: latestCommit.sha,
-        repository: repoDetails.html_url,
-        environmentVariables: environmentVariablesObj
-      });
-
-    await this.db.updateProjectById(project.id, {
-      applicationDeploymentRequestId,
-      applicationDeploymentRequestData
-    });
 
     await this.createRepoHook(octokit, project);
 

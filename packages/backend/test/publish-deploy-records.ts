@@ -53,7 +53,7 @@ async function main () {
         so: '66fcfa49a1664d4cb4ce4f72c1c0e151'
       }),
 
-      request: deployment.project.applicationDeploymentRequestId,
+      request: deployment.applicationDeploymentRequestId,
       url
     };
 
