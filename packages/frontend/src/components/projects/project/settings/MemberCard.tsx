@@ -83,9 +83,9 @@ const MemberCard = ({
       <div>^</div>
       <div className="basis-1/2">
         {member.name && (
-          <Typography variant="small">
+          <Tooltip content={member.name}>
             {formatAddress(member.name ?? '')}
-          </Typography>
+          </Tooltip>
         )}
         <Tooltip content={member.email}>
           <p>

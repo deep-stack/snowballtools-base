@@ -16,6 +16,7 @@ import {
   Typography,
   Chip,
   ChipProps,
+  Tooltip,
 } from '@material-tailwind/react';
 
 import { relativeTimeMs } from '../../../../utils/time';
@@ -119,7 +120,9 @@ const DeploymentDetailsCard = ({
       <div className="col-span-2 flex items-center">
         <Typography color="gray" className="grow">
           ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
-          {formatAddress(deployment.createdBy.name ?? '')}
+          <Tooltip content={deployment.createdBy.name}>
+            {formatAddress(deployment.createdBy.name ?? '')}
+          </Tooltip>
         </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>

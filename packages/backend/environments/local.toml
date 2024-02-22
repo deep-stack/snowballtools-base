@@ -4,7 +4,7 @@
   gqlPath = "/graphql"
   [server.session]
     secret = "p4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi"
-    appOriginUrl = 'http://localhost:3000'
+    appOriginUrl = "http://localhost:3000"
     trustProxy = false
     domain = "localhost"
 

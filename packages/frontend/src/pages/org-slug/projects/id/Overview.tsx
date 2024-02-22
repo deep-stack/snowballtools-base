@@ -3,7 +3,13 @@ import { Domain, DomainStatus } from 'gql-client';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
-import { Typography, Button, Chip, Avatar } from '@material-tailwind/react';
+import {
+  Typography,
+  Button,
+  Chip,
+  Avatar,
+  Tooltip,
+} from '@material-tailwind/react';
 
 import ActivityCard from '../../../../components/projects/project/ActivityCard';
 import { relativeTimeMs } from '../../../../utils/time';
@@ -158,7 +164,9 @@ const OverviewTabPanel = () => {
               <p>^ Created</p>
               <p>
                 {relativeTimeMs(project.deployments[0].createdAt)} by ^{' '}
-                {formatAddress(project.deployments[0].createdBy.name ?? '')}
+                <Tooltip content={project.deployments[0].createdBy.name}>
+                  {formatAddress(project.deployments[0].createdBy.name ?? '')}
+                </Tooltip>
               </p>
             </div>
           </>
