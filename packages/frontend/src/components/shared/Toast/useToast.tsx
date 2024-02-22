@@ -1,13 +1,15 @@
 // Inspired by react-hot-toast library
 import React from 'react';
 import { type ToastProps } from '@radix-ui/react-toast';
+import { SimpleToastProps } from './SimpleToast';
 
 const TOAST_LIMIT = 3;
 const TOAST_REMOVE_DELAY_DEFAULT = 7000;
 
-type ToasterToast = ToastProps & {
-  id: string;
-};
+type ToasterToast = ToastProps &
+  SimpleToastProps & {
+    id: string;
+  };
 
 const actionTypes = {
   ADD_TOAST: 'ADD_TOAST',
@@ -136,7 +138,7 @@ const dispatch = (action: Action) => {
 
 const toast = (props: ToasterToast) => {
   if (!props.duration) {
-    props.duration = 20000;
+    props.duration = 2000;
   }
   const id = genId();
 
