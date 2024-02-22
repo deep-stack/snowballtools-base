@@ -47,9 +47,9 @@ export const SimpleToast = ({
     return <LoadingIcon />; // variant === 'loading'
   }, [variant]);
 
-  const renderCta = useMemo(
-    () =>
-      hasCta ? (
+  const renderCta = useMemo(() => {
+    if (!hasCta) return null;
+    return (
         <div className="flex gap-1.5 ml-2">
           {cta.map(({ buttonLabel, ...props }, index) => (
             <Button key={index} {...props}>
@@ -57,9 +57,8 @@ export const SimpleToast = ({
             </Button>
           ))}
         </div>
-      ) : null,
-    [cta],
   );
+  }, [cta]);
 
   const renderCloseButton = useMemo(
     () => (
