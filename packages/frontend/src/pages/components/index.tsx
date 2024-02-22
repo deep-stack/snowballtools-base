@@ -18,6 +18,8 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { RADIO_OPTIONS } from './renders/radio';
+import { Radio } from 'components/shared/Radio';
 import {
   renderInlineNotificationWithDescriptions,
   renderInlineNotifications,
@@ -28,6 +30,7 @@ import { renderTooltips } from './renders/tooltip';
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
+  const [selectedRadio, setSelectedRadio] = useState<string>('');
 
   return (
     <div className="relative h-full min-h-full">
@@ -156,6 +159,27 @@ const Page = () => {
             </div>
             <h1 className="text-2xl font-bold">Vertical Tabs</h1>
             {renderVerticalTabs()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Radio */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Radio</h1>
+            <div className="flex gap-20 items-start">
+              <Radio
+                options={RADIO_OPTIONS}
+                orientation="vertical"
+                value={selectedRadio}
+                onValueChange={setSelectedRadio}
+              />
+              <Radio
+                options={RADIO_OPTIONS}
+                orientation="horizontal"
+                value={selectedRadio}
+                onValueChange={setSelectedRadio}
+              />
+            </div>
           </div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />

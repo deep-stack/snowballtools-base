@@ -9,6 +9,8 @@ export const tabsTheme = tv({
       // Horizontal – default
       'px-1',
       'pb-5',
+      'cursor-default',
+      'select-none',
       'text-elements-low-em',
       'border-b-2',
       'border-transparent',
