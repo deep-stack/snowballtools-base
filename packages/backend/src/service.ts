@@ -344,30 +344,15 @@ export class Service {
       repoUrl: recordData.repoUrl
     });
 
-    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
-
-    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
-      acc[env.key] = env.value;
-
-      return acc;
-    }, {} as { [key: string]: string });
-
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        appName: repo,
-        packageJsonName: packageJSON.name,
-        commitHash: data.commitHash!,
-        repository: recordData.repoUrl,
-        environmentVariables: environmentVariablesObj
-      });
-
     // Update previous deployment with prod branch domain
     // TODO: Fix unique constraint error for domain
-    await this.db.updateDeployment({
-      domainId: data.domain?.id
-    }, {
-      domain: null
-    });
+    if (data.domain) {
+      await this.db.updateDeployment({
+        domainId: data.domain.id
+      }, {
+        domain: null
+      });
+    }
 
     const newDeployment = await this.db.addDeployment({
       project: data.project,
@@ -378,8 +363,6 @@ export class Service {
       status: DeploymentStatus.Building,
       applicationRecordId,
       applicationRecordData,
-      applicationDeploymentRequestId,
-      applicationDeploymentRequestData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId
@@ -387,6 +370,26 @@ export class Service {
     });
 
     log(`Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`);
+
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(data.project.id!, { environment: Environment.Production });
+
+    const environmentVariablesObj = environmentVariables.reduce((acc, env) => {
+      acc[env.key] = env.value;
+
+      return acc;
+    }, {} as { [key: string]: string });
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        deployment: newDeployment,
+        appName: repo,
+        packageJsonName: packageJSON.name,
+        repository: recordData.repoUrl,
+        environmentVariables: environmentVariablesObj
+      });
+
+    await this.db.updateDeploymentById(newDeployment.id, { applicationDeploymentRequestId, applicationDeploymentRequestData });
+
     return newDeployment;
   }
 

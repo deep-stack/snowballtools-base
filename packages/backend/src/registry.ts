@@ -92,9 +92,9 @@ export class Registry {
   }
 
   async createApplicationDeploymentRequest (data: {
+    deployment: Deployment,
     appName: string,
     packageJsonName: string,
-    commitHash: string,
     repository: string,
     environmentVariables: { [key: string]: string }
   }): Promise<{
@@ -115,9 +115,9 @@ export class Registry {
       version: '1.0.0',
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
       application: `${crn}@${applicationRecord.attributes.app_version}`,
+      dns: `${data.deployment.project.name}-${data.deployment.id}`,
 
       // TODO: Not set in test-progressive-web-app CI
-      // dns: '$CERC_REGISTRY_DEPLOYMENT_SHORT_HOSTNAME',
       // deployment: '$CERC_REGISTRY_DEPLOYMENT_CRN',
 
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
@@ -127,7 +127,7 @@ export class Registry {
       meta: JSON.stringify({
         note: `Added by Snowball @ ${DateTime.utc().toFormat('EEE LLL dd HH:mm:ss \'UTC\' yyyy')}`,
         repository: data.repository,
-        repository_ref: data.commitHash
+        repository_ref: data.deployment.commitHash
       })
     };
 

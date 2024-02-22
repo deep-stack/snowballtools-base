@@ -87,11 +87,11 @@ export class Deployment {
   @Column('simple-json')
     applicationRecordData!: ApplicationRecord;
 
-  @Column('varchar')
-    applicationDeploymentRequestId!: string;
+  @Column('varchar', { nullable: true })
+    applicationDeploymentRequestId!: string | null;
 
-  @Column('simple-json')
-    applicationDeploymentRequestData!: ApplicationDeploymentRequest;
+  @Column('simple-json', { nullable: true })
+    applicationDeploymentRequestData!: ApplicationDeploymentRequest | null;
 
   @Column('varchar', { nullable: true })
     applicationDeploymentRecordId!: string | null;
