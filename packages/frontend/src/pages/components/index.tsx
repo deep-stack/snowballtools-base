@@ -23,6 +23,7 @@ import {
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
+import { renderDefaultTags, renderMinimalTags } from './renders/tags';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
@@ -38,6 +39,19 @@ const Page = () => {
             packages/frontend/src/pages/components/index.tsx
           </code>
         </p>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        {/* Tags */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Tags</h1>
+            <div className="flex flex-col gap-10 items-center justify-center">
+              {renderDefaultTags()}
+              {renderMinimalTags()}
+            </div>
+          </div>
+        </div>
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
