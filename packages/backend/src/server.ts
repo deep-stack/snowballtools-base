@@ -87,7 +87,6 @@ export const createAndStartServer = async (
       secure: new URL(appOriginUrl).protocol === 'https:',
       // TODO: Set cookie maxAge and handle cookie expiry in frontend
       // maxAge: SESSION_COOKIE_MAX_AGE,
-      domain: 'localhost',
       sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax'
     }
   };
