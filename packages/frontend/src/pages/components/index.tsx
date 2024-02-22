@@ -23,6 +23,7 @@ import {
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
+import { renderTooltips } from './renders/tooltip';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
@@ -41,13 +42,21 @@ const Page = () => {
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
-        {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Tooltip</h1>
+          <div className="flex w-full flex-wrap max-w-[680px] justify-center gap-10">
+            {renderTooltips()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Input */}
           <h1 className="text-2xl font-bold">Input</h1>
           <div className="flex w-full flex-col gap-10">{renderInputs()}</div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
 
+          {/* Button */}
           <h1 className="text-2xl font-bold">Button</h1>
           <div className="flex flex-col gap-10">
             {renderButtons()}

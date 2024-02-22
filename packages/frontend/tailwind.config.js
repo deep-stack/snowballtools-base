@@ -8,10 +8,13 @@ export default withMT({
     '../../node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-    },
     extend: {
+      zIndex: {
+        tooltip: '52',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       fontSize: {
         '2xs': '0.625rem',
         '3xs': '0.5rem',

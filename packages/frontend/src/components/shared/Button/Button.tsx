@@ -98,19 +98,29 @@ const Button = forwardRef<
               href,
               ...baseLinkProps,
             };
-            return <a {...externalLinkProps}>{_children}</a>;
+            return (
+              // @ts-expect-error - ref
+              <a ref={ref} {...externalLinkProps}>
+                {_children}
+              </a>
+            );
           }
 
           // Internal link
           return (
-            <Link {...baseLinkProps} to={href}>
+            // @ts-expect-error - ref
+            <Link ref={ref} {...baseLinkProps} to={href}>
               {_children}
             </Link>
           );
         } else {
           const { ...buttonProps } = _props;
-          // @ts-expect-error - as prop is not a valid prop for button elements
-          return <button {...buttonProps}>{_children}</button>;
+          return (
+            // @ts-expect-error - as prop is not a valid prop for button elements
+            <button ref={ref} {...buttonProps}>
+              {_children}
+            </button>
+          );
         }
       },
       [],
@@ -161,8 +171,6 @@ const Button = forwardRef<
     return (
       <Component
         {...props}
-        // @ts-expect-error - ref is not a valid prop for button elements
-        ref={ref}
         className={buttonTheme({ ...styleProps, class: className })}
       >
         {cloneIcon(leftIcon, { ...iconSize })}
