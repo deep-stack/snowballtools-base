@@ -154,6 +154,7 @@ export default withMT({
         calendar:
           '0px 3px 20px rgba(8, 47, 86, 0.1), 0px 0px 4px rgba(8, 47, 86, 0.14)',
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
+        inset: 'inset 0px 1px 0px rgba(8, 47, 86, 0.06)',
       },
       spacing: {
         2.5: '0.625rem',

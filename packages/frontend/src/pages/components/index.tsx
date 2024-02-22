@@ -18,6 +18,7 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { Switch } from 'components/shared/Switch';
 import { RADIO_OPTIONS } from './renders/radio';
 import { Radio } from 'components/shared/Radio';
 import {
@@ -30,6 +31,7 @@ import { renderTooltips } from './renders/tooltip';
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
+  const [switchValue, setSwitchValue] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState<string>('');
 
   return (
@@ -159,6 +161,28 @@ const Page = () => {
             </div>
             <h1 className="text-2xl font-bold">Vertical Tabs</h1>
             {renderVerticalTabs()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Switch */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Switch</h1>
+            <div className="flex flex-col gap-10 items-center justify-center">
+              <Switch
+                label="Label"
+                checked={switchValue}
+                onCheckedChange={setSwitchValue}
+              />
+              <Switch
+                label="Label"
+                description="Additional information or context"
+                checked={switchValue}
+                onCheckedChange={setSwitchValue}
+              />
+              <Switch disabled label="Disabled unchecked" />
+              <Switch disabled checked label="Disabled checked" />
+            </div>
           </div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
