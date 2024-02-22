@@ -26,6 +26,7 @@ import {
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
+import { renderToast, renderToastsWithCta } from './renders/toast';
 import { renderTooltips } from './renders/tooltip';
 
 const Page = () => {
@@ -47,6 +48,16 @@ const Page = () => {
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
+        {/* Toast */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Toasts</h1>
+          {renderToastsWithCta()}
+          {renderToast()}
+        </div>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Tooltip</h1>
           <div className="flex w-full flex-wrap max-w-[680px] justify-center gap-10">

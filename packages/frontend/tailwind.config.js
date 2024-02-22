@@ -161,6 +161,9 @@ export default withMT({
         3.25: '0.8125rem',
         3.5: '0.875rem',
       },
+      zIndex: {
+        toast: '9999',
+      },
     },
   },
   plugins: [],
