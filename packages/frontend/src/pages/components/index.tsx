@@ -7,7 +7,11 @@ import {
 } from './renders/checkbox';
 import { avatars, avatarsFallback } from './renders/avatar';
 import { renderBadges } from './renders/badge';
-import { renderButtonIcons, renderButtons } from './renders/button';
+import {
+  renderButtonIcons,
+  renderButtons,
+  renderLinks,
+} from './renders/button';
 import {
   renderTabWithBadges,
   renderTabs,
@@ -111,6 +115,16 @@ const Page = () => {
             </div>
             <h1 className="text-2xl font-bold">Vertical Tabs</h1>
             {renderVerticalTabs()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Link */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Link</h1>
+            <div className="flex gap-4 items-center justify-center">
+              {renderLinks()}
+            </div>
           </div>
         </div>
       </div>

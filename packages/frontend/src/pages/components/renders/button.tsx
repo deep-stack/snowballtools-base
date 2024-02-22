@@ -47,3 +47,19 @@ export const renderButtonIcons = () => {
     </div>
   ));
 };
+
+export const renderLinks = () => {
+  return ['link', 'link-emphasized', 'disabled'].map((variant) => (
+    <Button
+      variant={
+        variant !== 'disabled' ? (variant as ButtonTheme['variant']) : 'link'
+      }
+      key={variant}
+      leftIcon={<PlusIcon />}
+      rightIcon={<PlusIcon />}
+      disabled={variant === 'disabled'}
+    >
+      Link
+    </Button>
+  ));
+};
