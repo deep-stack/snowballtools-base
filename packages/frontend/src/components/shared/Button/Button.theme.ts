@@ -62,7 +62,7 @@ export const buttonTheme = tv(
           'text-elements-on-tertiary',
           'border',
           'border-border-interactive/10',
-          'bg-transparent',
+          'bg-controls-tertiary',
           'hover:bg-controls-tertiary-hovered',
           'hover:border-border-interactive-hovered',
           'hover:border-border-interactive-hovered/[0.14]',
