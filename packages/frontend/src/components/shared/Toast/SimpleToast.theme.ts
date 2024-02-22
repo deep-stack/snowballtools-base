@@ -5,6 +5,7 @@ export const simpleToastTheme = tv(
     slots: {
       wrapper: [
         'flex',
+        'items-center',
         'py-2',
         'pl-2',
         'pr-1.5',
@@ -18,6 +19,15 @@ export const simpleToastTheme = tv(
         'shadow-sm',
       ],
       icon: ['flex', 'items-center', 'justify-center', 'w-5', 'h-5'],
+      closeIcon: [
+        'cursor-pointer',
+        'flex',
+        'items-center',
+        'justify-center',
+        'w-6',
+        'h-6',
+        'text-elements-on-high-contrast',
+      ],
       title: ['text-sm', 'text-elements-on-high-contrast'],
     },
     variants: {
