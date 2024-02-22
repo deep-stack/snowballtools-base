@@ -15,7 +15,7 @@ import { User } from './User';
 
 export enum Permission {
   View = 'View',
-  Edit = 'Edit'
+  Edit = 'Edit',
 }
 
 @Entity()

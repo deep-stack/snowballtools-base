@@ -26,18 +26,27 @@ export enum DeploymentStatus {
   Error = 'Error',
 }
 
+export interface ApplicationDeploymentRequest {
+  type: string;
+  version: string;
+  name: string;
+  application: string;
+  config: string;
+  meta: string;
+}
+
 export interface ApplicationRecord {
   type: string;
-  version:string
-  name: string
-  description?: string
-  homepage?: string
-  license?: string
-  author?: string
-  repository?: string[],
-  app_version?: string
-  repository_ref: string
-  app_type: string
+  version: string;
+  name: string;
+  description?: string;
+  homepage?: string;
+  license?: string;
+  author?: string;
+  repository?: string[];
+  app_version?: string;
+  repository_ref: string;
+  app_type: string;
 }
 
 @Entity()
@@ -77,6 +86,12 @@ export class Deployment {
 
   @Column('simple-json')
     applicationRecordData!: ApplicationRecord;
+
+  @Column('varchar')
+    applicationDeploymentRequestId!: string;
+
+  @Column('simple-json')
+    applicationDeploymentRequestData!: ApplicationDeploymentRequest;
 
   @Column('varchar', { nullable: true })
     applicationDeploymentRecordId!: string | null;

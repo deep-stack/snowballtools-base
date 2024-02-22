@@ -27,8 +27,12 @@ export class Organization {
   @UpdateDateColumn()
     updatedAt!: Date;
 
-  @OneToMany(() => UserOrganization, userOrganization => userOrganization.organization, {
-    cascade: ['soft-remove']
-  })
+  @OneToMany(
+    () => UserOrganization,
+    (userOrganization) => userOrganization.organization,
+    {
+      cascade: ['soft-remove']
+    }
+  )
     userOrganizations!: UserOrganization[];
 }

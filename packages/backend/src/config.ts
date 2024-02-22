@@ -13,7 +13,7 @@ export interface GitHubConfig {
   oAuth: {
     clientId: string;
     clientSecret: string;
-  }
+  };
 }
 
 export interface RegistryConfig {
@@ -27,7 +27,7 @@ export interface RegistryConfig {
     amount: string;
     denom: string;
     gas: string;
-  }
+  };
 }
 
 export interface Config {

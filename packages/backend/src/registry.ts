@@ -6,8 +6,11 @@ import { DateTime } from 'luxon';
 import { Registry as LaconicRegistry } from '@cerc-io/laconic-sdk';
 
 import { RegistryConfig } from './config';
-import { ApplicationDeploymentRequest } from './entity/Project';
-import { ApplicationRecord, Deployment } from './entity/Deployment';
+import {
+  ApplicationRecord,
+  Deployment,
+  ApplicationDeploymentRequest
+} from './entity/Deployment';
 import { AppDeploymentRecord, PackageJSON } from './types';
 
 const log = debug('snowball:registry');
@@ -21,35 +24,54 @@ export class Registry {
   private registry: LaconicRegistry;
   private registryConfig: RegistryConfig;
 
-  constructor (registryConfig : RegistryConfig) {
+  constructor (registryConfig: RegistryConfig) {
     this.registryConfig = registryConfig;
-    this.registry = new LaconicRegistry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
+    this.registry = new LaconicRegistry(
+      registryConfig.gqlEndpoint,
+      registryConfig.restEndpoint,
+      registryConfig.chainId
+    );
   }
 
   async createApplicationRecord ({
+    appName,
     packageJSON,
     commitHash,
     appType,
     repoUrl
   }: {
-    packageJSON: PackageJSON
-    commitHash: string,
-    appType: string,
-    repoUrl: string
-  }): Promise<{applicationRecordId: string, applicationRecordData: ApplicationRecord}> {
-    assert(packageJSON.name, "name field doesn't exist in package.json");
+    appName: string;
+    packageJSON: PackageJSON;
+    commitHash: string;
+    appType: string;
+    repoUrl: string;
+  }): Promise<{
+    applicationRecordId: string;
+    applicationRecordData: ApplicationRecord;
+  }> {
     // Use laconic-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records
-    const records = await this.registry.queryRecords({
-      type: APP_RECORD_TYPE,
-      name: packageJSON.name
-    }, true);
+    const records = await this.registry.queryRecords(
+      {
+        type: APP_RECORD_TYPE,
+        name: packageJSON.name
+      },
+      true
+    );
 
     // Get next version of record
-    const bondRecords = records.filter((record: any) => record.bondId === this.registryConfig.bondId);
-    const [latestBondRecord] = bondRecords.sort((a: any, b: any) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime());
-    const nextVersion = semverInc(latestBondRecord?.attributes.version ?? '0.0.0', 'patch');
+    const bondRecords = records.filter(
+      (record: any) => record.bondId === this.registryConfig.bondId
+    );
+    const [latestBondRecord] = bondRecords.sort(
+      (a: any, b: any) =>
+        new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+    );
+    const nextVersion = semverInc(
+      latestBondRecord?.attributes.version ?? '0.0.0',
+      'patch'
+    );
 
     assert(nextVersion, 'Application record version not valid');
 
@@ -60,11 +82,16 @@ export class Registry {
       repository_ref: commitHash,
       repository: [repoUrl],
       app_type: appType,
-      name: packageJSON.name,
+      name: appName,
       ...(packageJSON.description && { description: packageJSON.description }),
       ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
       ...(packageJSON.license && { license: packageJSON.license }),
-      ...(packageJSON.author && { author: typeof packageJSON.author === 'object' ? JSON.stringify(packageJSON.author) : packageJSON.author }),
+      ...(packageJSON.author && {
+        author:
+          typeof packageJSON.author === 'object'
+            ? JSON.stringify(packageJSON.author)
+            : packageJSON.author
+      }),
       ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
@@ -81,26 +108,45 @@ export class Registry {
     log('Application record data:', applicationRecord);
 
     // TODO: Discuss computation of CRN
-    const crn = this.getCrn(packageJSON.name);
+    const crn = this.getCrn(packageJSON.name, appName);
     log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
-    await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);
-    await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` }, this.registryConfig.privateKey, this.registryConfig.fee);
-    await this.registry.setName({ cid: result.data.id, crn: `${crn}@${applicationRecord.repository_ref}` }, this.registryConfig.privateKey, this.registryConfig.fee);
+    await this.registry.setName(
+      { cid: result.data.id, crn },
+      this.registryConfig.privateKey,
+      this.registryConfig.fee
+    );
+    await this.registry.setName(
+      { cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` },
+      this.registryConfig.privateKey,
+      this.registryConfig.fee
+    );
+    await this.registry.setName(
+      {
+        cid: result.data.id,
+        crn: `${crn}@${applicationRecord.repository_ref}`
+      },
+      this.registryConfig.privateKey,
+      this.registryConfig.fee
+    );
 
-    return { applicationRecordId: result.data.id, applicationRecordData: applicationRecord };
+    return {
+      applicationRecordId: result.data.id,
+      applicationRecordData: applicationRecord
+    };
   }
 
   async createApplicationDeploymentRequest (data: {
-    appName: string,
-    commitHash: string,
-    repository: string,
-    environmentVariables: { [key: string]: string }
+    appName: string;
+    packageJsonName: string;
+    commitHash: string;
+    repository: string;
+    environmentVariables: { [key: string]: string };
   }): Promise<{
-    applicationDeploymentRequestId: string,
-    applicationDeploymentRequestData: ApplicationDeploymentRequest
+    applicationDeploymentRequestId: string;
+    applicationDeploymentRequestData: ApplicationDeploymentRequest;
   }> {
-    const crn = this.getCrn(data.appName);
+    const crn = this.getCrn(data.packageJsonName, data.appName);
     const records = await this.registry.resolveNames([crn]);
     const applicationRecord = records[0];
 
@@ -124,7 +170,9 @@ export class Registry {
         env: data.environmentVariables
       }),
       meta: JSON.stringify({
-        note: `Added by Snowball @ ${DateTime.utc().toFormat('EEE LLL dd HH:mm:ss \'UTC\' yyyy')}`,
+        note: `Added by Snowball @ ${DateTime.utc().toFormat(
+          "EEE LLL dd HH:mm:ss 'UTC' yyyy"
+        )}`,
         repository: data.repository,
         repository_ref: data.commitHash
       })
@@ -142,31 +190,40 @@ export class Registry {
     log(`Application deployment request record published: ${result.data.id}`);
     log('Application deployment request data:', applicationDeploymentRequest);
 
-    return { applicationDeploymentRequestId: result.data.id, applicationDeploymentRequestData: applicationDeploymentRequest };
+    return {
+      applicationDeploymentRequestId: result.data.id,
+      applicationDeploymentRequestData: applicationDeploymentRequest
+    };
   }
 
   /**
    * Fetch ApplicationDeploymentRecords for deployments
    */
-  async getDeploymentRecords (deployments: Deployment[]): Promise<AppDeploymentRecord[]> {
+  async getDeploymentRecords (
+    deployments: Deployment[]
+  ): Promise<AppDeploymentRecord[]> {
     // Fetch ApplicationDeploymentRecords for corresponding ApplicationRecord set in deployments
     // TODO: Implement Laconicd GQL query to filter records by multiple values for an attribute
-    const records = await this.registry.queryRecords({
-      type: APP_DEPLOYMENT_RECORD_TYPE
-    }, true);
+    const records = await this.registry.queryRecords(
+      {
+        type: APP_DEPLOYMENT_RECORD_TYPE
+      },
+      true
+    );
 
     // Filter records with ApplicationRecord ids
-    return records.filter((record: AppDeploymentRecord) => deployments.some(deployment => deployment.applicationRecordId === record.attributes.application));
+    return records.filter((record: AppDeploymentRecord) =>
+      deployments.some(
+        (deployment) =>
+          deployment.applicationRecordId === record.attributes.application
+      )
+    );
   }
 
-  getCrn (packageJsonName: string): string {
-    const [arg1, arg2] = packageJsonName.split('/');
+  getCrn (packageJsonName: string, appName: string): string {
+    const [arg1] = packageJsonName.split('/');
+    const authority = arg1.replace('@', '');
 
-    if (arg2) {
-      const authority = arg1.replace('@', '');
-      return `crn://${authority}/applications/${arg2}`;
-    }
-
-    return `crn://${arg1}/applications/${arg1}`;
+    return `crn://${authority}/applications/${appName}`;
   }
 }

@@ -10,6 +10,7 @@ import { renderBadges } from './renders/badge';
 import {
   renderButtonIcons,
   renderButtons,
+  renderDisabledButtons,
   renderLinks,
 } from './renders/button';
 import {
@@ -17,16 +18,22 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { Switch } from 'components/shared/Switch';
+import { RADIO_OPTIONS } from './renders/radio';
+import { Radio } from 'components/shared/Radio';
 import {
   renderInlineNotificationWithDescriptions,
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
 import { renderToast, renderToastsWithCta } from './renders/toast';
+import { renderTooltips } from './renders/tooltip';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
+  const [switchValue, setSwitchValue] = useState(false);
+  const [selectedRadio, setSelectedRadio] = useState<string>('');
 
   return (
     <div className="relative h-full min-h-full">
@@ -52,15 +59,45 @@ const Page = () => {
 
         {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Tooltip</h1>
+          <div className="flex w-full flex-wrap max-w-[680px] justify-center gap-10">
+            {renderTooltips()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Input */}
           <h1 className="text-2xl font-bold">Input</h1>
           <div className="flex w-full flex-col gap-10">{renderInputs()}</div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
 
+          {/* Button */}
           <h1 className="text-2xl font-bold">Button</h1>
           <div className="flex flex-col gap-10">
             {renderButtons()}
             {renderButtonIcons()}
+          </div>
+
+          {/* Link */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Link</h1>
+            <div className="flex gap-4 items-center justify-center">
+              {renderLinks()}
+            </div>
+          </div>
+
+          {/* Disabled button, icon only, and link */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-2xl font-bold text-center">Disabled</h1>
+              <p className="text-lg text-center text-gray-500">
+                Button – icon only – link
+              </p>
+            </div>
+            <div className="flex gap-10 items-center justify-center">
+              {renderDisabledButtons()}
+            </div>
           </div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
@@ -139,6 +176,49 @@ const Page = () => {
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
 
+          {/* Switch */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Switch</h1>
+            <div className="flex flex-col gap-10 items-center justify-center">
+              <Switch
+                label="Label"
+                checked={switchValue}
+                onCheckedChange={setSwitchValue}
+              />
+              <Switch
+                label="Label"
+                description="Additional information or context"
+                checked={switchValue}
+                onCheckedChange={setSwitchValue}
+              />
+              <Switch disabled label="Disabled unchecked" />
+              <Switch disabled checked label="Disabled checked" />
+            </div>
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Radio */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Radio</h1>
+            <div className="flex gap-20 items-start">
+              <Radio
+                options={RADIO_OPTIONS}
+                orientation="vertical"
+                value={selectedRadio}
+                onValueChange={setSelectedRadio}
+              />
+              <Radio
+                options={RADIO_OPTIONS}
+                orientation="horizontal"
+                value={selectedRadio}
+                onValueChange={setSelectedRadio}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
           {/* Inline notification */}
           <div className="flex flex-col gap-10 items-center justify-between">
             <h1 className="text-2xl font-bold">Inline Notification</h1>
@@ -147,16 +227,6 @@ const Page = () => {
             </div>
             <div className="flex gap-1 flex-wrap">
               {renderInlineNotificationWithDescriptions()}
-            </div>
-          </div>
-
-          <div className="w-full h border border-gray-200 px-20 my-10" />
-
-          {/* Link */}
-          <div className="flex flex-col gap-10 items-center justify-between">
-            <h1 className="text-2xl font-bold">Link</h1>
-            <div className="flex gap-4 items-center justify-center">
-              {renderLinks()}
             </div>
           </div>
         </div>

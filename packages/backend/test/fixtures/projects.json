@@ -10,8 +10,6 @@
     "framework": "test",
     "webhooks": [],
     "icon": "",
-    "applicationDeploymentRequestId": "hbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "applicationDeploymentRequestData": {},
     "subDomain": "testProject.snowball.xyz"
   },
   {
@@ -25,8 +23,6 @@
     "framework": "test-2",
     "webhooks": [],
     "icon": "",
-    "applicationDeploymentRequestId": "gbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "applicationDeploymentRequestData": {},
     "subDomain": "testProject-2.snowball.xyz"
   },
   {
@@ -40,8 +36,6 @@
     "framework": "test-3",
     "webhooks": [],
     "icon": "",
-    "applicationDeploymentRequestId": "ebafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "applicationDeploymentRequestData": {},
     "subDomain": "iglootools.snowball.xyz"
   },
   {
@@ -55,8 +49,6 @@
     "framework": "test-4",
     "webhooks": [],
     "icon": "",
-    "applicationDeploymentRequestId": "qbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "applicationDeploymentRequestData": {},
     "subDomain": "iglootools-2.snowball.xyz"
   },
   {
@@ -70,8 +62,6 @@
     "framework": "test-5",
     "webhooks": [],
     "icon": "",
-    "applicationDeploymentRequestId": "xbafyreihvzya6ovp4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi",
-    "applicationDeploymentRequestData": {},
     "subDomain": "snowball-2.snowball.xyz"
   }
 ]

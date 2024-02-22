@@ -15,15 +15,6 @@ import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 import { Deployment } from './Deployment';
 
-export interface ApplicationDeploymentRequest {
-  type: string
-  version: string
-  name: string
-  application: string
-  config: string,
-  meta: string
-}
-
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -51,12 +42,6 @@ export class Project {
 
   @Column('varchar', { length: 255, default: 'main' })
     prodBranch!: string;
-
-  @Column('varchar', { nullable: true })
-    applicationDeploymentRequestId!: string | null;
-
-  @Column('simple-json', { nullable: true })
-    applicationDeploymentRequestData!: ApplicationDeploymentRequest | null;
 
   @Column('text', { default: '' })
     description!: string;
@@ -91,7 +76,7 @@ export class Project {
   @OneToMany(() => Deployment, (deployment) => deployment.project)
     deployments!: Deployment[];
 
-  @OneToMany(() => ProjectMember, projectMember => projectMember.project, {
+  @OneToMany(() => ProjectMember, (projectMember) => projectMember.project, {
     cascade: ['soft-remove']
   })
     projectMembers!: ProjectMember[];
