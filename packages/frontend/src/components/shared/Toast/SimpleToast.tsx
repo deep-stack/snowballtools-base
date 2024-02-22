@@ -10,12 +10,12 @@ import {
   InfoRoundFilledIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
-import { Button, ButtonBaseProps, ButtonTheme } from 'components/shared/Button';
+import { Button, type ButtonOrLinkProps } from 'components/shared/Button';
 import { cloneIcon } from 'utils/cloneIcon';
 
-interface CtaProps extends ButtonBaseProps, ButtonTheme {
+type CtaProps = ButtonOrLinkProps & {
   buttonLabel: string;
-}
+};
 export interface SimpleToastProps extends ToastProps {
   id: string;
   title: string;
