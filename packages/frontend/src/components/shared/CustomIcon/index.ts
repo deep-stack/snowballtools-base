@@ -10,3 +10,5 @@ export * from './SearchIcon';
 export * from './CrossIcon';
 export * from './GlobeIcon';
 export * from './CheckRoundFilledIcon';
+export * from './InfoRoundFilledIcon';
+export * from './LoadingIcon';
