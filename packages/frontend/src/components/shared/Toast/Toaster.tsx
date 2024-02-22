@@ -11,7 +11,7 @@ export const Toaster = ({}: ToasterProps) => {
   const renderToasts = useMemo(
     () =>
       toasts.map(({ id, ...props }) => (
-        <SimpleToast key={id} {...(props as SimpleToastProps)} />
+        <SimpleToast key={id} {...(props as SimpleToastProps)} id={id} />
       )),
     [toasts],
   );

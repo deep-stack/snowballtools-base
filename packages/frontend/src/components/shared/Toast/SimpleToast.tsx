@@ -17,13 +17,15 @@ interface CtaProps extends ButtonBaseProps, ButtonTheme {
   buttonLabel: string;
 }
 export interface SimpleToastProps extends ToastProps {
+  id: string;
   title: string;
   variant?: SimpleToastTheme['variant'];
   cta?: CtaProps[];
-  onDismiss: (id?: string) => void;
+  onDismiss: (toastId: string) => void;
 }
 
 export const SimpleToast = ({
+  id,
   className,
   title,
   variant = 'success',
@@ -50,23 +52,23 @@ export const SimpleToast = ({
   const renderCta = useMemo(() => {
     if (!hasCta) return null;
     return (
-        <div className="flex gap-1.5 ml-2">
-          {cta.map(({ buttonLabel, ...props }, index) => (
-            <Button key={index} {...props}>
-              {buttonLabel}
-            </Button>
-          ))}
-        </div>
-  );
+      <div className="flex gap-1.5 ml-2">
+        {cta.map(({ buttonLabel, ...props }, index) => (
+          <Button key={index} {...props}>
+            {buttonLabel}
+          </Button>
+        ))}
+      </div>
+    );
   }, [cta]);
 
   const renderCloseButton = useMemo(
     () => (
-      <div onClick={() => onDismiss(props.id)} className={closeIconCls()}>
+      <div onClick={() => onDismiss(id)} className={closeIconCls()}>
         <CrossIcon className="h-3 w-3" />
       </div>
     ),
-    [],
+    [id],
   );
 
   return (
