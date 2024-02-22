@@ -9,8 +9,7 @@ import './index.css';
 import '@fontsource/inter';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { GQLClientProvider } from './context/GQLClientContext';
-import { Toaster } from 'components/shared/Toast/Toaster';
+import { Toaster } from 'components/shared/Toast';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

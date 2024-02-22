@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'components/shared/Button';
-import { useToast } from 'components/shared/Toast/useToast';
+import { useToast } from 'components/shared/Toast';
 
 export const renderToastsWithCta = () => {
   const { toast, dismiss } = useToast();
