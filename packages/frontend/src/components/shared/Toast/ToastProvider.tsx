@@ -7,7 +7,7 @@ import {
 
 export const ToastProvider = ({ children, ...props }: ToastProviderProps) => {
   return (
-    <Provider swipeDirection="down" {...props}>
+    <Provider {...props}>
       {children}
       <Viewport className="fixed inset-x-0 bottom-0 px-4 py-10" />
     </Provider>
