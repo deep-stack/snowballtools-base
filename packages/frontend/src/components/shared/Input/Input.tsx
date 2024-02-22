@@ -58,7 +58,7 @@ export const Input = ({
         {cloneIcon(leftIcon, { className: iconCls(), ariaHidden: true })}
       </div>
     );
-  }, [iconCls, leftIcon]);
+  }, [cloneIcon, iconCls, iconContainerCls, leftIcon]);
 
   const renderRightIcon = useMemo(() => {
     return (
@@ -66,7 +66,7 @@ export const Input = ({
         {cloneIcon(rightIcon, { className: iconCls(), ariaHidden: true })}
       </div>
     );
-  }, [rightIcon, iconCls]);
+  }, [cloneIcon, iconCls, iconContainerCls, rightIcon]);
 
   const renderHelperText = useMemo(
     () => (
@@ -78,7 +78,7 @@ export const Input = ({
         <p>{helperText}</p>
       </div>
     ),
-    [state, helperText, helperTextCls],
+    [cloneIcon, state, helperIconCls, helperText, helperTextCls],
   );
 
   return (
