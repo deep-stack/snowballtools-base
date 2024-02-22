@@ -17,6 +17,7 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { renderInputs } from './renders/input';
 
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
@@ -37,6 +38,11 @@ const Page = () => {
 
         {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Input</h1>
+          <div className="flex w-full flex-col gap-10">{renderInputs()}</div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
           <h1 className="text-2xl font-bold">Button</h1>
           <div className="flex flex-col gap-10">
             {renderButtons()}

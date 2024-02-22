@@ -4,4 +4,7 @@ export * from './CheckIcon';
 export * from './ChevronGrabberHorizontal';
 export * from './ChevronLeft';
 export * from './ChevronRight';
+export * from './WarningIcon';
+export * from './SearchIcon';
+export * from './CrossIcon';
 export * from './GlobeIcon';
