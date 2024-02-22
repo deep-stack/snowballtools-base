@@ -13,8 +13,12 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { useToast } from 'components/shared/Toast/useToast';
+import { Button } from 'components/shared/Button';
 
 const Page = () => {
+  const { toast } = useToast();
+
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
 
@@ -31,6 +35,13 @@ const Page = () => {
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
+        {/* Toast */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Toasts</h1>
+          <Button onClick={() => toast({ id: 'test', title: 'Hello, world!' })}>
+            Toast
+          </Button>
+        </div>
         {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Button</h1>
