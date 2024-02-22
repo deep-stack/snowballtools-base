@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import assert from 'assert';
-import { Toaster } from 'react-hot-toast';
 import { GQLClient } from 'gql-client';
 
 import { ThemeProvider } from '@material-tailwind/react';
@@ -11,6 +10,7 @@ import '@fontsource/inter';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
+import { Toaster } from 'components/shared/Toast/Toaster';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -26,7 +26,7 @@ root.render(
     <ThemeProvider>
       <GQLClientProvider client={gqlClient}>
         <App />
-        <Toaster position="bottom-center" />
+        <Toaster />
       </GQLClientProvider>
     </ThemeProvider>
   </React.StrictMode>,
