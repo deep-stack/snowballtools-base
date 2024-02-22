@@ -9,7 +9,7 @@ import { cloneIcon } from 'utils/cloneIcon';
 /**
  * Represents the properties of a base button component.
  */
-interface ButtonBaseProps {
+export interface ButtonBaseProps {
   /**
    * The optional left icon element for a component.
    * @type {ReactNode}
