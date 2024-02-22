@@ -58,13 +58,16 @@ export const SimpleToast = ({
           ))}
         </div>
       ) : null,
-    [],
+    [cta],
   );
 
-  const renderCloseButton = () => (
-    <div onClick={() => onDismiss(props.id)} className={closeIconCls()}>
-      <CrossIcon className="h-3 w-3" />
-    </div>
+  const renderCloseButton = useMemo(
+    () => (
+      <div onClick={() => onDismiss(props.id)} className={closeIconCls()}>
+        <CrossIcon className="h-3 w-3" />
+      </div>
+    ),
+    [],
   );
 
   return (
@@ -75,7 +78,7 @@ export const SimpleToast = ({
           <p className={titleCls()}>{title}</p>
         </ToastPrimitive.Title>
         {renderCta}
-        {renderCloseButton()}
+        {renderCloseButton}
       </div>
     </ToastPrimitive.Root>
   );
