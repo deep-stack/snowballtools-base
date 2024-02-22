@@ -14,11 +14,11 @@ export const createResolvers = async (service: Service): Promise<any> => {
     Query: {
       // TODO: add custom type for context
       user: (_: any, __: any, context: any) => {
-        return service.getUser(context.userId);
+        return context.user;
       },
 
       organizations: async (_:any, __: any, context: any) => {
-        return service.getOrganizationsByUserId(context.userId);
+        return service.getOrganizationsByUserId(context.user);
       },
 
       project: async (_: any, { projectId }: { projectId: string }) => {
@@ -26,7 +26,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
       },
 
       projectsInOrganization: async (_: any, { organizationSlug }: {organizationSlug: string }, context: any) => {
-        return service.getProjectsInOrganization(context.userId, organizationSlug);
+        return service.getProjectsInOrganization(context.user, organizationSlug);
       },
 
       deployments: async (_: any, { projectId }: { projectId: string }) => {
@@ -42,7 +42,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
       },
 
       searchProjects: async (_: any, { searchText }: { searchText: string }, context: any) => {
-        return service.searchProjects(context.userId, searchText);
+        return service.searchProjects(context.user, searchText);
       },
 
       domains: async (_:any, { projectId, filter }: { projectId: string, filter?: FindOptionsWhere<Domain> }) => {
@@ -54,7 +54,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
     Mutation: {
       removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
         try {
-          return await service.removeProjectMember(context.userId, projectMemberId);
+          return await service.removeProjectMember(context.user, projectMemberId);
         } catch (err) {
           log(err);
           return false;
@@ -119,7 +119,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          return Boolean(await service.updateDeploymentToProd(context.userId, deploymentId));
+          return Boolean(await service.updateDeploymentToProd(context.user, deploymentId));
         } catch (err) {
           log(err);
           return false;
@@ -128,7 +128,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       addProject: async (_: any, { organizationSlug, data }: { organizationSlug: string, data: DeepPartial<Project> }, context: any) => {
         try {
-          return await service.addProject(context.userId, organizationSlug, data);
+          return await service.addProject(context.user, organizationSlug, data);
         } catch (err) {
           log(err);
           throw err;
@@ -146,7 +146,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
         try {
-          return Boolean(await service.redeployToProd(context.userId, deploymentId));
+          return Boolean(await service.redeployToProd(context.user, deploymentId));
         } catch (err) {
           log(err);
           return false;
@@ -199,7 +199,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       authenticateGitHub: async (_: any, { code }: { code: string }, context: any) => {
         try {
-          return await service.authenticateGitHub(code, context.userId);
+          return await service.authenticateGitHub(code, context.user);
         } catch (err) {
           log(err);
           return false;
@@ -208,7 +208,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       unauthenticateGitHub: async (_: any, __: object, context: any) => {
         try {
-          return service.unauthenticateGitHub(context.userId, { gitHubToken: null });
+          return service.unauthenticateGitHub(context.user, { gitHubToken: null });
         } catch (err) {
           log(err);
           return false;

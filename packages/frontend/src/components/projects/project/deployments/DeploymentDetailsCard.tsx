@@ -24,6 +24,7 @@ import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
 import AssignDomainDialog from './AssignDomainDialog';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
+import { formatAddress } from '../../../../utils/format';
 
 interface DeployDetailsCardProps {
   deployment: Deployment;
@@ -117,7 +118,8 @@ const DeploymentDetailsCard = ({
       </div>
       <div className="col-span-2 flex items-center">
         <Typography color="gray" className="grow">
-          ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
+          ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
+          {formatAddress(deployment.createdBy.name ?? '')}
         </Typography>
         <Menu placement="bottom-start">
           <MenuHandler>

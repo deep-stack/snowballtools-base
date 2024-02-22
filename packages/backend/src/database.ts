@@ -5,7 +5,7 @@ import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
 
-import { DatabaseConfig } from './config';
+import { DatabaseConfig, MiscConfig } from './config';
 import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';
@@ -13,13 +13,10 @@ import { Deployment } from './entity/Deployment';
 import { ProjectMember } from './entity/ProjectMember';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
-import { PROJECT_DOMAIN } from './constants';
 import { getEntities, loadAndSaveData } from './utils';
 import { UserOrganization } from './entity/UserOrganization';
 
 const ORGANIZATION_DATA_PATH = '../test/fixtures/organizations.json';
-const USER_DATA_PATH = '../test/fixtures/users.json';
-const USER_ORGANIZATION_DATA_PATH = '../test/fixtures/user-organizations.json';
 
 const log = debug('snowball:database');
 
@@ -28,8 +25,9 @@ const nanoid = customAlphabet(lowercase + numbers, 8);
 // TODO: Fix order of methods
 export class Database {
   private dataSource: DataSource;
+  private projectDomain: string;
 
-  constructor ({ dbPath }: DatabaseConfig) {
+  constructor ({ dbPath } : DatabaseConfig, { projectDomain } : MiscConfig) {
     this.dataSource = new DataSource({
       type: 'better-sqlite3',
       database: dbPath,
@@ -37,6 +35,8 @@ export class Database {
       synchronize: true,
       logging: false
     });
+
+    this.projectDomain = projectDomain;
   }
 
   async init (): Promise<void> {
@@ -45,21 +45,10 @@ export class Database {
 
     const organizations = await this.getOrganizations({});
 
+    // Load an organization if none exist
     if (!organizations.length) {
       const orgEntities = await getEntities(path.resolve(__dirname, ORGANIZATION_DATA_PATH));
-      const savedOrgs = await loadAndSaveData(Organization, this.dataSource, [orgEntities[0]]);
-
-      // TODO: Remove user once authenticated
-      const userEntities = await getEntities(path.resolve(__dirname, USER_DATA_PATH));
-      const savedUsers = await loadAndSaveData(User, this.dataSource, [userEntities[0]]);
-
-      const userOrganizationRelations = {
-        member: savedUsers,
-        organization: savedOrgs
-      };
-
-      const userOrgEntities = await getEntities(path.resolve(__dirname, USER_ORGANIZATION_DATA_PATH));
-      await loadAndSaveData(UserOrganization, this.dataSource, [userOrgEntities[0]], userOrganizationRelations);
+      await loadAndSaveData(Organization, this.dataSource, [orgEntities[0]]);
     }
   }
 
@@ -77,9 +66,9 @@ export class Database {
     return user;
   }
 
-  async updateUser (userId: string, data: DeepPartial<User>): Promise<boolean> {
+  async updateUser (user: User, data: DeepPartial<User>): Promise<boolean> {
     const userRepository = this.dataSource.getRepository(User);
-    const updateResult = await userRepository.update({ id: userId }, data);
+    const updateResult = await userRepository.update({ id: user.id }, data);
     assert(updateResult.affected);
 
     return updateResult.affected > 0;
@@ -113,6 +102,13 @@ export class Database {
     });
 
     return userOrgs;
+  }
+
+  async addUserOrganization (data: DeepPartial<UserOrganization>): Promise<UserOrganization> {
+    const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
+    const newUserOrganization = await userOrganizationRepository.save(data);
+
+    return newUserOrganization;
   }
 
   async getProjects (options: FindManyOptions<Project>): Promise<Project[]> {
@@ -361,7 +357,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async addProject (userId: string, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
+  async addProject (user: User, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     // TODO: Check if organization exists
@@ -371,15 +367,13 @@ export class Database {
     // TODO: Set icon according to framework
     newProject.icon = '';
 
-    newProject.owner = Object.assign(new User(), {
-      id: userId
-    });
+    newProject.owner = user;
 
     newProject.organization = Object.assign(new Organization(), {
       id: organizationId
     });
 
-    newProject.subDomain = `${newProject.name}.${PROJECT_DOMAIN}`;
+    newProject.subDomain = `${newProject.name}.${this.projectDomain}`;
 
     return projectRepository.save(newProject);
   }

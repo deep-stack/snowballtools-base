@@ -3,18 +3,21 @@
     "id": "59f4355d-9549-4aac-9b54-eeefceeabef0",
     "name": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "email": "snowball@snowballtools.xyz",
-    "isVerified": true
+    "isVerified": true,
+    "ethAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
   },
   {
     "id": "e505b212-8da6-48b2-9614-098225dab34b",
     "name": "0xbe0eb53f46cd790cd13851d5eff43d12404d33e8",
     "email": "alice@snowballtools.xyz",
-    "isVerified": true
+    "isVerified": true,
+    "ethAddress": "0xbe0eb53f46cd790cd13851d5eff43d12404d33e8"
   },
   {
     "id": "cd892fad-9138-4aa2-a62c-414a32776ea7",
     "name": "0x8315177ab297ba92a06054ce80a67ed4dbd7ed3a",
     "email": "bob@snowballtools.xyz",
-    "isVerified": true
+    "isVerified": true,
+    "ethAddress": "0x8315177ab297ba92a06054ce80a67ed4dbd7ed3a"
   }
 ]

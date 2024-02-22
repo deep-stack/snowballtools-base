@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 import Sidebar from '../components/Sidebar';
+import { OctokitProvider } from '../context/OctokitContext';
 
 const OrgSlug = () => {
   return (
@@ -12,7 +13,9 @@ const OrgSlug = () => {
         </div>
         <div className="col-span-4 h-full p-3 overflow-y-hidden">
           <div className="bg-white rounded-3xl h-full overflow-y-auto">
-            <Outlet />
+            <OctokitProvider>
+              <Outlet />
+            </OctokitProvider>
           </div>
         </div>
       </>

@@ -16,6 +16,7 @@ import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
 import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
+import { Role } from './entity/UserOrganization';
 
 const log = debug('snowball:service');
 
@@ -148,6 +149,36 @@ export class Service {
     });
   }
 
+  async loadOrCreateUser (ethAddress: string): Promise<User> {
+    // Get user by ETH address
+    let user = await this.db.getUser({
+      where: {
+        ethAddress
+      }
+    });
+
+    if (!user) {
+      const [org] = await this.db.getOrganizations({});
+      assert(org, 'No organizations exists in database');
+
+      // Create user with new address
+      user = await this.db.addUser({
+        email: `${ethAddress}@example.com`,
+        name: ethAddress,
+        isVerified: true,
+        ethAddress
+      });
+
+      await this.db.addUserOrganization({
+        member: user,
+        organization: org,
+        role: Role.Owner
+      });
+    }
+
+    return user;
+  }
+
   async getOctokit (userId: string): Promise<Octokit> {
     const user = await this.db.getUser({ where: { id: userId } });
     assert(user && user.gitHubToken, 'User needs to be authenticated with GitHub token');
@@ -155,8 +186,8 @@ export class Service {
     return new Octokit({ auth: user.gitHubToken });
   }
 
-  async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
-    const dbOrganizations = await this.db.getOrganizationsByUserId(userId);
+  async getOrganizationsByUserId (user: User): Promise<Organization[]> {
+    const dbOrganizations = await this.db.getOrganizationsByUserId(user.id);
     return dbOrganizations;
   }
 
@@ -165,8 +196,8 @@ export class Service {
     return dbProject;
   }
 
-  async getProjectsInOrganization (userId:string, organizationSlug: string): Promise<Project[]> {
-    const dbProjects = await this.db.getProjectsInOrganization(userId, organizationSlug);
+  async getProjectsInOrganization (user: User, organizationSlug: string): Promise<Project[]> {
+    const dbProjects = await this.db.getProjectsInOrganization(user.id, organizationSlug);
     return dbProjects;
   }
 
@@ -185,8 +216,8 @@ export class Service {
     return dbProjectMembers;
   }
 
-  async searchProjects (userId: string, searchText: string): Promise<Project[]> {
-    const dbProjects = await this.db.getProjectsBySearchText(userId, searchText);
+  async searchProjects (user: User, searchText: string): Promise<Project[]> {
+    const dbProjects = await this.db.getProjectsBySearchText(user.id, searchText);
     return dbProjects;
   }
 
@@ -231,17 +262,17 @@ export class Service {
     return newProjectMember;
   }
 
-  async removeProjectMember (userId: string, projectMemberId: string): Promise<boolean> {
+  async removeProjectMember (user: User, projectMemberId: string): Promise<boolean> {
     const member = await this.db.getProjectMemberById(projectMemberId);
 
-    if (String(member.member.id) === userId) {
+    if (String(member.member.id) === user.id) {
       throw new Error('Invalid operation: cannot remove self');
     }
 
     const memberProject = member.project;
     assert(memberProject);
 
-    if (String(userId) === String(memberProject.owner.id)) {
+    if (String(user.id) === String(memberProject.owner.id)) {
       return this.db.removeProjectMemberById(projectMemberId);
     } else {
       throw new Error('Invalid operation: not authorized');
@@ -274,7 +305,7 @@ export class Service {
     return this.db.deleteEnvironmentVariable(environmentVariableId);
   }
 
-  async updateDeploymentToProd (userId: string, deploymentId: string): Promise<Deployment> {
+  async updateDeploymentToProd (user: User, deploymentId: string): Promise<Deployment> {
     const oldDeployment = await this.db.getDeployment({
       where: { id: deploymentId },
       relations: {
@@ -288,9 +319,9 @@ export class Service {
 
     const prodBranchDomains = await this.db.getDomainsByProjectId(oldDeployment.project.id, { branch: oldDeployment.project.prodBranch });
 
-    const octokit = await this.getOctokit(userId);
+    const octokit = await this.getOctokit(user.id);
 
-    const newDeployment = await this.createDeployment(userId,
+    const newDeployment = await this.createDeployment(user.id,
       octokit,
       {
         project: oldDeployment.project,
@@ -393,7 +424,7 @@ export class Service {
     return newDeployment;
   }
 
-  async addProject (userId: string, organizationSlug: string, data: DeepPartial<Project>): Promise<Project | undefined> {
+  async addProject (user: User, organizationSlug: string, data: DeepPartial<Project>): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
         slug: organizationSlug
@@ -403,9 +434,9 @@ export class Service {
       throw new Error('Organization does not exist');
     }
 
-    const project = await this.db.addProject(userId, organization.id, data);
+    const project = await this.db.addProject(user, organization.id, data);
 
-    const octokit = await this.getOctokit(userId);
+    const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');
 
     const { data: [latestCommit] } = await octokit.rest.repos.listCommits({
@@ -418,7 +449,7 @@ export class Service {
     const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
 
     // Create deployment with prod branch and latest commit
-    await this.createDeployment(userId,
+    await this.createDeployment(user.id,
       octokit,
       {
         project,
@@ -518,7 +549,7 @@ export class Service {
     return this.db.deleteDomainById(domainId);
   }
 
-  async redeployToProd (userId: string, deploymentId: string): Promise<Deployment> {
+  async redeployToProd (user: User, deploymentId: string): Promise<Deployment> {
     const oldDeployment = await this.db.getDeployment({
       relations: {
         project: true,
@@ -534,9 +565,9 @@ export class Service {
       throw new Error('Deployment not found');
     }
 
-    const octokit = await this.getOctokit(userId);
+    const octokit = await this.getOctokit(user.id);
 
-    const newDeployment = await this.createDeployment(userId,
+    const newDeployment = await this.createDeployment(user.id,
       octokit,
       {
         project: oldDeployment.project,
@@ -660,17 +691,17 @@ export class Service {
     return updateResult;
   }
 
-  async authenticateGitHub (code:string, userId: string): Promise<{token: string}> {
+  async authenticateGitHub (code:string, user: User): Promise<{token: string}> {
     const { authentication: { token } } = await this.oauthApp.createToken({
       code
     });
 
-    await this.db.updateUser(userId, { gitHubToken: token });
+    await this.db.updateUser(user, { gitHubToken: token });
 
     return { token };
   }
 
-  async unauthenticateGitHub (userId: string, data: DeepPartial<User>): Promise<boolean> {
-    return this.db.updateUser(userId, data);
+  async unauthenticateGitHub (user: User, data: DeepPartial<User>): Promise<boolean> {
+    return this.db.updateUser(user, data);
   }
 }

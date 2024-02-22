@@ -10,9 +10,10 @@ if [[ -d "$DEST_DIR" ]]; then
 fi
 
 cat > $PKG_DIR/.env <<EOF
-REACT_APP_GQL_SERVER_URL = 'LACONIC_HOSTED_CONFIG_app_gql_url'
+REACT_APP_SERVER_URL = 'LACONIC_HOSTED_CONFIG_app_server_url'
 REACT_APP_GITHUB_CLIENT_ID = 'LACONIC_HOSTED_CONFIG_app_github_clientid'
 REACT_APP_GITHUB_TEMPLATE_REPO = 'LACONIC_HOSTED_CONFIG_app_github_templaterepo'
+REACT_APP_WALLET_CONNECT_ID = 'LACONIC_HOSTED_CONFIG_app_wallet_connect_id'
 EOF
 
 yarn || exit 1

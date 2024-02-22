@@ -109,7 +109,7 @@
 - Copy the graphQL endpoint from terminal and add the endpoint in the [.env](packages/frontend/.env) file present in `packages/frontend`
 
   ```env
-  REACT_APP_GQL_SERVER_URL = 'http://localhost:8000/graphql'
+  REACT_APP_SERVER_URL = 'http://localhost:8000'
   ```
 
 - Copy the GitHub OAuth app client ID from previous steps and set it in frontend [.env](packages/frontend/.env) file

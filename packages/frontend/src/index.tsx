@@ -10,23 +10,30 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
+import Web3ModalProvider from './context/Web3ModalProvider';
+import { SERVER_GQL_PATH } from './constants';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-const gqlEndpoint = process.env.REACT_APP_GQL_SERVER_URL;
-assert(gqlEndpoint, 'GQL server URL not provided');
+assert(
+  process.env.REACT_APP_SERVER_URL,
+  'REACT_APP_SERVER_URL is not set in env',
+);
+const gqlEndpoint = `${process.env.REACT_APP_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 
 root.render(
   <React.StrictMode>
     <ThemeProvider>
-      <GQLClientProvider client={gqlClient}>
-        <App />
-        <Toaster position="bottom-center" />
-      </GQLClientProvider>
+      <Web3ModalProvider>
+        <GQLClientProvider client={gqlClient}>
+          <App />
+          <Toaster position="bottom-center" />
+        </GQLClientProvider>
+      </Web3ModalProvider>
     </ThemeProvider>
   </React.StrictMode>,
 );

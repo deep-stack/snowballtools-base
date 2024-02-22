@@ -12,9 +12,14 @@ import { UserOrganization } from './UserOrganization';
 
 @Entity()
 @Unique(['email'])
+@Unique(['ethAddress'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
     id!: string;
+
+  // TODO: Set ethAddress as ID
+  @Column()
+    ethAddress!: string;
 
   @Column('varchar', { length: 255, nullable: true })
     name!: string | null;

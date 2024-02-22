@@ -27,7 +27,8 @@ export class GQLClient {
     this.client = new ApolloClient({
       uri: config.gqlEndpoint,
       cache: new InMemoryCache(),
-      defaultOptions
+      defaultOptions,
+      credentials: 'include'
     });
   }
 

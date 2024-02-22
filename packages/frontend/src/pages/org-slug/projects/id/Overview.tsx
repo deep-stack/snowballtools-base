@@ -10,6 +10,7 @@ import { relativeTimeMs } from '../../../../utils/time';
 import { useOctokit } from '../../../../context/OctokitContext';
 import { GitCommitWithBranch, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
+import { formatAddress } from '../../../../utils/format';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -122,9 +123,9 @@ const OverviewTabPanel = () => {
               color="green"
             />
           ) : (
-            <div className="flex justify-between items-center w-full m-2">
+            <div className="flex items-center">
               <Chip
-                className="normal-case inline font-normal"
+                className="normal-case inline font-normal mx-2"
                 size="sm"
                 value="Not connected"
                 icon="^"
@@ -157,7 +158,7 @@ const OverviewTabPanel = () => {
               <p>^ Created</p>
               <p>
                 {relativeTimeMs(project.deployments[0].createdAt)} by ^{' '}
-                {project.deployments[0].createdBy.name}
+                {formatAddress(project.deployments[0].createdBy.name ?? '')}
               </p>
             </div>
           </>

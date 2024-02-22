@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization } from 'gql-client';
 
 import { Typography, Option } from '@material-tailwind/react';
+import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from '../context/GQLClientContext';
 import AsyncSelect from './shared/AsyncSelect';
@@ -11,6 +12,7 @@ const Sidebar = () => {
   const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
+  const { disconnect } = useDisconnect();
 
   const [selectedOrgSlug, setSelectedOrgSlug] = useState(orgSlug);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -24,6 +26,11 @@ const Sidebar = () => {
     fetchUserOrganizations();
     setSelectedOrgSlug(orgSlug);
   }, [orgSlug]);
+
+  const handleLogOut = useCallback(() => {
+    disconnect();
+    navigate('/login');
+  }, [disconnect, navigate]);
 
   return (
     <div className="flex flex-col h-full p-4">
@@ -76,8 +83,11 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="grow flex flex-col justify-end">
-        <div>Documentation</div>
-        <div>Support</div>
+        <a className="cursor-pointer" onClick={handleLogOut}>
+          Log Out
+        </a>
+        <a className="cursor-pointer">Documentation</a>
+        <a className="cursor-pointer">Support</a>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import {
 import { User } from './User';
 import { Organization } from './Organization';
 
-enum Role {
+export enum Role {
   Owner = 'Owner',
   Maintainer = 'Maintainer',
   Reader = 'Reader',

@@ -5,14 +5,14 @@ import path from 'path';
 import { Registry } from '@cerc-io/laconic-sdk';
 
 import { Config } from '../src/config';
-import { DEFAULT_CONFIG_FILE_PATH, PROJECT_DOMAIN } from '../src/constants';
+import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 import { getConfig } from '../src/utils';
 import { Deployment, DeploymentStatus } from '../src/entity/Deployment';
 
 const log = debug('snowball:publish-deploy-records');
 
 async function main () {
-  const { registryConfig, database } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { registryConfig, database, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
   const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
 
@@ -36,7 +36,7 @@ async function main () {
   });
 
   for await (const deployment of deployments) {
-    const url = `${deployment.project.name}-${deployment.id}.${PROJECT_DOMAIN}`;
+    const url = `${deployment.project.name}-${deployment.id}.${misc.projectDomain}`;
 
     const applicationDeploymentRecord = {
       type: 'ApplicationDeploymentRecord',

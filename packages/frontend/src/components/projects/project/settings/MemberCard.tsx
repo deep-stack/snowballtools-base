@@ -7,9 +7,11 @@ import {
   Option,
   Chip,
   IconButton,
+  Tooltip,
 } from '@material-tailwind/react';
 
 import ConfirmDialog from '../../../shared/ConfirmDialog';
+import { formatAddress } from '../../../../utils/format';
 
 const PERMISSION_OPTIONS = [
   {
@@ -48,6 +50,7 @@ const MemberCard = ({
   onRemoveProjectMember,
   onUpdateProjectMember,
 }: MemberCardProps) => {
+  const [ethAddress, emailDomain] = member.email.split('@');
   const [selectedPermission, setSelectedPermission] = useState(
     permissions.join('+'),
   );
@@ -79,8 +82,16 @@ const MemberCard = ({
     >
       <div>^</div>
       <div className="basis-1/2">
-        {member.name && <Typography variant="small">{member.name}</Typography>}
-        <Typography variant="small">{member.email}</Typography>
+        {member.name && (
+          <Typography variant="small">
+            {formatAddress(member.name ?? '')}
+          </Typography>
+        )}
+        <Tooltip content={member.email}>
+          <p>
+            {formatAddress(ethAddress)}@{emailDomain}
+          </p>
+        </Tooltip>
       </div>
       <div className="basis-1/2">
         {!isPending ? (
@@ -142,8 +153,9 @@ const MemberCard = ({
         color="red"
       >
         <Typography variant="small">
-          Once removed, {member.name} ({member.email}) will not be able to
-          access this project.
+          Once removed, {formatAddress(member.name ?? '')} (
+          {formatAddress(ethAddress)}@{emailDomain}) will not be able to access
+          this project.
         </Typography>
       </ConfirmDialog>
     </div>

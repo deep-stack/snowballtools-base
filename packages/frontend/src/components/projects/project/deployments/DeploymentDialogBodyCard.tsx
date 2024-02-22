@@ -5,6 +5,7 @@ import { Typography, Chip, Card } from '@material-tailwind/react';
 import { color } from '@material-tailwind/react/types/components/chip';
 import { relativeTimeMs } from '../../../../utils/time';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
+import { formatAddress } from '../../../../utils/format';
 
 interface DeploymentDialogBodyCardProps {
   deployment: Deployment;
@@ -39,7 +40,8 @@ const DeploymentDialogBodyCard = ({
         {deployment.commitMessage}
       </Typography>
       <Typography variant="small">
-        ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
+        ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
+        {formatAddress(deployment.createdBy.name ?? '')}
       </Typography>
     </Card>
   );

@@ -19,7 +19,7 @@ const OAUTH_CLIENT_TYPE = 'oauth-app';
 
 export const main = async (): Promise<void> => {
   // TODO: get config path using cli
-  const { server, database, gitHub, registryConfig } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { server, database, gitHub, registryConfig, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
   const app = new OAuthApp({
     clientType: OAUTH_CLIENT_TYPE,
@@ -27,7 +27,7 @@ export const main = async (): Promise<void> => {
     clientSecret: gitHub.oAuth.clientSecret
   });
 
-  const db = new Database(database);
+  const db = new Database(database, misc);
   await db.init();
 
   const registry = new Registry(registryConfig);

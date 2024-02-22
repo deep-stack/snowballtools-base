@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { User } from 'gql-client';
 
@@ -7,6 +7,7 @@ import { IconButton, Tooltip, Typography } from '@material-tailwind/react';
 import HorizontalLine from '../components/HorizontalLine';
 import ProjectSearchBar from '../components/projects/ProjectSearchBar';
 import { useGQLClient } from '../context/GQLClientContext';
+import { formatAddress } from '../utils/format';
 
 const ProjectSearch = () => {
   const navigate = useNavigate();
@@ -17,20 +18,6 @@ const ProjectSearch = () => {
     const { user } = await client.getUser();
     setUser(user);
   }, []);
-
-  const formattedAddress = useMemo(() => {
-    const address = user?.name || '';
-
-    if (address.length <= 8) {
-      return address;
-    }
-
-    if (address.startsWith('0x')) {
-      return address.slice(0, 4) + '..' + address.slice(-4);
-    }
-
-    return address;
-  }, [user?.name]);
 
   useEffect(() => {
     fetchUser();
@@ -57,7 +44,7 @@ const ProjectSearch = () => {
           </div>
           <div className="px-2 py-1 bg-blue-gray-50 rounded-lg flex items-center">
             {user?.name && (
-              <Tooltip content={user.name}>{formattedAddress}</Tooltip>
+              <Tooltip content={user.name}>{formatAddress(user.name)}</Tooltip>
             )}
           </div>
         </div>

@@ -1,7 +1,18 @@
+export interface SessionConfig {
+  secret: string;
+  appOriginUrl: string;
+  trustProxy: boolean;
+  domain: string;
+}
+
 export interface ServerConfig {
   host: string;
   port: number;
   gqlPath?: string;
+  sessionSecret: string;
+  appOriginUrl: string;
+  isProduction: boolean;
+  session: SessionConfig;
 }
 
 export interface DatabaseConfig {
@@ -30,9 +41,14 @@ export interface RegistryConfig {
   }
 }
 
+export interface MiscConfig {
+  projectDomain: string;
+}
+
 export interface Config {
   server: ServerConfig;
   database: DatabaseConfig;
   gitHub: GitHubConfig;
   registryConfig: RegistryConfig;
+  misc: MiscConfig;
 }
