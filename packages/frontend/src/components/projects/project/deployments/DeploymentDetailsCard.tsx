@@ -87,18 +87,12 @@ const DeploymentDetailsCard = ({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-2 border-b border-gray-300 p-3 my-2">
-      <div className="col-span-2">
+    <div className="grid grid-cols-8 gap-2 border-b border-gray-300 p-3 my-2">
+      <div className="col-span-3">
         <div className="flex">
           {deployment.url && (
             <Typography className=" basis-3/4">{deployment.url}</Typography>
           )}
-          <Chip
-            value={deployment.status}
-            color={STATUS_COLORS[deployment.status] ?? 'gray'}
-            variant="ghost"
-            icon={<i>^</i>}
-          />
         </div>
         <Typography color="gray">
           {deployment.environment === Environment.Production
@@ -107,13 +101,21 @@ const DeploymentDetailsCard = ({
         </Typography>
       </div>
       <div className="col-span-1">
+        <Chip
+          value={deployment.status}
+          color={STATUS_COLORS[deployment.status] ?? 'gray'}
+          variant="ghost"
+          icon={<i>^</i>}
+        />
+      </div>
+      <div className="col-span-2">
         <Typography color="gray">^ {deployment.branch}</Typography>
         <Typography color="gray">
           ^ {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
           {deployment.commitMessage}
         </Typography>
       </div>
-      <div className="col-span-1 flex items-center">
+      <div className="col-span-2 flex items-center">
         <Typography color="gray" className="grow">
           ^ {relativeTimeMs(deployment.createdAt)} ^ {deployment.createdBy.name}
         </Typography>

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
 
-import { Option, Typography } from '@material-tailwind/react';
+import { Button, Option, Typography } from '@material-tailwind/react';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
@@ -27,10 +27,12 @@ const CreateRepo = () => {
   const navigate = useNavigate();
 
   const [gitAccounts, setGitAccounts] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitRepoHandler: SubmitHandler<SubmitRepoValues> = useCallback(
     async (data) => {
       assert(data.account);
+      setIsLoading(true);
 
       try {
         assert(
@@ -62,11 +64,17 @@ const CreateRepo = () => {
           template: 'webapp',
         });
 
-        navigate(
-          `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}`,
-        );
+        if (Boolean(addProject)) {
+          setIsLoading(true);
+          navigate(
+            `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}`,
+          );
+        } else {
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error(err);
+        setIsLoading(false);
         toast.error('Error deploying project');
       }
     },
@@ -174,9 +182,14 @@ const CreateRepo = () => {
         </label>
       </div>
       <div className="mb-2">
-        <button className="bg-blue-500 rounded-xl p-2" type="submit">
+        <Button
+          className="bg-blue-500 rounded-xl p-2"
+          type="submit"
+          disabled={isLoading}
+          loading={isLoading}
+        >
           Deploy ^
-        </button>
+        </Button>
       </div>
     </form>
   );

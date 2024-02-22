@@ -44,18 +44,18 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
   }, [value]);
 
   return (
-    <div className="grid grid-cols-4 gap-2 text-sm text-gray-600">
-      <div className="col-span-2">
+    <div className="grid grid-cols-8 gap-2 text-sm text-gray-600">
+      <div className="col-span-4">
         <SearchBar
           placeholder="Search branches"
           value={searchedBranch}
           onChange={(event) => setSearchedBranch(event.target.value)}
         />
       </div>
-      <div className="col-span-1">
+      <div className="col-span-2">
         <DatePicker mode="range" selected={dateRange} onSelect={setDateRange} />
       </div>
-      <div className="col-span-1 relative">
+      <div className="col-span-2 relative">
         <Select
           value={selectedStatus}
           onChange={(value) => setSelectedStatus(value as StatusOptions)}

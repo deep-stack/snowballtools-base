@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Chip, IconButton } from '@material-tailwind/react';
+import { Chip, IconButton, Spinner } from '@material-tailwind/react';
 
 import { relativeTimeISO } from '../../../utils/time';
 import { GitRepositoryDetails } from '../../../types';
@@ -14,6 +15,7 @@ interface ProjectRepoCardProps {
 const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
   const client = useGQLClient();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { orgSlug } = useParams();
 
@@ -22,6 +24,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       return;
     }
 
+    setIsLoading(true);
     const { addProject } = await client.addProject(orgSlug!, {
       name: `${repository.owner!.login}-${repository.name}`,
       prodBranch: repository.default_branch!,
@@ -30,7 +33,13 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       template: 'webapp',
     });
 
-    navigate(`import?projectId=${addProject.id}`);
+    if (Boolean(addProject)) {
+      setIsLoading(false);
+      navigate(`import?projectId=${addProject.id}`);
+    } else {
+      setIsLoading(false);
+      toast.error('Failed to create project');
+    }
   }, [client, repository]);
 
   return (
@@ -53,9 +62,13 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
         </div>
         <p>{repository.updated_at && relativeTimeISO(repository.updated_at)}</p>
       </div>
-      <div className="hidden group-hover:block">
-        <IconButton size="sm">{'>'}</IconButton>
-      </div>
+      {isLoading ? (
+        <Spinner className="h-4 w-4" />
+      ) : (
+        <div className="hidden group-hover:block">
+          <IconButton size="sm">{'>'}</IconButton>
+        </div>
+      )}
     </div>
   );
 };

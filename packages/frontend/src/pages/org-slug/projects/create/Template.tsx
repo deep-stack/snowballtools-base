@@ -50,7 +50,7 @@ const CreateWithTemplate = () => {
         <div className="grow px-2">{template?.name}</div>
         <div>
           <a href={GIT_TEMPLATE_LINK} target="_blank" rel="noreferrer">
-            ^ cerc-io/test-progressive-web-app
+            ^ {process.env.REACT_APP_GITHUB_TEMPLATE_REPO}
           </a>
         </div>
       </div>
