@@ -7,7 +7,11 @@ import {
 } from './renders/checkbox';
 import { avatars, avatarsFallback } from './renders/avatar';
 import { renderBadges } from './renders/badge';
-import { renderButtonIcons, renderButtons } from './renders/button';
+import {
+  renderButtonIcons,
+  renderButtons,
+  renderLinks,
+} from './renders/button';
 import {
   renderTabWithBadges,
   renderTabs,
@@ -15,6 +19,11 @@ import {
 } from './renders/tabs';
 import { useToast } from 'components/shared/Toast/useToast';
 import { Button } from 'components/shared/Button';
+import {
+  renderInlineNotificationWithDescriptions,
+  renderInlineNotifications,
+} from './renders/inlineNotifications';
+import { renderInputs } from './renders/input';
 
 const Page = () => {
   const { toast } = useToast();
@@ -24,7 +33,7 @@ const Page = () => {
 
   return (
     <div className="relative h-full min-h-full">
-      <div className="flex flex-col items-center justify-center max-w-7xl mx-auto px-20 py-20">
+      <div className="flex flex-col items-center justify-center container mx-auto px-20 py-20">
         <h1 className="text-4xl font-bold">Manual Storybook</h1>
         <p className="mt-4 text-lg text-center text-gray-500">
           Get started by editing{' '}
@@ -44,6 +53,11 @@ const Page = () => {
         </div>
         {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
+          <h1 className="text-2xl font-bold">Input</h1>
+          <div className="flex w-full flex-col gap-10">{renderInputs()}</div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
           <h1 className="text-2xl font-bold">Button</h1>
           <div className="flex flex-col gap-10">
             {renderButtons()}
@@ -122,6 +136,29 @@ const Page = () => {
             </div>
             <h1 className="text-2xl font-bold">Vertical Tabs</h1>
             {renderVerticalTabs()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Inline notification */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Inline Notification</h1>
+            <div className="flex gap-1 flex-wrap">
+              {renderInlineNotifications()}
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              {renderInlineNotificationWithDescriptions()}
+            </div>
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Link */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Link</h1>
+            <div className="flex gap-4 items-center justify-center">
+              {renderLinks()}
+            </div>
           </div>
         </div>
       </div>
