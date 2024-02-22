@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 import { ToastProps } from '@radix-ui/react-toast';
+import { motion } from 'framer-motion';
 import { simpleToastTheme, type SimpleToastTheme } from './SimpleToast.theme';
 import {
   LoadingIcon,
@@ -11,7 +12,6 @@ import {
 } from 'components/shared/CustomIcon';
 import { Button, ButtonBaseProps, ButtonTheme } from 'components/shared/Button';
 import { cloneIcon } from 'utils/cloneIcon';
-import { cn } from 'utils/classnames';
 
 interface CtaProps extends ButtonBaseProps, ButtonTheme {
   buttonLabel: string;
@@ -72,14 +72,22 @@ export const SimpleToast = ({
 
   return (
     <ToastPrimitive.Root {...props} asChild>
-      <div className={wrapperCls({ class: cn(className) })}>
+      <motion.li
+        animate={{
+          y: 'var(--radix-toast-swipe-move-y, 0)',
+          opacity: 1,
+        }}
+        className={wrapperCls({ class: className })}
+        exit={{ y: '100%', opacity: 0 }}
+        initial={{ y: '100%', opacity: 0 }}
+      >
         {cloneIcon(Icon, { className: iconCls() })}
         <ToastPrimitive.Title asChild>
           <p className={titleCls()}>{title}</p>
         </ToastPrimitive.Title>
         {renderCta}
         {renderCloseButton}
-      </div>
+      </motion.li>
     </ToastPrimitive.Root>
   );
 };
