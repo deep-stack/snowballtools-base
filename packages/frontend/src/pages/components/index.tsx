@@ -17,17 +17,14 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
-import { useToast } from 'components/shared/Toast/useToast';
-import { Button } from 'components/shared/Button';
 import {
   renderInlineNotificationWithDescriptions,
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
+import { renderToast, renderToastsWithCta } from './renders/toast';
 
 const Page = () => {
-  const { toast } = useToast();
-
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
 
@@ -47,10 +44,12 @@ const Page = () => {
         {/* Toast */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Toasts</h1>
-          <Button onClick={() => toast({ id: 'test', title: 'Hello, world!' })}>
-            Toast
-          </Button>
+          {renderToastsWithCta()}
+          {renderToast()}
         </div>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
         {/* Button */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <h1 className="text-2xl font-bold">Input</h1>
