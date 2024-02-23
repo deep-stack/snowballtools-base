@@ -11,11 +11,11 @@ const log = debug('snowball:initialize-registry');
 const DENOM = 'aphoton';
 const BOND_AMOUNT = '1000000000';
 
-// TODO: Get authority names from args
-const AUTHORITY_NAMES = ['snowballtools', 'cerc-io'];
-
 async function main () {
   const { registryConfig } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+
+  // TODO: Get authority names from args
+  const authorityNames = ['snowballtools', registryConfig.authority];
 
   const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
 
@@ -23,7 +23,7 @@ async function main () {
   log('bondId:', bondId);
   await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, registryConfig.privateKey, registryConfig.fee);
 
-  for await (const name of AUTHORITY_NAMES) {
+  for await (const name of authorityNames) {
     await registry.reserveAuthority({ name }, registryConfig.privateKey, registryConfig.fee);
     log('Reserved authority name:', name);
     await registry.setAuthorityBond({ name, bondId }, registryConfig.privateKey, registryConfig.fee);

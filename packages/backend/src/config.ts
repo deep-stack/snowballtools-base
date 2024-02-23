@@ -34,6 +34,7 @@ export interface RegistryConfig {
   privateKey: string;
   bondId: string;
   fetchDeploymentRecordDelay: number;
+  authority: string;
   fee: {
     amount: string;
     denom: string;

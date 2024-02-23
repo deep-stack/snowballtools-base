@@ -19,19 +19,31 @@ import {
 
 import HorizontalLine from '../../../components/HorizontalLine';
 import { useGQLClient } from '../../../context/GQLClientContext';
+import { useOctokit } from '../../../context/OctokitContext';
 
 const Id = () => {
   const { id } = useParams();
+  const { octokit } = useOctokit();
   const navigate = useNavigate();
   const client = useGQLClient();
   const location = useLocation();
 
   const [project, setProject] = useState<ProjectType | null>(null);
+  const [repoUrl, setRepoUrl] = useState('');
 
   const fetchProject = useCallback(async (id: string | undefined) => {
     if (id) {
       const { project } = await client.getProject(id);
       setProject(project);
+
+      if (project) {
+        const [owner, repo] = project.repository.split('/');
+        const { data: repoDetails } = await octokit.rest.repos.get({
+          owner,
+          repo,
+        });
+        setRepoUrl(repoDetails.html_url);
+      }
     }
   }, []);
 
@@ -68,9 +80,11 @@ const Id = () => {
             <Typography variant="h3" className="grow">
               {project?.name}
             </Typography>
-            <Button className="rounded-full" variant="outlined">
-              Open Repo
-            </Button>
+            <Link to={repoUrl} target="_blank">
+              <Button className="rounded-full" variant="outlined">
+                Open Repo
+              </Button>
+            </Link>
             <Button className="rounded-full" color="blue">
               Go to app
             </Button>

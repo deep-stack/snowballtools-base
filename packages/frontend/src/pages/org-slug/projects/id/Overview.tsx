@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Domain, DomainStatus } from 'gql-client';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
 import {
@@ -183,7 +183,11 @@ const OverviewTabPanel = () => {
         </div>
         <div className="p-2">
           {activities.map((activity, index) => {
-            return <ActivityCard activity={activity} key={index} />;
+            return (
+              <Link to={activity.html_url} target="_blank" key={index}>
+                <ActivityCard activity={activity} />
+              </Link>
+            );
           })}
         </div>
       </div>
