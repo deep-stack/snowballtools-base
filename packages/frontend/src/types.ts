@@ -23,7 +23,7 @@ export interface GitBranchDetails {
 export interface GitCommitWithBranch {
   author: {
     avatar_url: string;
-  };
+  } | null;
   branch: GitBranchDetails;
   commit: {
     author: {

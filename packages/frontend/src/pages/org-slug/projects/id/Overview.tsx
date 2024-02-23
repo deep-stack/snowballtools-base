@@ -73,7 +73,7 @@ const OverviewTabPanel = () => {
               new Date(b.commit.author!.date!).getTime() -
               new Date(a.commit.author!.date!).getTime(),
           )
-          .slice(0, COMMITS_PER_PAGE) as GitCommitWithBranch[];
+          .slice(0, COMMITS_PER_PAGE);
 
         setActivities(orderedCommits);
       } catch (err) {
