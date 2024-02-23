@@ -13,7 +13,7 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
   return (
     <div className="group flex gap-2 hover:bg-gray-200 rounded mt-1">
       <div className="w-8">
-        <Avatar src={activity.author.avatar_url} variant="rounded" size="sm" />
+        <Avatar src={activity.author?.avatar_url} variant="rounded" size="sm" />
       </div>
       <div className="grow">
         <Typography>{activity.commit.author?.name}</Typography>
