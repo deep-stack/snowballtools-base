@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { Button, Typography } from '@material-tailwind/react';
@@ -7,6 +7,7 @@ import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
 import ConfirmDialog from '../../shared/ConfirmDialog';
 
+const INTERVAL_DURATION = 5000;
 const Deploy = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
@@ -19,6 +20,14 @@ const Deploy = () => {
 
   const handleCancel = useCallback(() => {
     navigate(`/${orgSlug}/projects/create`);
+  }, []);
+
+  useEffect(() => {
+    const timerID = setTimeout(() => {
+      navigate(`/${orgSlug}/projects/create/success/${projectId}`);
+    }, INTERVAL_DURATION);
+
+    return () => clearInterval(timerID);
   }, []);
 
   return (
@@ -74,14 +83,6 @@ const Deploy = () => {
         status={DeployStatus.NOT_STARTED}
         step="4"
       />
-
-      <Button
-        onClick={() => {
-          navigate(`/${orgSlug}/projects/create/success/${projectId}`);
-        }}
-      >
-        VIEW DEMO
-      </Button>
     </div>
   );
 };
