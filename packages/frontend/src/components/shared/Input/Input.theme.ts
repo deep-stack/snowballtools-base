@@ -50,6 +50,7 @@ export const inputTheme = tv(
             'outline-offset-0',
             'outline-border-danger',
             'shadow-none',
+            'focus:outline-border-danger',
           ],
           helperText: 'text-elements-danger',
         },

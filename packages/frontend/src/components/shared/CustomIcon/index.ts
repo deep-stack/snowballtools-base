@@ -9,3 +9,7 @@ export * from './WarningIcon';
 export * from './SearchIcon';
 export * from './CrossIcon';
 export * from './GlobeIcon';
+export * from './CalendarIcon';
+export * from './CheckRoundFilledIcon';
+export * from './InfoRoundFilledIcon';
+export * from './LoadingIcon';

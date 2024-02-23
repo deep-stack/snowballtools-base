@@ -8,10 +8,13 @@ export default withMT({
     '../../node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-    },
     extend: {
+      zIndex: {
+        tooltip: '52',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       fontSize: {
         '2xs': '0.625rem',
         '3xs': '0.5rem',
@@ -151,11 +154,15 @@ export default withMT({
         calendar:
           '0px 3px 20px rgba(8, 47, 86, 0.1), 0px 0px 4px rgba(8, 47, 86, 0.14)',
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
+        inset: 'inset 0px 1px 0px rgba(8, 47, 86, 0.06)',
       },
       spacing: {
         2.5: '0.625rem',
         3.25: '0.8125rem',
         3.5: '0.875rem',
+      },
+      zIndex: {
+        toast: '9999',
       },
     },
   },
