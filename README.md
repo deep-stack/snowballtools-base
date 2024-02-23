@@ -85,6 +85,8 @@
     # Set Bond ID to be used for publishing records
     bondId = "8xk8c2pb61kajwixpm223zvptr2x2ncajq0vd998p6aqhvqqep2reu6pik245epf"
     chainId = "laconic_9000-1"
+    # Set authority that is existing in the chain
+    authority = "laconic"
     [registryConfig.fee]
       amount = "200000"
       denom = "aphoton"
@@ -125,6 +127,8 @@
     laconic-so --stack fixturenet-laconic-loaded deploy port laconicd 9473
     # 0.0.0.0:32771
     ```
+  - Set authority in `registryConfig.authority` in backend [config file](packages/backend/environments/local.toml)
+
   - Run the script to create bond, reserve the authority and set authority bond
     ```bash
     yarn test:registry:init

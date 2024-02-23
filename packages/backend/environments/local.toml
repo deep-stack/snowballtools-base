@@ -24,6 +24,7 @@
   chainId = "laconic_9000-1"
   privateKey = ""
   bondId = ""
+  authority = ""
   [registryConfig.fee]
     amount = "200000"
     denom = "aphoton"

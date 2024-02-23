@@ -81,7 +81,7 @@ export class Registry {
     log('Application record data:', applicationRecord);
 
     // TODO: Discuss computation of CRN
-    const crn = this.getCrn(packageJSON.name, appName);
+    const crn = this.getCrn(appName);
     log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
     await this.registry.setName({ cid: result.data.id, crn }, this.registryConfig.privateKey, this.registryConfig.fee);
@@ -101,7 +101,7 @@ export class Registry {
     applicationDeploymentRequestId: string,
     applicationDeploymentRequestData: ApplicationDeploymentRequest
   }> {
-    const crn = this.getCrn(data.packageJsonName, data.appName);
+    const crn = this.getCrn(data.appName);
     const records = await this.registry.resolveNames([crn]);
     const applicationRecord = records[0];
 
@@ -160,10 +160,8 @@ export class Registry {
     return records.filter((record: AppDeploymentRecord) => deployments.some(deployment => deployment.applicationRecordId === record.attributes.application));
   }
 
-  getCrn (packageJsonName: string, appName: string): string {
-    const [arg1] = packageJsonName.split('/');
-    const authority = arg1.replace('@', '');
-
-    return `crn://${authority}/applications/${appName}`;
+  getCrn (appName: string): string {
+    assert(this.registryConfig.authority, "Authority doesn't exist");
+    return `crn://${this.registryConfig.authority}/applications/${appName}`;
   }
 }
