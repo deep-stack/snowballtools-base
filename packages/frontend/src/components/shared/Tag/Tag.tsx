@@ -41,14 +41,14 @@ export const Tag = ({
   const renderLeftIcon = useMemo(() => {
     if (!leftIcon) return null;
     return <div className={iconCls()}>{cloneIcon(leftIcon, { size: 16 })}</div>;
-  }, [iconCls, leftIcon]);
+  }, [cloneIcon, iconCls, leftIcon]);
 
   const renderRightIcon = useMemo(() => {
     if (!rightIcon) return null;
     return (
       <div className={iconCls()}>{cloneIcon(rightIcon, { size: 16 })}</div>
     );
-  }, [iconCls, rightIcon]);
+  }, [cloneIcon, iconCls, rightIcon]);
 
   return (
     <div className={wrapperCls()}>
