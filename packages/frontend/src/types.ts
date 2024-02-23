@@ -21,6 +21,9 @@ export interface GitBranchDetails {
 }
 
 export interface GitCommitWithBranch {
+  author: {
+    avatar_url: string;
+  };
   branch: GitBranchDetails;
   commit: {
     author: {
@@ -29,6 +32,7 @@ export interface GitCommitWithBranch {
     } | null;
     message: string;
   };
+  html_url: string;
 }
 
 export enum GitSelect {

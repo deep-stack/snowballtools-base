@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Typography, IconButton } from '@material-tailwind/react';
+import { Typography, IconButton, Avatar } from '@material-tailwind/react';
 
 import { relativeTimeISO } from '../../../utils/time';
 import { GitCommitWithBranch } from '../../../types';
@@ -11,9 +11,10 @@ interface ActivityCardProps {
 
 const ActivityCard = ({ activity }: ActivityCardProps) => {
   return (
-    <div className="group flex hover:bg-gray-200 rounded mt-1">
-      <div className="w-4">^</div>
-
+    <div className="group flex gap-2 hover:bg-gray-200 rounded mt-1">
+      <div className="w-8">
+        <Avatar src={activity.author.avatar_url} variant="rounded" size="sm" />
+      </div>
       <div className="grow">
         <Typography>{activity.commit.author?.name}</Typography>
         <Typography variant="small" color="gray">
