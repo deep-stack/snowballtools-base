@@ -18,6 +18,8 @@ import {
   renderTabs,
   renderVerticalTabs,
 } from './renders/tabs';
+import { SegmentedControls } from 'components/shared/SegmentedControls';
+import { SEGMENTED_CONTROLS_OPTIONS } from './renders/segmentedControls';
 import { Switch } from 'components/shared/Switch';
 import { RADIO_OPTIONS } from './renders/radio';
 import { Radio } from 'components/shared/Radio';
@@ -32,6 +34,8 @@ import { renderTooltips } from './renders/tooltip';
 const Page = () => {
   const [singleDate, setSingleDate] = useState<Value>();
   const [dateRange, setDateRange] = useState<Value>();
+  const [selectedSegmentedControl, setSelectedSegmentedControl] =
+    useState<string>('Test 1');
   const [switchValue, setSwitchValue] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState<string>('');
 
@@ -172,6 +176,26 @@ const Page = () => {
             </div>
             <h1 className="text-2xl font-bold">Vertical Tabs</h1>
             {renderVerticalTabs()}
+          </div>
+
+          <div className="w-full h border border-gray-200 px-20 my-10" />
+
+          {/* Segmented Controls */}
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Segmented Controls</h1>
+            <div className="flex flex-col gap-10">
+              <SegmentedControls
+                options={SEGMENTED_CONTROLS_OPTIONS}
+                value={selectedSegmentedControl}
+                onChange={setSelectedSegmentedControl}
+              />
+              <SegmentedControls
+                size="sm"
+                options={SEGMENTED_CONTROLS_OPTIONS}
+                value={selectedSegmentedControl}
+                onChange={setSelectedSegmentedControl}
+              />
+            </div>
           </div>
 
           <div className="w-full h border border-gray-200 px-20 my-10" />
