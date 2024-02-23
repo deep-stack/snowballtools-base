@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Calendar } from 'components/shared/Calendar';
+import { DatePicker } from 'components/shared/DatePicker';
+import { Radio } from 'components/shared/Radio';
+import { SegmentedControls } from 'components/shared/SegmentedControls';
+import { Switch } from 'components/shared/Switch';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
-import {
-  renderCheckbox,
-  renderCheckboxWithDescription,
-} from './renders/checkbox';
 import { avatars, avatarsFallback } from './renders/avatar';
 import { renderBadges } from './renders/badge';
 import {
@@ -14,21 +14,22 @@ import {
   renderLinks,
 } from './renders/button';
 import {
-  renderTabWithBadges,
-  renderTabs,
-  renderVerticalTabs,
-} from './renders/tabs';
-import { SegmentedControls } from 'components/shared/SegmentedControls';
-import { SEGMENTED_CONTROLS_OPTIONS } from './renders/segmentedControls';
-import { Switch } from 'components/shared/Switch';
-import { RADIO_OPTIONS } from './renders/radio';
-import { Radio } from 'components/shared/Radio';
+  renderCheckbox,
+  renderCheckboxWithDescription,
+} from './renders/checkbox';
 import {
   renderInlineNotificationWithDescriptions,
   renderInlineNotifications,
 } from './renders/inlineNotifications';
 import { renderInputs } from './renders/input';
-import { DatePicker } from 'components/shared/DatePicker';
+import { RADIO_OPTIONS } from './renders/radio';
+import { SEGMENTED_CONTROLS_OPTIONS } from './renders/segmentedControls';
+import {
+  renderTabWithBadges,
+  renderTabs,
+  renderVerticalTabs,
+} from './renders/tabs';
+import { renderDefaultTag, renderMinimalTag } from './renders/tag';
 import { renderToast, renderToastsWithCta } from './renders/toast';
 import { renderTooltips } from './renders/tooltip';
 
@@ -50,6 +51,19 @@ const Page = () => {
             packages/frontend/src/pages/components/index.tsx
           </code>
         </p>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        {/* Tag */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Tag</h1>
+            <div className="flex flex-col gap-10 items-center justify-center">
+              {renderDefaultTag()}
+              {renderMinimalTag()}
+            </div>
+          </div>
+        </div>
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 
