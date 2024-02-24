@@ -39,13 +39,17 @@ export class User {
   @CreateDateColumn()
     updatedAt!: Date;
 
-  @OneToMany(() => ProjectMember, projectMember => projectMember.project, {
+  @OneToMany(() => ProjectMember, (projectMember) => projectMember.project, {
     cascade: ['soft-remove']
   })
     projectMembers!: ProjectMember[];
 
-  @OneToMany(() => UserOrganization, UserOrganization => UserOrganization.member, {
-    cascade: ['soft-remove']
-  })
+  @OneToMany(
+    () => UserOrganization,
+    (UserOrganization) => UserOrganization.member,
+    {
+      cascade: ['soft-remove']
+    }
+  )
     userOrganizations!: UserOrganization[];
 }

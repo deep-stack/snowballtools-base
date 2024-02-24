@@ -1,4 +1,10 @@
-import { DataSource, DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere } from 'typeorm';
+import {
+  DataSource,
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere
+} from 'typeorm';
 import path from 'path';
 import debug from 'debug';
 import assert from 'assert';
@@ -74,14 +80,18 @@ export class Database {
     return updateResult.affected > 0;
   }
 
-  async getOrganizations (options: FindManyOptions<Organization>): Promise<Organization[]> {
+  async getOrganizations (
+    options: FindManyOptions<Organization>
+  ): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
     const organizations = await organizationRepository.find(options);
 
     return organizations;
   }
 
-  async getOrganization (options: FindOneOptions<Organization>): Promise<Organization | null> {
+  async getOrganization (
+    options: FindOneOptions<Organization>
+  ): Promise<Organization | null> {
     const organizationRepository = this.dataSource.getRepository(Organization);
     const organization = await organizationRepository.findOne(options);
 
@@ -123,7 +133,11 @@ export class Database {
 
     const project = await projectRepository
       .createQueryBuilder('project')
-      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect(
+        'project.deployments',
+        'deployments',
+        'deployments.isCurrent = true'
+      )
       .leftJoinAndSelect('deployments.createdBy', 'user')
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoinAndSelect('project.owner', 'owner')
@@ -136,19 +150,29 @@ export class Database {
     return project;
   }
 
-  async getProjectsInOrganization (userId: string, organizationSlug: string): Promise<Project[]> {
+  async getProjectsInOrganization (
+    userId: string,
+    organizationSlug: string
+  ): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository
       .createQueryBuilder('project')
-      .leftJoinAndSelect('project.deployments', 'deployments', 'deployments.isCurrent = true')
+      .leftJoinAndSelect(
+        'project.deployments',
+        'deployments',
+        'deployments.isCurrent = true'
+      )
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoin('project.projectMembers', 'projectMembers')
       .leftJoin('project.organization', 'organization')
-      .where('(project.ownerId = :userId OR projectMembers.userId = :userId) AND organization.slug = :organizationSlug', {
-        userId,
-        organizationSlug
-      })
+      .where(
+        '(project.ownerId = :userId OR projectMembers.userId = :userId) AND organization.slug = :organizationSlug',
+        {
+          userId,
+          organizationSlug
+        }
+      )
       .getMany();
 
     return projects;
@@ -157,7 +181,9 @@ export class Database {
   /**
    * Get deployments with specified filter
    */
-  async getDeployments (options: FindManyOptions<Deployment>): Promise<Deployment[]> {
+  async getDeployments (
+    options: FindManyOptions<Deployment>
+  ): Promise<Deployment[]> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployments = await deploymentRepository.find(options);
 
@@ -182,7 +208,9 @@ export class Database {
     });
   }
 
-  async getDeployment (options: FindOneOptions<Deployment>): Promise<Deployment | null> {
+  async getDeployment (
+    options: FindOneOptions<Deployment>
+  ): Promise<Deployment | null> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOne(options);
 
@@ -210,8 +238,11 @@ export class Database {
     return deployment;
   }
 
-  async getProjectMembersByProjectId (projectId: string): Promise<ProjectMember[]> {
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+  async getProjectMembersByProjectId (
+    projectId: string
+  ): Promise<ProjectMember[]> {
+    const projectMemberRepository =
+      this.dataSource.getRepository(ProjectMember);
 
     const projectMembers = await projectMemberRepository.find({
       relations: {
@@ -228,8 +259,12 @@ export class Database {
     return projectMembers;
   }
 
-  async getEnvironmentVariablesByProjectId (projectId: string, filter?: FindOptionsWhere<EnvironmentVariable>): Promise<EnvironmentVariable[]> {
-    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
+  async getEnvironmentVariablesByProjectId (
+    projectId: string,
+    filter?: FindOptionsWhere<EnvironmentVariable>
+  ): Promise<EnvironmentVariable[]> {
+    const environmentVariableRepository =
+      this.dataSource.getRepository(EnvironmentVariable);
 
     const environmentVariables = await environmentVariableRepository.find({
       where: {
@@ -244,9 +279,12 @@ export class Database {
   }
 
   async removeProjectMemberById (projectMemberId: string): Promise<boolean> {
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+    const projectMemberRepository =
+      this.dataSource.getRepository(ProjectMember);
 
-    const deleteResult = await projectMemberRepository.delete({ id: projectMemberId });
+    const deleteResult = await projectMemberRepository.delete({
+      id: projectMemberId
+    });
 
     if (deleteResult.affected) {
       return deleteResult.affected > 0;
@@ -255,37 +293,63 @@ export class Database {
     }
   }
 
-  async updateProjectMemberById (projectMemberId: string, data: DeepPartial<ProjectMember>): Promise<boolean> {
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
-    const updateResult = await projectMemberRepository.update({ id: projectMemberId }, data);
+  async updateProjectMemberById (
+    projectMemberId: string,
+    data: DeepPartial<ProjectMember>
+  ): Promise<boolean> {
+    const projectMemberRepository =
+      this.dataSource.getRepository(ProjectMember);
+    const updateResult = await projectMemberRepository.update(
+      { id: projectMemberId },
+      data
+    );
 
     return Boolean(updateResult.affected);
   }
 
-  async addProjectMember (data: DeepPartial<ProjectMember>): Promise<ProjectMember> {
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+  async addProjectMember (
+    data: DeepPartial<ProjectMember>
+  ): Promise<ProjectMember> {
+    const projectMemberRepository =
+      this.dataSource.getRepository(ProjectMember);
     const newProjectMember = await projectMemberRepository.save(data);
 
     return newProjectMember;
   }
 
-  async addEnvironmentVariables (data: DeepPartial<EnvironmentVariable>[]): Promise<EnvironmentVariable[]> {
-    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const savedEnvironmentVariables = await environmentVariableRepository.save(data);
+  async addEnvironmentVariables (
+    data: DeepPartial<EnvironmentVariable>[]
+  ): Promise<EnvironmentVariable[]> {
+    const environmentVariableRepository =
+      this.dataSource.getRepository(EnvironmentVariable);
+    const savedEnvironmentVariables =
+      await environmentVariableRepository.save(data);
 
     return savedEnvironmentVariables;
   }
 
-  async updateEnvironmentVariable (environmentVariableId: string, data: DeepPartial<EnvironmentVariable>): Promise<boolean> {
-    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const updateResult = await environmentVariableRepository.update({ id: environmentVariableId }, data);
+  async updateEnvironmentVariable (
+    environmentVariableId: string,
+    data: DeepPartial<EnvironmentVariable>
+  ): Promise<boolean> {
+    const environmentVariableRepository =
+      this.dataSource.getRepository(EnvironmentVariable);
+    const updateResult = await environmentVariableRepository.update(
+      { id: environmentVariableId },
+      data
+    );
 
     return Boolean(updateResult.affected);
   }
 
-  async deleteEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
-    const environmentVariableRepository = this.dataSource.getRepository(EnvironmentVariable);
-    const deleteResult = await environmentVariableRepository.delete({ id: environmentVariableId });
+  async deleteEnvironmentVariable (
+    environmentVariableId: string
+  ): Promise<boolean> {
+    const environmentVariableRepository =
+      this.dataSource.getRepository(EnvironmentVariable);
+    const deleteResult = await environmentVariableRepository.delete({
+      id: environmentVariableId
+    });
 
     if (deleteResult.affected) {
       return deleteResult.affected > 0;
@@ -295,7 +359,8 @@ export class Database {
   }
 
   async getProjectMemberById (projectMemberId: string): Promise<ProjectMember> {
-    const projectMemberRepository = this.dataSource.getRepository(ProjectMember);
+    const projectMemberRepository =
+      this.dataSource.getRepository(ProjectMember);
 
     const projectMemberWithProject = await projectMemberRepository.find({
       relations: {
@@ -307,8 +372,7 @@ export class Database {
       where: {
         id: projectMemberId
       }
-    }
-    );
+    });
 
     if (projectMemberWithProject.length === 0) {
       throw new Error('Member does not exist');
@@ -317,34 +381,49 @@ export class Database {
     return projectMemberWithProject[0];
   }
 
-  async getProjectsBySearchText (userId: string, searchText: string): Promise<Project[]> {
+  async getProjectsBySearchText (
+    userId: string,
+    searchText: string
+  ): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const projects = await projectRepository
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.organization', 'organization')
       .leftJoin('project.projectMembers', 'projectMembers')
-      .where('(project.owner = :userId OR projectMembers.member.id = :userId) AND project.name LIKE :searchText', {
-        userId,
-        searchText: `%${searchText}%`
-      })
+      .where(
+        '(project.owner = :userId OR projectMembers.member.id = :userId) AND project.name LIKE :searchText',
+        {
+          userId,
+          searchText: `%${searchText}%`
+        }
+      )
       .getMany();
 
     return projects;
   }
 
-  async updateDeploymentById (deploymentId: string, data: DeepPartial<Deployment>): Promise<boolean> {
+  async updateDeploymentById (
+    deploymentId: string,
+    data: DeepPartial<Deployment>
+  ): Promise<boolean> {
     return this.updateDeployment({ id: deploymentId }, data);
   }
 
-  async updateDeployment (criteria: FindOptionsWhere<Deployment>, data: DeepPartial<Deployment>): Promise<boolean> {
+  async updateDeployment (
+    criteria: FindOptionsWhere<Deployment>,
+    data: DeepPartial<Deployment>
+  ): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const updateResult = await deploymentRepository.update(criteria, data);
 
     return Boolean(updateResult.affected);
   }
 
-  async updateDeploymentsByProjectIds (projectIds: string[], data: DeepPartial<Deployment>): Promise<boolean> {
+  async updateDeploymentsByProjectIds (
+    projectIds: string[],
+    data: DeepPartial<Deployment>
+  ): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     const updateResult = await deploymentRepository
@@ -378,9 +457,15 @@ export class Database {
     return projectRepository.save(newProject);
   }
 
-  async updateProjectById (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
+  async updateProjectById (
+    projectId: string,
+    data: DeepPartial<Project>
+  ): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
-    const updateResult = await projectRepository.update({ id: projectId }, data);
+    const updateResult = await projectRepository.update(
+      { id: projectId },
+      data
+    );
 
     return Boolean(updateResult.affected);
   }
@@ -427,14 +512,20 @@ export class Database {
     return domain;
   }
 
-  async updateDomainById (domainId: string, data: DeepPartial<Domain>): Promise<boolean> {
+  async updateDomainById (
+    domainId: string,
+    data: DeepPartial<Domain>
+  ): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const updateResult = await domainRepository.update({ id: domainId }, data);
 
     return Boolean(updateResult.affected);
   }
 
-  async getDomainsByProjectId (projectId: string, filter?: FindOptionsWhere<Domain>): Promise<Domain[]> {
+  async getDomainsByProjectId (
+    projectId: string,
+    filter?: FindOptionsWhere<Domain>
+  ): Promise<Domain[]> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const domains = await domainRepository.find({

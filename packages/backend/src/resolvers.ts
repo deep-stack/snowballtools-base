@@ -33,7 +33,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
         return service.getDeploymentsByProjectId(projectId);
       },
 
-      environmentVariables: async (_: any, { projectId }: { projectId: string }) => {
+      environmentVariables: async (
+        _: any,
+        { projectId }: { projectId: string }
+      ) => {
         return service.getEnvironmentVariablesByProjectId(projectId);
       },
 
@@ -45,14 +48,24 @@ export const createResolvers = async (service: Service): Promise<any> => {
         return service.searchProjects(context.user, searchText);
       },
 
-      domains: async (_:any, { projectId, filter }: { projectId: string, filter?: FindOptionsWhere<Domain> }) => {
+      domains: async (
+        _: any,
+        {
+          projectId,
+          filter
+        }: { projectId: string; filter?: FindOptionsWhere<Domain> }
+      ) => {
         return service.getDomainsByProjectId(projectId, filter);
       }
     },
 
     // TODO: Return error in GQL response
     Mutation: {
-      removeProjectMember: async (_: any, { projectMemberId }: { projectMemberId: string }, context: any) => {
+      removeProjectMember: async (
+        _: any,
+        { projectMemberId }: { projectMemberId: string },
+        context: any
+      ) => {
         try {
           return await service.removeProjectMember(context.user, projectMemberId);
         } catch (err) {
@@ -61,12 +74,18 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      updateProjectMember: async (_: any, { projectMemberId, data }: {
-        projectMemberId: string,
-        data: {
-          permissions: Permission[]
+      updateProjectMember: async (
+        _: any,
+        {
+          projectMemberId,
+          data
+        }: {
+          projectMemberId: string;
+          data: {
+            permissions: Permission[];
+          };
         }
-      }) => {
+      ) => {
         try {
           return await service.updateProjectMember(projectMemberId, data);
         } catch (err) {
@@ -75,13 +94,19 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      addProjectMember: async (_: any, { projectId, data }: {
-        projectId: string,
-        data: {
-          email: string,
-          permissions: Permission[]
+      addProjectMember: async (
+        _: any,
+        {
+          projectId,
+          data
+        }: {
+          projectId: string;
+          data: {
+            email: string;
+            permissions: Permission[];
+          };
         }
-      }) => {
+      ) => {
         try {
           return Boolean(await service.addProjectMember(projectId, data));
         } catch (err) {
@@ -90,25 +115,51 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      addEnvironmentVariables: async (_: any, { projectId, data }: { projectId: string, data: { environments: string[], key: string, value: string}[] }) => {
+      addEnvironmentVariables: async (
+        _: any,
+        {
+          projectId,
+          data
+        }: {
+          projectId: string;
+          data: { environments: string[]; key: string; value: string }[];
+        }
+      ) => {
         try {
-          return Boolean(await service.addEnvironmentVariables(projectId, data));
+          return Boolean(
+            await service.addEnvironmentVariables(projectId, data)
+          );
         } catch (err) {
           log(err);
           return false;
         }
       },
 
-      updateEnvironmentVariable: async (_: any, { environmentVariableId, data }: { environmentVariableId: string, data : DeepPartial<EnvironmentVariable>}) => {
+      updateEnvironmentVariable: async (
+        _: any,
+        {
+          environmentVariableId,
+          data
+        }: {
+          environmentVariableId: string;
+          data: DeepPartial<EnvironmentVariable>;
+        }
+      ) => {
         try {
-          return await service.updateEnvironmentVariable(environmentVariableId, data);
+          return await service.updateEnvironmentVariable(
+            environmentVariableId,
+            data
+          );
         } catch (err) {
           log(err);
           return false;
         }
       },
 
-      removeEnvironmentVariable: async (_: any, { environmentVariableId }: { environmentVariableId: string}) => {
+      removeEnvironmentVariable: async (
+        _: any,
+        { environmentVariableId }: { environmentVariableId: string }
+      ) => {
         try {
           return await service.removeEnvironmentVariable(environmentVariableId);
         } catch (err) {
@@ -117,7 +168,11 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      updateDeploymentToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
+      updateDeploymentToProd: async (
+        _: any,
+        { deploymentId }: { deploymentId: string },
+        context: any
+      ) => {
         try {
           return Boolean(await service.updateDeploymentToProd(context.user, deploymentId));
         } catch (err) {
@@ -126,7 +181,14 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      addProject: async (_: any, { organizationSlug, data }: { organizationSlug: string, data: DeepPartial<Project> }, context: any) => {
+      addProject: async (
+        _: any,
+        {
+          organizationSlug,
+          data
+        }: { organizationSlug: string; data: DeepPartial<Project> },
+        context: any
+      ) => {
         try {
           return await service.addProject(context.user, organizationSlug, data);
         } catch (err) {
@@ -135,7 +197,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      updateProject: async (_: any, { projectId, data }: { projectId: string, data: DeepPartial<Project> }) => {
+      updateProject: async (
+        _: any,
+        { projectId, data }: { projectId: string; data: DeepPartial<Project> }
+      ) => {
         try {
           return await service.updateProject(projectId, data);
         } catch (err) {
@@ -144,7 +209,11 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      redeployToProd: async (_: any, { deploymentId }: { deploymentId: string }, context: any) => {
+      redeployToProd: async (
+        _: any,
+        { deploymentId }: { deploymentId: string },
+        context: any
+      ) => {
         try {
           return Boolean(await service.redeployToProd(context.user, deploymentId));
         } catch (err) {
@@ -157,7 +226,8 @@ export const createResolvers = async (service: Service): Promise<any> => {
         try {
           return await service.deleteProject(projectId);
         } catch (err) {
-          log(err); return false;
+          log(err);
+          return false;
         }
       },
 
@@ -170,7 +240,13 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      rollbackDeployment: async (_: any, { projectId, deploymentId }: {deploymentId: string, projectId: string }) => {
+      rollbackDeployment: async (
+        _: any,
+        {
+          projectId,
+          deploymentId
+        }: { deploymentId: string; projectId: string }
+      ) => {
         try {
           return await service.rollbackDeployment(projectId, deploymentId);
         } catch (err) {
@@ -179,7 +255,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      addDomain: async (_: any, { projectId, data }: { projectId: string, data: { name: string } }) => {
+      addDomain: async (
+        _: any,
+        { projectId, data }: { projectId: string; data: { name: string } }
+      ) => {
         try {
           return Boolean(await service.addDomain(projectId, data));
         } catch (err) {
@@ -188,7 +267,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      updateDomain: async (_: any, { domainId, data }: { domainId: string, data: DeepPartial<Domain>}) => {
+      updateDomain: async (
+        _: any,
+        { domainId, data }: { domainId: string; data: DeepPartial<Domain> }
+      ) => {
         try {
           return await service.updateDomain(domainId, data);
         } catch (err) {
@@ -197,7 +279,11 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      authenticateGitHub: async (_: any, { code }: { code: string }, context: any) => {
+      authenticateGitHub: async (
+        _: any,
+        { code }: { code: string },
+        context: any
+      ) => {
         try {
           return await service.authenticateGitHub(code, context.user);
         } catch (err) {

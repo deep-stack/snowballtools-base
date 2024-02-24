@@ -21,12 +21,20 @@ async function main () {
 
   const bondId = await registry.getNextBondId(registryConfig.privateKey);
   log('bondId:', bondId);
-  await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, registryConfig.privateKey, registryConfig.fee);
+  await registry.createBond(
+    { denom: DENOM, amount: BOND_AMOUNT },
+    registryConfig.privateKey,
+    registryConfig.fee
+  );
 
   for await (const name of authorityNames) {
     await registry.reserveAuthority({ name }, registryConfig.privateKey, registryConfig.fee);
     log('Reserved authority name:', name);
-    await registry.setAuthorityBond({ name, bondId }, registryConfig.privateKey, registryConfig.fee);
+    await registry.setAuthorityBond(
+      { name, bondId },
+      registryConfig.privateKey,
+      registryConfig.fee
+    );
     log(`Bond ${bondId} set for authority ${name}`);
   }
 }

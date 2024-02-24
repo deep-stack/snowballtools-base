@@ -1,0 +1,48 @@
+Arguments: 
+  /Users/vivianphung/.nvm/versions/node/v18.19.0/bin/node /Users/vivianphung/Desktop/snowballtools-base/.yarn/releases/yarn-classic.cjs install
+
+PATH: 
+  /Users/vivianphung/.proto/shims:/Users/vivianphung/.proto/bin:/Users/vivianphung/.nvm/versions/node/v18.19.0/bin:/usr/local/share/npm/bin:/usr/local/bin:/usr/local/sbin:~/bin:/usr/local/share/npm/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Users/vivianphung/.proto/shims:/Users/vivianphung/.proto/bin:/Users/vivianphung/.nvm/versions/node/v18.19.0/bin:/usr/local/share/npm/bin:/usr/local/sbin:~/bin:/opt/local/bin:/opt/local/sbin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Users/vivianphung/.rvm/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.19.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  SyntaxError: /Users/vivianphung/Desktop/snowballtools-base/packages/frontend/package.json: Unexpected token < in JSON at position 163
+      at JSON.parse (<anonymous>)
+      at /Users/vivianphung/Desktop/snowballtools-base/.yarn/releases/yarn-classic.cjs:1104:57
+      at Generator.next (<anonymous>)
+      at step (/Users/vivianphung/Desktop/snowballtools-base/.yarn/releases/yarn-classic.cjs:310:30)
+      at /Users/vivianphung/Desktop/snowballtools-base/.yarn/releases/yarn-classic.cjs:321:13
+
+npm manifest: 
+  {
+    "name": "snowball-tools",
+    "private": true,
+    "workspaces": [
+      "packages/*"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+      "husky": "^8.0.3",
+      "lerna": "^8.0.0",
+      "depcheck": "^1.4.2"
+    },
+    "scripts": {
+      "prepare": "husky install",
+      "build": "lerna run build --stream",
+      "lint": "lerna run lint --stream -- --max-warnings=0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  

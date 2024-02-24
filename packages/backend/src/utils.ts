@@ -37,10 +37,15 @@ export const getEntities = async (filePath: string): Promise<any> => {
   return entities;
 };
 
-export const loadAndSaveData = async <Entity extends ObjectLiteral>(entityType: EntityTarget<Entity>, dataSource: DataSource, entities: any, relations?: any | undefined): Promise<Entity[]> => {
+export const loadAndSaveData = async <Entity extends ObjectLiteral>(
+  entityType: EntityTarget<Entity>,
+  dataSource: DataSource,
+  entities: any,
+  relations?: any | undefined
+): Promise<Entity[]> => {
   const entityRepository = dataSource.getRepository(entityType);
 
-  const savedEntity:Entity[] = [];
+  const savedEntity: Entity[] = [];
 
   for (const entityData of entities) {
     let entity = entityRepository.create(entityData as DeepPartial<Entity>);

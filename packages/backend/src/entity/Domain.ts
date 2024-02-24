@@ -39,7 +39,7 @@ export class Domain {
 
   @ManyToOne(() => Domain)
   @JoinColumn({ name: 'redirectToId' })
-    // eslint-disable-next-line no-use-before-define
+  // eslint-disable-next-line no-use-before-define
     redirectTo!: Domain | null;
 
   @Column({
