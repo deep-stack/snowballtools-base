@@ -28,6 +28,12 @@
   cd packages/backend
   ```
 
+- Rename backend config file from [environments/local.toml.example](packages/backend/environments/local.toml.example) to `local.toml`
+
+  ```bash
+  mv environments/local.toml.example environments/local.toml
+  ```
+
 - Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
   - Client ID and secret will be available after [creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
     - In "Homepage URL", type `http://localhost:3000`
@@ -179,6 +185,12 @@
 
   ```bash
   cd packages/frontend
+  ```
+
+- Rename [.env.example](packages/frontend/.env.example) to `.env`
+
+  ```bash
+  mv .env.example .env
   ```
 
 - Copy the GitHub OAuth app client ID from previous steps and set it in frontend [.env](packages/frontend/.env) file
