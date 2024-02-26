@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { SiweMessage } from 'siwe';
+import { SiweMessage, generateNonce } from 'siwe';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum, mainnet } from 'wagmi/chains';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import type {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
+let token = '';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
@@ -51,17 +52,17 @@ const siweConfig = createSIWEConfig({
       statement: 'Sign in With Ethereum.',
     }).prepareMessage(),
   getNonce: async () => {
-    const nonce = (await axiosInstance.get('/auth/nonce')).data;
-    if (!nonce) {
-      throw new Error('Failed to get nonce!');
-    }
-
-    return nonce;
+    return generateNonce();
   },
   getSession: async () => {
     try {
-      const session = (await axiosInstance.get('/auth/session')).data;
-      const { address, chainId } = session;
+      const { address, chainId } = (
+        await axiosInstance.get('/auth/session', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
 
       return { address, chainId };
     } catch (err) {
@@ -74,13 +75,15 @@ const siweConfig = createSIWEConfig({
   },
   verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
     try {
-      const { success } = (
+      const { success, token: JWToken } = (
         await axiosInstance.post('/auth/validate', {
           message,
           signature,
         })
       ).data;
 
+      // TODO: Store token in cookies
+      token = JWToken;
       return success;
     } catch (error) {
       return false;

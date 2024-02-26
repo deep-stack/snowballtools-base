@@ -1,31 +1,49 @@
 import { Router } from 'express';
-import { SiweMessage, generateNonce } from 'siwe';
+import { SiweMessage } from 'siwe';
+import jwt from 'jsonwebtoken';
 
 const router = Router();
+const secretKey = 'mySecretKey';
 
-router.get('/nonce', async (_, res) => {
-  res.send(generateNonce());
-});
+function generateToken (data: string) {
+  const token = jwt.sign(data, secretKey);
+  return token;
+}
+
+function verifyToken (token: string) {
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    return decoded;
+  } catch (err) {
+    throw new Error('Invalid token');
+  }
+}
 
 router.post('/validate', async (req, res) => {
+  let token = '';
   const { message, signature } = req.body;
+
   const { success, data } = await new SiweMessage(message).verify({
     signature
   });
 
   if (success) {
-    req.session.address = data.address;
-    req.session.chainId = data.chainId;
+    token = generateToken(JSON.stringify(data));
   }
 
-  res.send({ success });
+  res.send({ success, token });
 });
 
 router.get('/session', (req, res) => {
-  if (req.session.address && req.session.chainId) {
-    res.send({ address: req.session.address, chainId: req.session.chainId });
+  const token = req.headers.authorization;
+  if (token) {
+    const decodedToken = verifyToken(token.replace('Bearer ', ''));
+    if (decodedToken) {
+      // @ts-expect-error
+      res.send({ chainId: decodedToken.chainId, address: decodedToken.address });
+    }
   } else {
-    res.status(401).send({ error: 'Unauthorized: No active session' });
+    res.send({ chainId: null, address: null });
   }
 });
 
