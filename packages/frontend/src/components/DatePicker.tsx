@@ -126,7 +126,8 @@ const DatePicker = ({
           crossOrigin={undefined}
         />
       </PopoverHandler>
-      <PopoverContent>
+      {/* TODO: Figure out what placeholder is for */}
+      <PopoverContent placeholder={''}>
         {mode === 'single' && (
           <DayPicker
             mode="single"
@@ -145,19 +146,23 @@ const DatePicker = ({
             />
             <HorizontalLine />
             <div className="flex justify-end">
+              {/* TODO: Figure out what placeholder is for */}
               <Button
                 size="sm"
                 className="rounded-full mr-2"
                 variant="outlined"
                 onClick={() => setIsOpen(false)}
+                placeholder={''}
               >
                 Cancel
               </Button>
+              {/* TODO: Figure out what placeholder is for */}
               <Button
                 size="sm"
                 className="rounded-full"
                 color="gray"
                 onClick={() => handleRangeSelect()}
+                placeholder={''}
               >
                 Select
               </Button>

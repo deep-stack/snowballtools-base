@@ -93,10 +93,12 @@ const DeploymentDetailsCard = ({
       <div className="col-span-3">
         <div className="flex">
           {deployment.url && (
-            <Typography className=" basis-3/4">{deployment.url}</Typography>
+            <Typography className="basis-3/4" placeholder={''}>
+              {deployment.url}
+            </Typography>
           )}
         </div>
-        <Typography color="gray">
+        <Typography color="gray" placeholder={''}>
           {deployment.environment === Environment.Production
             ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
             : 'Preview'}
@@ -111,14 +113,16 @@ const DeploymentDetailsCard = ({
         />
       </div>
       <div className="col-span-2">
-        <Typography color="gray">^ {deployment.branch}</Typography>
-        <Typography color="gray">
+        <Typography color="gray" placeholder={''}>
+          ^ {deployment.branch}
+        </Typography>
+        <Typography color="gray" placeholder={''}>
           ^ {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
           {deployment.commitMessage}
         </Typography>
       </div>
       <div className="col-span-2 flex items-center">
-        <Typography color="gray" className="grow">
+        <Typography color="gray" className="grow" placeholder={''}>
           ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
           <Tooltip content={deployment.createdBy.name}>
             {formatAddress(deployment.createdBy.name ?? '')}
@@ -128,18 +132,22 @@ const DeploymentDetailsCard = ({
           <MenuHandler>
             <button className="self-start">...</button>
           </MenuHandler>
-          <MenuList>
+          <MenuList placeholder={''}>
             <a href={deployment.url} target="_blank" rel="noreferrer">
-              <MenuItem disabled={!Boolean(deployment.url)}>^ Visit</MenuItem>
+              <MenuItem disabled={!Boolean(deployment.url)} placeholder={''}>
+                ^ Visit
+              </MenuItem>
             </a>
             <MenuItem
               onClick={() => setAssignDomainDialog(!assignDomainDialog)}
+              placeholder={''}
             >
               ^ Assign domain
             </MenuItem>
             <MenuItem
               onClick={() => setChangeToProduction(!changeToProduction)}
               disabled={!(deployment.environment !== Environment.Production)}
+              placeholder={''}
             >
               ^ Change to production
             </MenuItem>
@@ -152,6 +160,7 @@ const DeploymentDetailsCard = ({
                   deployment.isCurrent
                 )
               }
+              placeholder={''}
             >
               ^ Redeploy to production
             </MenuItem>
@@ -162,6 +171,7 @@ const DeploymentDetailsCard = ({
                 deployment.environment !== Environment.Production ||
                 !Boolean(currentDeployment)
               }
+              placeholder={''}
             >
               ^ Rollback to this version
             </MenuItem>
@@ -180,17 +190,22 @@ const DeploymentDetailsCard = ({
         }}
       >
         <div className="flex flex-col gap-2">
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             Upon confirmation, this deployment will be changed to production.
           </Typography>
           <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             The new deployment will be associated with these domains:
           </Typography>
           {prodBranchDomains.length > 0 &&
             prodBranchDomains.map((value) => {
               return (
-                <Typography variant="small" color="blue" key={value.id}>
+                <Typography
+                  variant="small"
+                  color="blue"
+                  key={value.id}
+                  placeholder={''}
+                >
                   ^ {value.name}
                 </Typography>
               );
@@ -209,16 +224,16 @@ const DeploymentDetailsCard = ({
         }}
       >
         <div className="flex flex-col gap-2">
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             Upon confirmation, new deployment will be created with the same
             source code as current deployment.
           </Typography>
           <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             These domains will point to your new deployment:
           </Typography>
           {deployment.domain?.name && (
-            <Typography variant="small" color="blue">
+            <Typography variant="small" color="blue" placeholder={''}>
               {deployment.domain?.name}
             </Typography>
           )}
@@ -237,7 +252,7 @@ const DeploymentDetailsCard = ({
           }}
         >
           <div className="flex flex-col gap-2">
-            <Typography variant="small">
+            <Typography variant="small" placeholder={''}>
               Upon confirmation, this deployment will replace your current
               deployment
             </Typography>
@@ -255,10 +270,10 @@ const DeploymentDetailsCard = ({
                 color: 'orange',
               }}
             />
-            <Typography variant="small">
+            <Typography variant="small" placeholder={''}>
               These domains will point to your new deployment:
             </Typography>
-            <Typography variant="small" color="blue">
+            <Typography variant="small" color="blue" placeholder={''}>
               ^ {currentDeployment.domain?.name}
             </Typography>
           </div>

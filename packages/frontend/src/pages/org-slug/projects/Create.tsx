@@ -15,7 +15,11 @@ const CreateProject = () => {
         </div>
         <div>
           <Link to={`/${orgSlug}`}>
-            <IconButton className="rounded-full" variant="outlined">
+            <IconButton
+              className="rounded-full"
+              variant="outlined"
+              placeholder={''}
+            >
               X
             </IconButton>
           </Link>

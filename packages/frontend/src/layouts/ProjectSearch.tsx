@@ -36,11 +36,17 @@ const ProjectSearch = () => {
               }}
             />
           </div>
-          <IconButton color="blue" className="rounded-full mr-2">
-            <Typography variant="h5">+</Typography>
+          <IconButton
+            color="blue"
+            className="rounded-full mr-2"
+            placeholder={''}
+          >
+            <Typography variant="h5" placeholder={''}>
+              +
+            </Typography>
           </IconButton>
           <div className="mr-2 flex items-center">
-            <Typography>^</Typography>
+            <Typography placeholder={''}>^</Typography>
           </div>
           <div className="px-2 py-1 bg-blue-gray-50 rounded-lg flex items-center">
             {user?.name && (

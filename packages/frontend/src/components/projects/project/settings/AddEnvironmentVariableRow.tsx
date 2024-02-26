@@ -21,7 +21,9 @@ const AddEnvironmentVariableRow = ({
   return (
     <div className="flex gap-1 p-2">
       <div>
-        <Typography variant="small">Key</Typography>
+        <Typography variant="small" placeholder={''}>
+          Key
+        </Typography>
         <Input
           crossOrigin={undefined}
           {...register(`variables.${index}.key`, {
@@ -30,7 +32,9 @@ const AddEnvironmentVariableRow = ({
         />
       </div>
       <div>
-        <Typography variant="small">Value</Typography>
+        <Typography variant="small" placeholder={''}>
+          Value
+        </Typography>
         <Input
           crossOrigin={undefined}
           {...register(`variables.${index}.value`, {
@@ -43,6 +47,7 @@ const AddEnvironmentVariableRow = ({
           size="sm"
           onClick={() => onDelete()}
           disabled={isDeleteDisabled}
+          placeholder={''}
         >
           {'>'}
         </IconButton>

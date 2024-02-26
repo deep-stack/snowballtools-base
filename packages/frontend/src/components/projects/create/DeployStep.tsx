@@ -62,7 +62,12 @@ const DeployStep = ({
         <div className="p-2 text-sm text-gray-500 h-36 overflow-y-scroll">
           {processLogs.map((log, key) => {
             return (
-              <Typography variant="small" color="gray" key={key}>
+              <Typography
+                variant="small"
+                color="gray"
+                key={key}
+                placeholder={''}
+              >
                 {log}
               </Typography>
             );
@@ -75,6 +80,7 @@ const DeployStep = ({
                 toast.success('Logs copied');
               }}
               color="blue"
+              placeholder={''}
             >
               ^ Copy log
             </Button>

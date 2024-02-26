@@ -74,18 +74,23 @@ const Id = () => {
               variant="outlined"
               className="rounded-full"
               onClick={() => navigate(-1)}
+              placeholder={''}
             >
               {'<'}
             </Button>
-            <Typography variant="h3" className="grow">
+            <Typography variant="h3" className="grow" placeholder={''}>
               {project?.name}
             </Typography>
             <Link to={repoUrl} target="_blank">
-              <Button className="rounded-full" variant="outlined">
+              <Button
+                className="rounded-full"
+                variant="outlined"
+                placeholder={''}
+              >
                 Open Repo
               </Button>
             </Link>
-            <Button className="rounded-full" color="blue">
+            <Button className="rounded-full" color="blue" placeholder={''}>
               Go to app
             </Button>
           </div>
@@ -98,34 +103,55 @@ const Id = () => {
                   className:
                     'bg-transparent border-b-2 border-gray-900 shadow-none rounded-none',
                 }}
+                placeholder={''}
               >
                 <Link to="">
-                  <Tab value="" className={'p-2 cursor-pointer'}>
+                  <Tab
+                    value=""
+                    className={'p-2 cursor-pointer'}
+                    placeholder={''}
+                  >
                     Overview
                   </Tab>
                 </Link>
                 <Link to="deployments">
-                  <Tab value="deployments" className={'p-2 cursor-pointer'}>
+                  <Tab
+                    value="deployments"
+                    className={'p-2 cursor-pointer'}
+                    placeholder={''}
+                  >
                     Deployments
                   </Tab>
                 </Link>
                 <Link to="database">
-                  <Tab value="database" className={'p-2 cursor-pointer'}>
+                  <Tab
+                    value="database"
+                    className={'p-2 cursor-pointer'}
+                    placeholder={''}
+                  >
                     Database
                   </Tab>
                 </Link>
                 <Link to="integrations">
-                  <Tab value="integrations" className={'p-2 cursor-pointer'}>
+                  <Tab
+                    value="integrations"
+                    className={'p-2 cursor-pointer'}
+                    placeholder={''}
+                  >
                     Integrations
                   </Tab>
                 </Link>
                 <Link to="settings">
-                  <Tab value="settings" className={'p-2 cursor-pointer'}>
+                  <Tab
+                    value="settings"
+                    className={'p-2 cursor-pointer'}
+                    placeholder={''}
+                  >
                     Settings
                   </Tab>
                 </Link>
               </TabsHeader>
-              <TabsBody>
+              <TabsBody placeholder={''}>
                 <Outlet context={{ project, onUpdate }} />
               </TabsBody>
             </Tabs>

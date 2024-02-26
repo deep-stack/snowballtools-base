@@ -136,11 +136,12 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
       ) : (
         <div className="mt-4 p-6 flex items-center justify-center">
           <div className="text-center">
-            <Typography>No repository found</Typography>
+            <Typography placeholder={''}>No repository found</Typography>
             <Button
               className="rounded-full mt-5"
               size="sm"
               onClick={handleResetFilters}
+              placeholder={''}
             >
               ^ Reset filters
             </Button>

@@ -5,11 +5,11 @@ import { Tabs, TabsHeader, Tab } from '@material-tailwind/react';
 const ConnectAccountTabPanel = () => {
   return (
     <Tabs className="grid bg-white h-32 p-2 m-4 rounded-md" value="import">
-      <TabsHeader className="grid grid-cols-2">
-        <Tab className="row-span-1" value="import">
+      <TabsHeader className="grid grid-cols-2" placeholder={''}>
+        <Tab className="row-span-1" value="import" placeholder={''}>
           Import a repository
         </Tab>
-        <Tab className="row-span-2" value="template">
+        <Tab className="row-span-2" value="template" placeholder={''}>
           Start with a template
         </Tab>
       </TabsHeader>

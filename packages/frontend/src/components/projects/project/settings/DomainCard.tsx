@@ -68,7 +68,7 @@ const DomainCard = ({
     <>
       <div className="flex justify-between py-3">
         <div className="flex justify-start gap-1">
-          <Typography variant="h6">
+          <Typography variant="h6" placeholder={''}>
             <i>^</i> {domain.name}
           </Typography>
           <Chip
@@ -97,18 +97,20 @@ const DomainCard = ({
             <MenuHandler>
               <button className="border-2 rounded-full w-8 h-8">...</button>
             </MenuHandler>
-            <MenuList>
+            <MenuList placeholder={''}>
               <MenuItem
                 className="text-black"
                 onClick={() => {
                   setEditDialogOpen((preVal) => !preVal);
                 }}
+                placeholder={''}
               >
                 ^ Edit domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
+                placeholder={''}
               >
                 ^ Delete domain
               </MenuItem>
@@ -127,7 +129,7 @@ const DomainCard = ({
           }}
           color="red"
         >
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             Once deleted, the project{' '}
             <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
               {project.name}
@@ -140,15 +142,21 @@ const DomainCard = ({
         </ConfirmDialog>
       </div>
 
-      <Typography variant="small">Production</Typography>
+      <Typography variant="small" placeholder={''}>
+        Production
+      </Typography>
       {domain.status === DomainStatus.Pending && (
-        <Card className="bg-gray-200 p-4 text-sm">
+        <Card className="bg-gray-200 p-4 text-sm" placeholder={''}>
           {refreshStatus === RefreshStatus.IDLE ? (
-            <Typography variant="small">
+            <Typography variant="small" placeholder={''}>
               ^ Add these records to your domain and refresh to check
             </Typography>
           ) : refreshStatus === RefreshStatus.CHECKING ? (
-            <Typography variant="small" className="text-blue-500">
+            <Typography
+              variant="small"
+              className="text-blue-500"
+              placeholder={''}
+            >
               ^ Checking records for {domain.name}
             </Typography>
           ) : (

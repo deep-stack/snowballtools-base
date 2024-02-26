@@ -52,7 +52,7 @@ const Sidebar = () => {
               <div>^</div>
               <div>
                 <span>{organizations[index!]?.name}</span>
-                <Typography>Organization</Typography>
+                <Typography placeholder={''}>Organization</Typography>
               </div>
             </div>
           )}
@@ -70,7 +70,7 @@ const Sidebar = () => {
             to={`/${orgSlug}`}
             className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
-            <Typography>Projects</Typography>
+            <Typography placeholder={''}>Projects</Typography>
           </NavLink>
         </div>
         <div>
@@ -78,7 +78,7 @@ const Sidebar = () => {
             to={`/${orgSlug}/settings`}
             className={({ isActive }) => (isActive ? 'text-blue-500' : '')}
           >
-            <Typography>Settings</Typography>
+            <Typography placeholder={''}>Settings</Typography>
           </NavLink>
         </div>
       </div>

@@ -122,27 +122,32 @@ const EditDomainDialog = ({
   }, [domain]);
 
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
+    <Dialog open={open} handler={handleOpen} placeholder={''}>
+      <DialogHeader className="flex justify-between" placeholder={''}>
         <div>Edit domain</div>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className="mr-1 rounded-3xl"
+          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
       <form onSubmit={handleSubmit(updateDomainHandler)}>
-        <DialogBody className="flex flex-col gap-2 p-4">
-          <Typography variant="small">Domain name</Typography>
+        <DialogBody className="flex flex-col gap-2 p-4" placeholder={''}>
+          <Typography variant="small" placeholder={''}>
+            Domain name
+          </Typography>
           <Input crossOrigin={undefined} {...register('name')} />
-          <Typography variant="small">Redirect to</Typography>
+          <Typography variant="small" placeholder={''}>
+            Redirect to
+          </Typography>
           <Controller
             name="redirectedTo"
             control={control}
             render={({ field }) => (
-              <Select {...field} disabled={isDisableDropdown}>
+              <Select {...field} disabled={isDisableDropdown} placeholder={''}>
                 {redirectOptions.map((option, key) => (
                   <Option key={key} value={option}>
                     ^ {option}
@@ -154,14 +159,16 @@ const EditDomainDialog = ({
           {isDisableDropdown && (
             <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
               <div>^</div>
-              <Typography variant="small">
+              <Typography variant="small" placeholder={''}>
                 Domain “{domainRedirectedFrom ? domainRedirectedFrom.name : ''}”
                 redirects to this domain so you can not redirect this doman
                 further.
               </Typography>
             </div>
           )}
-          <Typography variant="small">Git branch</Typography>
+          <Typography variant="small" placeholder={''}>
+            Git branch
+          </Typography>
           <Input
             crossOrigin={undefined}
             {...register('branch', {
@@ -174,13 +181,22 @@ const EditDomainDialog = ({
             }
           />
           {!isValid && (
-            <Typography variant="small" className="text-red-500">
+            <Typography
+              variant="small"
+              className="text-red-500"
+              placeholder={''}
+            >
               We couldn&apos;t find this branch in the connected Git repository.
             </Typography>
           )}
         </DialogBody>
-        <DialogFooter className="flex justify-start">
-          <Button variant="outlined" onClick={handleOpen} className="mr-1">
+        <DialogFooter className="flex justify-start" placeholder={''}>
+          <Button
+            variant="outlined"
+            onClick={handleOpen}
+            className="mr-1"
+            placeholder={''}
+          >
             Cancel
           </Button>
           <Button
@@ -188,6 +204,7 @@ const EditDomainDialog = ({
             color="blue"
             type="submit"
             disabled={!isDirty}
+            placeholder={''}
           >
             Save changes
           </Button>

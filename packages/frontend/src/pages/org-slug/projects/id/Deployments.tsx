@@ -115,14 +115,17 @@ const DeploymentsTabPanel = () => {
         ) : (
           <div className="h-[50vh] bg-gray-100 flex rounded items-center justify-center">
             <div className="text-center">
-              <Typography variant="h5">No deployments found</Typography>
-              <Typography>
+              <Typography variant="h5" placeholder={''}>
+                No deployments found
+              </Typography>
+              <Typography placeholder={''}>
                 Please change your search query or filters
               </Typography>
               <Button
                 className="rounded-full mt-5"
                 color="white"
                 onClick={handleResetFilters}
+                placeholder={''}
               >
                 ^ Reset filters
               </Button>

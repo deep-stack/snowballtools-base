@@ -28,7 +28,9 @@ const Projects = () => {
       <div className="flex p-5">
         <div className="grow">
           <div className="flex gap-2 items-center">
-            <Typography variant="h4">Projects</Typography>
+            <Typography variant="h4" placeholder={''}>
+              Projects
+            </Typography>
             <Chip
               className="bg-gray-300 rounded-full static"
               value={projects.length}
@@ -38,7 +40,7 @@ const Projects = () => {
         </div>
         <div>
           <Link to="projects/create">
-            <Button className="rounded-full" color="blue">
+            <Button className="rounded-full" color="blue" placeholder={''}>
               Create project
             </Button>
           </Link>

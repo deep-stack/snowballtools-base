@@ -121,8 +121,14 @@ const GeneralTabPanel = () => {
           }
         })}
       >
-        <Typography variant="h6">Project info</Typography>
-        <Typography variant="small" className="font-medium text-gray-800">
+        <Typography variant="h6" placeholder={''}>
+          Project info
+        </Typography>
+        <Typography
+          variant="small"
+          className="font-medium text-gray-800"
+          placeholder={''}
+        >
           App name
         </Typography>
         <Input
@@ -132,7 +138,11 @@ const GeneralTabPanel = () => {
           size="md"
           {...register('appName')}
         />
-        <Typography variant="small" className="font-medium text-gray-800">
+        <Typography
+          variant="small"
+          className="font-medium text-gray-800"
+          placeholder={''}
+        >
           Description (Optional)
         </Typography>
         <Input
@@ -141,7 +151,11 @@ const GeneralTabPanel = () => {
           size="md"
           {...register('description')}
         />
-        <Typography variant="small" className="font-medium text-gray-800">
+        <Typography
+          variant="small"
+          className="font-medium text-gray-800"
+          placeholder={''}
+        >
           Project ID
         </Typography>
         <Input
@@ -158,13 +172,16 @@ const GeneralTabPanel = () => {
           size="sm"
           className="mt-1"
           disabled={!updateProjectFormState.isDirty}
+          placeholder={''}
         >
           Save
         </Button>
       </form>
       <div className="mb-1">
-        <Typography variant="h6">Transfer project</Typography>
-        <Typography variant="small">
+        <Typography variant="h6" placeholder={''}>
+          Transfer project
+        </Typography>
+        <Typography variant="small" placeholder={''}>
           Transfer this app to your personal account or a team you are a member
           of.
           <Link to="" className="text-blue-500">
@@ -177,7 +194,11 @@ const GeneralTabPanel = () => {
             setOpenTransferDialog(!openTransferDialog);
           })}
         >
-          <Typography variant="small" className="font-medium text-gray-800">
+          <Typography
+            variant="small"
+            className="font-medium text-gray-800"
+            placeholder={''}
+          >
             Choose team
           </Typography>
           <Controller
@@ -204,6 +225,7 @@ const GeneralTabPanel = () => {
             className="mt-1"
             disabled={!formState.isValid}
             type="submit"
+            placeholder={''}
           >
             Transfer
           </Button>
@@ -216,15 +238,17 @@ const GeneralTabPanel = () => {
           handleConfirm={handleTransferProject}
           color="blue"
         >
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             Upon confirmation, your project {project.name} will be transferred
             from {project.organization.name} to {selectedUserOrgName}.
           </Typography>
         </ConfirmDialog>
       </div>
       <div className="mb-1">
-        <Typography variant="h6">Delete project</Typography>
-        <Typography variant="small">
+        <Typography variant="h6" placeholder={''}>
+          Delete project
+        </Typography>
+        <Typography variant="small" placeholder={''}>
           The project will be permanently deleted, including its deployments and
           domains. This action is irreversible and can not be undone.
         </Typography>
@@ -233,6 +257,7 @@ const GeneralTabPanel = () => {
           size="sm"
           color="red"
           onClick={handleDeleteProjectDialog}
+          placeholder={''}
         >
           ^ Delete project
         </Button>

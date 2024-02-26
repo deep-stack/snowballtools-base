@@ -104,6 +104,7 @@ const MemberCard = ({
             selected={(_, index) => (
               <span>{DROPDOWN_OPTIONS[index!]?.label}</span>
             )}
+            placeholder={''}
           >
             {DROPDOWN_OPTIONS.map((permission, key) => (
               <Option key={key} value={permission.value}>
@@ -132,6 +133,7 @@ const MemberCard = ({
                 onClick={() => {
                   setRemoveMemberDialogOpen((prevVal) => !prevVal);
                 }}
+                placeholder={''}
               >
                 D
               </IconButton>
@@ -152,7 +154,7 @@ const MemberCard = ({
         }}
         color="red"
       >
-        <Typography variant="small">
+        <Typography variant="small" placeholder={''}>
           Once removed, {formatAddress(member.name ?? '')} (
           {formatAddress(ethAddress)}@{emailDomain}) will not be able to access
           this project.

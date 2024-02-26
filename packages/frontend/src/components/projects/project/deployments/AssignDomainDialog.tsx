@@ -17,9 +17,9 @@ interface AssignDomainProps {
 
 const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader>Assign Domain</DialogHeader>
-      <DialogBody>
+    <Dialog open={open} handler={handleOpen} placeholder={''}>
+      <DialogHeader placeholder={''}>Assign Domain</DialogHeader>
+      <DialogBody placeholder={''}>
         In order to assign a domain to your production deployments, configure it
         in the{' '}
         {/* TODO: Fix selection of project settings tab on navigation to domains */}
@@ -36,12 +36,13 @@ const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
           theme={atomOneLight}
         />
       </DialogBody>
-      <DialogFooter className="flex justify-start">
+      <DialogFooter className="flex justify-start" placeholder={''}>
         <Button
           className="rounded-3xl"
           variant="gradient"
           color="blue"
           onClick={handleOpen}
+          placeholder={''}
         >
           <span>Okay</span>
         </Button>

@@ -71,12 +71,13 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
         className={`absolute w-1/2 max-h-52 -mt-1 overflow-y-auto ${
           (!inputValue || !isOpen) && 'hidden'
         }`}
+        placeholder={''}
       >
         <List {...getMenuProps()}>
           {items.length ? (
             <>
               <div className="p-3">
-                <Typography variant="small" color="gray">
+                <Typography variant="small" color="gray" placeholder={''}>
                   Suggestions
                 </Typography>
               </div>
@@ -84,19 +85,25 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
                 <ListItem
                   selected={highlightedIndex === index || selectedItem === item}
                   key={item.id}
+                  placeholder={''}
                   {...getItemProps({ item, index })}
                 >
-                  <ListItemPrefix>
-                    <Avatar src={item.icon || '/gray.png'} variant="rounded" />
+                  <ListItemPrefix placeholder={''}>
+                    <Avatar
+                      src={item.icon || '/gray.png'}
+                      variant="rounded"
+                      placeholder={''}
+                    />
                   </ListItemPrefix>
                   <div>
-                    <Typography variant="h6" color="blue-gray">
+                    <Typography variant="h6" color="blue-gray" placeholder={''}>
                       {item.name}
                     </Typography>
                     <Typography
                       variant="small"
                       color="gray"
                       className="font-normal"
+                      placeholder={''}
                     >
                       {item.organization.name}
                     </Typography>
@@ -106,7 +113,9 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
             </>
           ) : (
             <div className="p-3">
-              <Typography>^ No projects matching this name</Typography>
+              <Typography placeholder={''}>
+                ^ No projects matching this name
+              </Typography>
             </div>
           )}
         </List>

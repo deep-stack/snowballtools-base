@@ -84,7 +84,9 @@ const EditEnvironmentVariableRow = ({
     <>
       <div className="flex gap-1 p-2">
         <div>
-          <Typography variant="small">Key</Typography>
+          <Typography variant="small" placeholder={''}>
+            Key
+          </Typography>
           <Input
             crossOrigin={undefined}
             disabled={!edit}
@@ -92,7 +94,9 @@ const EditEnvironmentVariableRow = ({
           />
         </div>
         <div>
-          <Typography variant="small">Value</Typography>
+          <Typography variant="small" placeholder={''}>
+            Value
+          </Typography>
           <Input
             crossOrigin={undefined}
             disabled={!edit}
@@ -114,6 +118,7 @@ const EditEnvironmentVariableRow = ({
               <IconButton
                 onClick={handleSubmit(updateEnvironmentVariableHandler)}
                 size="sm"
+                placeholder={''}
               >
                 {'S'}
               </IconButton>
@@ -125,6 +130,7 @@ const EditEnvironmentVariableRow = ({
                   reset();
                   setEdit((preVal) => !preVal);
                 }}
+                placeholder={''}
               >
                 {'C'}
               </IconButton>
@@ -138,6 +144,7 @@ const EditEnvironmentVariableRow = ({
                 onClick={() => {
                   setEdit((preVal) => !preVal);
                 }}
+                placeholder={''}
               >
                 {'E'}
               </IconButton>
@@ -146,6 +153,7 @@ const EditEnvironmentVariableRow = ({
               <IconButton
                 size="sm"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
+                placeholder={''}
               >
                 {'D'}
               </IconButton>
@@ -162,7 +170,7 @@ const EditEnvironmentVariableRow = ({
         handleConfirm={removeEnvironmentVariableHandler}
         color="red"
       >
-        <Typography variant="small">
+        <Typography variant="small" placeholder={''}>
           Are you sure you want to delete the variable&nbsp;
           <span className="bg-blue-100">{variable.key}</span>?
         </Typography>

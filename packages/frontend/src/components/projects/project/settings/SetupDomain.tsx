@@ -54,14 +54,18 @@ const SetupDomain = () => {
       className="flex flex-col gap-6 w-full"
     >
       <div>
-        <Typography variant="h5">Setup domain name</Typography>
-        <Typography variant="small">
+        <Typography variant="h5" placeholder={''}>
+          Setup domain name
+        </Typography>
+        <Typography variant="small" placeholder={''}>
           Add your domain and setup redirects
         </Typography>
       </div>
 
       <div className="w-auto">
-        <Typography variant="small">Domain name</Typography>
+        <Typography variant="small" placeholder={''}>
+          Domain name
+        </Typography>
         <Input
           type="text"
           variant="outlined"
@@ -76,7 +80,7 @@ const SetupDomain = () => {
 
       {isValid && (
         <div>
-          <Typography>Primary domain</Typography>
+          <Typography placeholder={''}>Primary domain</Typography>
           <div className="flex flex-col gap-3">
             <Radio
               label={domainStr}
@@ -108,6 +112,7 @@ const SetupDomain = () => {
         className="w-fit"
         color={isValid ? 'blue' : 'gray'}
         type="submit"
+        placeholder={''}
       >
         <i>^</i> Next
       </Button>

@@ -77,6 +77,7 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
               onClick={() => setSelectedStatus(StatusOptions.ALL_STATUS)}
               className="rounded-full"
               size="sm"
+              placeholder={''}
             >
               X
             </IconButton>

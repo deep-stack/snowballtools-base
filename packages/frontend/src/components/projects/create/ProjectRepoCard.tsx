@@ -66,7 +66,9 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
         <Spinner className="h-4 w-4" />
       ) : (
         <div className="hidden group-hover:block">
-          <IconButton size="sm">{'>'}</IconButton>
+          <IconButton size="sm" placeholder={''}>
+            {'>'}
+          </IconButton>
         </div>
       )}
     </div>

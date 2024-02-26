@@ -61,23 +61,26 @@ const AddMemberDialog = ({
   }, []);
 
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
+    <Dialog open={open} handler={handleOpen} placeholder={''}>
+      <DialogHeader className="flex justify-between" placeholder={''}>
         <div>Add member</div>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className="mr-1 rounded-3xl"
+          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
       <form onSubmit={handleSubmit(submitHandler)}>
-        <DialogBody className="flex flex-col gap-2 p-4">
-          <Typography variant="small">
+        <DialogBody className="flex flex-col gap-2 p-4" placeholder={''}>
+          <Typography variant="small" placeholder={''}>
             We will send an invitation link to this email address.
           </Typography>
-          <Typography variant="small">Email address</Typography>
+          <Typography variant="small" placeholder={''}>
+            Email address
+          </Typography>
           <Input
             type="email"
             crossOrigin={undefined}
@@ -85,8 +88,10 @@ const AddMemberDialog = ({
               required: 'email field cannot be empty',
             })}
           />
-          <Typography variant="small">Permissions</Typography>
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
+            Permissions
+          </Typography>
+          <Typography variant="small" placeholder={''}>
             You can change this later if required.
           </Typography>
           <Checkbox
@@ -102,8 +107,13 @@ const AddMemberDialog = ({
             color="blue"
           />
         </DialogBody>
-        <DialogFooter className="flex justify-start">
-          <Button variant="outlined" onClick={handleOpen} className="mr-1">
+        <DialogFooter className="flex justify-start" placeholder={''}>
+          <Button
+            variant="outlined"
+            onClick={handleOpen}
+            className="mr-1"
+            placeholder={''}
+          >
             Cancel
           </Button>
           <Button
@@ -111,6 +121,7 @@ const AddMemberDialog = ({
             color="blue"
             type="submit"
             disabled={!isValid}
+            placeholder={''}
           >
             Send invite
           </Button>
