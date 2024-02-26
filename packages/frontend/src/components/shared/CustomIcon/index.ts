@@ -13,3 +13,7 @@ export * from './CalendarIcon';
 export * from './CheckRoundFilledIcon';
 export * from './InfoRoundFilledIcon';
 export * from './LoadingIcon';
+export * from './FolderIcon';
+export * from './SettingsSlidersIcon';
+export * from './LifeBuoyIcon';
+export * from './QuestionMarkRoundIcon';

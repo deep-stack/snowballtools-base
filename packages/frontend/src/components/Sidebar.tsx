@@ -7,7 +7,14 @@ import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from '../context/GQLClientContext';
 import AsyncSelect from './shared/AsyncSelect';
-import { ChevronGrabberHorizontal, GlobeIcon } from './shared/CustomIcon';
+import {
+  ChevronGrabberHorizontal,
+  FolderIcon,
+  GlobeIcon,
+  LifeBuoyIcon,
+  QuestionMarkRoundIcon,
+  SettingsSlidersIcon,
+} from './shared/CustomIcon';
 import { Tabs } from 'components/shared/Tabs';
 
 const Sidebar = () => {
@@ -35,7 +42,7 @@ const Sidebar = () => {
   }, [disconnect, navigate]);
 
   return (
-    <div className="flex flex-col h-full p-4 mt-5">
+    <div className="flex flex-col h-full p-4 pt-5">
       <div className="grow">
         <Link to={`/${orgSlug}`}>
           <div className="flex items-center space-x-3 mb-10 ml-2">
@@ -90,11 +97,14 @@ const Sidebar = () => {
             </Option>
           ))}
         </AsyncSelect>
-        <Tabs defaultValue="Projects" orientation="vertical" className="mt-5">
+        <Tabs defaultValue="Projects" orientation="vertical" className="mt-10">
           <Tabs.List>
-            {['Projects', 'Settings'].slice(0, 2).map((title, index) => (
+            {[
+              { title: 'Projects', icon: <FolderIcon /> },
+              { title: 'Settings', icon: <SettingsSlidersIcon /> },
+            ].map(({ title, icon }, index) => (
               <NavLink to={`/${orgSlug}/${title}`} key={index}>
-                <Tabs.Trigger icon={<GlobeIcon />} value={title}>
+                <Tabs.Trigger icon={icon} value={title}>
                   {title}
                 </Tabs.Trigger>
               </NavLink>
@@ -102,7 +112,7 @@ const Sidebar = () => {
           </Tabs.List>
         </Tabs>
       </div>
-      <div className="grow flex flex-col justify-end mb-10">
+      <div className="grow flex flex-col justify-end mb-8">
         <Tabs defaultValue="Projects" orientation="vertical">
           {/* TODO: use proper link buttons */}
           <Tabs.List>
@@ -111,10 +121,10 @@ const Sidebar = () => {
                 Log Out
               </a>
             </Tabs.Trigger>
-            <Tabs.Trigger icon={<GlobeIcon />} value="">
+            <Tabs.Trigger icon={<QuestionMarkRoundIcon />} value="">
               <a className="cursor-pointer">Documentation</a>
             </Tabs.Trigger>
-            <Tabs.Trigger icon={<GlobeIcon />} value="">
+            <Tabs.Trigger icon={<LifeBuoyIcon />} value="">
               <a className="cursor-pointer">Support</a>
             </Tabs.Trigger>
           </Tabs.List>
