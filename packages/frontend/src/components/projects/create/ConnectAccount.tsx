@@ -46,9 +46,15 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
           width={1000}
           height={1000}
         >
-          <Button className="rounded-full mx-2">Connect to Github</Button>
+          {/* TODO: figure out what placeholder is for */}
+          <Button className="rounded-full mx-2" placeholder={''}>
+            Connect to Github
+          </Button>
         </OauthPopup>
-        <Button className="rounded-full mx-2">Connect to Gitea</Button>
+        {/* TODO: figure out what placeholder is for */}
+        <Button className="rounded-full mx-2" placeholder={''}>
+          Connect to Gitea
+        </Button>
       </div>
       <ConnectAccountTabPanel />
     </div>

@@ -39,7 +39,12 @@ const Id = () => {
                   custom domain.
                 </p>
                 <div className="my-2">
-                  <Button className="rounded-full" variant="outlined" size="sm">
+                  <Button
+                    className="rounded-full"
+                    variant="outlined"
+                    size="sm"
+                    placeholder={''}
+                  >
                     Setup domain
                   </Button>
                 </div>
@@ -51,14 +56,23 @@ const Id = () => {
         <div className="flex justify-center p-4 gap-2 my-5">
           <div>
             <Link to="/">
-              <Button className="rounded-full" variant="outlined">
+              <Button
+                className="rounded-full"
+                variant="outlined"
+                placeholder={''}
+              >
                 ^Back to projects
               </Button>
             </Link>
           </div>
           <div>
             <Link to={`/${orgSlug}/projects/${id}`}>
-              <Button className="rounded-full" variant="gradient" color="blue">
+              <Button
+                className="rounded-full"
+                variant="gradient"
+                color="blue"
+                placeholder={''}
+              >
                 View project
               </Button>
             </Link>

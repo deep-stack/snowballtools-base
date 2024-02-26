@@ -17,14 +17,19 @@ const RepoConnectedSection = ({
     <div className="flex gap-4">
       <div>^</div>
       <div className="grow">
-        <Typography variant="small">{linkedRepo.full_name}</Typography>
-        <Typography variant="small">Connected just now</Typography>
+        <Typography variant="small" placeholder={''}>
+          {linkedRepo.full_name}
+        </Typography>
+        <Typography variant="small" placeholder={''}>
+          Connected just now
+        </Typography>
       </div>
       <div>
         <Button
           onClick={() => setDisconnectRepoDialogOpen(true)}
           variant="outlined"
           size="sm"
+          placeholder={''}
         >
           ^ Disconnect
         </Button>
@@ -39,7 +44,7 @@ const RepoConnectedSection = ({
         }}
         color="red"
       >
-        <Typography variant="small">
+        <Typography variant="small" placeholder={''}>
           Any data tied to your Git project may become misconfigured. Are you
           sure you want to continue?
         </Typography>

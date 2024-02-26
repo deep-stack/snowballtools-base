@@ -133,8 +133,14 @@ export const EnvironmentVariablesTabPanel = () => {
 
   return (
     <>
-      <Typography variant="h6">Environment variables</Typography>
-      <Typography variant="small" className="font-medium text-gray-800">
+      <Typography variant="h6" placeholder={''}>
+        Environment variables
+      </Typography>
+      <Typography
+        variant="small"
+        className="font-medium text-gray-800"
+        placeholder={''}
+      >
         A new deployment is required for your changes to take effect.
       </Typography>
       <div className="bg-gray-300 rounded-lg p-2">
@@ -145,7 +151,7 @@ export const EnvironmentVariablesTabPanel = () => {
           + Create new variable
         </div>
         <Collapse open={createNewVariable}>
-          <Card className="bg-white p-2">
+          <Card className="bg-white p-2" placeholder={''}>
             <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
               {fields.map((field, index) => {
                 return (
@@ -168,11 +174,12 @@ export const EnvironmentVariablesTabPanel = () => {
                       value: '',
                     })
                   }
+                  placeholder={''}
                 >
                   + Add variable
                 </Button>
                 {/* TODO: Implement import environment varible functionality */}
-                <Button variant="outlined" size="sm" disabled>
+                <Button variant="outlined" size="sm" disabled placeholder={''}>
                   ^ Import .env
                 </Button>
               </div>
@@ -205,7 +212,7 @@ export const EnvironmentVariablesTabPanel = () => {
                 />
               </div>
               <div className="p-2">
-                <Button size="lg" color="blue" type="submit">
+                <Button size="lg" color="blue" type="submit" placeholder={''}>
                   Save changes
                 </Button>
               </div>

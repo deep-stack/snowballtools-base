@@ -23,8 +23,8 @@ const log = debug('snowball:service');
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
 
 interface Config {
-  gitHubConfig: GitHubConfig
-  registryConfig: RegistryConfig
+  gitHubConfig: GitHubConfig;
+  registryConfig: RegistryConfig;
 }
 
 export class Service {
@@ -72,7 +72,9 @@ export class Service {
     });
 
     if (deployments.length) {
-      log(`Found ${deployments.length} deployments in ${DeploymentStatus.Building} state`);
+      log(
+        `Found ${deployments.length} deployments in ${DeploymentStatus.Building} state`
+      );
 
       // Fetch ApplicationDeploymentRecord for deployments
       const records = await this.registry.getDeploymentRecords(deployments);
@@ -92,10 +94,12 @@ export class Service {
   /**
    * Update deployments with ApplicationDeploymentRecord data
    */
-  async updateDeploymentsWithRecordData (records: AppDeploymentRecord[]): Promise<void> {
+  async updateDeploymentsWithRecordData (
+    records: AppDeploymentRecord[]
+  ): Promise<void> {
     // Get deployments for ApplicationDeploymentRecords
     const deployments = await this.db.getDeployments({
-      where: records.map(record => ({
+      where: records.map((record) => ({
         applicationRecordId: record.attributes.application
       })),
       order: {
@@ -104,38 +108,46 @@ export class Service {
     });
 
     // Get project IDs of deployments that are in production environment
-    const productionDeploymentProjectIds = deployments.reduce((acc, deployment): Set<string> => {
-      if (deployment.environment === Environment.Production) {
-        acc.add(deployment.projectId);
-      }
+    const productionDeploymentProjectIds = deployments.reduce(
+      (acc, deployment): Set<string> => {
+        if (deployment.environment === Environment.Production) {
+          acc.add(deployment.projectId);
+        }
 
-      return acc;
-    }, new Set<string>());
+        return acc;
+      },
+      new Set<string>()
+    );
 
     // Set old deployments isCurrent to false
-    await this.db.updateDeploymentsByProjectIds(Array.from(productionDeploymentProjectIds), { isCurrent: false });
+    await this.db.updateDeploymentsByProjectIds(
+      Array.from(productionDeploymentProjectIds),
+      { isCurrent: false }
+    );
 
-    const recordToDeploymentsMap = deployments.reduce((acc: {[key: string]: Deployment}, deployment) => {
-      acc[deployment.applicationRecordId] = deployment;
-      return acc;
-    }, {});
+    const recordToDeploymentsMap = deployments.reduce(
+      (acc: { [key: string]: Deployment }, deployment) => {
+        acc[deployment.applicationRecordId] = deployment;
+        return acc;
+      },
+      {}
+    );
 
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.application];
 
-      await this.db.updateDeploymentById(
-        deployment.id,
-        {
-          applicationDeploymentRecordId: record.id,
-          applicationDeploymentRecordData: record.attributes,
-          url: record.attributes.url,
-          status: DeploymentStatus.Ready,
-          isCurrent: deployment.environment === Environment.Production
-        }
-      );
+      await this.db.updateDeploymentById(deployment.id, {
+        applicationDeploymentRecordId: record.id,
+        applicationDeploymentRecordData: record.attributes,
+        url: record.attributes.url,
+        status: DeploymentStatus.Ready,
+        isCurrent: deployment.environment === Environment.Production
+      });
 
-      log(`Updated deployment ${deployment.id} with URL ${record.attributes.url}`);
+      log(
+        `Updated deployment ${deployment.id} with URL ${record.attributes.url}`
+      );
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -181,7 +193,10 @@ export class Service {
 
   async getOctokit (userId: string): Promise<Octokit> {
     const user = await this.db.getUser({ where: { id: userId } });
-    assert(user && user.gitHubToken, 'User needs to be authenticated with GitHub token');
+    assert(
+      user && user.gitHubToken,
+      'User needs to be authenticated with GitHub token'
+    );
 
     return new Octokit({ auth: user.gitHubToken });
   }
@@ -206,13 +221,19 @@ export class Service {
     return dbDeployments;
   }
 
-  async getEnvironmentVariablesByProjectId (projectId: string): Promise<EnvironmentVariable[]> {
-    const dbEnvironmentVariables = await this.db.getEnvironmentVariablesByProjectId(projectId);
+  async getEnvironmentVariablesByProjectId (
+    projectId: string
+  ): Promise<EnvironmentVariable[]> {
+    const dbEnvironmentVariables =
+      await this.db.getEnvironmentVariablesByProjectId(projectId);
     return dbEnvironmentVariables;
   }
 
-  async getProjectMembersByProjectId (projectId: string): Promise<ProjectMember[]> {
-    const dbProjectMembers = await this.db.getProjectMembersByProjectId(projectId);
+  async getProjectMembersByProjectId (
+    projectId: string
+  ): Promise<ProjectMember[]> {
+    const dbProjectMembers =
+      await this.db.getProjectMembersByProjectId(projectId);
     return dbProjectMembers;
   }
 
@@ -221,20 +242,28 @@ export class Service {
     return dbProjects;
   }
 
-  async getDomainsByProjectId (projectId: string, filter?: FindOptionsWhere<Domain>): Promise<Domain[]> {
+  async getDomainsByProjectId (
+    projectId: string,
+    filter?: FindOptionsWhere<Domain>
+  ): Promise<Domain[]> {
     const dbDomains = await this.db.getDomainsByProjectId(projectId, filter);
     return dbDomains;
   }
 
-  async updateProjectMember (projectMemberId: string, data: {permissions: Permission[]}): Promise<boolean> {
+  async updateProjectMember (
+    projectMemberId: string,
+    data: { permissions: Permission[] }
+  ): Promise<boolean> {
     return this.db.updateProjectMemberById(projectMemberId, data);
   }
 
-  async addProjectMember (projectId: string,
+  async addProjectMember (
+    projectId: string,
     data: {
-      email: string,
-      permissions: Permission[]
-    }): Promise<ProjectMember> {
+      email: string;
+      permissions: Permission[];
+    }
+  ): Promise<ProjectMember> {
     // TODO: Send invitation
     let user = await this.db.getUser({
       where: {
@@ -279,29 +308,41 @@ export class Service {
     }
   }
 
-  async addEnvironmentVariables (projectId: string, data: { environments: string[], key: string, value: string}[]): Promise<EnvironmentVariable[]> {
-    const formattedEnvironmentVariables = data.map((environmentVariable) => {
-      return environmentVariable.environments.map((environment) => {
-        return ({
-          key: environmentVariable.key,
-          value: environmentVariable.value,
-          environment: environment as Environment,
-          project: Object.assign(new Project(), {
-            id: projectId
-          })
+  async addEnvironmentVariables (
+    projectId: string,
+    data: { environments: string[]; key: string; value: string }[]
+  ): Promise<EnvironmentVariable[]> {
+    const formattedEnvironmentVariables = data
+      .map((environmentVariable) => {
+        return environmentVariable.environments.map((environment) => {
+          return {
+            key: environmentVariable.key,
+            value: environmentVariable.value,
+            environment: environment as Environment,
+            project: Object.assign(new Project(), {
+              id: projectId
+            })
+          };
         });
-      });
-    }).flat();
+      })
+      .flat();
 
-    const savedEnvironmentVariables = await this.db.addEnvironmentVariables(formattedEnvironmentVariables);
+    const savedEnvironmentVariables = await this.db.addEnvironmentVariables(
+      formattedEnvironmentVariables
+    );
     return savedEnvironmentVariables;
   }
 
-  async updateEnvironmentVariable (environmentVariableId: string, data : DeepPartial<EnvironmentVariable>): Promise<boolean> {
+  async updateEnvironmentVariable (
+    environmentVariableId: string,
+    data: DeepPartial<EnvironmentVariable>
+  ): Promise<boolean> {
     return this.db.updateEnvironmentVariable(environmentVariableId, data);
   }
 
-  async removeEnvironmentVariable (environmentVariableId: string): Promise<boolean> {
+  async removeEnvironmentVariable (
+    environmentVariableId: string
+  ): Promise<boolean> {
     return this.db.deleteEnvironmentVariable(environmentVariableId);
   }
 
@@ -317,7 +358,10 @@ export class Service {
       throw new Error('Deployment does not exist');
     }
 
-    const prodBranchDomains = await this.db.getDomainsByProjectId(oldDeployment.project.id, { branch: oldDeployment.project.prodBranch });
+    const prodBranchDomains = await this.db.getDomainsByProjectId(
+      oldDeployment.project.id,
+      { branch: oldDeployment.project.prodBranch }
+    );
 
     const octokit = await this.getOctokit(user.id);
 
@@ -342,7 +386,9 @@ export class Service {
     recordData: { repoUrl?: string } = {}
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
-    log(`Creating deployment in project ${data.project.name} from branch ${data.branch}`);
+    log(
+      `Creating deployment in project ${data.project.name} from branch ${data.branch}`
+    );
     const [owner, repo] = data.project.repository.split('/');
 
     const { data: packageJSONData } = await octokit.rest.repos.getContent({
@@ -362,18 +408,22 @@ export class Service {
     assert(packageJSON.name, "name field doesn't exist in package.json");
 
     if (!recordData.repoUrl) {
-      const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
+      const { data: repoDetails } = await octokit.rest.repos.get({
+        owner,
+        repo
+      });
       recordData.repoUrl = repoDetails.html_url;
     }
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
-    const { applicationRecordId, applicationRecordData } = await this.registry.createApplicationRecord({
-      appName: repo,
-      packageJSON,
-      appType: data.project!.template!,
-      commitHash: data.commitHash!,
-      repoUrl: recordData.repoUrl
-    });
+    const { applicationRecordId, applicationRecordData } =
+      await this.registry.createApplicationRecord({
+        appName: repo,
+        packageJSON,
+        appType: data.project!.template!,
+        commitHash: data.commitHash!,
+        repoUrl: recordData.repoUrl
+      });
 
     // Update previous deployment with prod branch domain
     // TODO: Fix unique constraint error for domain
@@ -439,7 +489,9 @@ export class Service {
     const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');
 
-    const { data: [latestCommit] } = await octokit.rest.repos.listCommits({
+    const {
+      data: [latestCommit]
+    } = await octokit.rest.repos.listCommits({
       owner,
       repo,
       sha: project.prodBranch,
@@ -476,7 +528,10 @@ export class Service {
         owner,
         repo,
         config: {
-          url: new URL('api/github/webhook', this.config.gitHubConfig.webhookUrl).href,
+          url: new URL(
+            'api/github/webhook',
+            this.config.gitHubConfig.webhookUrl
+          ).href,
           content_type: 'json'
         },
         events: ['push']
@@ -484,9 +539,13 @@ export class Service {
     } catch (err) {
       // https://docs.github.com/en/rest/repos/webhooks?apiVersion=2022-11-28#create-a-repository-webhook--status-codes
       if (
-        !(err instanceof RequestError &&
-        err.status === 422 &&
-        (err.response?.data as any).errors.some((err: any) => err.message === GITHUB_UNIQUE_WEBHOOK_ERROR))
+        !(
+          err instanceof RequestError &&
+          err.status === 422 &&
+          (err.response?.data as any).errors.some(
+            (err: any) => err.message === GITHUB_UNIQUE_WEBHOOK_ERROR
+          )
+        )
       ) {
         throw err;
       }
@@ -498,7 +557,9 @@ export class Service {
   async handleGitHubPush (data: GitPushEventPayload): Promise<void> {
     const { repository, ref, head_commit: headCommit } = data;
     log(`Handling GitHub push event from repository: ${repository.full_name}`);
-    const projects = await this.db.getProjects({ where: { repository: repository.full_name } });
+    const projects = await this.db.getProjects({
+      where: { repository: repository.full_name }
+    });
 
     if (!projects.length) {
       log(`No projects found for repository ${repository.full_name}`);
@@ -510,23 +571,29 @@ export class Service {
 
     for await (const project of projects) {
       const octokit = await this.getOctokit(project.ownerId);
-      const [domain] = await this.db.getDomainsByProjectId(project.id, { branch });
+      const [domain] = await this.db.getDomainsByProjectId(project.id, {
+        branch
+      });
 
       // Create deployment with branch and latest commit in GitHub data
-      await this.createDeployment(project.ownerId,
-        octokit,
-        {
-          project,
-          branch,
-          environment: project.prodBranch === branch ? Environment.Production : Environment.Preview,
-          domain,
-          commitHash: headCommit.id,
-          commitMessage: headCommit.message
-        });
+      await this.createDeployment(project.ownerId, octokit, {
+        project,
+        branch,
+        environment:
+          project.prodBranch === branch
+            ? Environment.Production
+            : Environment.Preview,
+        domain,
+        commitHash: headCommit.id,
+        commitMessage: headCommit.message
+      });
     }
   }
 
-  async updateProject (projectId: string, data: DeepPartial<Project>): Promise<boolean> {
+  async updateProject (
+    projectId: string,
+    data: DeepPartial<Project>
+  ): Promise<boolean> {
     return this.db.updateProjectById(projectId, data);
   }
 
@@ -543,7 +610,9 @@ export class Service {
     });
 
     if (domainsRedirectedFrom.length > 0) {
-      throw new Error('Cannot delete domain since it has redirects from other domains');
+      throw new Error(
+        'Cannot delete domain since it has redirects from other domains'
+      );
     }
 
     return this.db.deleteDomainById(domainId);
@@ -582,7 +651,10 @@ export class Service {
     return newDeployment;
   }
 
-  async rollbackDeployment (projectId: string, deploymentId: string): Promise<boolean> {
+  async rollbackDeployment (
+    projectId: string,
+    deploymentId: string
+  ): Promise<boolean> {
     // TODO: Implement transactions
     const oldCurrentDeployment = await this.db.getDeployment({
       relations: {
@@ -600,16 +672,25 @@ export class Service {
       throw new Error('Current deployment doesnot exist');
     }
 
-    const oldCurrentDeploymentUpdate = await this.db.updateDeploymentById(oldCurrentDeployment.id, { isCurrent: false, domain: null });
+    const oldCurrentDeploymentUpdate = await this.db.updateDeploymentById(
+      oldCurrentDeployment.id,
+      { isCurrent: false, domain: null }
+    );
 
-    const newCurrentDeploymentUpdate = await this.db.updateDeploymentById(deploymentId, { isCurrent: true, domain: oldCurrentDeployment?.domain });
+    const newCurrentDeploymentUpdate = await this.db.updateDeploymentById(
+      deploymentId,
+      { isCurrent: true, domain: oldCurrentDeployment?.domain }
+    );
 
     return newCurrentDeploymentUpdate && oldCurrentDeploymentUpdate;
   }
 
-  async addDomain (projectId: string, data: { name: string }): Promise<{
-    primaryDomain: Domain,
-    redirectedDomain: Domain
+  async addDomain (
+    projectId: string,
+    data: { name: string }
+  ): Promise<{
+    primaryDomain: Domain;
+    redirectedDomain: Domain;
   }> {
     const currentProject = await this.db.getProjectById(projectId);
 
@@ -634,12 +715,20 @@ export class Service {
       redirectTo: savedPrimaryDomain
     };
 
-    const savedRedirectedDomain = await this.db.addDomain(redirectedDomainDetails);
+    const savedRedirectedDomain = await this.db.addDomain(
+      redirectedDomainDetails
+    );
 
-    return { primaryDomain: savedPrimaryDomain, redirectedDomain: savedRedirectedDomain };
+    return {
+      primaryDomain: savedPrimaryDomain,
+      redirectedDomain: savedRedirectedDomain
+    };
   }
 
-  async updateDomain (domainId: string, data: DeepPartial<Domain>): Promise<boolean> {
+  async updateDomain (
+    domainId: string,
+    data: DeepPartial<Domain>
+  ): Promise<boolean> {
     const domain = await this.db.getDomain({
       where: {
         id: domainId
@@ -680,7 +769,9 @@ export class Service {
       }
 
       if (redirectedDomain.redirectToId) {
-        throw new Error('Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.');
+        throw new Error(
+          'Unable to redirect to the domain because it is already redirecting elsewhere. Redirects cannot be chained.'
+        );
       }
 
       newDomain.redirectTo = redirectedDomain;

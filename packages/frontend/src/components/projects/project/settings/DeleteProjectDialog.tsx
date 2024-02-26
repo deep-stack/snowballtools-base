@@ -53,20 +53,21 @@ const DeleteProjectDialog = ({
   }, [client, project, handleOpen]);
 
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
+    <Dialog open={open} handler={handleOpen} placeholder={''}>
+      <DialogHeader className="flex justify-between" placeholder={''}>
         <div>Delete project?</div>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className="mr-1 rounded-3xl"
+          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
       <form onSubmit={handleSubmit(deleteProjectHandler)}>
-        <DialogBody className="flex flex-col gap-2">
-          <Typography variant="paragraph">
+        <DialogBody className="flex flex-col gap-2" placeholder={''}>
+          <Typography variant="paragraph" placeholder={''}>
             Deleting your project is irreversible. Enter your project’s
             name&nbsp;
             <span className="bg-blue-100 text-blue-700">({project.name})</span>
@@ -80,12 +81,17 @@ const DeleteProjectDialog = ({
               validate: (value) => value === project.name,
             })}
           />
-          <Typography variant="small" color="red">
+          <Typography variant="small" color="red" placeholder={''}>
             ^ Deleting your project is irreversible.
           </Typography>
         </DialogBody>
-        <DialogFooter className="flex justify-start">
-          <Button variant="outlined" onClick={handleOpen} className="mr-1">
+        <DialogFooter className="flex justify-start" placeholder={''}>
+          <Button
+            variant="outlined"
+            onClick={handleOpen}
+            className="mr-1"
+            placeholder={''}
+          >
             Cancel
           </Button>
           <Button
@@ -93,6 +99,7 @@ const DeleteProjectDialog = ({
             color="red"
             type="submit"
             disabled={!isValid}
+            placeholder={''}
           >
             Yes, Delete project
           </Button>

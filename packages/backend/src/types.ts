@@ -47,5 +47,5 @@ interface RegistryRecord {
 }
 
 export interface AppDeploymentRecord extends RegistryRecord {
-  attributes: AppDeploymentRecordAttributes
+  attributes: AppDeploymentRecordAttributes;
 }

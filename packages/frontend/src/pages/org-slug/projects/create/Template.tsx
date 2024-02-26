@@ -45,7 +45,7 @@ const CreateWithTemplate = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6 items-center">
-        <Avatar variant="rounded" src="/gray.png" />
+        <Avatar variant="rounded" src="/gray.png" placeholder={''} />
         <div className="grow px-2">{template?.name}</div>
         <div>
           <a

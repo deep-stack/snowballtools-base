@@ -111,8 +111,10 @@ const CreateRepo = () => {
   return (
     <form onSubmit={handleSubmit(submitRepoHandler)}>
       <div className="mb-2">
-        <Typography variant="h6">Create a repository</Typography>
-        <Typography color="gray">
+        <Typography variant="h6" placeholder={''}>
+          Create a repository
+        </Typography>
+        <Typography color="gray" placeholder={''}>
           The project will be cloned into this repository
         </Typography>
       </div>
@@ -184,6 +186,7 @@ const CreateRepo = () => {
           type="submit"
           disabled={!Boolean(template.repoFullName) || isLoading}
           loading={isLoading}
+          placeholder={''}
         >
           Deploy ^
         </Button>

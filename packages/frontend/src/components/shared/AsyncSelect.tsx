@@ -9,7 +9,7 @@ const AsyncSelect = React.forwardRef((props: SelectProps, ref: any) => {
 
   useEffect(() => setKey((preVal) => preVal + 1), [props]);
 
-  return <Select key={key} ref={ref} {...props} />;
+  return <Select key={key} ref={ref} {...props} placeholder={''} />;
 });
 
 AsyncSelect.displayName = 'AsyncSelect';

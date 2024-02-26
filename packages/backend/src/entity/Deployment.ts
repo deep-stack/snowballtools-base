@@ -27,26 +27,26 @@ export enum DeploymentStatus {
 }
 
 export interface ApplicationDeploymentRequest {
-  type: string
-  version: string
-  name: string
-  application: string
-  config: string,
-  meta: string
+  type: string;
+  version: string;
+  name: string;
+  application: string;
+  config: string;
+  meta: string;
 }
 
 export interface ApplicationRecord {
   type: string;
-  version:string
-  name: string
-  description?: string
-  homepage?: string
-  license?: string
-  author?: string
-  repository?: string[],
-  app_version?: string
-  repository_ref: string
-  app_type: string
+  version: string;
+  name: string;
+  description?: string;
+  homepage?: string;
+  license?: string;
+  author?: string;
+  repository?: string[];
+  app_version?: string;
+  repository_ref: string;
+  app_type: string;
 }
 
 @Entity()

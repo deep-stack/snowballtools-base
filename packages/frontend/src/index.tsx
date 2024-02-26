@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import assert from 'assert';
-import { Toaster } from 'react-hot-toast';
 import { GQLClient } from 'gql-client';
 
 import { ThemeProvider } from '@material-tailwind/react';
 
 import './index.css';
+import '@fontsource/inter';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
-import Web3ModalProvider from './context/Web3ModalProvider';
 import { SERVER_GQL_PATH } from './constants';
-
+import { Toaster } from 'components/shared/Toast';
+import Web3ModalProvider from './context/Web3ModalProvider';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -28,12 +28,12 @@ const gqlClient = new GQLClient({ gqlEndpoint });
 root.render(
   <React.StrictMode>
     <ThemeProvider>
-      <Web3ModalProvider>
-        <GQLClientProvider client={gqlClient}>
+      <GQLClientProvider client={gqlClient}>
+        <Web3ModalProvider>
           <App />
-          <Toaster position="bottom-center" />
-        </GQLClientProvider>
-      </Web3ModalProvider>
+        </Web3ModalProvider>
+        <Toaster />
+      </GQLClientProvider>
     </ThemeProvider>
   </React.StrictMode>,
 );

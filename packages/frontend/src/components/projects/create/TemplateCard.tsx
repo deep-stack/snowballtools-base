@@ -18,11 +18,15 @@ interface TemplateCardProps {
 const CardDetails = ({ template }: { template: TemplateDetails }) => {
   return (
     <div className="h-14 group bg-gray-200 border-gray-200 rounded-lg shadow p-4 flex items-center justify-between">
-      <Typography className="grow">
+      <Typography className="grow" placeholder={''}>
         {template.icon} {template.name}
       </Typography>
       <div>
-        <IconButton size="sm" className="rounded-full hidden group-hover:block">
+        <IconButton
+          size="sm"
+          className="rounded-full hidden group-hover:block"
+          placeholder={''}
+        >
           {'>'}
         </IconButton>
       </div>

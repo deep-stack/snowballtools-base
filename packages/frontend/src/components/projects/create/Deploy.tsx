@@ -43,7 +43,12 @@ const Deploy = () => {
           </div>
         </div>
         <div>
-          <Button onClick={handleOpen} variant="outlined" size="sm">
+          <Button
+            onClick={handleOpen}
+            variant="outlined"
+            size="sm"
+            placeholder={''}
+          >
             ^ Cancel
           </Button>
         </div>
@@ -55,7 +60,7 @@ const Deploy = () => {
           handleConfirm={handleCancel}
           color="red"
         >
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             This will halt the deployment and you will have to start the process
             from scratch.
           </Typography>

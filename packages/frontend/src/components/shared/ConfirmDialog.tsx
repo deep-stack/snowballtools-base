@@ -30,23 +30,31 @@ const ConfirmDialog = ({
   color,
 }: ConfirmDialogProp) => {
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
-        <Typography variant="h6">{dialogTitle} </Typography>
+    <Dialog open={open} handler={handleOpen} placeholder={''}>
+      <DialogHeader className="flex justify-between" placeholder={''}>
+        <Typography variant="h6" placeholder={''}>
+          {dialogTitle}{' '}
+        </Typography>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className=" rounded-full"
+          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
-      <DialogBody>{children}</DialogBody>
-      <DialogFooter className="flex justify-start gap-2">
-        <Button variant="outlined" onClick={handleOpen}>
+      <DialogBody placeholder={''}>{children}</DialogBody>
+      <DialogFooter className="flex justify-start gap-2" placeholder={''}>
+        <Button variant="outlined" onClick={handleOpen} placeholder={''}>
           Cancel
         </Button>
-        <Button variant="gradient" color={color} onClick={handleConfirm}>
+        <Button
+          variant="gradient"
+          color={color}
+          onClick={handleConfirm}
+          placeholder={''}
+        >
           {confirmButtonTitle}
         </Button>
       </DialogFooter>

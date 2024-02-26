@@ -76,7 +76,7 @@ export class Project {
   @OneToMany(() => Deployment, (deployment) => deployment.project)
     deployments!: Deployment[];
 
-  @OneToMany(() => ProjectMember, projectMember => projectMember.project, {
+  @OneToMany(() => ProjectMember, (projectMember) => projectMember.project, {
     cascade: ['soft-remove']
   })
     projectMembers!: ProjectMember[];

@@ -110,10 +110,14 @@ const OverviewTabPanel = () => {
     <div className="grid grid-cols-5">
       <div className="col-span-3 p-2">
         <div className="flex items-center gap-2 p-2 ">
-          <Avatar src={project.icon || '/gray.png'} variant="rounded" />
+          <Avatar
+            src={project.icon || '/gray.png'}
+            variant="rounded"
+            placeholder={''}
+          />
           <div className="grow">
-            <Typography>{project.name}</Typography>
-            <Typography variant="small" color="gray">
+            <Typography placeholder={''}>{project.name}</Typography>
+            <Typography variant="small" color="gray" placeholder={''}>
               {project.subDomain}
             </Typography>
           </div>
@@ -144,6 +148,7 @@ const OverviewTabPanel = () => {
                 onClick={() => {
                   navigate('settings/domains');
                 }}
+                placeholder={''}
               >
                 Setup
               </Button>
@@ -176,7 +181,9 @@ const OverviewTabPanel = () => {
       </div>
       <div className="col-span-2 p-2">
         <div className="flex justify-between">
-          <Typography variant="h6">Activity</Typography>
+          <Typography variant="h6" placeholder={''}>
+            Activity
+          </Typography>
           <button className="text-xs bg-gray-300 rounded-full p-2">
             See all
           </button>

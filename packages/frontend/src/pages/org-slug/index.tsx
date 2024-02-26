@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Project } from 'gql-client';
+import { Button } from 'components/shared/Button';
 
-import { Button, Typography, Chip } from '@material-tailwind/react';
+import { Typography, Chip } from '@material-tailwind/react';
 
 import ProjectCard from '../../components/projects/ProjectCard';
 import { useGQLClient } from '../../context/GQLClientContext';
+import { PlusIcon } from 'components/shared/CustomIcon';
 
 const Projects = () => {
   const client = useGQLClient();
@@ -28,7 +30,9 @@ const Projects = () => {
       <div className="flex p-5">
         <div className="grow">
           <div className="flex gap-2 items-center">
-            <Typography variant="h4">Projects</Typography>
+            <Typography variant="h4" placeholder={''}>
+              Projects
+            </Typography>
             <Chip
               className="bg-gray-300 rounded-full static"
               value={projects.length}
@@ -38,9 +42,7 @@ const Projects = () => {
         </div>
         <div>
           <Link to="projects/create">
-            <Button className="rounded-full" color="blue">
-              Create project
-            </Button>
+            <Button leftIcon={<PlusIcon />}>Create project</Button>
           </Link>
         </div>
       </div>

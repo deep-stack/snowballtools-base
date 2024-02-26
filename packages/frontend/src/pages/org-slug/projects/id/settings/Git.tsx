@@ -100,13 +100,15 @@ const GitTabPanel = () => {
   return (
     <>
       <div className="mb-2 p-2">
-        <Typography variant="h6" className="text-black">
+        <Typography variant="h6" className="text-black" placeholder={''}>
           Git repository
         </Typography>
 
         <div className="flex justify-between mt-4">
           <div>
-            <Typography variant="small">Pull request comments</Typography>
+            <Typography variant="small" placeholder={''}>
+              Pull request comments
+            </Typography>
           </div>
           <div>
             <Switch crossOrigin={undefined} defaultChecked />
@@ -115,7 +117,9 @@ const GitTabPanel = () => {
 
         <div className="flex justify-between">
           <div>
-            <Typography variant="small">Commit comments</Typography>
+            <Typography variant="small" placeholder={''}>
+              Commit comments
+            </Typography>
           </div>
           <div>
             <Switch crossOrigin={undefined} />
@@ -125,21 +129,23 @@ const GitTabPanel = () => {
 
       <form onSubmit={handleSubmitProdBranch(updateProdBranchHandler)}>
         <div className="mb-2 p-2">
-          <Typography variant="h6" className="text-black">
+          <Typography variant="h6" className="text-black" placeholder={''}>
             Production branch
           </Typography>
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             By default, each commit pushed to the{' '}
             <span className="font-bold">{project.prodBranch}</span> branch
             initiates a production deployment. You can opt for a different
             branch for deployment in the settings.
           </Typography>
-          <Typography variant="small">Branch name</Typography>
+          <Typography variant="small" placeholder={''}>
+            Branch name
+          </Typography>
           <Input
             crossOrigin={undefined}
             {...registerProdBranch('prodBranch')}
           />
-          <Button size="sm" className="mt-1" type="submit">
+          <Button size="sm" className="mt-1" type="submit" placeholder={''}>
             Save
           </Button>
         </div>
@@ -147,23 +153,25 @@ const GitTabPanel = () => {
 
       <form onSubmit={handleSubmitWebhooks(updateWebhooksHandler)}>
         <div className="mb-2 p-2">
-          <Typography variant="h6" className="text-black">
+          <Typography variant="h6" className="text-black" placeholder={''}>
             Deploy webhooks
           </Typography>
-          <Typography variant="small">
+          <Typography variant="small" placeholder={''}>
             Webhooks configured to trigger when there is a change in a
             project&apos;s build or deployment status.
           </Typography>
           <div className="flex gap-1">
             <div className="grow">
-              <Typography variant="small">Webhook URL</Typography>
+              <Typography variant="small" placeholder={''}>
+                Webhook URL
+              </Typography>
               <Input
                 crossOrigin={undefined}
                 {...registerWebhooks('webhookUrl')}
               />
             </div>
             <div className="self-end">
-              <Button size="sm" type="submit">
+              <Button size="sm" type="submit" placeholder={''}>
                 Save
               </Button>
             </div>

@@ -59,9 +59,16 @@ const Domains = () => {
   return (
     <>
       <div className="flex justify-between p-2">
-        <Typography variant="h3">Domain</Typography>
+        <Typography variant="h3" placeholder={''}>
+          Domain
+        </Typography>
         <Link to="add">
-          <Button color="blue" variant="outlined" className="rounded-full">
+          <Button
+            color="blue"
+            variant="outlined"
+            className="rounded-full"
+            placeholder={''}
+          >
             <i>^</i> Add domain
           </Button>
         </Link>

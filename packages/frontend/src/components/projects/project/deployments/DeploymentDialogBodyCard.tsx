@@ -20,7 +20,7 @@ const DeploymentDialogBodyCard = ({
   deployment,
 }: DeploymentDialogBodyCardProps) => {
   return (
-    <Card className="p-2 shadow-none">
+    <Card className="p-2 shadow-none" placeholder={''}>
       {chip && (
         <Chip
           className={`w-fit normal-case font-normal`}
@@ -30,16 +30,16 @@ const DeploymentDialogBodyCard = ({
         />
       )}
       {deployment.url && (
-        <Typography variant="small" className="text-black">
+        <Typography variant="small" className="text-black" placeholder={''}>
           {deployment.url}
         </Typography>
       )}
-      <Typography variant="small">
+      <Typography variant="small" placeholder={''}>
         ^ {deployment.branch} ^{' '}
         {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
         {deployment.commitMessage}
       </Typography>
-      <Typography variant="small">
+      <Typography variant="small" placeholder={''}>
         ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
         {formatAddress(deployment.createdBy.name ?? '')}
       </Typography>

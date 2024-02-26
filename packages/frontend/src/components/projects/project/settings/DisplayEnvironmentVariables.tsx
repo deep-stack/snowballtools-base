@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Collapse, Typography } from '@material-tailwind/react';
 
-import { Environment, EnvironmentVariable } from 'gql-client/dist/src/types';
-
 import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
+import { Environment, EnvironmentVariable } from 'gql-client';
 
 interface DisplayEnvironmentVariablesProps {
   environment: Environment;
@@ -30,11 +29,11 @@ const DisplayEnvironmentVariables = ({
       </div>
       <Collapse open={openCollapse}>
         {variables.length === 0 ? (
-          <Card className="bg-gray-300 flex items-center p-4">
-            <Typography variant="small" className="text-black">
+          <Card className="bg-gray-300 flex items-center p-4" placeholder={''}>
+            <Typography variant="small" className="text-black" placeholder={''}>
               No environment variables added yet.
             </Typography>
-            <Typography variant="small">
+            <Typography variant="small" placeholder={''}>
               Once you add them, they’ll show up here.
             </Typography>
           </Card>

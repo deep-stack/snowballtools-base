@@ -59,12 +59,14 @@ const SettingsTabPanel = () => {
           indicatorProps={{
             className: 'bg-gray-900/10 shadow-none !text-gray-900',
           }}
+          placeholder={''}
         >
           {tabsData.map(({ label, value, icon }) => (
             <Link key={value} to={value === 'general' ? '' : value}>
               <Tab
                 value={value === 'general' ? '' : `/${value}`}
                 className="flex justify-start"
+                placeholder={''}
               >
                 <div className="flex gap-2">
                   <div>{icon}</div>
@@ -74,7 +76,7 @@ const SettingsTabPanel = () => {
             </Link>
           ))}
         </TabsHeader>
-        <TabsBody className="col-span-2">
+        <TabsBody className="col-span-2" placeholder={''}>
           <Outlet context={{ project, onUpdate }} />
         </TabsBody>
       </Tabs>

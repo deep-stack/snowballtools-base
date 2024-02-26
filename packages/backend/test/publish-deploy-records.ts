@@ -14,7 +14,11 @@ const log = debug('snowball:publish-deploy-records');
 async function main () {
   const { registryConfig, database, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
-  const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
+  const registry = new Registry(
+    registryConfig.gqlEndpoint,
+    registryConfig.restEndpoint,
+    registryConfig.chainId
+  );
 
   const dataSource = new DataSource({
     type: 'better-sqlite3',

@@ -23,6 +23,7 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
             navigator.clipboard.writeText(webhookUrl);
             toast.success('Copied to clipboard');
           }}
+          placeholder={''}
         >
           C
         </Button>
@@ -32,6 +33,7 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
           onClick={() => {
             setDeleteDialogOpen(true);
           }}
+          placeholder={''}
         >
           X
         </Button>
@@ -48,7 +50,7 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
         }}
         color="red"
       >
-        <Typography variant="small">
+        <Typography variant="small" placeholder={''}>
           Are you sure you want to delete the variable{' '}
           <span className="bg-blue-100 p-0.5 rounded-sm">{webhookUrl}</span>?
         </Typography>

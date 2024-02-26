@@ -6,7 +6,7 @@ import { OctokitProvider } from '../context/OctokitContext';
 
 const OrgSlug = () => {
   return (
-    <div className="grid grid-cols-5 h-screen bg-light-blue-50">
+    <div className="grid grid-cols-5 h-screen bg-snowball-50">
       <>
         <div className="h-full">
           <Sidebar />

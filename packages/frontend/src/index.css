@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .focus-ring {
+    @apply focus-visible:ring-[3px] focus-visible:ring-snowball-200 focus-visible:ring-offset-1 focus-visible:ring-offset-snowball-500 focus-visible:outline-none;
+  }
+}

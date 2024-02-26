@@ -75,7 +75,9 @@ const MembersTabPanel = () => {
     <div className="p-2 mb-20">
       <div className="flex justify-between mb-2">
         <div className="flex">
-          <Typography variant="h6">Members</Typography>
+          <Typography variant="h6" placeholder={''}>
+            Members
+          </Typography>
           <div>
             <Chip
               className="normal-case ml-3 font-normal"
@@ -88,6 +90,7 @@ const MembersTabPanel = () => {
           <Button
             size="sm"
             onClick={() => setAddMemberDialogOpen((preVal) => !preVal)}
+            placeholder={''}
           >
             + Add member
           </Button>
