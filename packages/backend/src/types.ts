@@ -50,3 +50,8 @@ interface RegistryRecord {
 export interface AppDeploymentRecord extends RegistryRecord {
   attributes: AppDeploymentRecordAttributes;
 }
+
+export enum GitType {
+  GitHub = 'GitHub',
+  Gitea = 'Gitea',
+}

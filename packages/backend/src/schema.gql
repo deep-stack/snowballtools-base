@@ -26,6 +26,11 @@ enum DomainStatus {
   Pending
 }
 
+enum GitType {
+  GitHub
+  Gitea
+}
+
 type User {
   id: String!
   name: String
@@ -212,5 +217,6 @@ type Mutation {
   addDomain(projectId: String!, data: AddDomainInput!): Boolean!
   updateDomain(domainId: String!, data: UpdateDomainInput!): Boolean!
   authenticateGitHub(code: String!): AuthResult!
+  authenticateGit(type: GitType!, code: String!): AuthResult!
   unauthenticateGitHub: Boolean!
 }

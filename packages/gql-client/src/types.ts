@@ -28,6 +28,11 @@ export enum DomainStatus {
   Pending = 'Pending',
 }
 
+export enum GitType {
+  GitHub = 'GitHub',
+  Gitea = 'Gitea',
+}
+
 export type EnvironmentVariable = {
   id: string
   environment: Environment
@@ -284,6 +289,12 @@ export type AddDomainResponse = {
 
 export type AuthenticateGitHubResponse = {
   authenticateGitHub: {
+    token: string
+  }
+}
+
+export type AuthenticateGitResponse = {
+  authenticateGit: {
     token: string
   }
 }

@@ -17,6 +17,11 @@
     clientId = ""
     clientSecret = ""
 
+[gitea]
+  [gitea.oAuth]
+    clientId = ""
+    clientSecret = ""
+
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
   restEndpoint = "http://localhost:1317"
