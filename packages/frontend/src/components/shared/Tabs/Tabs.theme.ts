@@ -24,6 +24,7 @@ export const tabsTheme = tv({
       'data-[orientation=vertical]:px-3',
       'data-[orientation=vertical]:py-3',
       'data-[orientation=vertical]:min-w-[240px]',
+      'data-[orientation=vertical]:w-full',
       'data-[orientation=vertical]:focus-ring',
       'data-[orientation=vertical]:rounded-xl',
       'data-[orientation=vertical]:border-transparent',
@@ -72,6 +73,7 @@ export const tabsTheme = tv({
       // Vertical
       'data-[orientation=vertical]:flex-col',
       'data-[orientation=vertical]:gap-0.5',
+      'data-[orientation=vertical]:w-full',
     ],
     content: ['text-elements-high-em', 'grow', 'outline-none', 'tab-content'],
   },
