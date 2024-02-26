@@ -187,11 +187,12 @@
   REACT_APP_GITHUB_CLIENT_ID = <CLIENT_ID>
   ```
 
-- Set `REACT_APP_GITHUB_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
+- Set `REACT_APP_GITHUB_PWA_TEMPLATE_REPO` and `REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
 
   ```env
   # Set actual owner/name of the template repo that will be used for creating new repo
-  REACT_APP_GITHUB_TEMPLATE_REPO = cerc-io/test-progressive-web-app
+  REACT_APP_GITHUB_PWA_TEMPLATE_REPO = cerc-io/test-progressive-web-app
+  REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = cerc-io/image-upload-pwa-example
   ```
 
 ### Frontend Production
