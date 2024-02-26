@@ -9,7 +9,7 @@ import {
 import { Avatar } from '@material-tailwind/react';
 
 import Stepper from '../../../../components/Stepper';
-import templates from '../../../../assets/templates.js';
+import templates from '../../../../assets/templates';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -49,13 +49,13 @@ const CreateWithTemplate = () => {
         <div className="grow px-2">{template?.name}</div>
         <div>
           <a
-            href={`https://github.com/${template?.templateUrl}`}
+            href={`https://github.com/${template?.repoFullName}`}
             target="_blank"
             rel="noreferrer"
           >
             ^{' '}
-            {template?.templateUrl.length
-              ? template.templateUrl
+            {Boolean(template?.repoFullName)
+              ? template?.repoFullName
               : 'Template not supported'}
           </a>
         </div>

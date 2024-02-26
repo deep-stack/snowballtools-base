@@ -1,6 +1,6 @@
 import React from 'react';
 
-import templates from '../../../../assets/templates.js';
+import templates from '../../../../assets/templates';
 import TemplateCard from '../../../../components/projects/create/TemplateCard';
 import RepositoryList from '../../../../components/projects/create/RepositoryList';
 import ConnectAccount from '../../../../components/projects/create/ConnectAccount';

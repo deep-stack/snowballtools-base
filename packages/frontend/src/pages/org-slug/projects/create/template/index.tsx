@@ -36,8 +36,8 @@ const CreateRepo = () => {
       setIsLoading(true);
 
       try {
-        assert(template.templateUrl.length > 0, 'Template URL not provided');
-        const [owner, repo] = template.templateUrl.split('/');
+        assert(template.repoFullName, 'Template URL not provided');
+        const [owner, repo] = template.repoFullName.split('/');
 
         // TODO: Handle this functionality in backend
         const gitRepo = await octokit?.rest.repos.createUsingTemplate({
@@ -64,7 +64,7 @@ const CreateRepo = () => {
         if (Boolean(addProject)) {
           setIsLoading(true);
           navigate(
-            `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}&templateId=${template.id}`,
+            `deploy?projectId=${addProject.id}&templateId=${template.id}`,
           );
         } else {
           setIsLoading(false);
@@ -182,7 +182,7 @@ const CreateRepo = () => {
         <Button
           className="bg-blue-500 rounded-xl p-2"
           type="submit"
-          disabled={!Boolean(template.templateUrl.length) || isLoading}
+          disabled={!Boolean(template.repoFullName) || isLoading}
           loading={isLoading}
         >
           Deploy ^

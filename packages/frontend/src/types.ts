@@ -62,5 +62,5 @@ export type Template = {
   id: string;
   name: string;
   icon: string;
-  templateUrl: string;
+  repoFullName: string;
 };
