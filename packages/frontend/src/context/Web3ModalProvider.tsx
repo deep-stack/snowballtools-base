@@ -28,7 +28,9 @@ const metadata = {
   name: 'Web3Modal',
   description: 'Snowball Web3Modal',
   url: window.location.origin,
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  icons: [
+    'https://raw.githubusercontent.com/snowball-tools/mediakit/main/assets/logo.svg',
+  ],
 };
 
 const chains = [mainnet, arbitrum] as const;
