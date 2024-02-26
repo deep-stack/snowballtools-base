@@ -181,6 +181,12 @@
   cd packages/frontend
   ```
 
+- Rename [.env.example](packages/frontend/.env.example) to `.env`
+
+  ```bash
+  mv .env.example .env
+  ```
+
 - Copy the GitHub OAuth app client ID from previous steps and set it in frontend [.env](packages/frontend/.env) file
 
   ```env
