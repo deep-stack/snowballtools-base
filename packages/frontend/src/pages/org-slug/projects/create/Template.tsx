@@ -10,7 +10,6 @@ import { Avatar } from '@material-tailwind/react';
 
 import Stepper from '../../../../components/Stepper';
 import templateDetails from '../../../../assets/templates.json';
-import { GIT_TEMPLATE_LINK } from '../../../../constants';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -49,8 +48,12 @@ const CreateWithTemplate = () => {
         <Avatar variant="rounded" src="/gray.png" />
         <div className="grow px-2">{template?.name}</div>
         <div>
-          <a href={GIT_TEMPLATE_LINK} target="_blank" rel="noreferrer">
-            ^ {process.env.REACT_APP_GITHUB_TEMPLATE_REPO}
+          <a
+            href={`https://github.com/${template?.templateUrl}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            ^ {template?.templateUrl}
           </a>
         </div>
       </div>
@@ -59,7 +62,7 @@ const CreateWithTemplate = () => {
           <Stepper activeStep={activeStep} stepperValues={stepperValues} />
         </div>
         <div className="col-span-2">
-          <Outlet />
+          <Outlet context={{ template }} />
         </div>
       </div>
     </div>

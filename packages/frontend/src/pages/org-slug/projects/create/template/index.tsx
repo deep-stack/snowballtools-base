@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
 
@@ -9,6 +9,7 @@ import { Button, Option, Typography } from '@material-tailwind/react';
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import AsyncSelect from '../../../../../components/shared/AsyncSelect';
+import { Template } from '../../../../../types';
 
 type SubmitRepoValues = {
   framework: string;
@@ -19,7 +20,7 @@ type SubmitRepoValues = {
 
 const CreateRepo = () => {
   const { octokit } = useOctokit();
-
+  const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
 
   const { orgSlug } = useParams();
@@ -35,12 +36,8 @@ const CreateRepo = () => {
       setIsLoading(true);
 
       try {
-        assert(
-          process.env.REACT_APP_GITHUB_TEMPLATE_REPO,
-          'Config REACT_APP_GITHUB_TEMPLATE_REPO is not set in .env',
-        );
-        const [owner, repo] =
-          process.env.REACT_APP_GITHUB_TEMPLATE_REPO.split('/');
+        assert(template.templateUrl.length > 0, 'Template URL not provided');
+        const [owner, repo] = template.templateUrl.split('/');
 
         // TODO: Handle this functionality in backend
         const gitRepo = await octokit?.rest.repos.createUsingTemplate({

@@ -2,26 +2,31 @@
   {
     "id": "1",
     "name": "Progressive Web App (PWA)",
-    "icon": "^"
+    "icon": "^",
+    "templateUrl": "deep-stack/test-progressive-web-app"
   },
   {
     "id": "2",
-    "name": "Kotlin",
-    "icon": "^"
+    "name": "Image upload PWA",
+    "icon": "^",
+    "templateUrl": "deep-stack/image-upload-pwa-example"
   },
   {
     "id": "3",
-    "name": "React Native",
-    "icon": "^"
+    "name": "Kotlin",
+    "icon": "^",
+    "templateUrl": ""
   },
   {
     "id": "4",
-    "name": "Swift",
-    "icon": "^"
+    "name": "React Native",
+    "icon": "^",
+    "templateUrl": ""
   },
   {
     "id": "5",
-    "name": "Web app",
-    "icon": "^"
+    "name": "Swift",
+    "icon": "^",
+    "templateUrl": ""
   }
 ]
