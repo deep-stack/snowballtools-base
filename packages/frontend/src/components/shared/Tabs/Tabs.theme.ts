@@ -38,6 +38,12 @@ export const tabsTheme = tv({
       'data-[orientation=vertical]:data-[state=active]:border-transparent',
       'data-[orientation=vertical]:data-[state=active]:hover:text-elements-high-em',
       'data-[orientation=vertical]:data-[state=active]:focus-visible:text-elements-high-em',
+      // TODO: demo additions
+      'data-[orientation=vertical]:data-[state=active]:bg-snowball-200',
+      'data-[orientation=vertical]:data-[state=active]:hover:bg-snowball-200',
+      'data-[orientation=vertical]:data-[state=active]:text-snowball-800',
+      'data-[orientation=vertical]:data-[state=active]:hover:text-snowball-800',
+      'data-[orientation=vertical]:data-[state=active]:shadow-[0px_1px_0px_0px_rgba(8,47,86,0.06)_inset]',
     ],
     trigger: [
       'flex',
