@@ -64,7 +64,7 @@ const CreateRepo = () => {
         if (Boolean(addProject)) {
           setIsLoading(true);
           navigate(
-            `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}`,
+            `/${orgSlug}/projects/create/template/deploy?projectId=${addProject.id}&templateId=${template.id}`,
           );
         } else {
           setIsLoading(false);
@@ -182,7 +182,7 @@ const CreateRepo = () => {
         <Button
           className="bg-blue-500 rounded-xl p-2"
           type="submit"
-          disabled={isLoading}
+          disabled={!Boolean(template.templateUrl.length) || isLoading}
           loading={isLoading}
         >
           Deploy ^
