@@ -2,6 +2,7 @@ import assert from 'assert';
 import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
+import fetch from 'node-fetch';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -15,12 +16,13 @@ import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
-import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
+import { AppDeploymentRecord, GitPushEventPayload, GitType, PackageJSON } from './types';
 import { Role } from './entity/UserOrganization';
 
 const log = debug('snowball:service');
 
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
+const GITEA_ACCESS_TOKEN_ENDPOINT = 'https://git.vdb.to/login/oauth/access_token';
 
 interface Config {
   gitHubConfig: GitHubConfig;
@@ -787,6 +789,48 @@ export class Service {
       code
     });
 
+    await this.db.updateUser(user, { gitHubToken: token });
+
+    return { token };
+  }
+
+  async authenticateGit (type: GitType, code:string, user: User): Promise<{token: string}> {
+    let token: string;
+
+    switch (type) {
+      case GitType.GitHub:
+        ({ authentication: { token } } = await this.oauthApp.createToken({
+          code
+        }));
+
+        break;
+
+      case GitType.Gitea: {
+        const response = await fetch(GITEA_ACCESS_TOKEN_ENDPOINT, {
+          method: 'post',
+          body: JSON.stringify({
+            // TODO: Fetch from config
+            client_id: '',
+            client_secret: '',
+            code,
+            grant_type: 'authorization_code',
+            // TODO: Get frontend app URL from config
+            redirect_uri: 'http://localhost:3000/organization/projects/create'
+          }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        assert(response.ok, `HTTP Error Response: ${response.status} ${response.statusText}`);
+        const data: any = await response.json();
+        ({ access_token: token } = data);
+
+        break;
+      }
+
+      default: throw new Error(`Type ${type} not handled for Git authentication`);
+    }
+
+    assert(token, `Access token is not set for type ${type}`);
     await this.db.updateUser(user, { gitHubToken: token });
 
     return { token };

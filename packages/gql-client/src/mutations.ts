@@ -95,6 +95,13 @@ mutation ($code: String!) {
   }
 }`;
 
+export const authenticateGit = gql`
+mutation ($type: GitType!, $code: String!) {
+  authenticateGit(type: $type, code: $code) {
+    token
+  }
+}`;
+
 export const unauthenticateGitHub = gql`
 mutation {
   unauthenticateGitHub

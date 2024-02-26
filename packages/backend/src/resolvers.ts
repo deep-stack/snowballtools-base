@@ -6,6 +6,7 @@ import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
+import { GitType } from './types';
 
 const log = debug('snowball:resolver');
 
@@ -286,6 +287,15 @@ export const createResolvers = async (service: Service): Promise<any> => {
       ) => {
         try {
           return await service.authenticateGitHub(code, context.user);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
+      authenticateGit: async (_: any, { type, code }: { type: GitType, code: string }, context: any) => {
+        try {
+          return await service.authenticateGit(type, code, context.user);
         } catch (err) {
           log(err);
           return false;

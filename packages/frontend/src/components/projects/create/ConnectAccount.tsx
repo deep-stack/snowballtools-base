@@ -1,5 +1,6 @@
 import React from 'react';
 import OauthPopup from 'react-oauth-popup';
+import { GitType } from 'gql-client';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
 import { Button } from 'components/shared/Button';
@@ -10,9 +11,13 @@ import {
 } from 'components/shared/CustomIcon';
 
 const SCOPES = 'repo user';
+
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
   process.env.REACT_APP_GITHUB_CLIENT_ID
 }&scope=${encodeURIComponent(SCOPES)}`;
+
+const REDIRECT_URI = `${window.location.origin}/organization/projects/create`;
+const GITEA_OAUTH_URL = `https://git.vdb.to/login/oauth/authorize?client_id=${process.env.REACT_APP_GITEA_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 interface ConnectAccountInterface {
   onAuth: (token: string) => void;
@@ -23,11 +28,13 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
 }: ConnectAccountInterface) => {
   const client = useGQLClient();
 
-  const handleCode = async (code: string) => {
+  const handleCode = async (type: GitType, code: string) => {
     // Pass code to backend and get access token
     const {
-      authenticateGitHub: { token },
-    } = await client.authenticateGitHub(code);
+      authenticateGit: { token },
+    } = await client.authenticateGit(type, code);
+
+    // TODO: Handle token according to Git type
     onToken(token);
   };
 
@@ -55,7 +62,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
       <div className="mt-2 flex gap-3">
         <OauthPopup
           url={GITHUB_OAUTH_URL}
-          onCode={handleCode}
+          onCode={(code) => handleCode(GitType.GitHub, code)}
           onClose={() => {}}
           title="Snowball"
           width={1000}
@@ -63,7 +70,16 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
         >
           <Button>Connect to GitHub</Button>
         </OauthPopup>
-        <Button>Connect to Gitea</Button>
+        <OauthPopup
+          url={GITEA_OAUTH_URL}
+          onCode={(code) => handleCode(GitType.Gitea, code)}
+          onClose={() => {}}
+          title="Snowball"
+          width={1000}
+          height={1000}
+        >
+          <Button>Connect to Gitea</Button>
+        </OauthPopup>
       </div>
 
       {/* TODO: Add ConnectAccountTabPanel */}
