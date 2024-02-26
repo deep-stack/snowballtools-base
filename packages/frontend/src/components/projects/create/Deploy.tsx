@@ -7,7 +7,7 @@ import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
 import ConfirmDialog from '../../shared/ConfirmDialog';
 
-const INTERVAL_DURATION = 5000;
+const TIMEOUT_DURATION = 5000;
 const Deploy = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
@@ -25,7 +25,7 @@ const Deploy = () => {
   useEffect(() => {
     const timerID = setTimeout(() => {
       navigate(`/${orgSlug}/projects/create/success/${projectId}`);
-    }, INTERVAL_DURATION);
+    }, TIMEOUT_DURATION);
 
     return () => clearInterval(timerID);
   }, []);

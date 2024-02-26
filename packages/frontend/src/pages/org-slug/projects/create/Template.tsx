@@ -9,8 +9,7 @@ import {
 import { Avatar } from '@material-tailwind/react';
 
 import Stepper from '../../../../components/Stepper';
-import templateDetails from '../../../../assets/templates.json';
-import { GIT_TEMPLATE_LINK } from '../../../../constants';
+import templates from '../../../../assets/templates';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -33,7 +32,7 @@ const CreateWithTemplate = () => {
 
   const [searchParams] = useSearchParams();
 
-  const template = templateDetails.find(
+  const template = templates.find(
     (template) => template.id === searchParams.get('templateId'),
   );
 
@@ -49,8 +48,15 @@ const CreateWithTemplate = () => {
         <Avatar variant="rounded" src="/gray.png" placeholder={''} />
         <div className="grow px-2">{template?.name}</div>
         <div>
-          <a href={GIT_TEMPLATE_LINK} target="_blank" rel="noreferrer">
-            ^ {process.env.REACT_APP_GITHUB_TEMPLATE_REPO}
+          <a
+            href={`https://github.com/${template?.repoFullName}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            ^{' '}
+            {Boolean(template?.repoFullName)
+              ? template?.repoFullName
+              : 'Template not supported'}
           </a>
         </div>
       </div>
@@ -59,7 +65,7 @@ const CreateWithTemplate = () => {
           <Stepper activeStep={activeStep} stepperValues={stepperValues} />
         </div>
         <div className="col-span-2">
-          <Outlet />
+          <Outlet context={{ template }} />
         </div>
       </div>
     </div>
