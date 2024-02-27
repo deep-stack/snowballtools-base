@@ -8764,7 +8764,7 @@ dotenv@~16.3.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.2.tgz#3cb611ce5a63002dbabf7c281bc331f69d28f03f"
   integrity sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==
 
-downshift@^8.2.3:
+downshift@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/downshift/-/downshift-8.3.2.tgz#35cccfdadfe183a9e6bceb1dca68a6a592bb5602"
   integrity sha512-kO5mnwMbWB1OIPgIO4wxK0HtSJbaPzx3XTOcnN36I6i08iVc4C2Fftye3UZYVN+W03b13o1kEmN2118G5vcgeQ==
@@ -10408,6 +10408,11 @@ gitconfiglocal@^1.0.0:
   integrity sha512-spLUXeTAVHxDtKsJc8FkFVgFtMdEN9qPGpL23VfSHx4fP4+Ds097IXLvymbnDH8FnmxX5Nr9bPw3A+AQ6mWEaQ==
   dependencies:
     ini "^1.3.2"
+
+gitea-js@^1.20.1:
+  version "1.20.1"
+  resolved "https://registry.yarnpkg.com/gitea-js/-/gitea-js-1.20.1.tgz#a382c8c56a869fedb11bc7889a5effea1bbbfede"
+  integrity sha512-g1wdNP5zYN258tTVIm2vGY8bRJTwVwCfYH0ockUpi34RAuOwJ0FavpFVVvazxXEcdo2XmXRKZcAmVhAhwMXkgg==
 
 github-from-package@0.0.0:
   version "0.0.0"
