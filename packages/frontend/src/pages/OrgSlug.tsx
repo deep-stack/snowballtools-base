@@ -12,7 +12,7 @@ const OrgSlug = () => {
           <Sidebar />
         </div>
         <div className="col-span-4 h-full p-3 overflow-y-hidden">
-          <div className="bg-white rounded-3xl h-full overflow-y-auto">
+          <div className="bg-white rounded-3xl h-full overflow-y-auto shadow-sm">
             <OctokitProvider>
               <Outlet />
             </OctokitProvider>
