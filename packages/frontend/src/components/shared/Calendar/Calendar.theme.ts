@@ -5,7 +5,7 @@ export const calendarTheme = tv({
     wrapper: [
       'max-w-[352px]',
       'bg-surface-floating',
-      'shadow-calendar',
+      'shadow-dropdown',
       'rounded-xl',
     ],
     calendar: ['flex', 'flex-col', 'py-2', 'px-2', 'gap-2'],

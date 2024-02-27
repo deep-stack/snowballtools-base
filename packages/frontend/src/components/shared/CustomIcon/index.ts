@@ -22,3 +22,6 @@ export * from './EllipseIcon';
 export * from './EllipsesIcon';
 export * from './SnowballIcon';
 export * from './NotificationBellIcon';
+export * from './PencilIcon';
+export * from './CheckRadioIcon';
+export * from './ChevronDownIcon';

@@ -151,7 +151,7 @@ export default withMT({
       boxShadow: {
         button:
           'inset 0px 0px 4px rgba(255, 255, 255, 0.25), inset 0px -2px 0px rgba(0, 0, 0, 0.04)',
-        calendar:
+        dropdown:
           '0px 3px 20px rgba(8, 47, 86, 0.1), 0px 0px 4px rgba(8, 47, 86, 0.14)',
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
         inset: 'inset 0px 1px 0px rgba(8, 47, 86, 0.06)',
@@ -160,6 +160,7 @@ export default withMT({
         2.5: '0.625rem',
         3.25: '0.8125rem',
         3.5: '0.875rem',
+        4.5: '1.125rem',
       },
       zIndex: {
         toast: '9999',

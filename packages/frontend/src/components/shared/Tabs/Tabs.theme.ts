@@ -61,6 +61,7 @@ export const tabsTheme = tv({
       'data-[orientation=horizontal]:focus-ring',
       // Vertical
       'data-[orientation=vertical]:gap-2',
+      'data-[orientation=vertical]:justify-start',
     ],
     triggerList: [
       'flex',
