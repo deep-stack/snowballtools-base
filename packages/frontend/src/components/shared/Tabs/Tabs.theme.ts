@@ -23,7 +23,6 @@ export const tabsTheme = tv({
       // Vertical
       'data-[orientation=vertical]:px-3',
       'data-[orientation=vertical]:py-3',
-      'data-[orientation=vertical]:min-w-[240px]',
       'data-[orientation=vertical]:w-full',
       'data-[orientation=vertical]:focus-ring',
       'data-[orientation=vertical]:rounded-xl',

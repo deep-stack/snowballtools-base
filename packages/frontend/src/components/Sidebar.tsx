@@ -102,10 +102,14 @@ const Sidebar = () => {
         <Tabs defaultValue="Projects" orientation="vertical" className="mt-10">
           <Tabs.List>
             {[
-              { title: 'Projects', icon: <FolderIcon /> },
-              { title: 'Settings', icon: <SettingsSlidersIcon /> },
-            ].map(({ title, icon }, index) => (
-              <NavLink to={`/${orgSlug}/${title}`} key={index}>
+              { title: 'Projects', url: `/${orgSlug}/`, icon: <FolderIcon /> },
+              {
+                title: 'Settings',
+                url: `/${orgSlug}/settings`,
+                icon: <SettingsSlidersIcon />,
+              },
+            ].map(({ title, icon, url }, index) => (
+              <NavLink to={url} key={index}>
                 <Tabs.Trigger icon={icon} value={title}>
                   {title}
                 </Tabs.Trigger>
