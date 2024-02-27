@@ -7,6 +7,7 @@ import { Chip, IconButton, Spinner } from '@material-tailwind/react';
 import { relativeTimeISO } from '../../../utils/time';
 import { GitRepositoryDetails } from '../../../types';
 import { useGQLClient } from '../../../context/GQLClientContext';
+import { GithubIcon, LockIcon } from 'components/shared/CustomIcon';
 
 interface ProjectRepoCardProps {
   repository: GitRepositoryDetails;
@@ -47,16 +48,18 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       className="group flex items-center gap-4 text-gray-500 text-xs hover:bg-gray-100 p-2 cursor-pointer"
       onClick={createProject}
     >
-      <div>^</div>
+      <div className="w-10 h-10 bg-white rounded-md justify-center items-center gap-1.5 inline-flex">
+        <GithubIcon />
+      </div>
       <div className="grow">
         <div>
           <span className="text-black">{repository.full_name}</span>
           {repository.visibility === 'private' && (
             <Chip
-              className="normal-case inline ml-6 font-normal"
+              className="normal-case inline ml-6 font-normal text-xs text-xs bg-orange-50 border border-orange-200 text-orange-600 items-center gap-1 inline-flex"
               size="sm"
               value="Private"
-              icon={'^'}
+              icon={<LockIcon />}
             />
           )}
         </div>
