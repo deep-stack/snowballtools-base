@@ -25,8 +25,8 @@ const axiosInstance = axios.create({
 });
 
 const metadata = {
-  name: 'Web3Modal',
-  description: 'Snowball Web3Modal',
+  name: 'Snowball Tools',
+  description: 'Snowball Tools Dashboard',
   url: window.location.origin,
   icons: [
     'https://raw.githubusercontent.com/snowball-tools/mediakit/main/assets/logo.svg',
