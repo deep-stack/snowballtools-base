@@ -1,8 +1,8 @@
 record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
-  name: snowballtools-base-frontend@0.1.1
-  application: crn://snowballtools/applications/snowballtools-base-frontend@0.1.1
+  name: snowballtools-base-frontend@0.1.3
+  application: crn://snowballtools/applications/snowballtools-base-frontend@0.1.3
   dns: dashboard
   config:
     env:
@@ -16,6 +16,6 @@ record:
       LACONIC_HOSTED_CONFIG_app_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
   meta:
     # Set CURRENT_DATE_TIME; Use command date -u
-    note: Added by Snowball @ Tue Feb 27 16:55:02 UTC 2024
+    note: Added by Snowball @ Tue Feb 27 17:24:06 UTC 2024
     repository: "https://git.vdb.to/cerc-io/snowballtools-base"
-    repository_ref: 13fc92bf0e5d145645fe678c7f30f0c51ebf0226
+    repository_ref: 513ca69d01bee857cf207a0605483205b384e218
