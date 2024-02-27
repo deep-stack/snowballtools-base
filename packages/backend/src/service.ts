@@ -814,6 +814,7 @@ export class Service {
           code
         }));
 
+        await this.db.updateUser(user, { gitHubToken: token });
         break;
 
       case GitType.Gitea: {
@@ -835,6 +836,7 @@ export class Service {
         const data: any = await response.json();
         ({ access_token: token } = data);
 
+        await this.db.updateUser(user, { giteaToken: token });
         break;
       }
 
@@ -842,8 +844,6 @@ export class Service {
     }
 
     assert(token, `Access token is not set for type ${type}`);
-    await this.db.updateUser(user, { gitHubToken: token });
-
     return { token };
   }
 

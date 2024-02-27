@@ -28,6 +28,9 @@ export class User {
     email!: string;
 
   @Column('varchar', { nullable: true })
+    giteaToken!: string | null;
+
+  @Column('varchar', { nullable: true })
     gitHubToken!: string | null;
 
   @Column('boolean', { default: false })
