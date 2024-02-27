@@ -57,7 +57,9 @@ const Sidebar = () => {
           </div>
         </Link>
         <AsyncSelect
-          className="bg-white rounded-lg shadow"
+          containerProps={{ className: 'h-14 border-none' }}
+          labelProps={{ className: 'before:border-none after:border-none' }}
+          className="bg-white rounded-lg shadow border-none"
           value={selectedOrgSlug}
           onChange={(value) => {
             setSelectedOrgSlug(value!);
