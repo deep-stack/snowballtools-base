@@ -1,6 +1,6 @@
 record:
   type: ApplicationRecord
-  version: 0.0.5
+  version: 0.0.6
   repository_ref: 353fd0f6219a955be186b5914e93baa9058b4473
   repository: ["https://git.vdb.to/cerc-io/snowballtools-base"]
   app_type: webapp
