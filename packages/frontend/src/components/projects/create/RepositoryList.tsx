@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
+import { GiteaClient } from 'git-client';
 
 import { Button, Typography, Option } from '@material-tailwind/react';
 
@@ -12,6 +13,7 @@ import AsyncSelect from '../../shared/AsyncSelect';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
+const GITEA_ORIGIN_URL = 'https://gitea.com';
 
 interface RepositoryListProps {
   octokit: Octokit;
@@ -19,6 +21,8 @@ interface RepositoryListProps {
 }
 
 const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
+  const [giteaClient, setGiteaClient] = useState<GiteaClient>();
+
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
@@ -30,32 +34,24 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
   >([]);
 
   useEffect(() => {
-    const fetchUserAndOrgs = async () => {
-      if (token) {
-        const userResponse = await fetch('https://gitea.com/api/v1/user', {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            Authorization: `token ${token}`,
-          },
-        });
-        const userData = await userResponse.json();
-        setGitUser(userData);
+    // TODO: Move gitea client to context
+    if (token) {
+      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, `${token}`));
+    }
+  }, [token]);
 
-        const orgResponse = await fetch(
-          `https://gitea.com/api/v1/users/${userData.login}/orgs`,
-          {
-            method: 'GET',
-            headers: {
-              accept: 'application/json',
-              Authorization: `token ${token}`,
-            },
-          },
-        );
-        const orgsData = await orgResponse.json();
+  useEffect(() => {
+    const fetchUserAndOrgs = async () => {
+      if (giteaClient && token) {
+        const user = await giteaClient.getUser();
+        setGitUser(user);
+
+        const orgsData = await giteaClient.getOrganizations();
+        // TODO: Use same return type as octokit.getOrganizations
         // eslint-disable-next-line
-        setOrgs(orgsData.map((org: any) => {return {...org, login: org.name}}));
-        setSelectedAccount(userData.login);
+        const updatedOrgs = orgsData.map((org: any) => {return {...org, login: org.name}})
+        setOrgs(updatedOrgs);
+        setSelectedAccount(user.login);
       } else {
         const user = await octokit.rest.users.getAuthenticated();
         const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
@@ -66,7 +62,7 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
     };
 
     fetchUserAndOrgs();
-  }, [octokit, token]);
+  }, [octokit, token, giteaClient]);
 
   const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
 
@@ -97,19 +93,9 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
       }
 
       if (selectedAccount === gitUser.login) {
-        if (token) {
-          const repoResponse = await fetch(
-            `https://gitea.com/api/v1/users/${gitUser.login}/repos`,
-            {
-              method: 'GET',
-              headers: {
-                accept: 'application/json',
-                Authorization: `token ${token}`,
-              },
-            },
-          );
-          const repoData = await repoResponse.json();
-          setRepositoryDetails(repoData);
+        if (giteaClient && token) {
+          const repos = await giteaClient.getReposOfUser(gitUser.login);
+          setRepositoryDetails(repos);
           return;
         } else {
           const result = await octokit.rest.repos.listForAuthenticatedUser({
@@ -124,19 +110,11 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
       const selectedOrg = orgs.find((org) => org.login === selectedAccount);
       assert(selectedOrg, 'Selected org not found in list');
 
-      if (token) {
-        const repoResponse = await fetch(
-          `https://gitea.com/api/v1/orgs/${selectedOrg.login}/repos`,
-          {
-            method: 'GET',
-            headers: {
-              accept: 'application/json',
-              Authorization: `token ${token}`,
-            },
-          },
+      if (giteaClient && token) {
+        const repos = await giteaClient.getReposOfOrganization(
+          selectedOrg.login,
         );
-        const repoData = await repoResponse.json();
-        setRepositoryDetails(repoData);
+        setRepositoryDetails(repos);
       } else {
         const result = await octokit.rest.repos.listForOrg({
           org: selectedOrg.login,
@@ -149,7 +127,14 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
     };
 
     fetchRepos();
-  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo, token]);
+  }, [
+    selectedAccount,
+    gitUser,
+    orgs,
+    debouncedSearchedRepo,
+    token,
+    giteaClient,
+  ]);
 
   const handleResetFilters = useCallback(() => {
     assert(gitUser, 'Git user is not available');
