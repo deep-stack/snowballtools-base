@@ -22,7 +22,9 @@ import { Role } from './entity/UserOrganization';
 const log = debug('snowball:service');
 
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
-const GITEA_ACCESS_TOKEN_ENDPOINT = 'https://git.vdb.to/login/oauth/access_token';
+
+const GITEA_ORIGIN = 'https://gitea.com';
+const GITEA_ACCESS_TOKEN_ENDPOINT = `${GITEA_ORIGIN}/login/oauth/access_token`;
 
 interface Config {
   gitHubConfig: GitHubConfig;
