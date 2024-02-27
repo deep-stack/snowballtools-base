@@ -4,7 +4,7 @@
 
 RECORD_FILE=records/application-record.yml
 CONFIG_FILE=config.yml
-RCD_APP_VERSION="0.2.0"
+RCD_APP_VERSION="0.1.1"
 REPO_REF="13fc92bf0e5d145645fe678c7f30f0c51ebf0226"
 
 # Publish ApplicationRecord
