@@ -1,6 +1,5 @@
 export interface SessionConfig {
   secret: string;
-  appOriginUrl: string;
   trustProxy: boolean;
   domain: string;
 }
@@ -51,6 +50,6 @@ export interface Config {
   database: DatabaseConfig;
   gitHub: GitConfig;
   gitea: GitConfig;
-  registryConfig: RegistryConfig;
+  registry: RegistryConfig;
   misc: MiscConfig;
 }

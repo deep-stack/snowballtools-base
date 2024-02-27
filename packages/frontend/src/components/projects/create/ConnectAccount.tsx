@@ -35,7 +35,6 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
       authenticateGit: { token },
     } = await client.authenticateGit(type, code);
 
-    // TODO: Handle token according to Git type
     onToken(token, type);
   };
 
