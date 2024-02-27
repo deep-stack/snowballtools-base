@@ -85,7 +85,10 @@ export const DatePicker = ({
         />
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content onInteractOutside={() => setOpen(false)}>
+        <Popover.Content
+          className="z-10"
+          onInteractOutside={() => setOpen(false)}
+        >
           <Calendar
             {...calendarProps}
             selectRange={selectRange}

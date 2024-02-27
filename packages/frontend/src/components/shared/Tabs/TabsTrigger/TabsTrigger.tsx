@@ -35,20 +35,23 @@ const TabsTrigger = forwardRef<
       // Disabled focus state for horizontal tabs
       tabIndex={orientation === 'horizontal' ? -1 : undefined}
       className={triggerWrapper({ className })}
+      asChild
       {...props}
     >
       {/* Need to add button in the trigger children because there's focus state inside the children */}
-      <button
-        data-orientation={orientation}
-        // Disabled focus state for vertical tabs
-        tabIndex={orientation === 'vertical' ? -1 : undefined}
-        className={trigger()}
-      >
-        {/* Put the icon on the left of the text for veritcal tab */}
-        {orientation === 'vertical' && icon}
-        {children}
-        {/* Put the icon on the right of the text for horizontal tab */}
-        {orientation === 'horizontal' && icon}
+      <button className={triggerWrapper({ className })}>
+        <span
+          // Disabled focus state for vertical tabs
+          tabIndex={orientation === 'horizontal' ? 0 : -1}
+          data-orientation={orientation}
+          className={trigger()}
+        >
+          {/* Put the icon on the left of the text for veritcal tab */}
+          {orientation === 'vertical' && icon}
+          {children}
+          {/* Put the icon on the right of the text for horizontal tab */}
+          {orientation === 'horizontal' && icon}
+        </span>
       </button>
     </Trigger>
   );
