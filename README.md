@@ -34,12 +34,6 @@
   mv environments/local.toml.example environments/local.toml
   ```
 
-- Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
-  - Client ID and secret will be available after [creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
-    - In "Homepage URL", type `http://localhost:3000`
-    - In "Authorization callback URL", type `http://localhost:3000/organization/projects/create`
-    - Generate a new client secret after app is created
-
 ### Backend Production
 
 - Let us assume the following domains for backend and frontend

@@ -1,7 +1,7 @@
 import React from 'react';
 import OauthPopup from 'react-oauth-popup';
 
-import { useGQLClient } from '../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import { Button } from 'components/shared/Button';
 import {
   GitIcon,

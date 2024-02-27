@@ -294,7 +294,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
 
       unauthenticateGitHub: async (_: any, __: object, context: any) => {
         try {
-          return service.unauthenticateGitHub(context.user, { gitHubToken: null });
+          return service.unauthenticateGitHub(context.user);
         } catch (err) {
           log(err);
           return false;

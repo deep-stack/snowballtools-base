@@ -5,7 +5,7 @@ import { Organization } from 'gql-client';
 import { Option } from '@material-tailwind/react';
 import { useDisconnect } from 'wagmi';
 
-import { useGQLClient } from '../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import AsyncSelect from './shared/AsyncSelect';
 import {
   ChevronGrabberHorizontal,
@@ -36,10 +36,12 @@ const Sidebar = () => {
     setSelectedOrgSlug(orgSlug);
   }, [orgSlug]);
 
-  const handleLogOut = useCallback(() => {
+  const handleLogOut = useCallback(async () => {
     disconnect();
+    await client.unauthenticateGithub();
+
     navigate('/login');
-  }, [disconnect, navigate]);
+  }, [disconnect, navigate, client]);
 
   return (
     <div className="flex flex-col h-full p-4 pt-10">

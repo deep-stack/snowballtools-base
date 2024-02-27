@@ -2,6 +2,7 @@ import assert from 'assert';
 import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
+import fetch from 'node-fetch';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -792,7 +793,30 @@ export class Service {
     return { token };
   }
 
-  async unauthenticateGitHub (user: User, data: DeepPartial<User>): Promise<boolean> {
-    return this.db.updateUser(user, data);
+  async unauthenticateGitHub (user: User): Promise<boolean> {
+    const clientId = this.config.gitHubConfig.oAuth.clientId;
+    const clientSecret = this.config.gitHubConfig.oAuth.clientSecret;
+    assert(user.gitHubToken, `GitHub access token is not set for user ${user.ethAddress}`);
+
+    // https://docs.github.com/en/rest/apps/oauth-applications#delete-an-app-authorization
+    const response = await fetch(
+      `https://api.github.com/applications/${clientId}/grant`,
+      {
+        method: 'DELETE',
+        headers: {
+          // Basic authentication with client ID & secret is needed for OAuth app REST API
+          Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          access_token: user.gitHubToken
+        })
+      }
+    );
+
+    assert(response.ok, Error(response.statusText));
+
+    return this.db.updateUser(user, { gitHubToken: null });
   }
 }
