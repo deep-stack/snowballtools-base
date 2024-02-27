@@ -1,0 +1,9 @@
+{
+  "name": "deployer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "devDependencies": {
+    "@cerc-io/laconic-registry-cli": "^0.1.10"
+  }
+}

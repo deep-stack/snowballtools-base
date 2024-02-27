@@ -1301,7 +1301,19 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cerc-io/laconic-sdk@^0.1.14":
+"@cerc-io/laconic-registry-cli@^0.1.10":
+  version "0.1.10"
+  resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Flaconic-registry-cli/-/0.1.10/laconic-registry-cli-0.1.10.tgz#9adf5fe9bc532f1b1d9cdfaa409fc42ec879454f"
+  integrity sha512-wiww5Zbio5RnP9SwCftk9rfRq1xGJUi5Iujbr3mbkyG5Aff4Z9QIT6cwxdP6r83osf5CF4eRu203t4CipdKgiA==
+  dependencies:
+    "@cerc-io/laconic-sdk" "^0.1.15"
+    fs-extra "^10.1.0"
+    js-yaml "^3.14.1"
+    lodash "^4.17.21"
+    lodash-clean "^2.2.3"
+    yargs "^17.4.1"
+
+"@cerc-io/laconic-sdk@^0.1.14", "@cerc-io/laconic-sdk@^0.1.15":
   version "0.1.15"
   resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Flaconic-sdk/-/0.1.15/laconic-sdk-0.1.15.tgz#1011a07933c6f1525e05e1ba7dd6a4e4df9b6edb"
   integrity sha512-Ifl4JUGpckZsu2RkaGyGlObpu9B9GhwFVoDCt8WM9ApdtFnGEVSbDzRuh4f2vLj9WaZkbfdSI/Xci1Fugj3lZg==
@@ -10151,7 +10163,7 @@ fs-constants@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
 
-fs-extra@^10.0.0:
+fs-extra@^10.0.0, fs-extra@^10.1.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.1.0.tgz#02873cfbc4084dde127eaa5f9905eef2325d1abf"
   integrity sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==
@@ -12845,6 +12857,13 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash-clean@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/lodash-clean/-/lodash-clean-2.2.3.tgz#eb72801ba9ebfb2771bed3cc971d9e7835a78611"
+  integrity sha512-ioRhn/L0NNKq220nba58FPvjZ+bTdlUCb37+mhlDe4kzIzuPC/prUHLwDM9izeicr/rcnWrn0EanzNxhAbo8oA==
+  dependencies:
+    lodash "^4.17.21"
 
 lodash.debounce@^4.0.8:
   version "4.0.8"
@@ -19063,7 +19082,7 @@ yargs-parser@^20.2.2, yargs-parser@^20.2.3:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.9.tgz#2eb7dc3b0289718fc295f362753845c41a0c94ee"
   integrity sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
 
-yargs@17.7.2, yargs@^17.5.1, yargs@^17.6.2:
+yargs@17.7.2, yargs@^17.4.1, yargs@^17.5.1, yargs@^17.6.2:
   version "17.7.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
   integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==
