@@ -15,9 +15,10 @@ const REPOS_PER_PAGE = 5;
 
 interface RepositoryListProps {
   octokit: Octokit;
+  token: string;
 }
 
-const RepositoryList = ({ octokit }: RepositoryListProps) => {
+const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
@@ -30,15 +31,42 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      const user = await octokit.rest.users.getAuthenticated();
-      const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
-      setOrgs(orgs.data);
-      setGitUser(user.data);
-      setSelectedAccount(user.data.login);
+      if (token) {
+        const userResponse = await fetch('https://gitea.com/api/v1/user', {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `token ${token}`,
+          },
+        });
+        const userData = await userResponse.json();
+        setGitUser(userData);
+
+        const orgResponse = await fetch(
+          `https://gitea.com/api/v1/users/${userData.login}/orgs`,
+          {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              Authorization: `token ${token}`,
+            },
+          },
+        );
+        const orgsData = await orgResponse.json();
+        // eslint-disable-next-line
+        setOrgs(orgsData.map((org: any) => {return {...org, login: org.name}}));
+        setSelectedAccount(userData.login);
+      } else {
+        const user = await octokit.rest.users.getAuthenticated();
+        const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
+        setOrgs(orgs.data);
+        setGitUser(user.data);
+        setSelectedAccount(user.data.login);
+      }
     };
 
     fetchUserAndOrgs();
-  }, [octokit]);
+  }, [octokit, token]);
 
   const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
 
@@ -69,28 +97,59 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
       }
 
       if (selectedAccount === gitUser.login) {
-        const result = await octokit.rest.repos.listForAuthenticatedUser({
-          per_page: REPOS_PER_PAGE,
-          affiliation: 'owner',
-        });
-        setRepositoryDetails(result.data);
-        return;
+        if (token) {
+          const repoResponse = await fetch(
+            `https://gitea.com/api/v1/users/${gitUser.login}/repos`,
+            {
+              method: 'GET',
+              headers: {
+                accept: 'application/json',
+                Authorization: `token ${token}`,
+              },
+            },
+          );
+          const repoData = await repoResponse.json();
+          setRepositoryDetails(repoData);
+          return;
+        } else {
+          const result = await octokit.rest.repos.listForAuthenticatedUser({
+            per_page: REPOS_PER_PAGE,
+            affiliation: 'owner',
+          });
+          setRepositoryDetails(result.data);
+          return;
+        }
       }
 
       const selectedOrg = orgs.find((org) => org.login === selectedAccount);
       assert(selectedOrg, 'Selected org not found in list');
 
-      const result = await octokit.rest.repos.listForOrg({
-        org: selectedOrg.login,
-        per_page: REPOS_PER_PAGE,
-        type: 'all',
-      });
+      if (token) {
+        const repoResponse = await fetch(
+          `https://gitea.com/api/v1/orgs/${selectedOrg.login}/repos`,
+          {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              Authorization: `token ${token}`,
+            },
+          },
+        );
+        const repoData = await repoResponse.json();
+        setRepositoryDetails(repoData);
+      } else {
+        const result = await octokit.rest.repos.listForOrg({
+          org: selectedOrg.login,
+          per_page: REPOS_PER_PAGE,
+          type: 'all',
+        });
 
-      setRepositoryDetails(result.data);
+        setRepositoryDetails(result.data);
+      }
     };
 
     fetchRepos();
-  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo]);
+  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo, token]);
 
   const handleResetFilters = useCallback(() => {
     assert(gitUser, 'Git user is not available');

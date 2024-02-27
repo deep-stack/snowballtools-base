@@ -16,11 +16,12 @@ const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
   process.env.REACT_APP_GITHUB_CLIENT_ID
 }&scope=${encodeURIComponent(SCOPES)}`;
 
+const GITEA_ORIGIN = `https://gitea.com`;
 const REDIRECT_URI = `${window.location.origin}/organization/projects/create`;
-const GITEA_OAUTH_URL = `https://git.vdb.to/login/oauth/authorize?client_id=${process.env.REACT_APP_GITEA_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+const GITEA_OAUTH_URL = `${GITEA_ORIGIN}/login/oauth/authorize?client_id=${process.env.REACT_APP_GITEA_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 interface ConnectAccountInterface {
-  onAuth: (token: string) => void;
+  onAuth: (token: string, type: GitType) => void;
 }
 
 const ConnectAccount: React.FC<ConnectAccountInterface> = ({
@@ -35,7 +36,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
     } = await client.authenticateGit(type, code);
 
     // TODO: Handle token according to Git type
-    onToken(token);
+    onToken(token, type);
   };
 
   // TODO: Use correct height

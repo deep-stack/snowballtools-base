@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { GitType } from 'gql-client';
 
 import templates from '../../../../assets/templates';
 import TemplateCard from '../../../../components/projects/create/TemplateCard';
@@ -8,8 +9,17 @@ import { useOctokit } from '../../../../context/OctokitContext';
 
 const NewProject = () => {
   const { octokit, updateAuth, isAuth } = useOctokit();
+  const [giteaToken, setGiteaToken] = useState('');
 
-  return isAuth ? (
+  const onAuthHandler = (token: string, type: GitType) => {
+    if (type === GitType.GitHub) {
+      updateAuth();
+    } else {
+      setGiteaToken(token);
+    }
+  };
+
+  return giteaToken || isAuth ? (
     <>
       <h5 className="mt-4 ml-4">Start with template</h5>
       <div className="grid grid-cols-3 p-4 gap-4">
@@ -24,10 +34,10 @@ const NewProject = () => {
         })}
       </div>
       <h5 className="mt-4 ml-4">Import a repository</h5>
-      <RepositoryList octokit={octokit} />
+      <RepositoryList octokit={octokit} token={giteaToken} />
     </>
   ) : (
-    <ConnectAccount onAuth={updateAuth} />
+    <ConnectAccount onAuth={onAuthHandler} />
   );
 };
 
