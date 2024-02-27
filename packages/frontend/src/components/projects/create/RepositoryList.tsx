@@ -9,6 +9,7 @@ import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
 import { GitOrgDetails, GitRepositoryDetails } from '../../../types';
 import AsyncSelect from '../../shared/AsyncSelect';
+import { GithubIcon } from 'components/shared/CustomIcon';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
@@ -116,7 +117,9 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
           >
             {accounts.map((account) => (
               <Option key={account.id} value={account.login}>
-                ^ {account.login}
+                <div className="flex items-center gap-2 justify-start">
+                  <GithubIcon /> {account.login}
+                </div>
               </Option>
             ))}
           </AsyncSelect>
