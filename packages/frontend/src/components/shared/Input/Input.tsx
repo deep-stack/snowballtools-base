@@ -24,12 +24,17 @@ export const Input = ({
   helperText,
   size,
   state,
+  appearance,
   ...props
 }: InputProps) => {
-  const styleProps = (({ size = 'md', state }) => ({
-    size,
-    state,
-  }))({ size, state });
+  const styleProps = useMemo(
+    () => ({
+      size: size || 'md',
+      state: state || 'default',
+      appearance, // Pass appearance to inputTheme
+    }),
+    [size, state, appearance],
+  );
 
   const {
     container: containerCls,

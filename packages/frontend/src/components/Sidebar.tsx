@@ -42,7 +42,7 @@ const Sidebar = () => {
   }, [disconnect, navigate]);
 
   return (
-    <div className="flex flex-col h-full p-4 pt-5">
+    <div className="flex flex-col h-full p-4 pt-10">
       <div className="grow">
         <Link to={`/${orgSlug}`}>
           <div className="flex items-center space-x-3 mb-10 ml-2">

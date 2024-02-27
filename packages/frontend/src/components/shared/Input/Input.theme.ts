@@ -19,10 +19,10 @@ export const inputTheme = tv(
         'block',
         'w-full',
         'h-full',
-        'rounded-lg',
-        'text-elements-mid-em',
         'shadow-sm',
         'border',
+        'rounded-lg',
+        'text-elements-mid-em',
         'border-border-interactive',
         'disabled:shadow-none',
         'disabled:border-none',
@@ -69,6 +69,15 @@ export const inputTheme = tv(
           icon: ['h-4 w-4'],
           helperText: 'text-xs',
           helperIcon: ['h-4 w-4'],
+        },
+      },
+      appearance: {
+        borderless: {
+          input: [
+            'border-none', // Remove the border
+            'shadow-none', // Optional: remove shadow if desired
+            // Add any additional styles necessary for the borderless appearance
+          ],
         },
       },
     },

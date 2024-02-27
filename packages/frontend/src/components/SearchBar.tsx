@@ -1,33 +1,23 @@
 import React, { forwardRef, RefAttributes } from 'react';
 
-import { Input, InputProps } from '@material-tailwind/react';
+import { SearchIcon } from './shared/CustomIcon';
+import { Input, InputProps } from './shared/Input';
 
 const SearchBar: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps & RefAttributes<HTMLInputElement>
-> = ({ value, onChange, placeholder = 'Search', ...props }, ref) => {
+> = ({ value, onChange, placeholder = 'Search', ...props }) => {
   return (
-    <div className="relative flex w-full gap-2">
+    <div className="relative flex w-full">
       <Input
+        leftIcon={<SearchIcon />}
         onChange={onChange}
         value={value}
         type="search"
         placeholder={placeholder}
-        containerProps={{
-          className: 'min-w-[288px]',
-        }}
-        className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
-        labelProps={{
-          className: 'before:content-none after:content-none',
-        }}
-        // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
-        crossOrigin={undefined}
+        appearance={'borderless'}
         {...props}
-        inputRef={ref}
       />
-      <div className="!absolute left-3 top-[13px]">
-        <i>^</i>
-      </div>
     </div>
   );
 };
