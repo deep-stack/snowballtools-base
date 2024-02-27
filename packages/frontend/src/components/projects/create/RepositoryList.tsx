@@ -109,7 +109,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
 
   return (
     <div className="p-4">
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-2 items-center">
         <div className="basis-1/3">
           <AsyncSelect
             value={selectedAccount}
@@ -124,7 +124,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
             ))}
           </AsyncSelect>
         </div>
-        <div className="basis-2/3">
+        <div className="basis-2/3 flex-grow flex items-center">
           <SearchBar
             value={searchedRepo}
             onChange={(event) => setSearchedRepo(event.target.value)}
