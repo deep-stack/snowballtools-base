@@ -4,6 +4,12 @@
   ```bash
   yarn
   ```
+  ```bash
+  brew install jq # if you do not have jq installed already
+  ```
+
+
+
 
 Example of how to make the necessary deploy edits [here](https://github.com/snowball-tools/snowballtools-base/pull/131/files).
 
