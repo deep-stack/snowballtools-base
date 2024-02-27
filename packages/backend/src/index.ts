@@ -19,7 +19,7 @@ const OAUTH_CLIENT_TYPE = 'oauth-app';
 
 export const main = async (): Promise<void> => {
   // TODO: get config path using cli
-  const { server, database, gitHub, gitea, registryConfig, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { server, database, gitHub, gitea, registry: registryConfig, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
 
   const app = new OAuthApp({
     clientType: OAUTH_CLIENT_TYPE,
@@ -31,7 +31,7 @@ export const main = async (): Promise<void> => {
   await db.init();
 
   const registry = new Registry(registryConfig);
-  const service = new Service({ gitHubConfig: gitHub, giteaConfig: gitea, registryConfig }, db, app, registry);
+  const service = new Service({ gitHub, gitea, registry: registryConfig, server }, db, app, registry);
 
   const typeDefs = fs
     .readFileSync(path.join(__dirname, 'schema.gql'))

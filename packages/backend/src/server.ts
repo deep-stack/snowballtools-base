@@ -34,8 +34,8 @@ export const createAndStartServer = async (
   resolvers: any,
   service: Service
 ): Promise<ApolloServer> => {
-  const { host, port, gqlPath = DEFAULT_GQL_PATH } = serverConfig;
-  const { appOriginUrl, secret, domain, trustProxy } = serverConfig.session;
+  const { host, port, gqlPath = DEFAULT_GQL_PATH, appOriginUrl } = serverConfig;
+  const { secret, domain, trustProxy } = serverConfig.session;
 
   const app = express();
 

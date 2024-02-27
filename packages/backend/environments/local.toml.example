@@ -2,9 +2,9 @@
   host = "127.0.0.1"
   port = 8000
   gqlPath = "/graphql"
+  appOriginUrl = "http://localhost:3000"
   [server.session]
     secret = "p4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi"
-    appOriginUrl = "http://localhost:3000"
     trustProxy = false
     domain = "localhost"
 
