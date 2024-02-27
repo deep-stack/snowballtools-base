@@ -6,4 +6,12 @@
   .focus-ring {
     @apply focus-visible:ring-[3px] focus-visible:ring-snowball-200 focus-visible:ring-offset-1 focus-visible:ring-offset-snowball-500 focus-visible:outline-none;
   }
+
+  .wave {
+    background-image: url('../public/wave-border.svg');
+    background-repeat: repeat-x;
+    background-position: top;
+    background-size: cover;
+    @apply w-full h-1;
+  }
 }

@@ -26,7 +26,7 @@ export const buttonTheme = tv(
         true: 'w-full',
       },
       shape: {
-        default: '',
+        default: 'rounded-lg',
         rounded: 'rounded-full',
       },
       iconOnly: {

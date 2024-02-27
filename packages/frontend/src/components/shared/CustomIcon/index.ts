@@ -25,3 +25,8 @@ export * from './NotificationBellIcon';
 export * from './PencilIcon';
 export * from './CheckRadioIcon';
 export * from './ChevronDownIcon';
+export * from './BranchIcon';
+export * from './GitHubLogo';
+export * from './ClockIcon';
+export * from './HorizontalDotIcon';
+export * from './WarningDiamondIcon';

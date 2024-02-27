@@ -14,6 +14,7 @@ export default withMT({
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {
         '2xs': '0.625rem',
@@ -155,6 +156,7 @@ export default withMT({
           '0px 3px 20px rgba(8, 47, 86, 0.1), 0px 0px 4px rgba(8, 47, 86, 0.14)',
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
         inset: 'inset 0px 1px 0px rgba(8, 47, 86, 0.06)',
+        card: '0px 0px 0px 1px #E8F0F7, 0px 2px 4px rgba(8, 47, 86, 0.04)',
       },
       spacing: {
         2.5: '0.625rem',

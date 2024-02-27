@@ -58,6 +58,9 @@ export const avatarTheme = tv(
         44: {
           base: ['rounded-xl', 'h-[44px]', 'w-[44px]', 'text-sm'],
         },
+        48: {
+          base: ['rounded-xl', 'h-[48px]', 'w-[48px]', 'text-sm'],
+        },
       },
     },
     defaultVariants: {

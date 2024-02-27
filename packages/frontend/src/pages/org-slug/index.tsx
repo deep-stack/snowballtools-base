@@ -5,9 +5,9 @@ import { Button } from 'components/shared/Button';
 
 import { Typography, Chip } from '@material-tailwind/react';
 
-import ProjectCard from '../../components/projects/ProjectCard';
 import { useGQLClient } from '../../context/GQLClientContext';
 import { PlusIcon } from 'components/shared/CustomIcon';
+import { ProjectCard } from 'components/projects/ProjectCard';
 
 const Projects = () => {
   const client = useGQLClient();

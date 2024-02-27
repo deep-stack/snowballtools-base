@@ -2160,6 +2160,11 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
+"@fontsource-variable/jetbrains-mono@^5.0.19":
+  version "5.0.19"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/jetbrains-mono/-/jetbrains-mono-5.0.19.tgz#e718de646e83b7caaeee484d2e18e1e3680ba8e1"
+  integrity sha512-7PTG1Kp3B/FgoNVPT8da4humj5JxQYxTtO08ZPS2IfanS37Yb/WShbgScnG/iupuFwiRnHVkIuC/2czxItxmyg==
+
 "@fontsource/inter@^5.0.16":
   version "5.0.16"
   resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-5.0.16.tgz#b858508cdb56dcbbf3166903122851e2fbd16b50"
@@ -8756,7 +8761,7 @@ dotenv@~16.3.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.2.tgz#3cb611ce5a63002dbabf7c281bc331f69d28f03f"
   integrity sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==
 
-downshift@^8.2.3:
+downshift@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/downshift/-/downshift-8.3.2.tgz#35cccfdadfe183a9e6bceb1dca68a6a592bb5602"
   integrity sha512-kO5mnwMbWB1OIPgIO4wxK0HtSJbaPzx3XTOcnN36I6i08iVc4C2Fftye3UZYVN+W03b13o1kEmN2118G5vcgeQ==
