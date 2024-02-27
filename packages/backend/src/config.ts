@@ -19,7 +19,7 @@ export interface DatabaseConfig {
   dbPath: string;
 }
 
-export interface GitHubConfig {
+export interface GitConfig {
   webhookUrl: string;
   oAuth: {
     clientId: string;
@@ -49,7 +49,8 @@ export interface MiscConfig {
 export interface Config {
   server: ServerConfig;
   database: DatabaseConfig;
-  gitHub: GitHubConfig;
+  gitHub: GitConfig;
+  gitea: GitConfig;
   registryConfig: RegistryConfig;
   misc: MiscConfig;
 }

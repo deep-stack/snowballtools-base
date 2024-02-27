@@ -15,7 +15,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
-import { GitHubConfig, RegistryConfig } from './config';
+import { GitConfig, RegistryConfig } from './config';
 import { AppDeploymentRecord, GitPushEventPayload, GitType, PackageJSON } from './types';
 import { Role } from './entity/UserOrganization';
 
@@ -27,8 +27,9 @@ const GITEA_ORIGIN = 'https://gitea.com';
 const GITEA_ACCESS_TOKEN_ENDPOINT = `${GITEA_ORIGIN}/login/oauth/access_token`;
 
 interface Config {
-  gitHubConfig: GitHubConfig;
-  registryConfig: RegistryConfig;
+  gitHubConfig: GitConfig
+  giteaConfig: GitConfig
+  registryConfig: RegistryConfig
 }
 
 export class Service {
@@ -821,9 +822,8 @@ export class Service {
         const response = await fetch(GITEA_ACCESS_TOKEN_ENDPOINT, {
           method: 'post',
           body: JSON.stringify({
-            // TODO: Fetch from config
-            client_id: '',
-            client_secret: '',
+            client_id: this.config.giteaConfig.oAuth.clientId,
+            client_secret: this.config.giteaConfig.oAuth.clientSecret,
             code,
             grant_type: 'authorization_code',
             // TODO: Get frontend app URL from config
