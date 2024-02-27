@@ -9,6 +9,7 @@ import SearchBar from '../../SearchBar';
 import ProjectRepoCard from './ProjectRepoCard';
 import { GitOrgDetails, GitRepositoryDetails } from '../../../types';
 import AsyncSelect from '../../shared/AsyncSelect';
+import { GithubIcon } from 'components/shared/CustomIcon';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
@@ -108,7 +109,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
 
   return (
     <div className="p-4">
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-2 items-center">
         <div className="basis-1/3">
           <AsyncSelect
             value={selectedAccount}
@@ -116,12 +117,14 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
           >
             {accounts.map((account) => (
               <Option key={account.id} value={account.login}>
-                ^ {account.login}
+                <div className="flex items-center gap-2 justify-start">
+                  <GithubIcon /> {account.login}
+                </div>
               </Option>
             ))}
           </AsyncSelect>
         </div>
-        <div className="basis-2/3">
+        <div className="basis-2/3 flex-grow flex items-center">
           <SearchBar
             value={searchedRepo}
             onChange={(event) => setSearchedRepo(event.target.value)}
