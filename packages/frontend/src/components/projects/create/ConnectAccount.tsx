@@ -1,9 +1,13 @@
-import { Button } from '@material-tailwind/react';
 import React from 'react';
 import OauthPopup from 'react-oauth-popup';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
-import ConnectAccountTabPanel from './ConnectAccountTabPanel';
+import { Button } from 'components/shared/Button';
+import {
+  GitIcon,
+  EllipsesIcon,
+  SnowballIcon,
+} from 'components/shared/CustomIcon';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -14,7 +18,9 @@ interface ConnectAccountInterface {
   onAuth: (token: string) => void;
 }
 
-const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
+const ConnectAccount: React.FC<ConnectAccountInterface> = ({
+  onAuth: onToken,
+}: ConnectAccountInterface) => {
   const client = useGQLClient();
 
   const handleCode = async (code: string) => {
@@ -27,17 +33,26 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
 
   // TODO: Use correct height
   return (
-    <div className="bg-gray-100 flex flex-col p-4 justify-center items-center text-center text-sm h-full rounded-2xl">
-      <div>^</div>
-      <div>
-        <p>Connect to your git account</p>
-        <p>
-          Once connected, you can import a repository from your
-          <br />
-          account or start with one of our templates.
-        </p>
+    <div className="bg-gray-100 flex flex-col p-4 gap-7 justify-center items-center text-center text-sm h-full rounded-2xl">
+      <div className="w-52 h-16 justify-center items-center gap-4 inline-flex">
+        <div className="w-16 h-16 bg-blue-100 rounded-2xl shadow-inner border border-sky-950 border-opacity-10 justify-center items-center gap-2.5 inline-flex">
+          <GitIcon />
+        </div>
+        <EllipsesIcon className="items-center gap-1.5 flex" />
+        <div className="w-16 h-16 bg-blue-400 rounded-2xl shadow-inner border border-sky-950 border-opacity-10 justify-center items-center gap-2.5 flex">
+          <SnowballIcon />
+        </div>
       </div>
-      <div className="mt-2 flex">
+      <div>
+        <div className="text-center text-slate-900 text-xl font-medium leading-7">
+          Connect to your Git account
+        </div>
+        <div className="text-center text-slate-600 text-base font-normal leading-normal">
+          Once connected, you can import a repository from your account or start
+          with one of our templates.
+        </div>
+      </div>
+      <div className="mt-2 flex gap-3">
         <OauthPopup
           url={GITHUB_OAUTH_URL}
           onCode={handleCode}
@@ -46,17 +61,15 @@ const ConnectAccount = ({ onAuth: onToken }: ConnectAccountInterface) => {
           width={1000}
           height={1000}
         >
-          {/* TODO: figure out what placeholder is for */}
-          <Button className="rounded-full mx-2" placeholder={''}>
-            Connect to Github
-          </Button>
+          <Button>Connect to GitHub</Button>
         </OauthPopup>
-        {/* TODO: figure out what placeholder is for */}
-        <Button className="rounded-full mx-2" placeholder={''}>
-          Connect to Gitea
-        </Button>
+        <Button>Connect to Gitea</Button>
       </div>
-      <ConnectAccountTabPanel />
+
+      {/* TODO: Add ConnectAccountTabPanel */}
+      {/* <div className="rounded-l shadow p-2 flex-col justify-start items-start gap-2 inline-flex">
+        <ConnectAccountTabPanel />
+      </div> */}
     </div>
   );
 };

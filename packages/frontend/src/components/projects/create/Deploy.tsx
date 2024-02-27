@@ -5,7 +5,7 @@ import { Button, Typography } from '@material-tailwind/react';
 
 import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
-import ConfirmDialog from '../../shared/ConfirmDialog';
+import ConfirmDialog from 'components/shared/ConfirmDialog';
 
 const TIMEOUT_DURATION = 5000;
 const Deploy = () => {

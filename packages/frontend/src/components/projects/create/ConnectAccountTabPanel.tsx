@@ -1,21 +1,24 @@
 import React from 'react';
 
-import { Tabs, TabsHeader, Tab } from '@material-tailwind/react';
+import { Tabs } from 'components/shared/Tabs';
 
-const ConnectAccountTabPanel = () => {
+const ConnectAccountTabPanel: React.FC = () => {
   return (
-    <Tabs className="grid bg-white h-32 p-2 m-4 rounded-md" value="import">
-      <TabsHeader className="grid grid-cols-2" placeholder={''}>
-        <Tab className="row-span-1" value="import" placeholder={''}>
-          Import a repository
-        </Tab>
-        <Tab className="row-span-2" value="template" placeholder={''}>
-          Start with a template
-        </Tab>
-      </TabsHeader>
-      {/* <TabsBody> */}
-      {/* TODO: Add content */}
-      {/* </TabsBody> */}
+    <Tabs
+      defaultValue="Connect Accounts Tab Panel"
+      orientation="horizontal"
+      className="mt-10"
+    >
+      <Tabs.List>
+        {[
+          { title: 'Import a repository' },
+          { title: 'Start with a template' },
+        ].map(({ title }, index) => (
+          <Tabs.Trigger value={title} key={index}>
+            {title}
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
     </Tabs>
   );
 };

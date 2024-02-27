@@ -17,3 +17,7 @@ export * from './FolderIcon';
 export * from './SettingsSlidersIcon';
 export * from './LifeBuoyIcon';
 export * from './QuestionMarkRoundIcon';
+export * from './GitIcon';
+export * from './EllipseIcon';
+export * from './EllipsesIcon';
+export * from './SnowballIcon';
