@@ -21,3 +21,4 @@ export * from './GitIcon';
 export * from './EllipseIcon';
 export * from './EllipsesIcon';
 export * from './SnowballIcon';
+export * from './NotificationBellIcon';
