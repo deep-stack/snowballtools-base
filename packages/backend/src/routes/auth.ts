@@ -28,7 +28,7 @@ router.post('/validate', async (req, res) => {
   });
 
   if (success) {
-    token = generateToken(JSON.stringify(data));
+    token = generateToken(JSON.stringify({ chainId: data.chainId, address: data.address }));
   }
 
   res.send({ success, token });
