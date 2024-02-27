@@ -25,6 +25,12 @@ const ProjectSearch = () => {
     fetchUser();
   }, []);
 
+  const fetchOrgSlug = useCallback(async () => {
+    const { organizations } = await client.getOrganizations();
+    // TODO: Get the selected organization. This is temp
+    return organizations[0].slug;
+  }, []);
+
   return (
     <div>
       <div className="sticky top-0 bg-white z-30">
@@ -38,7 +44,15 @@ const ProjectSearch = () => {
               }}
             />
           </div>
-          <Button variant={'secondary'} iconOnly>
+          <Button
+            variant={'secondary'}
+            iconOnly
+            onClick={() => {
+              fetchOrgSlug().then((organizationSlug) => {
+                navigate(`/${organizationSlug}/projects/create`);
+              });
+            }}
+          >
             <PlusIcon />
           </Button>
           <Button variant={'ghost'} iconOnly>
