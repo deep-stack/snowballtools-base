@@ -9,6 +9,7 @@ query {
     createdAt
     updatedAt
     gitHubToken
+    giteaToken
   }
 }
 `;

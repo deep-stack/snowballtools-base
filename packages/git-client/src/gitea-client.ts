@@ -27,7 +27,8 @@ export class GiteaClient implements GitClient {
 
   async getOrganizations (): Promise<any> {
     const orgs = (await this.api.user.orgListCurrentUserOrgs()).data;
-    return orgs;
+    const updatedOrgs = orgs.map((org: any) => { return { ...org, login: org.name }; });
+    return updatedOrgs;
   }
 
   async getReposOfUser (user: string): Promise<any> {

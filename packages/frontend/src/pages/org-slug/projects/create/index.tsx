@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { GitType } from 'gql-client';
+import { GitClient } from 'git-client';
 
 import templates from 'assets/templates';
 import RepositoryList from 'components/projects/create/RepositoryList';
@@ -7,20 +8,37 @@ import ConnectAccount from 'components/projects/create/ConnectAccount';
 import { useOctokit } from 'context/OctokitContext';
 import { Heading } from 'components/shared/Heading';
 import { TemplateCard } from 'components/projects/create/TemplateCard';
+import { useGitClient } from 'context/GitClientContext';
 
 const NewProject = () => {
-  const { octokit, updateAuth, isAuth } = useOctokit();
-  const [giteaToken, setGiteaToken] = useState('');
+  const { octokit } = useOctokit();
+  const [selectedGit, setSelectedGit] = useState<GitClient | null>();
+  const { gitHubClient, giteaClient } = useGitClient();
 
-  const onAuthHandler = (token: string, type: GitType) => {
-    if (type === GitType.GitHub) {
-      updateAuth();
-    } else {
-      setGiteaToken(token);
+  const selectGitHandler = useCallback(
+    (type: GitType) => {
+      if (type === GitType.GitHub && gitHubClient.token) {
+        setSelectedGit(gitHubClient);
+      }
+
+      if (type === GitType.Gitea && giteaClient.token) {
+        setSelectedGit(giteaClient);
+      }
+    },
+    [gitHubClient, giteaClient],
+  );
+
+  useEffect(() => {
+    if (gitHubClient.token) {
+      setSelectedGit(gitHubClient);
     }
-  };
 
-  return giteaToken || isAuth ? (
+    if (giteaClient.token) {
+      setSelectedGit(giteaClient);
+    }
+  }, [gitHubClient, giteaClient]);
+
+  return selectedGit ? (
     <>
       <div className="space-y-3">
         <Heading as="h3" className="font-medium text-lg">
@@ -41,10 +59,10 @@ const NewProject = () => {
       <Heading as="h3" className="font-medium text-lg mt-10">
         Import a repository
       </Heading>
-      <RepositoryList octokit={octokit} token={giteaToken} />
+      <RepositoryList octokit={octokit} gitClient={selectedGit} />
     </>
   ) : (
-    <ConnectAccount onAuth={onAuthHandler} />
+    <ConnectAccount onSelectGitAccount={selectGitHandler} />
   );
 };
 

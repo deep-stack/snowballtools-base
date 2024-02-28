@@ -15,13 +15,13 @@ const GITEA_ORIGIN_URL = 'https://git.vdb.to';
 interface ContextValue {
   gitHubClient: GitHubClient;
   giteaClient: GiteaClient;
-  updateClient: () => Promise<void>;
+  updateClients: () => Promise<void>;
 }
 
 const GitClientContext = createContext<ContextValue>({
   gitHubClient: new GitHubClient(),
   giteaClient: new GiteaClient(GITEA_ORIGIN_URL),
-  updateClient: async () => {},
+  updateClients: async () => {},
 });
 
 export const GitClientProvider = ({ children }: { children: ReactNode }) => {
@@ -31,7 +31,7 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
     new GiteaClient(GITEA_ORIGIN_URL),
   );
 
-  const updateClient = useCallback(async () => {
+  const updateClients = useCallback(async () => {
     const { user } = await client.getUser();
 
     if (user.gitHubToken) {
@@ -44,7 +44,7 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
   }, [client]);
 
   useEffect(() => {
-    updateClient();
+    updateClients();
   }, []);
 
   return (
@@ -52,7 +52,7 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
       value={{
         gitHubClient,
         giteaClient,
-        updateClient,
+        updateClients,
       }}
     >
       {children}
@@ -61,12 +61,12 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useGitClient = () => {
-  const { gitHubClient, giteaClient, updateClient } =
+  const { gitHubClient, giteaClient, updateClients } =
     useContext(GitClientContext);
 
   return {
     gitHubClient,
     giteaClient,
-    updateClient,
+    updateClients,
   };
 };
