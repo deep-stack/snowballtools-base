@@ -158,6 +158,7 @@ export default withMT({
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
         inset: 'inset 0px 1px 0px rgba(8, 47, 86, 0.06)',
         card: '0px 0px 0px 1px #E8F0F7, 0px 2px 4px rgba(8, 47, 86, 0.04)',
+        'card-sm': '0px 1px 2px -1px rgba(4, 25, 47, 0.08)',
       },
       spacing: {
         2.5: '0.625rem',

@@ -87,7 +87,10 @@ export const ProjectCard = ({
         </div>
       </div>
       {/* Wave */}
-      <WavyBorder />
+      <WavyBorder
+        variant="stroke-and-fill"
+        className="bg-surface-card-hovered"
+      />
       {/* Lower content */}
       <div className={theme.lowerContent()}>
         {/* Latest deployment */}
