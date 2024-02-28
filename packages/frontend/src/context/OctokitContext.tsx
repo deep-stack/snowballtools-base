@@ -64,7 +64,7 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
         error instanceof RequestError &&
         error.status === UNAUTHORIZED_ERROR_CODE
       ) {
-        await client.unauthenticateGithub();
+        await client.unauthenticateGit();
         await fetchUser();
       }
 

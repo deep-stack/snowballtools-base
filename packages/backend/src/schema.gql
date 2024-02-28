@@ -220,5 +220,5 @@ type Mutation {
   # TODO: Remove github method
   authenticateGitHub(code: String!): AuthResult!
   authenticateGit(type: GitType!, code: String!): AuthResult!
-  unauthenticateGitHub: Boolean!
+  unauthenticateGit: Boolean!
 }

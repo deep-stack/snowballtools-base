@@ -8,7 +8,7 @@ export class GiteaClient implements GitClient {
   token?: string;
   api: Api<any>;
 
-  constructor (giteaUrl: string, token?: string) {
+  constructor (giteaUrl: string, token?: string | null) {
     if (token) {
       this.token = token;
 

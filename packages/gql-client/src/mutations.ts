@@ -102,7 +102,7 @@ mutation ($type: GitType!, $code: String!) {
   }
 }`;
 
-export const unauthenticateGitHub = gql`
+export const unauthenticateGit = gql`
 mutation {
-  unauthenticateGitHub
+  unauthenticateGit
 }`;

@@ -9,7 +9,7 @@ export class GitHubClient implements GitClient {
   token?: string;
   octokit: Octokit;
 
-  constructor (token?: string) {
+  constructor (token?: string | null) {
     if (token) {
       this.token = token;
       this.octokit = new Octokit({ auth: token });
