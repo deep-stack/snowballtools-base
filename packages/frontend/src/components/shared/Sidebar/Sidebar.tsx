@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization } from 'gql-client';
 
-import { Option } from '@material-tailwind/react';
 import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from 'context/GQLClientContext';
-import AsyncSelect from 'components/shared/AsyncSelect';
 import {
-  ChevronGrabberHorizontal,
   FolderIcon,
   GlobeIcon,
   LifeBuoyIcon,
@@ -17,6 +14,7 @@ import {
 } from 'components/shared/CustomIcon';
 import { Tabs } from 'components/shared/Tabs';
 import { Heading } from 'components/shared/Heading';
+import { UserSelect } from 'components/shared/UserSelect';
 
 export const Sidebar = () => {
   const { orgSlug } = useParams();
@@ -36,6 +34,22 @@ export const Sidebar = () => {
     fetchUserOrganizations();
     setSelectedOrgSlug(orgSlug);
   }, [orgSlug]);
+
+  const formattedSelected = useMemo(() => {
+    const selected = organizations.find((org) => org.slug === selectedOrgSlug);
+    return {
+      value: selected?.slug ?? '',
+      label: selected?.name ?? '',
+      imgSrc: '/logo.svg',
+    };
+  }, [organizations, selectedOrgSlug, orgSlug]);
+  const formattedSelectOptions = useMemo(() => {
+    return organizations.map((org) => ({
+      value: org.slug,
+      label: org.name,
+      imgSrc: '/logo.svg',
+    }));
+  }, [organizations, selectedOrgSlug, orgSlug]);
 
   const handleLogOut = useCallback(() => {
     disconnect();
@@ -57,49 +71,10 @@ export const Sidebar = () => {
       </Link>
       {/* Switch organization */}
       <div className="flex flex-1 flex-col gap-4">
-        <AsyncSelect
-          containerProps={{ className: 'h-14 border-none' }}
-          labelProps={{ className: 'before:border-none after:border-none' }}
-          className="bg-white rounded-lg shadow border-none"
-          value={selectedOrgSlug}
-          onChange={(value) => {
-            setSelectedOrgSlug(value!);
-            navigate(`/${value}`);
-          }}
-          selected={(_, index) => (
-            <div className="flex items-center space-x-3">
-              <img
-                src="/logo.svg"
-                alt="Application Logo"
-                className="h-8 w-8 rounded-lg"
-              />
-              <div>
-                <div className="text-sm font-semibold">
-                  {organizations[index!]?.name}
-                </div>
-                <div className="text-xs text-gray-500">Organization</div>
-              </div>
-            </div>
-          )}
-          arrow={<ChevronGrabberHorizontal className="h-4 w-4 text-gray-500" />}
-        >
-          {/* // TODO: Show label organization and manage in option */}
-          {organizations.map((org) => (
-            <Option key={org.id} value={org.slug}>
-              <div className="flex items-center space-x-3">
-                <img
-                  src="/logo.svg"
-                  alt="Application Logo"
-                  className="h-8 w-8 rounded-lg"
-                />
-                <div>
-                  <div className="text-sm font-semibold">{org.name}</div>
-                  <div className="text-xs text-gray-500">Organization</div>
-                </div>
-              </div>
-            </Option>
-          ))}
-        </AsyncSelect>
+        <UserSelect
+          value={formattedSelected}
+          options={formattedSelectOptions}
+        />
         <Tabs defaultValue="Projects" orientation="vertical">
           <Tabs.List>
             {[
