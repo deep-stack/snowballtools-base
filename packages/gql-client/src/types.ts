@@ -300,6 +300,6 @@ export type AuthenticateGitResponse = {
   }
 }
 
-export type UnauthenticateGitHubResponse = {
-  unauthenticateGitHub: boolean
+export type UnauthenticateGitResponse = {
+  unauthenticateGit: boolean
 }

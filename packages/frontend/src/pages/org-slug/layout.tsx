@@ -1,4 +1,5 @@
 import { Sidebar } from 'components/shared/Sidebar';
+import { GitClientProvider } from 'context/GitClientContext';
 import { OctokitProvider } from 'context/OctokitContext';
 import React, { ComponentPropsWithoutRef } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -21,7 +22,9 @@ export const DashboardLayout = ({
       <div className="col-span-4 h-full px-3 py-3 overflow-y-hidden">
         <div className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
           <OctokitProvider>
-            <Outlet />
+            <GitClientProvider>
+              <Outlet />
+            </GitClientProvider>
           </OctokitProvider>
         </div>
       </div>

@@ -49,13 +49,8 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
 
       const { user } = await client.getUser();
 
-      if (user.gitHubToken) {
-        setGitHubClient(new GitHubClient(user.gitHubToken));
-      }
-
-      if (user.giteaToken) {
-        setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, user.giteaToken));
-      }
+      setGitHubClient(new GitHubClient(user.gitHubToken));
+      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, user.giteaToken));
     },
     [client],
   );
@@ -63,6 +58,13 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     updateClients();
   }, []);
+
+  // eslint-disable-next-line
+  (window as any).unauthenticateGit = useCallback(async () => {
+    const res = await client.unauthenticateGit();
+    await updateClients();
+    return res;
+  }, [client]);
 
   return (
     <GitClientContext.Provider

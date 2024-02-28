@@ -844,7 +844,7 @@ export class Service {
     return { token };
   }
 
-  async unauthenticateGitHub (user: User, data: DeepPartial<User>): Promise<boolean> {
+  async unauthenticateGit (user: User, data: DeepPartial<User>): Promise<boolean> {
     return this.db.updateUser(user, data);
   }
 }
