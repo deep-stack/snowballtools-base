@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Domain, DomainStatus } from 'gql-client';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
-import {
-  Typography,
-  Button,
-  Chip,
-  Avatar,
-  Tooltip,
-} from '@material-tailwind/react';
+import { Typography, Chip, Avatar, Tooltip } from '@material-tailwind/react';
 
 import ActivityCard from '../../../../components/projects/project/ActivityCard';
 import { relativeTimeMs } from '../../../../utils/time';
@@ -17,6 +11,8 @@ import { useOctokit } from '../../../../context/OctokitContext';
 import { GitCommitWithBranch, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 import { formatAddress } from '../../../../utils/format';
+import { Button } from 'components/shared/Button';
+import { Heading } from 'components/shared/Heading';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -107,9 +103,9 @@ const OverviewTabPanel = () => {
   }, [project]);
 
   return (
-    <div className="grid grid-cols-5">
-      <div className="col-span-3 p-2">
-        <div className="flex items-center gap-2 p-2 ">
+    <div className="grid grid-cols-5 gap-[72px] mt-7">
+      <div className="col-span-3">
+        <div className="flex items-center gap-2">
           <Avatar
             src={project.icon || '/gray.png'}
             variant="rounded"
@@ -143,12 +139,11 @@ const OverviewTabPanel = () => {
               />
               <Button
                 className="normal-case rounded-full"
-                color="blue"
+                variant="primary"
                 size="sm"
                 onClick={() => {
                   navigate('settings/domains');
                 }}
-                placeholder={''}
               >
                 Setup
               </Button>
@@ -179,21 +174,17 @@ const OverviewTabPanel = () => {
           <div>No current deployment found</div>
         )}
       </div>
-      <div className="col-span-2 p-2">
-        <div className="flex justify-between">
-          <Typography variant="h6" placeholder={''}>
-            Activity
-          </Typography>
-          <button className="text-xs bg-gray-300 rounded-full p-2">
+      <div className="col-span-2 mr-1">
+        <div className="flex items-center justify-between">
+          <Heading className="text-lg leading-6 font-medium">Activity</Heading>
+          <Button variant="tertiary" size="sm">
             See all
-          </button>
+          </Button>
         </div>
-        <div className="p-2">
+        <div className="mt-5">
           {activities.map((activity, index) => {
             return (
-              <Link to={activity.html_url} target="_blank" key={index}>
-                <ActivityCard activity={activity} />
-              </Link>
+              <ActivityCard activity={activity} key={`activity-${index}`} />
             );
           })}
         </div>

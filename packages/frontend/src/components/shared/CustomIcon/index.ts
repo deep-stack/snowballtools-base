@@ -32,3 +32,4 @@ export * from './GitHubLogo';
 export * from './ClockIcon';
 export * from './HorizontalDotIcon';
 export * from './WarningDiamondIcon';
+export * from './ArrowRightCircleFilledIcon';
