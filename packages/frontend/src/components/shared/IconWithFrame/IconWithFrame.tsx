@@ -1,9 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { cn } from 'utils/classnames';
 
-interface IconWithFrameProps {
+interface IconWithFrameProps extends ComponentPropsWithoutRef<'div'> {
   icon: ReactNode;
-  className?: string;
   hasHighlight?: boolean;
 }
 
@@ -11,6 +10,7 @@ export const IconWithFrame = ({
   icon,
   className,
   hasHighlight = true,
+  ...props
 }: IconWithFrameProps) => {
   return (
     <div
@@ -21,6 +21,7 @@ export const IconWithFrame = ({
         'bg-controls-secondary',
         className,
       )}
+      {...props}
     >
       {hasHighlight && (
         <div className="bottom-0 absolute w-[37px] h-px bg-gradient-to-r from-gray-0/0 via-gray-0/50 to-gray-0/0" />
