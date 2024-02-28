@@ -115,7 +115,7 @@ const OverviewTabPanel = () => {
   }, [project]);
 
   return (
-    <div className="grid grid-cols-5 gap-[72px] mt-7">
+    <div className="grid grid-cols-5 gap-[72px]">
       <div className="col-span-3">
         <div className="flex items-center gap-4 mb-6">
           <Avatar
