@@ -60,6 +60,7 @@ export type User = {
   createdAt: string
   updatedAt: string
   gitHubToken: string | null
+  giteaToken: string | null
 }
 
 export type Deployment = {
