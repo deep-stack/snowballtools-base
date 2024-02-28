@@ -14,6 +14,7 @@ export default withMT({
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        display: ['Inter Display', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {
