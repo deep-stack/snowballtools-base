@@ -22,7 +22,7 @@
     clientId = ""
     clientSecret = ""
 
-[registryConfig]
+[registry]
   fetchDeploymentRecordDelay = 5000
   restEndpoint = "http://localhost:1317"
   gqlEndpoint = "http://localhost:9473/api"
@@ -30,7 +30,7 @@
   privateKey = ""
   bondId = ""
   authority = ""
-  [registryConfig.fee]
+  [registry.fee]
     amount = "200000"
     denom = "aphoton"
     gas = "750000"

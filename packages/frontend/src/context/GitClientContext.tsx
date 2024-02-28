@@ -6,16 +6,18 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import { GitType } from 'gql-client';
 import { GitHubClient, GiteaClient } from 'git-client';
 
 import { useGQLClient } from './GQLClientContext';
 
+// TODO: Get from env
 const GITEA_ORIGIN_URL = 'https://git.vdb.to';
 
 interface ContextValue {
   gitHubClient: GitHubClient;
   giteaClient: GiteaClient;
-  updateClients: () => Promise<void>;
+  updateClients: (token?: string, gitType?: GitType) => Promise<void>;
 }
 
 const GitClientContext = createContext<ContextValue>({
@@ -31,17 +33,32 @@ export const GitClientProvider = ({ children }: { children: ReactNode }) => {
     new GiteaClient(GITEA_ORIGIN_URL),
   );
 
-  const updateClients = useCallback(async () => {
-    const { user } = await client.getUser();
+  const updateClients = useCallback(
+    async (token?: string, gitType?: GitType) => {
+      if (token) {
+        if (gitType === GitType.GitHub) {
+          setGitHubClient(new GitHubClient(token));
+        }
 
-    if (user.gitHubToken) {
-      setGitHubClient(new GitHubClient(user.gitHubToken));
-    }
+        if (gitType === GitType.Gitea) {
+          setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, token));
+        }
 
-    if (user.giteaToken) {
-      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, user.giteaToken));
-    }
-  }, [client]);
+        return;
+      }
+
+      const { user } = await client.getUser();
+
+      if (user.gitHubToken) {
+        setGitHubClient(new GitHubClient(user.gitHubToken));
+      }
+
+      if (user.giteaToken) {
+        setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, user.giteaToken));
+      }
+    },
+    [client],
+  );
 
   useEffect(() => {
     updateClients();
