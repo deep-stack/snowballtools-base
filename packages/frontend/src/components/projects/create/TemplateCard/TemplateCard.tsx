@@ -49,9 +49,9 @@ export const TemplateCard = ({ template, isGitAuth }: TemplateCardProps) => {
   }, [isGitAuth, navigate, template, toast]);
 
   return (
-    <button
+    <div
       className={cn(
-        'flex items-center gap-3 px-3 py-3 bg-base-bg-alternate hover:bg-base-bg-emphasized rounded-2xl group relative',
+        'flex items-center gap-3 px-3 py-3 bg-base-bg-alternate hover:bg-base-bg-emphasized rounded-2xl group relative cursor-pointer',
         {
           'cursor-default': template?.isComingSoon,
         },
@@ -80,6 +80,6 @@ export const TemplateCard = ({ template, isGitAuth }: TemplateCardProps) => {
           <ArrowRightCircleIcon />
         </Button>
       )}
-    </button>
+    </div>
   );
 };
