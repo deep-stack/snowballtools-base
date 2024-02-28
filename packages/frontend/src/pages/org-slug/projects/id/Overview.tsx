@@ -167,7 +167,7 @@ const OverviewTabPanel = () => {
               </div>
             </OverviewInfo>
 
-            {/* DEPLOYMENT */}
+            {/* DATABASE */}
             <OverviewInfo label="Database" icon={<StorageIcon />}>
               <div className="flex gap-2 items-center">
                 <Link to="#">
