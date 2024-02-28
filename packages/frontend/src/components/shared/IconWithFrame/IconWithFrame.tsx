@@ -3,13 +3,13 @@ import { cn } from 'utils/classnames';
 
 interface IconWithFrameProps {
   icon: ReactNode;
-  bgClass?: string;
+  className?: string;
   hasHighlight?: boolean;
 }
 
 export const IconWithFrame = ({
   icon,
-  bgClass = 'bg-controls-secondary ',
+  className,
   hasHighlight = true,
 }: IconWithFrameProps) => {
   return (
@@ -18,9 +18,8 @@ export const IconWithFrame = ({
         'relative justify-center items-center gap-2.5 inline-flex',
         'w-16 h-16 rounded-2xl shadow-inner',
         'border border-b-[3px] border-border-interactive border-opacity-10',
-        {
-          [bgClass]: true,
-        },
+        'bg-controls-secondary',
+        className,
       )}
     >
       {hasHighlight && (

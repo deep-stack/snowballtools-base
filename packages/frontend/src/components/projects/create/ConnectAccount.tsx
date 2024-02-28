@@ -52,11 +52,11 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
         <div className="w-52 h-16 justify-center items-center gap-4 inline-flex mb-7">
           <IconWithFrame icon={<GitIcon />} />
           <EllipsesIcon className="items-center gap-1.5 flex" />
-          <IconWithFrame bgClass="bg-blue-400" icon={<SnowballIcon />} />
+          <IconWithFrame className="bg-blue-400" icon={<SnowballIcon />} />
         </div>
         {/** Text */}
         <div className="flex flex-col gap-1.5 mb-6">
-          <Heading className="text-[20px] font-medium">
+          <Heading className="text-xl font-medium">
             Connect to your Git account
           </Heading>
           <p className="text-center text-elements-mid-em">
@@ -65,7 +65,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
           </p>
         </div>
         {/** CTA Buttons */}
-        <div className="mt-2 flex flex-col w-full sm:w-auto sm:flex-row gap-3">
+        <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-2 sm:gap-3">
           <OauthPopup
             url={GITHUB_OAUTH_URL}
             onCode={handleCode}
