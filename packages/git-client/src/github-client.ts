@@ -3,7 +3,7 @@
 import { Octokit } from 'octokit';
 
 import { GitClient } from './git-client';
-import { REPOS_PER_PAGE } from './constants';
+import { COMMITS_PER_PAGE, REPOS_PER_PAGE } from './constants';
 
 export class GitHubClient implements GitClient {
   token?: string;
@@ -44,5 +44,54 @@ export class GitHubClient implements GitClient {
     })).data;
 
     return repos;
+  }
+
+  async getCommits (owner: string, repo: string, branch: string): Promise<any> {
+    const commits = (await this.octokit.rest.repos.listCommits({
+      owner,
+      repo,
+      sha: branch,
+      per_page: COMMITS_PER_PAGE
+    })).data;
+
+    return commits;
+  }
+
+  async getBranches (owner: string, repo: string): Promise<any> {
+    const branches = (await this.octokit.rest.repos.listBranches({
+      owner,
+      repo
+    })).data;
+
+    return branches;
+  }
+
+  async getRepo (owner: string, repo: string): Promise<any> {
+    const repoData = (await this.octokit.rest.repos.get({
+      owner,
+      repo
+    })).data;
+
+    return repoData;
+  }
+
+  async searchRepo (query: string): Promise<any> {
+    const repos = (await this.octokit.rest.search.repos({
+      q: query,
+      per_page: REPOS_PER_PAGE
+    })).data;
+
+    return repos;
+  }
+
+  async getPackageJson (owner: string, repo: string, ref: string): Promise<any> {
+    const packageJSON = (await this.octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: 'package.json',
+      ref
+    })).data;
+
+    return packageJSON;
   }
 }

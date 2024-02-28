@@ -40,4 +40,37 @@ export class GiteaClient implements GitClient {
     const repos = (await this.api.orgs.orgListRepos(org)).data;
     return repos;
   }
+
+  async getCommits (owner: string, repo: string, branch: string): Promise<any> {
+    const commits = (await this.api.repos.repoGetAllCommits(owner, repo, { sha: branch })).data;
+    return commits;
+  }
+
+  async getBranches (owner: string, repo: string): Promise<any> {
+    const branches = (await this.api.repos.repoListBranches(owner, repo)).data;
+    return branches;
+  }
+
+  async getRepo (owner: string, repo: string): Promise<any> {
+    const repoData = (await this.api.repos.repoGet(owner, repo)).data;
+    return repoData;
+  }
+
+  async searchRepo (query: string): Promise<any> {
+    const repos = (await this.api.repos.repoSearch({ q: query })).data;
+    return repos;
+  }
+
+  async getPackageJson (owner: string, repo: string, ref: string): Promise<any> {
+    const packageJSON = (await this.api.repos.repoGetContents(
+      owner,
+      repo,
+      'package.json',
+      {
+        ref
+      }
+    )).data;
+
+    return packageJSON;
+  }
 }
