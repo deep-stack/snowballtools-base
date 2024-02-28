@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import OrgSlug from './pages/OrgSlug';
 import Projects from './pages/org-slug';
 import Settings from './pages/org-slug/Settings';
 import {
@@ -11,11 +10,12 @@ import {
 import ProjectSearchLayout from './layouts/ProjectSearch';
 import Index from './pages';
 import Login from './pages/Login';
+import { DashboardLayout } from 'pages/org-slug/layout';
 
 const router = createBrowserRouter([
   {
     path: ':orgSlug',
-    element: <OrgSlug />,
+    element: <DashboardLayout />,
     children: [
       {
         element: <ProjectSearchLayout />,

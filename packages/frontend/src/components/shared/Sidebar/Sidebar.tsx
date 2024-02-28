@@ -43,7 +43,7 @@ export const Sidebar = () => {
   }, [disconnect, navigate]);
 
   return (
-    <div className="flex flex-col h-full px-6 py-8 gap-9">
+    <nav className="flex flex-col h-full px-6 py-8 gap-9">
       {/* Logo */}
       <Link to={`/${orgSlug}`}>
         <div className="flex items-center gap-3 px-2">
@@ -138,6 +138,6 @@ export const Sidebar = () => {
           </Tabs.List>
         </Tabs>
       </div>
-    </div>
+    </nav>
   );
 };

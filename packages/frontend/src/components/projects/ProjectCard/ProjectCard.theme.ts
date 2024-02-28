@@ -8,6 +8,7 @@ export const projectCardTheme = tv({
       'rounded-2xl',
       'flex',
       'flex-col',
+      'group',
     ],
     upperContent: ['px-4', 'py-4', 'flex', 'items-start', 'gap-3', 'relative'],
     content: ['flex', 'flex-col', 'gap-1', 'flex-1'],
@@ -20,13 +21,15 @@ export const projectCardTheme = tv({
     description: ['text-xs', 'text-elements-low-em'],
     icons: ['flex', 'items-center', 'gap-1'],
     lowerContent: [
-      'bg-surface-card-hovered',
+      'transition-colors',
+      'duration-150',
       'px-4',
       'py-4',
       'flex',
       'flex-col',
       'gap-2',
       'rounded-b-2xl',
+      'group-hover:bg-surface-card-hovered',
     ],
     latestDeployment: ['flex', 'items-center', 'gap-2'],
     deploymentStatusContainer: [
@@ -45,6 +48,12 @@ export const projectCardTheme = tv({
       'flex',
       'items-center',
       'gap-2',
+    ],
+    wavyBorder: [
+      'bg-surface-card',
+      'transition-colors',
+      'duration-150',
+      'group-hover:bg-surface-card-hovered',
     ],
   },
   variants: {
