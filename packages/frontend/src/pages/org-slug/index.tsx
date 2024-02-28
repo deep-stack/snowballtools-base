@@ -3,11 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
 
-import { Typography, Chip } from '@material-tailwind/react';
-
-import { useGQLClient } from '../../context/GQLClientContext';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { ProjectCard } from 'components/projects/ProjectCard';
+import { Heading } from 'components/shared/Heading';
+import { Badge } from 'components/shared/Badge';
+import { useGQLClient } from 'context/GQLClientContext';
 
 const Projects = () => {
   const client = useGQLClient();
@@ -26,33 +26,31 @@ const Projects = () => {
   }, [orgSlug]);
 
   return (
-    <div>
-      <div className="flex p-5">
+    <section className="px-6 py-6 flex flex-col gap-6">
+      {/* Header */}
+      <div className="flex items-center">
         <div className="grow">
-          <div className="flex gap-2 items-center">
-            <Typography variant="h4" placeholder={''}>
+          <div className="flex gap-4 items-center">
+            <Heading as="h2" className="text-[24px]">
               Projects
-            </Typography>
-            <Chip
-              className="bg-gray-300 rounded-full static"
-              value={projects.length}
-              size="sm"
-            />
+            </Heading>
+            <Badge className="bg-base-bg-alternate text-elements-mid-em h-7 w-7">
+              {projects.length}
+            </Badge>
           </div>
         </div>
-        <div>
-          <Link to="projects/create">
-            <Button leftIcon={<PlusIcon />}>Create project</Button>
-          </Link>
-        </div>
+        <Link to="projects/create">
+          <Button leftIcon={<PlusIcon />}>Create project</Button>
+        </Link>
       </div>
-      <div className="grid grid-cols-3 gap-5 p-5">
-        {projects.length !== 0 &&
+      {/* List of projects */}
+      <div className="grid grid-cols-3 gap-4">
+        {projects.length > 0 &&
           projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;
           })}
       </div>
-    </div>
+    </section>
   );
 };
 

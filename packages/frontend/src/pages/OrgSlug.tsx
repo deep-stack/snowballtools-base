@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import Sidebar from '../components/Sidebar';
-import { OctokitProvider } from '../context/OctokitContext';
+import { OctokitProvider } from 'context/OctokitContext';
+import { Sidebar } from 'components/shared/Sidebar';
 
 const OrgSlug = () => {
   return (
