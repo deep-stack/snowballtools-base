@@ -33,3 +33,8 @@ export * from './ClockIcon';
 export * from './HorizontalDotIcon';
 export * from './WarningDiamondIcon';
 export * from './ArrowRightCircleFilledIcon';
+export * from './GithubStrokeIcon';
+export * from './BranchStrokeIcon';
+export * from './StorageIcon';
+export * from './LinkIcon';
+export * from './CursorBoxIcon';

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GitCommitWithBranch } from '../../../types';
+import { GitCommitWithBranch } from '../../../../../types';
 import { Avatar } from 'components/shared/Avatar';
 import { Button } from 'components/shared/Button';
 import {
   ArrowRightCircleFilledIcon,
-  BranchIcon,
+  BranchStrokeIcon,
 } from 'components/shared/CustomIcon';
 import { formatDistance } from 'date-fns';
 import { getInitials } from 'utils/geInitials';
@@ -50,7 +50,7 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
             <span className="w-0.5 h-0.5 rounded-full bg-border-interactive-hovered"></span>
             <span className="flex justify-center items-center gap-1.5">
               <div>
-                <BranchIcon />
+                <BranchStrokeIcon className="w-3 h-3" />
               </div>
               <span
                 title={activity.branch.name}

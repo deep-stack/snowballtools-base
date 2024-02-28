@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { Domain, DomainStatus } from 'gql-client';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
-import { Typography, Chip, Avatar, Tooltip } from '@material-tailwind/react';
-
-import ActivityCard from '../../../../components/projects/project/ActivityCard';
-import { relativeTimeMs } from '../../../../utils/time';
 import { useOctokit } from '../../../../context/OctokitContext';
 import { GitCommitWithBranch, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
-import { formatAddress } from '../../../../utils/format';
 import { Button } from 'components/shared/Button';
 import { Heading } from 'components/shared/Heading';
+import { Avatar } from 'components/shared/Avatar';
+import { getInitials } from 'utils/geInitials';
+import {
+  BranchStrokeIcon,
+  CheckRoundFilledIcon,
+  ClockIcon,
+  CursorBoxIcon,
+  GithubStrokeIcon,
+  GlobeIcon,
+  LinkIcon,
+  StorageIcon,
+} from 'components/shared/CustomIcon';
+import { Tag } from 'components/shared/Tag';
+import { Activity } from 'components/projects/project/overview/Activity';
+import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
+import { CalendarDaysIcon } from 'components/shared/CustomIcon/CalendarDaysIcon';
+import { relativeTimeMs } from 'utils/time';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -105,90 +117,105 @@ const OverviewTabPanel = () => {
   return (
     <div className="grid grid-cols-5 gap-[72px] mt-7">
       <div className="col-span-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4 mb-6">
           <Avatar
-            src={project.icon || '/gray.png'}
-            variant="rounded"
-            placeholder={''}
+            size={48}
+            initials={getInitials(project.name)}
+            imageSrc={project.icon}
+            type="blue"
           />
-          <div className="grow">
-            <Typography placeholder={''}>{project.name}</Typography>
-            <Typography variant="small" color="gray" placeholder={''}>
+          <div className="flex-1 space-y-1">
+            <Heading className="text-lg leading-6 font-medium">
+              {project.name}
+            </Heading>
+            <span className="text-sm text-elements-low-em tracking-tight">
               {project.subDomain}
-            </Typography>
+            </span>
           </div>
         </div>
-        <div className="flex justify-between p-2 text-sm items-center">
-          <div>^ Domain</div>
+        <OverviewInfo label="Domain" icon={<GlobeIcon />}>
           {liveDomain ? (
-            <Chip
-              className="normal-case ml-6 inline font-normal"
-              size="sm"
-              value="Connected"
-              icon="^"
-              color="green"
-            />
+            <Tag type="positive" size="xs" leftIcon={<CheckRoundFilledIcon />}>
+              Connected
+            </Tag>
           ) : (
-            <div className="flex items-center">
-              <Chip
-                className="normal-case inline font-normal mx-2"
-                size="sm"
-                value="Not connected"
-                icon="^"
-                color="orange"
-              />
+            <div className="flex items-center gap-2">
+              <Tag type="attention" size="xs" leftIcon={<ClockIcon />}>
+                Not connected
+              </Tag>
               <Button
-                className="normal-case rounded-full"
-                variant="primary"
-                size="sm"
                 onClick={() => {
                   navigate('settings/domains');
                 }}
+                variant="tertiary"
+                size="sm"
               >
                 Setup
               </Button>
             </div>
           )}
-        </div>
+        </OverviewInfo>
         {project.deployments.length !== 0 ? (
           <>
-            <div className="flex justify-between p-2 text-sm">
-              <p>^ Source</p>
-              <p>^ {project.deployments[0]?.branch}</p>
-            </div>
-            <div className="flex justify-between p-2 text-sm">
-              <p>^ Deployment</p>
-              <p className="text-blue-600">{liveDomain?.name}</p>
-            </div>
-            <div className="flex justify-between p-2 text-sm">
-              <p>^ Created</p>
-              <p>
-                {relativeTimeMs(project.deployments[0].createdAt)} by ^{' '}
-                <Tooltip content={project.deployments[0].createdBy.name}>
-                  {formatAddress(project.deployments[0].createdBy.name ?? '')}
-                </Tooltip>
-              </p>
-            </div>
+            {/* SOURCE */}
+            <OverviewInfo label="Source" icon={<GithubStrokeIcon />}>
+              <div className="flex gap-2 items-center">
+                <BranchStrokeIcon className="text-elements-low-em w-4 h-5" />
+                <span className="text-elements-high-em text-sm tracking-tighter">
+                  feature/add-remote-control
+                </span>
+              </div>
+            </OverviewInfo>
+
+            {/* DEPLOYMENT */}
+            <OverviewInfo label="Database" icon={<StorageIcon />}>
+              <div className="flex gap-2 items-center">
+                <Link to="#">
+                  <span className="group text-controls-primary hover:border-controls-primary transition-colors border-b border-b-transparent flex gap-2 items-center text-sm tracking-tight">
+                    dbname{' '}
+                    <LinkIcon className="group-hover:rotate-45 transition-transform" />
+                  </span>
+                </Link>
+              </div>
+            </OverviewInfo>
+
+            {/* DEPLOYMENT */}
+            <OverviewInfo label="Deployment URL" icon={<CursorBoxIcon />}>
+              <div className="flex gap-2 items-center">
+                <Link to="#">
+                  <span className="text-controls-primary group hover:border-controls-primary transition-colors border-b border-b-transparent flex gap-2 items-center text-sm tracking-tight">
+                    {liveDomain?.name}{' '}
+                    <LinkIcon className="group-hover:rotate-45 transition-transform" />
+                  </span>
+                </Link>
+              </div>
+            </OverviewInfo>
+
+            {/* DEPLOYMENT DATE */}
+            <OverviewInfo label="Deployment date" icon={<CalendarDaysIcon />}>
+              <div className="flex gap-2 items-center text-elements-high-em text-sm tracking-tighter">
+                <span>{relativeTimeMs(project.deployments[0].createdAt)}</span>
+                by
+                <Avatar
+                  // TODO: add imageSrc
+                  // imageSrc={project.deployments[0]?.createdBy.avatar}
+                  initials={getInitials(
+                    project.deployments[0]?.createdBy?.name ?? '',
+                  )}
+                  className="rounded-full"
+                  size={24}
+                />
+                <span>{project.deployments[0]?.createdBy?.name}</span>
+              </div>
+            </OverviewInfo>
           </>
         ) : (
-          <div>No current deployment found</div>
+          <p className="text-elements-low-em text-sm py-3">
+            No current deployment found.
+          </p>
         )}
       </div>
-      <div className="col-span-2 mr-1">
-        <div className="flex items-center justify-between">
-          <Heading className="text-lg leading-6 font-medium">Activity</Heading>
-          <Button variant="tertiary" size="sm">
-            See all
-          </Button>
-        </div>
-        <div className="mt-5">
-          {activities.map((activity, index) => {
-            return (
-              <ActivityCard activity={activity} key={`activity-${index}`} />
-            );
-          })}
-        </div>
-      </div>
+      <Activity activities={activities} />
     </div>
   );
 };
