@@ -11,6 +11,7 @@ import {
   GitTeaIcon,
 } from 'components/shared/CustomIcon';
 import { useToast } from 'components/shared/Toast';
+import { IconWithFrame } from 'components/shared/IconWithFrame';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -48,15 +49,9 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
       <div className="flex flex-col items-center max-w-[420px]">
         {/** Icons */}
         <div className="w-52 h-16 justify-center items-center gap-4 inline-flex mb-7">
-          <div className="relative w-16 h-16 bg-controls-secondary rounded-2xl shadow-inner border border-b-[3px] border-border-interactive border-opacity-10 justify-center items-center gap-2.5 inline-flex">
-            <div className="bottom-0 absolute w-[37px] h-px bg-gradient-to-r from-gray-0/0 via-gray-0/50 to-gray-0/0" />
-            <GitIcon />
-          </div>
+          <IconWithFrame icon={<GitIcon />} />
           <EllipsesIcon className="items-center gap-1.5 flex" />
-          <div className="relative w-16 h-16 bg-blue-400 rounded-2xl shadow-inner border border-b-[3px] border-border-interactive border-opacity-10 justify-center items-center gap-2.5 flex">
-            <div className="bottom-0 absolute w-[37px] h-px bg-gradient-to-r from-gray-0/0 via-gray-0/50 to-gray-0/0" />
-            <SnowballIcon />
-          </div>
+          <IconWithFrame bgClass="bg-blue-400" icon={<SnowballIcon />} />
         </div>
         {/** Text */}
         <div className="flex flex-col gap-1.5 mb-6">
