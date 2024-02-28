@@ -23,6 +23,7 @@ export * from './EllipsesIcon';
 export * from './SnowballIcon';
 export * from './NotificationBellIcon';
 export * from './GithubIcon';
+export * from './GitTeaIcon';
 export * from './LockIcon';
 export * from './PencilIcon';
 export * from './CheckRadioIcon';

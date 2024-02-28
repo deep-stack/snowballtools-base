@@ -152,7 +152,7 @@ export default withMT({
       },
       boxShadow: {
         button:
-          'inset 0px 0px 4px rgba(255, 255, 255, 0.25), inset 0px -2px 0px rgba(0, 0, 0, 0.04)',
+          '0px -2px 0px 0px rgba(0, 0, 0, 0.04) inset, 0px 0px 4px 0px rgba(255, 255, 255, 0.25) inset',
         dropdown:
           '0px 3px 20px rgba(8, 47, 86, 0.1), 0px 0px 4px rgba(8, 47, 86, 0.14)',
         field: '0px 1px 2px rgba(0, 0, 0, 0.04)',
