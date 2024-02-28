@@ -3,13 +3,17 @@ import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
 
-import { Button, Typography, Option } from '@material-tailwind/react';
+import { Button, Typography } from '@material-tailwind/react';
 
-import SearchBar from '../../SearchBar';
-import ProjectRepoCard from './ProjectRepoCard';
-import { GitOrgDetails, GitRepositoryDetails } from '../../../types';
-import AsyncSelect from '../../shared/AsyncSelect';
-import { GithubIcon } from 'components/shared/CustomIcon';
+import { ProjectRepoCard } from 'components/projects/create/ProjectRepoCard';
+import { GitOrgDetails, GitRepositoryDetails } from 'types';
+import {
+  ChevronGrabberHorizontal,
+  GithubIcon,
+  SearchIcon,
+} from 'components/shared/CustomIcon';
+import { Select, SelectOption } from 'components/shared/Select';
+import { Input } from 'components/shared/Input';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
@@ -18,9 +22,9 @@ interface RepositoryListProps {
   octokit: Octokit;
 }
 
-const RepositoryList = ({ octokit }: RepositoryListProps) => {
+export const RepositoryList = ({ octokit }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
-  const [selectedAccount, setSelectedAccount] = useState('');
+  const [selectedAccount, setSelectedAccount] = useState<SelectOption>();
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
   // TODO: Add new type for Git user when required
   const [gitUser, setGitUser] = useState<GitOrgDetails>();
@@ -35,7 +39,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
       const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
       setOrgs(orgs.data);
       setGitUser(user.data);
-      setSelectedAccount(user.data.login);
+      setSelectedAccount({ label: user.data.login, value: user.data.login });
     };
 
     fetchUserAndOrgs();
@@ -54,7 +58,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
         let query = `${debouncedSearchedRepo} in:name fork:true`;
 
         // Check if selected account is an organization
-        if (selectedAccount === gitUser.login) {
+        if (selectedAccount.value === gitUser.login) {
           query = query + ` user:${selectedAccount}`;
         } else {
           query = query + ` org:${selectedAccount}`;
@@ -69,7 +73,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
         return;
       }
 
-      if (selectedAccount === gitUser.login) {
+      if (selectedAccount.value === gitUser.login) {
         const result = await octokit.rest.repos.listForAuthenticatedUser({
           per_page: REPOS_PER_PAGE,
           affiliation: 'owner',
@@ -78,7 +82,9 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
         return;
       }
 
-      const selectedOrg = orgs.find((org) => org.login === selectedAccount);
+      const selectedOrg = orgs.find(
+        (org) => org.login === selectedAccount.value,
+      );
       assert(selectedOrg, 'Selected org not found in list');
 
       const result = await octokit.rest.repos.listForOrg({
@@ -96,7 +102,7 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
   const handleResetFilters = useCallback(() => {
     assert(gitUser, 'Git user is not available');
     setSearchedRepo(DEFAULT_SEARCHED_REPO);
-    setSelectedAccount(gitUser.login);
+    setSelectedAccount({ label: gitUser.login, value: gitUser.login });
   }, [gitUser]);
 
   const accounts = useMemo(() => {
@@ -107,35 +113,51 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
     return [gitUser, ...orgs];
   }, [octokit, orgs, gitUser]);
 
+  const options = useMemo(() => {
+    return accounts.map((account) => ({
+      label: account.login,
+      value: account.login,
+      leftIcon: <GithubIcon />,
+    }));
+  }, [accounts]);
+
   return (
-    <div className="p-4">
-      <div className="flex gap-2 mb-2 items-center">
-        <div className="basis-1/3">
-          <AsyncSelect
+    <section className="space-y-3">
+      {/* Dropdown and search */}
+      <div className="flex flex-col lg:flex-row gap-0 lg:gap-3 items-center">
+        <div className="lg:basis-1/3 w-full">
+          <Select
+            options={options}
+            placeholder="Select a repository"
             value={selectedAccount}
-            onChange={(value) => setSelectedAccount(value!)}
-          >
-            {accounts.map((account) => (
-              <Option key={account.id} value={account.login}>
-                <div className="flex items-center gap-2 justify-start">
-                  <GithubIcon /> {account.login}
-                </div>
-              </Option>
-            ))}
-          </AsyncSelect>
+            rightIcon={<ChevronGrabberHorizontal />}
+            onChange={(value) => setSelectedAccount(value as SelectOption)}
+          />
         </div>
-        <div className="basis-2/3 flex-grow flex items-center">
-          <SearchBar
+        <div className="basis-2/3 flex w-full flex-grow">
+          <Input
+            className="w-full"
             value={searchedRepo}
-            onChange={(event) => setSearchedRepo(event.target.value)}
             placeholder="Search for repository"
+            leftIcon={<SearchIcon />}
+            onChange={(e) => setSearchedRepo(e.target.value)}
           />
         </div>
       </div>
+
+      {/* Repository list */}
       {Boolean(repositoryDetails.length) ? (
-        repositoryDetails.map((repo, key) => {
-          return <ProjectRepoCard repository={repo} key={key} />;
-        })
+        <div className="flex flex-col gap-2">
+          {repositoryDetails.map((repo, index) => (
+            <>
+              <ProjectRepoCard repository={repo} key={index} />
+              {/* Horizontal line */}
+              {index !== repositoryDetails.length - 1 && (
+                <div className="border-b border-border-separator/[0.06] w-full" />
+              )}
+            </>
+          ))}
+        </div>
       ) : (
         <div className="mt-4 p-6 flex items-center justify-center">
           <div className="text-center">
@@ -151,8 +173,6 @@ const RepositoryList = ({ octokit }: RepositoryListProps) => {
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
-
-export default RepositoryList;
