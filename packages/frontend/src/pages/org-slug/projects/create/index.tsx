@@ -1,7 +1,7 @@
 import React from 'react';
 
 import templates from 'assets/templates';
-import { RepositoryList } from 'components/projects/create/RepositoryList';
+import RepositoryList from 'components/projects/create/RepositoryList';
 import ConnectAccount from 'components/projects/create/ConnectAccount';
 import { useOctokit } from 'context/OctokitContext';
 import { Heading } from 'components/shared/Heading';

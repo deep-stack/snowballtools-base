@@ -1,4 +1,8 @@
-import React, { ComponentPropsWithoutRef, MouseEvent } from 'react';
+import React, {
+  ComponentPropsWithoutRef,
+  MouseEvent,
+  useCallback,
+} from 'react';
 import { ProjectCardTheme, projectCardTheme } from './ProjectCard.theme';
 import { Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
@@ -11,7 +15,7 @@ import {
   WarningDiamondIcon,
 } from 'components/shared/CustomIcon';
 import { relativeTimeMs } from 'utils/time';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Avatar } from 'components/shared/Avatar';
 import { getInitials } from 'utils/geInitials';
 import {
@@ -27,6 +31,8 @@ export interface ProjectCardProps
   project: Project;
 }
 
+// TODO: Update the whole component to use `Link` from `react-router-dom` and remove the `useNavigate` hook,
+// currently it's not possible to use `Link` because the dot menu is not a direct child of the `Link` component
 export const ProjectCard = ({
   className,
   project,
@@ -38,14 +44,24 @@ export const ProjectCard = ({
   // TODO: Update this to use the actual status from the API
   const hasError = status === 'failure';
 
+  const navigate = useNavigate();
+
   const handleOptionsClick = (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {
     e.stopPropagation();
   };
 
+  const handleClick = useCallback(() => {
+    navigate(`projects/${project.id}`);
+  }, [project.id, navigate]);
+
   return (
-    <div {...props} className={theme.wrapper({ className })}>
+    <div
+      {...props}
+      className={theme.wrapper({ className })}
+      onClick={handleClick}
+    >
       {/* Upper content */}
       <div className={theme.upperContent()}>
         {/* Icon container */}
@@ -54,14 +70,13 @@ export const ProjectCard = ({
           imageSrc={project.icon}
           initials={getInitials(project.name)}
         />
-        {/* </div> */}
         {/* Title and website */}
-        <Link to={`projects/${project.id}`} className={theme.content()}>
+        <div className={theme.content()}>
           <p className={theme.title()}>{project.name}</p>
           <p className={theme.description()}>
             {project.deployments[0]?.domain?.name ?? 'No domain'}
           </p>
-        </Link>
+        </div>
         {/* Icons */}
         <div className={theme.icons()}>
           {hasError && <WarningDiamondIcon className="text-elements-danger" />}
@@ -87,10 +102,7 @@ export const ProjectCard = ({
         </div>
       </div>
       {/* Wave */}
-      <WavyBorder
-        variant="stroke-and-fill"
-        className="bg-surface-card-hovered"
-      />
+      <WavyBorder variant="stroke-and-fill" className={theme.wavyBorder()} />
       {/* Lower content */}
       <div className={theme.lowerContent()}>
         {/* Latest deployment */}
