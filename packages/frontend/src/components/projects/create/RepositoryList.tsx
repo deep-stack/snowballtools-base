@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
-import { GiteaClient } from 'git-client';
+import { GitClient } from 'git-client';
 
 import { Button, Typography, Option } from '@material-tailwind/react';
 
@@ -13,16 +13,13 @@ import AsyncSelect from '../../shared/AsyncSelect';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
-const GITEA_ORIGIN_URL = 'https://git.vdb.to';
 
 interface RepositoryListProps {
   octokit: Octokit;
-  token: string;
+  gitClient: GitClient;
 }
 
-const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
-  const [giteaClient, setGiteaClient] = useState<GiteaClient>();
-
+const RepositoryList = ({ octokit, gitClient }: RepositoryListProps) => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
@@ -34,35 +31,18 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
   >([]);
 
   useEffect(() => {
-    // TODO: Move gitea client to context
-    if (token) {
-      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, token));
-    }
-  }, [token]);
-
-  useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      if (giteaClient) {
-        const user = await giteaClient.getUser();
-        setGitUser(user);
+      const user = await gitClient.getUser();
+      setGitUser(user);
 
-        const orgsData = await giteaClient.getOrganizations();
-        // TODO: Use same return type as octokit.getOrganizations
-        // eslint-disable-next-line
-        const updatedOrgs = orgsData.map((org: any) => {return {...org, login: org.name}})
-        setOrgs(updatedOrgs);
-        setSelectedAccount(user.login);
-      } else {
-        const user = await octokit.rest.users.getAuthenticated();
-        const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
-        setOrgs(orgs.data);
-        setGitUser(user.data);
-        setSelectedAccount(user.data.login);
-      }
+      const orgsData = await gitClient.getOrganizations();
+      setOrgs(orgsData);
+
+      setSelectedAccount(user.login);
     };
 
     fetchUserAndOrgs();
-  }, [octokit, token, giteaClient]);
+  }, [gitClient]);
 
   const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
 
@@ -93,48 +73,20 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
       }
 
       if (selectedAccount === gitUser.login) {
-        if (giteaClient) {
-          const repos = await giteaClient.getReposOfUser(gitUser.login);
-          setRepositoryDetails(repos);
-          return;
-        } else {
-          const result = await octokit.rest.repos.listForAuthenticatedUser({
-            per_page: REPOS_PER_PAGE,
-            affiliation: 'owner',
-          });
-          setRepositoryDetails(result.data);
-          return;
-        }
+        const repos = await gitClient.getReposOfUser(gitUser.login);
+        setRepositoryDetails(repos);
+        return;
       }
 
       const selectedOrg = orgs.find((org) => org.login === selectedAccount);
       assert(selectedOrg, 'Selected org not found in list');
 
-      if (giteaClient) {
-        const repos = await giteaClient.getReposOfOrganization(
-          selectedOrg.login,
-        );
-        setRepositoryDetails(repos);
-      } else {
-        const result = await octokit.rest.repos.listForOrg({
-          org: selectedOrg.login,
-          per_page: REPOS_PER_PAGE,
-          type: 'all',
-        });
-
-        setRepositoryDetails(result.data);
-      }
+      const repos = await gitClient.getReposOfOrganization(selectedOrg.login);
+      setRepositoryDetails(repos);
     };
 
     fetchRepos();
-  }, [
-    selectedAccount,
-    gitUser,
-    orgs,
-    debouncedSearchedRepo,
-    token,
-    giteaClient,
-  ]);
+  }, [selectedAccount, gitUser, orgs, debouncedSearchedRepo, gitClient]);
 
   const handleResetFilters = useCallback(() => {
     assert(gitUser, 'Git user is not available');

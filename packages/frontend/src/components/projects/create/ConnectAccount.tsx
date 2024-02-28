@@ -9,6 +9,7 @@ import {
   EllipsesIcon,
   SnowballIcon,
 } from 'components/shared/CustomIcon';
+import { useGitClient } from 'context/GitClientContext';
 
 const SCOPES = 'repo user';
 
@@ -21,21 +22,23 @@ const REDIRECT_URI = `${window.location.origin}/organization/projects/create`;
 const GITEA_OAUTH_URL = `${GITEA_ORIGIN}/login/oauth/authorize?client_id=${process.env.REACT_APP_GITEA_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 interface ConnectAccountInterface {
-  onAuth: (token: string, type: GitType) => void;
+  onSelectGitAccount: (type: GitType) => void;
 }
 
 const ConnectAccount: React.FC<ConnectAccountInterface> = ({
-  onAuth: onToken,
+  onSelectGitAccount,
 }: ConnectAccountInterface) => {
   const client = useGQLClient();
+  const { updateClients } = useGitClient();
 
   const handleCode = async (type: GitType, code: string) => {
     // Pass code to backend and get access token
-    const {
-      authenticateGit: { token },
-    } = await client.authenticateGit(type, code);
 
-    onToken(token, type);
+    // TODO: Move to git-client package
+    await client.authenticateGit(type, code);
+
+    await updateClients();
+    onSelectGitAccount(type);
   };
 
   // TODO: Use correct height
