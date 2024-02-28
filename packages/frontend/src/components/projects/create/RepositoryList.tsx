@@ -13,7 +13,7 @@ import AsyncSelect from '../../shared/AsyncSelect';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
-const GITEA_ORIGIN_URL = 'https://gitea.com';
+const GITEA_ORIGIN_URL = 'https://git.vdb.to';
 
 interface RepositoryListProps {
   octokit: Octokit;
@@ -36,13 +36,13 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
   useEffect(() => {
     // TODO: Move gitea client to context
     if (token) {
-      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, `${token}`));
+      setGiteaClient(new GiteaClient(GITEA_ORIGIN_URL, token));
     }
   }, [token]);
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      if (giteaClient && token) {
+      if (giteaClient) {
         const user = await giteaClient.getUser();
         setGitUser(user);
 
@@ -93,7 +93,7 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
       }
 
       if (selectedAccount === gitUser.login) {
-        if (giteaClient && token) {
+        if (giteaClient) {
           const repos = await giteaClient.getReposOfUser(gitUser.login);
           setRepositoryDetails(repos);
           return;
@@ -110,7 +110,7 @@ const RepositoryList = ({ octokit, token }: RepositoryListProps) => {
       const selectedOrg = orgs.find((org) => org.login === selectedAccount);
       assert(selectedOrg, 'Selected org not found in list');
 
-      if (giteaClient && token) {
+      if (giteaClient) {
         const repos = await giteaClient.getReposOfOrganization(
           selectedOrg.login,
         );
