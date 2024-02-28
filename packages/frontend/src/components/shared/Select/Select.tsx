@@ -3,7 +3,6 @@ import React, {
   useState,
   ComponentPropsWithoutRef,
   useMemo,
-  useCallback,
   MouseEvent,
   useRef,
   useEffect,
@@ -135,7 +134,9 @@ export const Select = ({
   const theme = selectTheme({ size, error, variant, orientation });
 
   const [inputValue, setInputValue] = useState('');
-  const [selectedItem, setSelectedItem] = useState<SelectOption | null>(null);
+  const [selectedItem, setSelectedItem] = useState<SelectOption | null>(
+    (value as SelectOption) || null,
+  );
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>(
     'bottom',
@@ -166,22 +167,6 @@ export const Select = ({
     }
   }, [dropdownOpen]); // Re-calculate whenever the dropdown is opened
 
-  useEffect(() => {
-    // If multiple selection is enabled, ensure the internal state is an array
-    if (multiple) {
-      if (Array.isArray(value)) {
-        // Directly use the provided array
-        setSelectedItems(value);
-      } else {
-        // Reset or set to empty array if the value is not an array
-        setSelectedItems([]);
-      }
-    } else {
-      // For single selection, directly set the selected item
-      setSelectedItem(value as SelectOption);
-    }
-  }, [value, multiple]);
-
   const handleSelectedItemChange = (selectedItem: SelectOption | null) => {
     setSelectedItem(selectedItem);
     setInputValue(selectedItem ? selectedItem.label : '');
@@ -194,9 +179,10 @@ export const Select = ({
     addSelectedItem,
     removeSelectedItem,
     selectedItems,
-    setSelectedItems,
+    // setSelectedItems,
     reset,
   } = useMultipleSelection<SelectOption>({
+    selectedItems: multiple ? (value as SelectOption[]) : [],
     onSelectedItemsChange: multiple
       ? undefined
       : ({ selectedItems }) => {
@@ -234,6 +220,7 @@ export const Select = ({
     openMenu,
   } = useCombobox({
     items: filteredItems,
+    selectedItem: multiple ? null : (value as SelectOption) || null,
     // @ts-expect-error – there are two params but we don't need the second one
     isItemDisabled: (item) => item.disabled,
     onInputValueChange: ({ inputValue = '' }) => setInputValue(inputValue),
@@ -265,16 +252,12 @@ export const Select = ({
         setInputValue('');
       }
     },
-    selectedItem: multiple ? null : selectedItem,
     // TODO: Make the input value empty when the dropdown is open, has a value, it is not multiple, and searchable
     itemToString: (item) => (item && !multiple ? item.label : ''),
   });
 
-  const isSelected = useCallback(
-    (item: SelectOption) =>
-      multiple ? selectedItems.includes(item) : selectedItem === item,
-    [selectedItems, selectedItem, multiple],
-  );
+  const isSelected = (item: SelectOption) =>
+    multiple ? selectedItems.includes(item) : selectedItem === item;
 
   const handleClear = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>) => {
     e.stopPropagation();
@@ -336,6 +319,7 @@ export const Select = ({
   const isMultipleHasValue = multiple && selectedItems.length > 0;
   const isMultipleHasValueButNotSearchable =
     multiple && !searchable && selectedItems.length > 0;
+
   const displayPlaceholder = useMemo(() => {
     if (hideValues && isMultipleHasValue) {
       return `${selectedItems.length} selected`;
