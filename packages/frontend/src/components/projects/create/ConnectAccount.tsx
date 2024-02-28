@@ -75,7 +75,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
             height={1000}
           >
             <Button
-              className="w-full sm:w-auto shadow-button"
+              className="w-full sm:w-auto"
               leftIcon={<GithubIcon />}
               variant="tertiary"
             >
@@ -83,7 +83,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
             </Button>
           </OauthPopup>
           <Button
-            className="w-full sm:w-auto shadow-button"
+            className="w-full sm:w-auto"
             leftIcon={<GitTeaIcon />}
             variant="tertiary"
           >
