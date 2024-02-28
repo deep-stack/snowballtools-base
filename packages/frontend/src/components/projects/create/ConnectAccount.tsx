@@ -10,6 +10,7 @@ import {
   GithubIcon,
   GitTeaIcon,
 } from 'components/shared/CustomIcon';
+import { useToast } from 'components/shared/Toast';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -25,12 +26,20 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
 }: ConnectAccountInterface) => {
   const client = useGQLClient();
 
+  const { toast, dismiss } = useToast();
+
   const handleCode = async (code: string) => {
     // Pass code to backend and get access token
     const {
       authenticateGitHub: { token },
     } = await client.authenticateGitHub(code);
     onToken(token);
+    toast({
+      onDismiss: dismiss,
+      id: 'connected-to-github',
+      title: 'The Git account is connected.',
+      variant: 'success',
+    });
   };
 
   // TODO: Use correct height
