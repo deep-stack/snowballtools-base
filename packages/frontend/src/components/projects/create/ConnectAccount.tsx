@@ -12,6 +12,7 @@ import {
 } from 'components/shared/CustomIcon';
 import { useToast } from 'components/shared/Toast';
 import { IconWithFrame } from 'components/shared/IconWithFrame';
+import { Heading } from 'components/shared/Heading';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -55,9 +56,9 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
         </div>
         {/** Text */}
         <div className="flex flex-col gap-1.5 mb-6">
-          <h1 className="text-center text-slate-900 text-xl font-medium leading-7">
+          <Heading className="text-[20px] font-medium">
             Connect to your Git account
-          </h1>
+          </Heading>
           <p className="text-center text-elements-mid-em">
             Once connected, you can import a repository from your account or
             start with one of our templates.
