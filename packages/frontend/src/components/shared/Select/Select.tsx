@@ -375,6 +375,8 @@ export const Select = ({
               'w-6': isMultipleHasValueButNotSearchable && !hideValues,
               // Add margin to the X icon
               'ml-6': isMultipleHasValueButNotSearchable && clearable,
+              // Add padding if there's a left icon
+              'pl-7': leftIcon,
             },
           )}
         />

@@ -130,6 +130,7 @@ export const RepositoryList = ({ octokit }: RepositoryListProps) => {
             options={options}
             placeholder="Select a repository"
             value={selectedAccount}
+            leftIcon={selectedAccount ? <GithubIcon /> : undefined}
             rightIcon={<ChevronGrabberHorizontal />}
             onChange={(value) => setSelectedAccount(value as SelectOption)}
           />
