@@ -162,7 +162,7 @@ const OverviewTabPanel = () => {
               <div className="flex gap-2 items-center">
                 <BranchStrokeIcon className="text-elements-low-em w-4 h-5" />
                 <span className="text-elements-high-em text-sm tracking-tighter">
-                  feature/add-remote-control
+                  {project.deployments[0]?.branch}
                 </span>
               </div>
             </OverviewInfo>
@@ -172,7 +172,9 @@ const OverviewTabPanel = () => {
               <div className="flex gap-2 items-center">
                 <Link to="#">
                   <span className="group text-controls-primary hover:border-controls-primary transition-colors border-b border-b-transparent flex gap-2 items-center text-sm tracking-tight">
-                    dbname{' '}
+                    {/* // TODO: add db name
+                      dbname
+                    */}
                     <LinkIcon className="group-hover:rotate-45 transition-transform" />
                   </span>
                 </Link>
