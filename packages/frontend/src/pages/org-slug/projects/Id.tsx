@@ -3,28 +3,23 @@ import {
   Link,
   Outlet,
   useLocation,
-  useNavigate,
+  // useNavigate,
   useParams,
 } from 'react-router-dom';
 import { Project as ProjectType } from 'gql-client';
 
-import {
-  Button,
-  Tab,
-  Tabs,
-  TabsBody,
-  TabsHeader,
-  Typography,
-} from '@material-tailwind/react';
+import { Tab, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react';
 
-import HorizontalLine from '../../../components/HorizontalLine';
 import { useGQLClient } from '../../../context/GQLClientContext';
 import { useOctokit } from '../../../context/OctokitContext';
+import { Button } from 'components/shared/Button';
+import { ChevronLeft } from 'components/shared/CustomIcon';
+import { WavyBorder } from 'components/shared/WavyBorder';
 
 const Id = () => {
   const { id } = useParams();
   const { octokit } = useOctokit();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const client = useGQLClient();
   const location = useLocation();
 
@@ -69,7 +64,16 @@ const Id = () => {
     <div className="h-full">
       {project ? (
         <>
-          <div className="flex p-4 gap-4 items-center">
+          <div className="px-6 py-4 flex items-center gap-4">
+            <Button
+              variant="tertiary"
+              className="rounded-full h-11 w-11 p-0"
+              aria-label="Go back"
+              leftIcon={<ChevronLeft />}
+            />
+            {repoUrl}
+          </div>
+          {/* <div className="flex p-4 gap-4 items-center">
             <Button
               variant="outlined"
               className="rounded-full"
@@ -93,8 +97,9 @@ const Id = () => {
             <Button className="rounded-full" color="blue" placeholder={''}>
               Go to app
             </Button>
-          </div>
-          <HorizontalLine />
+          </div> */}
+          <WavyBorder className="h-6" />
+          {/* <HorizontalLine /> */}
           <div className="p-4">
             <Tabs value={currentTab}>
               <TabsHeader
