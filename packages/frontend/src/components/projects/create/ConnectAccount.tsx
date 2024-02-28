@@ -42,9 +42,11 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
     // Pass code to backend and get access token
 
     // TODO: Move to git-client package
-    await client.authenticateGit(type, code);
+    const {
+      authenticateGit: { token },
+    } = await client.authenticateGit(type, code);
 
-    await updateClients();
+    await updateClients(token, type);
     onSelectGitAccount(type);
 
     toast({
