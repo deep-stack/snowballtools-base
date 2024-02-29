@@ -18,14 +18,14 @@ export default [
     name: 'Kotlin',
     icon: 'kotlin',
     repoFullName: '',
-    isComingSoon: false,
+    isComingSoon: true,
   },
   {
     id: '4',
     name: 'React Native',
     icon: 'react-native',
     repoFullName: '',
-    isComingSoon: false,
+    isComingSoon: true,
   },
   {
     id: '5',
