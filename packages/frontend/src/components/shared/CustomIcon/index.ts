@@ -38,7 +38,6 @@ export * from './WarningDiamondIcon';
 export * from './ArrowRightCircleIcon';
 export * from './ClockOutlineIcon';
 export * from './ArrowRightCircleFilledIcon';
-export * from './SquigglyLine';
 
 // Templates
 export * from './templates';
