@@ -24,6 +24,7 @@ export interface GitPushEventPayload {
     id: string;
     message: string;
   };
+  deleted: boolean;
 }
 
 export interface AppDeploymentRecordAttributes {
