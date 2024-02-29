@@ -32,14 +32,10 @@ const UserSelectItem = forwardRef<HTMLLIElement, UserSelectItemProps>(
   ({ className, selected, hovered, option, ...props }, ref) => {
     const theme = userSelectItemTheme();
 
-    const { value, label, imgSrc } = option;
+    const { value, label, imgSrc = './logo.svg' } = option;
 
     const renderLeftImage = useMemo(
-      () => (
-        <div className="grid place-items-center w-10 h-10 rounded-lg bg-blue-400">
-          <img src={imgSrc} alt={`${value}-logo`} className={theme.img()} />
-        </div>
-      ),
+      () => <img src={imgSrc} alt={`${value}-logo`} className={theme.img()} />,
       [imgSrc, value],
     );
 

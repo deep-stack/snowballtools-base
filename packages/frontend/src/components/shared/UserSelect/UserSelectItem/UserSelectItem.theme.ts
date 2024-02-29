@@ -12,7 +12,7 @@ export const userSelectItemTheme = tv({
       'cursor-pointer',
     ],
     content: ['flex', 'gap-3', 'items-center'],
-    img: ['h-5', 'w-5'],
+    img: ['h-10', 'w-10', 'rounded-lg'],
     selectedIcon: ['h-5', 'w-5', 'text-controls-primary'],
     label: ['text-sm', 'text-elements-high-em', 'tracking-[-0.006em]'],
   },
