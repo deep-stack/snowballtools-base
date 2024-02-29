@@ -6,15 +6,15 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelect } from 'downshift';
+import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';
+import { EmptyUserSelectItem, UserSelectItem } from './UserSelectItem';
 import {
   BuildingIcon,
   ChevronUpDown,
   SettingsSlidersIcon,
-  SquigglyLine,
 } from 'components/shared/CustomIcon';
+import { WavyBorder } from 'components/shared/WavyBorder';
 import { cn } from 'utils/classnames';
-import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';
-import { EmptyUserSelectItem, UserSelectItem } from './UserSelectItem';
 
 export type UserSelectOption = {
   value: string;
@@ -182,11 +182,9 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
           )}
         </div>
 
-        {/* Squiggly line */}
+        {/* WavyBorder */}
         {/* //TODO:remove if personal dont exist */}
-        <div>
-          <SquigglyLine />
-        </div>
+        <WavyBorder />
 
         <div className={theme.popoverItemWrapper()}>
           {/* //TODO:Personal (replace options with Personal Options) */}
