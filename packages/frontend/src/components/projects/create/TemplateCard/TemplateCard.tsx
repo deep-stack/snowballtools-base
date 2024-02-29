@@ -52,7 +52,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
       variant: 'error',
       onDismiss: dismiss,
     });
-  }, [isGitAuth, navigate, template, toast]);
+  }, [orgSlug, dismiss, isGitAuth, navigate, template, toast]);
 
   return (
     <button
