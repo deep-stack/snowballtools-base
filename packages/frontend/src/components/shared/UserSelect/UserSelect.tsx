@@ -5,14 +5,14 @@ import React, {
   useEffect,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCombobox } from 'downshift';
-import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';
+import { useSelect } from 'downshift';
 import {
   BuildingIcon,
   ChevronUpDown,
   SettingsSlidersIcon,
 } from 'components/shared/CustomIcon';
 import { cn } from 'utils/classnames';
+import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';
 import { EmptyUserSelectItem, UserSelectItem } from './UserSelectItem';
 
 export type UserSelectOption = {
@@ -77,23 +77,27 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
   const isSelected = (item: UserSelectOption) =>
     selectedItem?.value === item.value;
 
-  const { isOpen, getMenuProps, highlightedIndex, getItemProps, openMenu } =
-    useCombobox({
-      items: options,
-      // @ts-expect-error – there are two params but we don't need the second one
-      isItemDisabled: (item) => item.disabled,
-      onSelectedItemChange: ({ selectedItem }) => {
-        if (selectedItem) {
-          console.log(selectedItem);
-          handleSelectedItemChange(selectedItem);
-        }
-      },
-      onIsOpenChange: ({ isOpen }) => {
-        setDropdownOpen(isOpen ?? false);
-      },
-      selectedItem: value || null,
-      itemToString: (item) => (item ? item.label : ''),
-    });
+  const {
+    isOpen,
+    getMenuProps,
+    getToggleButtonProps,
+    highlightedIndex,
+    getItemProps,
+    openMenu,
+  } = useSelect({
+    items: options,
+    // @ts-expect-error – there are two params but we don't need the second one
+    isItemDisabled: (item) => item.disabled,
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        handleSelectedItemChange(selectedItem);
+      }
+    },
+    onIsOpenChange: ({ isOpen }) => {
+      setDropdownOpen(isOpen ?? false);
+    },
+    itemToString: (item) => (item ? item.label : ''),
+  });
 
   const handleManage = () => {
     //TODO: implement manage handler
@@ -103,13 +107,17 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
     <div className={theme.container()}>
       {/* Input */}
       <div
+        {...getToggleButtonProps({
+          ref: inputWrapperRef,
+          suppressRefError: true,
+        })}
         ref={inputWrapperRef}
         onClick={() => !dropdownOpen && openMenu()}
         className="cursor-pointer relative py-2 pl-2 pr-4 flex min-w-[200px] w-full items-center justify-between rounded-xl bg-surface-card shadow-sm"
       >
         <div className="flex gap-3 w-full mr-2">
           <img
-            src="/logo.svg"
+            src={selectedItem?.imgSrc || '/logo.svg'}
             alt="Snowball Logo"
             className="h-10 w-10 rounded-lg"
           />
