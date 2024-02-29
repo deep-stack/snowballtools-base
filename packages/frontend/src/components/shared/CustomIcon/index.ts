@@ -36,6 +36,11 @@ export * from './WarningDiamondIcon';
 export * from './ArrowRightCircleIcon';
 export * from './ClockOutlineIcon';
 export * from './ArrowRightCircleFilledIcon';
+export * from './GithubStrokeIcon';
+export * from './BranchStrokeIcon';
+export * from './StorageIcon';
+export * from './LinkIcon';
+export * from './CursorBoxIcon';
 
 // Templates
 export * from './templates';

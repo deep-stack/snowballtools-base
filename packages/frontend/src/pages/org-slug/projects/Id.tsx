@@ -8,18 +8,13 @@ import {
 } from 'react-router-dom';
 import { Project as ProjectType } from 'gql-client';
 
-import {
-  Button,
-  Tab,
-  Tabs,
-  TabsBody,
-  TabsHeader,
-  Typography,
-} from '@material-tailwind/react';
-
-import HorizontalLine from '../../../components/HorizontalLine';
 import { useGQLClient } from '../../../context/GQLClientContext';
 import { useOctokit } from '../../../context/OctokitContext';
+import { Button } from 'components/shared/Button';
+import { ChevronLeft } from 'components/shared/CustomIcon';
+import { WavyBorder } from 'components/shared/WavyBorder';
+import { Heading } from 'components/shared/Heading';
+import { Tabs } from 'components/shared/Tabs';
 
 const Id = () => {
   const { id } = useParams();
@@ -69,96 +64,61 @@ const Id = () => {
     <div className="h-full">
       {project ? (
         <>
-          <div className="flex p-4 gap-4 items-center">
-            <Button
-              variant="outlined"
-              className="rounded-full"
-              onClick={() => navigate(-1)}
-              placeholder={''}
-            >
-              {'<'}
-            </Button>
-            <Typography variant="h3" className="grow" placeholder={''}>
-              {project?.name}
-            </Typography>
-            <Link to={repoUrl} target="_blank">
+          <div className="px-6 py-4 flex justify-between items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <Button
-                className="rounded-full"
-                variant="outlined"
-                placeholder={''}
-              >
-                Open Repo
-              </Button>
-            </Link>
-            <Button className="rounded-full" color="blue" placeholder={''}>
-              Go to app
-            </Button>
+                variant="tertiary"
+                className="rounded-full h-11 w-11 p-0"
+                aria-label="Go back"
+                leftIcon={<ChevronLeft />}
+                onClick={() => navigate(-1)}
+              />
+              <Heading className="text-2xl font-medium">
+                {project?.name}
+              </Heading>
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <Link to={repoUrl} target="_blank">
+                <Button className="h-11 transition-colors" variant="tertiary">
+                  Open repo
+                </Button>
+              </Link>
+              <Button className="h-11 transition-colors">Go to app</Button>
+            </div>
           </div>
-          <HorizontalLine />
-          <div className="p-4">
-            <Tabs value={currentTab}>
-              <TabsHeader
-                className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
-                indicatorProps={{
-                  className:
-                    'bg-transparent border-b-2 border-gray-900 shadow-none rounded-none',
-                }}
-                placeholder={''}
-              >
-                <Link to="">
-                  <Tab
-                    value=""
-                    className={'p-2 cursor-pointer'}
-                    placeholder={''}
-                  >
-                    Overview
-                  </Tab>
-                </Link>
-                <Link to="deployments">
-                  <Tab
-                    value="deployments"
-                    className={'p-2 cursor-pointer'}
-                    placeholder={''}
-                  >
-                    Deployments
-                  </Tab>
-                </Link>
-                <Link to="database">
-                  <Tab
-                    value="database"
-                    className={'p-2 cursor-pointer'}
-                    placeholder={''}
-                  >
-                    Database
-                  </Tab>
-                </Link>
-                <Link to="integrations">
-                  <Tab
-                    value="integrations"
-                    className={'p-2 cursor-pointer'}
-                    placeholder={''}
-                  >
-                    Integrations
-                  </Tab>
-                </Link>
-                <Link to="settings">
-                  <Tab
-                    value="settings"
-                    className={'p-2 cursor-pointer'}
-                    placeholder={''}
-                  >
-                    Settings
-                  </Tab>
-                </Link>
-              </TabsHeader>
-              <TabsBody placeholder={''}>
+          <WavyBorder />
+          <div className="px-6 ">
+            <Tabs value={currentTab} className="flex-col pt-6">
+              <Tabs.List>
+                <Tabs.Trigger value="">
+                  <Link to="">Overview</Link>
+                </Tabs.Trigger>
+                <Tabs.Trigger value="deployments">
+                  <Link to="deployments">Deployments</Link>
+                </Tabs.Trigger>
+                <Tabs.Trigger value="database">
+                  <Link to="database">Database</Link>
+                </Tabs.Trigger>
+                <Tabs.Trigger value="integrations">
+                  <Link to="integrations">Integrations</Link>
+                </Tabs.Trigger>
+                <Tabs.Trigger value="settings">
+                  <Link to="settings">Settings</Link>
+                </Tabs.Trigger>
+              </Tabs.List>
+              {/* Not wrapping in Tab.Content because we are using Outlet */}
+              <div className="py-7">
                 <Outlet context={{ project, onUpdate }} />
-              </TabsBody>
+              </div>
             </Tabs>
           </div>
         </>
       ) : (
-        <h4>Project not found</h4>
+        <div className="grid place-items-center h-[calc(100vh-174px)]">
+          <Heading as="h4" className="text-2xl font-medium">
+            Project not found.
+          </Heading>
+        </div>
       )}
     </div>
   );
