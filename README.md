@@ -2,43 +2,38 @@
 
 ## Setup
 
-- Clone the `snowballtools-base` repo
+### Clone the `snowballtools-base` repo
 
   ```bash
   git clone git@github.com:snowball-tools/snowballtools-base.git
+  cd snowballtools-base
   ```
 
-- In root of the repo, install depedencies
+### Install dependencies in root
 
   ```bash
   yarn
   ```
 
-- Build packages
+### Build packages
 
   ```bash
   yarn build --ignore frontend
   ```
 
-## Backend
+### Configuration Files
 
-- Change directory to `packages/backend`
-
-  ```bash
-  cd packages/backend
-  ```
-
-- Rename backend config file from [environments/local.toml.example](packages/backend/environments/local.toml.example) to `local.toml`
+- For Backend:
 
   ```bash
-  mv environments/local.toml.example environments/local.toml
+  cp packages/backend/environments/local.toml.example packages/backend/environments/local.toml
   ```
 
-- Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
-  - Client ID and secret will be available after [creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
-    - In "Homepage URL", type `http://localhost:3000`
-    - In "Authorization callback URL", type `http://localhost:3000/organization/projects/create`
-    - Generate a new client secret after app is created
+- For Frontend:
+
+  ```bash
+  cp packages/frontend/.env.example packages/frontend/.env
+  ```
 
 ### Backend Production
 
@@ -63,24 +58,21 @@
   ```
 
 - Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
-  - Client ID and secret will be available after [creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
-    - In "Homepage URL", type `https://dashboard.snowballtools.com`
-    - In "Authorization callback URL", type `https://dashboard.snowballtools.com/organization/projects/create`
+  - [OAuth App Creation](https://github.com/organizations/<org>/settings/applications/new)
+    - Homepage URL: `https://dashboard.snowballtools.com`
+    - Authorization callback URL: `https://dashboard.snowballtools.com/organization/projects/create`
     - Generate a new client secret after app is created
 
 - Set `gitHub.webhookUrl` in backend [config file](packages/backend/environments/local.toml)
 
   ```toml
-  ...
   [gitHub]
     webhookUrl = "https://api.snowballtools.com"
-  ...
   ```
 
 - Let us assume domain for Laconicd to be `api.laconic.com` and set the following in backend [config file](packages/backend/environments/local.toml)
 
   ```toml
-  ...
   [registryConfig]
     fetchDeploymentRecordDelay = 5000
     # Use actual port for REST endpoint
@@ -98,21 +90,14 @@
       amount = "200000"
       denom = "aphoton"
       gas = "750000"
-  ...
-  ```
-
-- Start the server in `packages/backend`
-
-  ```bash
-  yarn start
   ```
 
 ### Backend Development
 
 - Set `gitHub.oAuth.clientId` and `gitHub.oAuth.clientSecret` in backend [config file](packages/backend/environments/local.toml)
-  - Client ID and secret will be available after [creating an OAuth app](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
-    - In "Homepage URL", type `http://localhost:3000`
-    - In "Authorization callback URL", type `http://localhost:3000/organization/projects/create`
+  - [OAuth App Creation](https://github.com/organizations/<org>/settings/applications/new)
+    - Homepage URL: `http://localhost:3000`
+    - Authorization callback URL: `http://localhost:3000/organization/projects/create`
     - Generate a new client secret after app is created
 
 - Setup Laconicd
@@ -159,25 +144,15 @@
   - Look for the forwarding URL in ngrok
 
     ```bash
-    ...
     Forwarding                    https://19c1-61-95-158-116.ngrok-free.app -> http://localhost:8000
-    ...
     ```
 
   - Set `gitHub.webhookUrl` in backend [config file](packages/backend/environments/local.toml)
 
     ```toml
-    ...
     [gitHub]
       webhookUrl = "https://19c1-61-95-158-116.ngrok-free.app"
-    ...
     ```
-
-- Start the server in `packages/backend`
-
-  ```bash
-  yarn start:dev
-  ```
 
 ## Frontend
 
@@ -185,12 +160,6 @@
 
   ```bash
   cd packages/frontend
-  ```
-
-- Rename [.env.example](packages/frontend/.env.example) to `.env`
-
-  ```bash
-  mv .env.example .env
   ```
 
 - Copy the GitHub OAuth app client ID from previous steps and set it in frontend [.env](packages/frontend/.env) file
@@ -202,9 +171,8 @@
 - Set `REACT_APP_GITHUB_PWA_TEMPLATE_REPO` and `REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
 
   ```env
-  # Set actual owner/name of the template repo that will be used for creating new repo
-  REACT_APP_GITHUB_PWA_TEMPLATE_REPO = cerc-io/test-progressive-web-app
-  REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = cerc-io/image-upload-pwa-example
+  REACT_APP_GITHUB_PWA_TEMPLATE_REPO = 'cerc-io/test-progressive-web-app'   # Set actual owner/name of the template repo that will be used for creating new repo
+  REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = 'cerc-io/image-upload-pwa-example'  # Set actual owner/name of the template repo that will be used for creating new repo
   ```
 
 ### Frontend Production
@@ -216,8 +184,7 @@
 - Set the following values in [.env](packages/frontend/.env) file
 
   ```env
-  # Backend server endpoint
-  REACT_APP_SERVER_URL = 'https://api.snowballtools.com'
+  REACT_APP_SERVER_URL = 'https://api.snowballtools.com'   # Backend server endpoint
   ```
 
 - Sign in to [wallet connect](https://cloud.walletconnect.com/sign-in) to create a project ID
@@ -260,10 +227,18 @@
   REACT_APP_WALLET_CONNECT_ID = <Project_ID>
   ```
 
-- Start the React application
+- The React application will be running in `http://localhost:3000/`
+
+## Development
+
+- Start the backend server
+
+  ```bash
+  yarn start:backend
+  ```
+
+- Start the frontend
 
   ```bash
   yarn start
   ```
-
-- The React application will be running in `http://localhost:3000/`
