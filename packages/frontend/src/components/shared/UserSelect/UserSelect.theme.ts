@@ -25,8 +25,6 @@ export const userSelectTheme = tv({
       'mt-12',
       'z-20',
       'absolute',
-      'px-1',
-      'py-1',
       'flex-col',
       'gap-0.5',
       'min-w-full',
@@ -39,6 +37,7 @@ export const userSelectTheme = tv({
       'border-gray-200',
       'rounded-xl',
     ],
+    popoverItemWrapper: ['flex', 'flex-col', 'px-2', 'py-2', 'gap-1'],
   },
   variants: {
     isOpen: {

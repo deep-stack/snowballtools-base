@@ -10,6 +10,7 @@ import {
   BuildingIcon,
   ChevronUpDown,
   SettingsSlidersIcon,
+  SquigglyLine,
 } from 'components/shared/CustomIcon';
 import { cn } from 'utils/classnames';
 import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';
@@ -143,48 +144,66 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
         {...getMenuProps({ ref: popoverRef }, { suppressRefError: true })}
         id="popover"
         ref={popoverRef}
-        className={cn(
-          theme.popover({ isOpen }),
-          {
-            // Position the popover based on the dropdown position
-            'top-[27.5%]': dropdownPosition === 'bottom',
-            'bottom-[92.5%]': dropdownPosition === 'top',
-          },
-          'px-2 py-2',
-        )}
+        className={cn(theme.popover({ isOpen }), {
+          // Position the popover based on the dropdown position
+          'top-[27.5%]': dropdownPosition === 'bottom',
+          'bottom-[92.5%]': dropdownPosition === 'top',
+        })}
       >
-        {/* Settings header */}
-        <div className="flex justify-between h-8 items-center">
-          <div className="flex gap-1 text-elements-mid-em">
-            <BuildingIcon size={16} />
-            <p className="text-xs font-medium">Other teams</p>
+        <div className={theme.popoverItemWrapper()}>
+          {/* Settings header */}
+          <div className="flex justify-between h-8 items-center">
+            <div className="flex gap-1 text-elements-mid-em">
+              <BuildingIcon size={16} />
+              <p className="text-xs font-medium">Other teams</p>
+            </div>
+            <div
+              className="flex gap-1 text-elements-link cursor-pointer"
+              onClick={handleManage}
+            >
+              <p className="text-xs font-medium">Manage</p>
+              <SettingsSlidersIcon size={16} />
+            </div>
           </div>
-          <div
-            className="flex gap-1 text-elements-link cursor-pointer"
-            onClick={handleManage}
-          >
-            <p className="text-xs font-medium">Manage</p>
-            <SettingsSlidersIcon size={16} />
-          </div>
+
+          {/* Organization */}
+          {isOpen && options.length !== 0 ? (
+            options.map((item, index) => (
+              <UserSelectItem
+                {...getItemProps({ item, index })}
+                key={item.value}
+                selected={isSelected(item)}
+                option={item}
+                hovered={highlightedIndex === index}
+              />
+            ))
+          ) : (
+            <EmptyUserSelectItem />
+          )}
         </div>
 
-        {/* Organization */}
-        {isOpen && options.length !== 0 ? (
-          options.map((item, index) => (
-            <UserSelectItem
-              {...getItemProps({ item, index })}
-              key={item.value}
-              selected={isSelected(item)}
-              option={item}
-              hovered={highlightedIndex === index}
-            />
-          ))
-        ) : (
-          <EmptyUserSelectItem />
-        )}
+        {/* Squiggly line */}
+        {/* //TODO:remove if personal dont exist */}
+        <div>
+          <SquigglyLine />
+        </div>
 
-        {/* //TODO:Squiggly line */}
-        {/* //TODO:Personal */}
+        <div className={theme.popoverItemWrapper()}>
+          {/* //TODO:Personal (replace options with Personal Options) */}
+          {isOpen && options.length !== 0 ? (
+            options.map((item, index) => (
+              <UserSelectItem
+                {...getItemProps({ item, index: 99 })}
+                key={item.value}
+                selected={isSelected(item)}
+                option={item}
+                hovered={highlightedIndex === index}
+              />
+            ))
+          ) : (
+            <EmptyUserSelectItem />
+          )}
+        </div>
       </ul>
     </div>
   );
