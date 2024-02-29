@@ -1,11 +1,71 @@
 #!/bin/bash
 
+# Repository URL
+REPO_URL="https://git.vdb.to/cerc-io/snowballtools-base"
+
+# Get the latest commit hash from the repository
+LATEST_HASH=$(git ls-remote $REPO_URL HEAD | awk '{print $1}')
+
+# Extract version from ../frontend/package.json
+PACKAGE_VERSION=$(jq -r '.version' ../frontend/package.json)
+
+# Current date and time for note
+CURRENT_DATE_TIME=$(date -u)
+
+# Increment application-record version
+APPLICATION_RECORD_FILE="./records/application-record.yml"
+if [ -f "$APPLICATION_RECORD_FILE" ]; then
+    # Extract current version and increment it
+    CURRENT_VERSION=$(grep 'version:' $APPLICATION_RECORD_FILE | head -1 | awk '{print $2}')
+    IFS='.' read -ra ADDR <<< "$CURRENT_VERSION"
+    VERSION_NUMBER=${ADDR[2]}
+    NEW_VERSION_NUMBER=$((VERSION_NUMBER + 1))
+    NEW_APPLICATION_VERSION="${ADDR[0]}.${ADDR[1]}.$NEW_VERSION_NUMBER"
+else
+    # If file does not exist, start from version 0.0.1
+    NEW_APPLICATION_VERSION="0.0.1"
+fi
+
+# Generate application-deployment-request.yml
+cat > ./records/application-deployment-request.yml <<EOF
+record:
+  type: ApplicationDeploymentRequest
+  version: '1.0.0'
+  name: snowballtools-base-frontend@$PACKAGE_VERSION
+  application: crn://snowballtools/applications/snowballtools-base-frontend@$PACKAGE_VERSION
+  dns: dashboard
+  config:
+    env:
+      LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
+      LACONIC_HOSTED_CONFIG_app_github_clientid: b7c63b235ca1dd5639ab
+      LACONIC_HOSTED_CONFIG_app_github_templaterepo: snowball-tools-platform/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_app_github_pwa_templaterepo: snowball-tools-platform/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_app_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_app_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
+  meta:
+    note: Added by Snowball @ $CURRENT_DATE_TIME
+    repository: "$REPO_URL"
+    repository_ref: $LATEST_HASH
+EOF
+
+# Generate application-record.yml with incremented version
+cat > ./records/application-record.yml <<EOF
+record:
+  type: ApplicationRecord
+  version: $NEW_APPLICATION_VERSION
+  repository_ref: $LATEST_HASH
+  repository: ["$REPO_URL"]
+  app_type: webapp
+  name: snowballtools-base-frontend
+  app_version: $PACKAGE_VERSION
+EOF
+
+echo "Files generated successfully."
+
 # Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
 
 RECORD_FILE=records/application-record.yml
 CONFIG_FILE=config.yml
-RCD_APP_VERSION="0.1.3"
-REPO_REF="513ca69d01bee857cf207a0605483205b384e218"
 
 # Publish ApplicationRecord
 RECORD_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
@@ -15,8 +75,8 @@ echo $RECORD_ID
 # Set name to record
 REGISTRY_APP_CRN="crn://snowballtools/applications/snowballtools-base-frontend"
 
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${RCD_APP_VERSION}" "$RECORD_ID"
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${REPO_REF}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${PACKAGE_VERSION}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${LATEST_HASH}" "$RECORD_ID"
 # Set name if latest release
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN" "$RECORD_ID"
 echo "$REGISTRY_APP_CRN set for ApplicationRecord"

@@ -1,21 +1,18 @@
 record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
-  name: snowballtools-base-frontend@0.1.3
-  application: crn://snowballtools/applications/snowballtools-base-frontend@0.1.3
+  name: snowballtools-base-frontend@0.1.7
+  application: crn://snowballtools/applications/snowballtools-base-frontend@0.1.7
   dns: dashboard
   config:
     env:
       LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
-      # If GitHub client ID is changed, same ID and corresponding secret has to be set in backend config
       LACONIC_HOSTED_CONFIG_app_github_clientid: b7c63b235ca1dd5639ab
       LACONIC_HOSTED_CONFIG_app_github_templaterepo: snowball-tools-platform/test-progressive-web-app
-      # New config env after changes for image upload PWA
       LACONIC_HOSTED_CONFIG_app_github_pwa_templaterepo: snowball-tools-platform/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_app_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_app_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
   meta:
-    # Set CURRENT_DATE_TIME; Use command date -u
-    note: Added by Snowball @ Tue Feb 27 17:24:06 UTC 2024
+    note: Added by Snowball @ Thu Feb 29 02:48:23 UTC 2024
     repository: "https://git.vdb.to/cerc-io/snowballtools-base"
-    repository_ref: 513ca69d01bee857cf207a0605483205b384e218
+    repository_ref: 94a9bf88a9cf8442ffd37ad924cf9a590af69431
