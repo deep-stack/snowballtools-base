@@ -41,6 +41,8 @@ export * from './BranchStrokeIcon';
 export * from './StorageIcon';
 export * from './LinkIcon';
 export * from './CursorBoxIcon';
+export * from './CrossCircleIcon';
+export * from './RefreshIcon';
 
 // Templates
 export * from './templates';
