@@ -179,7 +179,6 @@ export const Select = ({
     addSelectedItem,
     removeSelectedItem,
     selectedItems,
-    // setSelectedItems,
     reset,
   } = useMultipleSelection<SelectOption>({
     selectedItems: multiple ? (value as SelectOption[]) : [],
