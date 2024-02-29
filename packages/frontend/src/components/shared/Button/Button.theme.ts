@@ -150,7 +150,7 @@ export const buttonTheme = tv(
       {
         size: 'md',
         iconOnly: true,
-        class: ['py-3.25', 'px-3.25'],
+        class: ['py-3', 'px-3'],
       },
       {
         size: 'sm',
