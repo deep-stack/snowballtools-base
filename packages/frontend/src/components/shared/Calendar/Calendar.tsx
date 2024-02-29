@@ -19,6 +19,7 @@ import {
 
 import './Calendar.css';
 import { format } from 'date-fns';
+import { cn } from 'utils/classnames';
 
 type ValuePiece = Date | null;
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -63,6 +64,11 @@ export interface CalendarProps extends CustomReactCalendarProps, CalendarTheme {
    * @returns None
    */
   onCancel?: () => void;
+  /**
+   * Optional callback function that is called when a reset action is triggered.
+   * @returns None
+   */
+  onReset?: () => void;
 }
 
 /**
@@ -80,6 +86,7 @@ export const Calendar = ({
   actions,
   onSelect,
   onCancel,
+  onReset,
   onChange: onChangeProp,
   ...props
 }: CalendarProps): JSX.Element => {
@@ -217,6 +224,11 @@ export const Calendar = ({
     [setValue, setActiveDate, changeNavigationLabel, selectRange],
   );
 
+  const handleReset = useCallback(() => {
+    setValue(null);
+    onReset?.();
+  }, [setValue, onReset]);
+
   return (
     <div
       {...wrapperProps}
@@ -276,21 +288,30 @@ export const Calendar = ({
       {/* Footer or CTA */}
       <div
         {...footerProps}
-        className={footer({ className: footerProps?.className })}
+        className={cn(footer({ className: footerProps?.className }), {
+          'justify-between': value,
+        })}
       >
         {actions ? (
           actions
         ) : (
           <>
-            <Button variant="tertiary" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button
-              disabled={!value}
-              onClick={() => (value ? onSelect?.(value) : null)}
-            >
-              Select
-            </Button>
+            {value && (
+              <Button variant="danger" onClick={handleReset}>
+                Reset
+              </Button>
+            )}
+            <div className="space-x-3">
+              <Button variant="tertiary" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button
+                disabled={!value}
+                onClick={() => (value ? onSelect?.(value) : null)}
+              >
+                Select
+              </Button>
+            </div>
           </>
         )}
       </div>

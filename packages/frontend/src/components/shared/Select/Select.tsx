@@ -3,7 +3,6 @@ import React, {
   useState,
   ComponentPropsWithoutRef,
   useMemo,
-  useCallback,
   MouseEvent,
   useRef,
   useEffect,
@@ -12,7 +11,7 @@ import { useMultipleSelection, useCombobox } from 'downshift';
 import { SelectTheme, selectTheme } from './Select.theme';
 import {
   ChevronDownIcon,
-  CrossIcon,
+  CrossCircleIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
 import { cloneIcon } from 'utils/cloneIcon';
@@ -270,11 +269,8 @@ export const Select = ({
     itemToString: (item) => (item && !multiple ? item.label : ''),
   });
 
-  const isSelected = useCallback(
-    (item: SelectOption) =>
-      multiple ? selectedItems.includes(item) : selectedItem === item,
-    [selectedItems, selectedItem, multiple],
-  );
+  const isSelected = (item: SelectOption) =>
+    multiple ? selectedItems.includes(item) : selectedItem === item;
 
   const handleClear = (e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>) => {
     e.stopPropagation();
@@ -306,7 +302,7 @@ export const Select = ({
     return (
       <div className={theme.iconContainer({ class: 'pr-4 right-0' })}>
         {clearable && (selectedItems.length > 0 || selectedItem) && (
-          <CrossIcon
+          <CrossCircleIcon
             className={theme.icon({ class: 'h-4 w-4' })}
             onClick={handleClear}
           />
@@ -318,7 +314,7 @@ export const Select = ({
         )}
       </div>
     );
-  }, [cloneIcon, theme, rightIcon]);
+  }, [cloneIcon, theme, rightIcon, selectedItem, selectedItems, clearable]);
 
   const renderHelperText = useMemo(
     () => (

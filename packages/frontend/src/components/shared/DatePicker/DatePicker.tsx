@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Input, InputProps } from 'components/shared/Input';
 import * as Popover from '@radix-ui/react-popover';
 import { datePickerTheme } from './DatePicker.theme';
@@ -27,6 +27,10 @@ export interface DatePickerProps
    * Whether to allow the selection of a date range.
    */
   selectRange?: boolean;
+  /**
+   * Optional callback function that is called when the date picker is reset.
+   */
+  onReset?: () => void;
 }
 
 /**
@@ -39,6 +43,7 @@ export const DatePicker = ({
   calendarProps,
   value,
   onChange,
+  onReset,
   selectRange = false,
   ...props
 }: DatePickerProps) => {
@@ -50,16 +55,16 @@ export const DatePicker = ({
    * Renders the value of the date based on the current state of `props.value`.
    * @returns {string | undefined} - The formatted date value or `undefined` if `props.value` is falsy.
    */
-  const renderValue = useCallback(() => {
-    if (!value) return undefined;
+  const renderValue = useMemo(() => {
+    if (!value) return '';
     if (Array.isArray(value)) {
       return value
         .map((date) => format(date as Date, 'dd/MM/yyyy'))
         .join(' - ');
     }
     return format(value, 'dd/MM/yyyy');
-  }, [value]);
-
+  }, [value, onReset]);
+  console.log(renderValue);
   /**
    * Handles the selection of a date from the calendar.
    */
@@ -71,15 +76,20 @@ export const DatePicker = ({
     [setOpen, onChange],
   );
 
+  const handleReset = useCallback(() => {
+    setOpen(false);
+    onReset?.();
+  }, [setOpen, onReset]);
+
   return (
     <Popover.Root open={open}>
-      <Popover.Trigger>
+      <Popover.Trigger className="w-full">
         <Input
           {...props}
           rightIcon={<CalendarIcon onClick={() => setOpen(true)} />}
           readOnly
           placeholder="Select a date..."
-          value={renderValue()}
+          value={renderValue}
           className={input({ className })}
           onClick={() => setOpen(true)}
         />
@@ -93,6 +103,7 @@ export const DatePicker = ({
             {...calendarProps}
             selectRange={selectRange}
             value={value}
+            onReset={handleReset}
             onCancel={() => setOpen(false)}
             onSelect={handleSelect}
           />
