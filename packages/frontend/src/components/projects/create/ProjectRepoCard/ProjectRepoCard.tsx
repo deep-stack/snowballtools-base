@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import toast from 'react-hot-toast';
+import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { Spinner } from '@material-tailwind/react';
@@ -13,6 +12,7 @@ import {
   LockIcon,
 } from 'components/shared/CustomIcon';
 import { Button } from 'components/shared/Button';
+import { useToast } from 'components/shared/Toast';
 
 interface ProjectRepoCardProps {
   repository: GitRepositoryDetails;
@@ -23,32 +23,52 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
 }) => {
   const client = useGQLClient();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { orgSlug } = useParams();
+  const { toast, dismiss } = useToast();
 
   const createProject = useCallback(async () => {
-    if (!repository) {
-      return;
+    if (!repository || !orgSlug) {
+      return toast({
+        id: 'missing-repository-or-org-slug',
+        title: 'Repository or organization slug is missing',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
 
-    setIsLoading(true);
-    const { addProject } = await client.addProject(orgSlug!, {
-      name: `${repository.owner!.login}-${repository.name}`,
-      prodBranch: repository.default_branch!,
-      repository: repository.full_name,
-      // TODO: Compute template from repo
-      template: 'webapp',
-    });
-
-    if (Boolean(addProject)) {
+    try {
+      setIsLoading(true);
+      const { addProject } = await client.addProject(orgSlug, {
+        name: `${repository.owner?.login}-${repository.name}`,
+        prodBranch: repository.default_branch as string,
+        repository: repository.full_name,
+        // TODO: Compute template from repo
+        template: 'webapp',
+      });
+      if (addProject) {
+        navigate(`import?projectId=${addProject.id}`);
+      } else {
+        toast({
+          id: 'failed-to-create-project',
+          title: 'Failed to create project',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        id: 'failed-to-create-project',
+        title: 'Failed to create project',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
+    } finally {
       setIsLoading(false);
-      navigate(`import?projectId=${addProject.id}`);
-    } else {
-      setIsLoading(false);
-      toast.error('Failed to create project');
     }
-  }, [client, repository]);
+  }, [client, repository, orgSlug, setIsLoading, navigate, toast]);
 
   return (
     <div
