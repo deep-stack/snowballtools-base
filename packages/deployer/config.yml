@@ -2,6 +2,8 @@ services:
   cns:
     restEndpoint: http://console.laconic.com:1317
     gqlEndpoint: http://console.laconic.com:9473/api
+    userKey: 489c9dd3931c2a2d4dd77973302dc5eb01e2a49552f9d932c58d9da823512311
+    bondId: 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32
     chainId: laconic_9000-1
     gas: 1200000
     fees: 200000aphoton
