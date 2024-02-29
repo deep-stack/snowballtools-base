@@ -1,7 +1,6 @@
 import React, {
   useState,
   ComponentPropsWithoutRef,
-  useCallback,
   useRef,
   useEffect,
 } from 'react';
@@ -34,7 +33,7 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
   const navigate = useNavigate();
 
   const [selectedItem, setSelectedItem] = useState<UserSelectOption | null>(
-    null,
+    (value as UserSelectOption) || null,
   );
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>(
@@ -75,10 +74,8 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
     navigate(`/${selectedItem?.value}`);
   };
 
-  const isSelected = useCallback(
-    (item: UserSelectOption) => selectedItem?.value === item.value,
-    [selectedItem],
-  );
+  const isSelected = (item: UserSelectOption) =>
+    selectedItem?.value === item.value;
 
   const { isOpen, getMenuProps, highlightedIndex, getItemProps, openMenu } =
     useCombobox({
@@ -94,7 +91,7 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
       onIsOpenChange: ({ isOpen }) => {
         setDropdownOpen(isOpen ?? false);
       },
-      selectedItem: selectedItem,
+      selectedItem: value || null,
       itemToString: (item) => (item ? item.label : ''),
     });
 
