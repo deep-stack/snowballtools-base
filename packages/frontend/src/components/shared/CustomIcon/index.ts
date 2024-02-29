@@ -36,3 +36,4 @@ export * from './ClockIcon';
 export * from './HorizontalDotIcon';
 export * from './WarningDiamondIcon';
 export * from './ArrowRightCircleFilledIcon';
+export * from './SquigglyLine';
