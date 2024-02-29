@@ -87,8 +87,8 @@ const Id = () => {
             </div>
           </div>
           <WavyBorder />
-          <div className="px-6 ">
-            <Tabs value={currentTab} className="flex-col pt-6">
+          <div className="px-6 h-full">
+            <Tabs value={currentTab} className="flex-col pt-6 h-full">
               <Tabs.List>
                 <Tabs.Trigger value="">
                   <Link to="">Overview</Link>
@@ -107,7 +107,7 @@ const Id = () => {
                 </Tabs.Trigger>
               </Tabs.List>
               {/* Not wrapping in Tab.Content because we are using Outlet */}
-              <div className="py-7">
+              <div className="py-7 h-full">
                 <Outlet context={{ project, onUpdate }} />
               </div>
             </Tabs>
