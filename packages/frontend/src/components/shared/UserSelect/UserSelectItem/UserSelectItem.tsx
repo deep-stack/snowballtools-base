@@ -1,4 +1,4 @@
-import React, { forwardRef, ComponentPropsWithoutRef, useMemo } from 'react';
+import React, { forwardRef, ComponentPropsWithoutRef } from 'react';
 import { Overwrite, UseComboboxGetItemPropsReturnValue } from 'downshift';
 import {
   userSelectItemTheme,
@@ -34,11 +34,6 @@ const UserSelectItem = forwardRef<HTMLLIElement, UserSelectItemProps>(
 
     const { value, label, imgSrc = './logo.svg' } = option;
 
-    const renderLeftImage = useMemo(
-      () => <img src={imgSrc} alt={`${value}-logo`} className={theme.img()} />,
-      [imgSrc, value],
-    );
-
     return (
       <li
         {...props}
@@ -46,7 +41,7 @@ const UserSelectItem = forwardRef<HTMLLIElement, UserSelectItemProps>(
         className={theme.wrapper({ className, active: selected || hovered })}
       >
         <div className={theme.content()}>
-          {renderLeftImage}
+          <img src={imgSrc} alt={`${value}-logo`} className={theme.img()} />
           <p className={theme.label()}>{label}</p>
         </div>
         {selected && <CheckRadioIcon className={theme.selectedIcon()} />}
