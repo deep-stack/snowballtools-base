@@ -7,7 +7,7 @@ import {
   TemplateIconType,
 } from 'components/shared/CustomIcon';
 import { Tag } from 'components/shared/Tag';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { cn } from 'utils/classnames';
 
@@ -30,6 +30,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
 }: TemplateCardProps) => {
   const { toast, dismiss } = useToast();
   const navigate = useNavigate();
+  const { orgSlug } = useParams();
 
   const handleClick = useCallback(() => {
     if (template?.isComingSoon) {
@@ -41,7 +42,9 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
       });
     }
     if (isGitAuth) {
-      return navigate(`template?templateId=${template.id}`);
+      return navigate(
+        `/${orgSlug}/projects/create/template?templateId=${template.id}`,
+      );
     }
     return toast({
       id: 'connect-git-account',
