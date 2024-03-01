@@ -87,12 +87,12 @@ export const Input = ({
   );
 
   return (
-    <div className="space-y-2">
+    <div className="gap-y-2">
       {renderLabels}
       <div className={containerCls({ class: className })}>
         {leftIcon && renderLeftIcon}
         <input
-          className={cn(inputCls({ class: 'w-80' }), {
+          className={cn(inputCls(), {
             'pl-10': leftIcon,
           })}
           {...props}
