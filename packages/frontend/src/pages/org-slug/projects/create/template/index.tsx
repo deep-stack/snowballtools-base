@@ -133,13 +133,15 @@ const CreateRepo = () => {
     <form onSubmit={handleSubmit(submitRepoHandler)}>
       <div className="flex flex-col gap-4 lg:gap-7 w-full">
         <div>
-          <Heading className="text-lg font-medium">Create a repository</Heading>
-          <Heading className="text-sm text-elements-low-em">
+          <Heading as="h3" className="text-lg font-medium">
+            Create a repository
+          </Heading>
+          <Heading as="h5" className="text-sm font-sans text-elements-low-em">
             The project will be cloned into this repository
           </Heading>
         </div>
         <div className="flex flex-col justify-start gap-3">
-          <Heading className="text-sm">Framework</Heading>
+          <span className="text-sm text-elements-high-em">Framework</span>
           <Controller
             name="framework"
             control={control}
@@ -155,7 +157,7 @@ const CreateRepo = () => {
           />
         </div>
         <div className="flex flex-col justify-start gap-3">
-          <Heading className="text-sm">Git account</Heading>
+          <span className="text-sm text-elements-high-em">Git account</span>
           <Controller
             name="account"
             control={control}
@@ -174,7 +176,7 @@ const CreateRepo = () => {
           />
         </div>
         <div className="flex flex-col justify-start gap-3">
-          <Heading className="text-sm">Name the repo</Heading>
+          <span className="text-sm text-elements-high-em">Name the repo</span>
           <Controller
             name="repoName"
             control={control}
