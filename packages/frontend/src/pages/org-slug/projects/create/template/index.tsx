@@ -67,7 +67,7 @@ const CreateRepo = () => {
 
           toast({
             id: 'repo-exist-error',
-            title: REPO_EXIST_ERROR,
+            title: 'Could not create: repository already exists',
             variant: 'error',
             onDismiss: dismiss,
           });
