@@ -320,8 +320,9 @@ export const Select = ({
     );
   }, [cloneIcon, theme, rightIcon]);
 
-  const renderHelperText = useMemo(
-    () => (
+  const renderHelperText = useMemo(() => {
+    if (!helperText) return null;
+    return (
       <div className={theme.helperText()}>
         {error &&
           cloneIcon(<WarningIcon className={theme.helperIcon()} />, {
@@ -329,9 +330,8 @@ export const Select = ({
           })}
         <p>{helperText}</p>
       </div>
-    ),
-    [cloneIcon, error, theme, helperText],
-  );
+    );
+  }, [cloneIcon, error, theme, helperText]);
 
   const isMultipleHasValue = multiple && selectedItems.length > 0;
   const isMultipleHasValueButNotSearchable =
