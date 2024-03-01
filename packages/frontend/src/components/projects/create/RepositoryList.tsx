@@ -13,8 +13,6 @@ import AsyncSelect from '../../shared/AsyncSelect';
 import { GithubIcon } from 'components/shared/CustomIcon';
 
 const DEFAULT_SEARCHED_REPO = '';
-const REPOS_PER_PAGE = 5;
-
 interface RepositoryListProps {
   octokit: Octokit;
   gitClient: GitClient;
@@ -55,21 +53,20 @@ const RepositoryList = ({ octokit, gitClient }: RepositoryListProps) => {
 
       // Check search input and use GitHub search API
       if (debouncedSearchedRepo) {
-        let query = `${debouncedSearchedRepo} in:name fork:true`;
-
+        let result;
         // Check if selected account is an organization
         if (selectedAccount === gitUser.login) {
-          query = query + ` user:${selectedAccount}`;
+          result = await gitClient.searchRepo(debouncedSearchedRepo, gitUser);
         } else {
-          query = query + ` org:${selectedAccount}`;
+          const org = orgs.find((org) => org.login === selectedAccount);
+          result = await gitClient.searchRepo(
+            debouncedSearchedRepo,
+            undefined,
+            org,
+          );
         }
 
-        const result = await octokit.rest.search.repos({
-          q: query,
-          per_page: REPOS_PER_PAGE,
-        });
-
-        setRepositoryDetails(result.data.items);
+        setRepositoryDetails(result);
         return;
       }
 
