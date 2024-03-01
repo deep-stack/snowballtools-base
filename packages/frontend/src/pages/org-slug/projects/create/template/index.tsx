@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
@@ -10,7 +10,7 @@ import { Template } from '../../../../../types';
 import { Heading } from 'components/shared/Heading';
 import { Input } from 'components/shared/Input';
 import { Radio } from 'components/shared/Radio';
-import { Select } from 'components/shared/Select';
+import { Select, SelectOption } from 'components/shared/Select';
 import {
   ArrowRightCircleFilledIcon,
   GitIcon,
@@ -40,12 +40,12 @@ const CreateRepo = () => {
 
   const FRAMEWORK_OPTIONS = [
     {
-      value: 'react-native',
+      value: 'React',
       label: 'React Native',
       leftIcon: <GitIcon />,
     },
     {
-      value: 'expo',
+      value: 'Expo',
       label: 'Expo',
       leftIcon: <GitTeaIcon />,
     },
@@ -114,7 +114,7 @@ const CreateRepo = () => {
     fetchUserAndOrgs();
   }, [octokit]);
 
-  const { handleSubmit, reset } = useForm<SubmitRepoValues>({
+  const { handleSubmit, control, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
       framework: 'React',
       repoName: '',
@@ -140,29 +140,61 @@ const CreateRepo = () => {
         </div>
         <div className="flex flex-col justify-start gap-3">
           <Heading className="text-sm">Framework</Heading>
-          <Radio
-            variant="card"
-            options={FRAMEWORK_OPTIONS}
-            orientation="horizontal"
+          <Controller
+            name="framework"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Radio
+                variant="card"
+                options={FRAMEWORK_OPTIONS}
+                orientation="horizontal"
+                value={value}
+                onValueChange={onChange}
+              />
+            )}
           />
         </div>
         <div className="flex flex-col justify-start gap-3">
           <Heading className="text-sm">Git account</Heading>
-          <Select
-            options={
-              gitAccounts.map((account) => ({
-                value: account,
-                label: account,
-              })) ?? []
-            }
+          <Controller
+            name="account"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Select
+                value={{ value } as SelectOption}
+                onChange={(value) => onChange((value as SelectOption).value)}
+                options={
+                  gitAccounts.map((account) => ({
+                    value: account,
+                    label: account,
+                  })) ?? []
+                }
+              />
+            )}
           />
         </div>
         <div className="flex flex-col justify-start gap-3">
           <Heading className="text-sm">Name the repo</Heading>
-          <Input />
+          <Controller
+            name="repoName"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Input value={value} onChange={onChange} />
+            )}
+          />
         </div>
         <div>
-          <Checkbox label="Make this repo private" value={'private-repo'} />
+          <Controller
+            name="isPrivate"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Checkbox
+                label="Make this repo private"
+                checked={value}
+                onCheckedChange={onChange}
+              />
+            )}
+          />
         </div>
         <div>
           <Button
