@@ -6,10 +6,9 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { Avatar } from '@material-tailwind/react';
-
 import Stepper from '../../../../components/Stepper';
 import templates from '../../../../assets/templates';
+import { Avatar } from 'components/shared/Avatar';
 import { LinkChainIcon } from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
 
@@ -46,9 +45,9 @@ const CreateWithTemplate = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6 gap-3 items-start lg:items-center">
+      <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
         <div className="flex items-center gap-3">
-          <Avatar variant="rounded" src="/gray.png" placeholder={''} />
+          <Avatar size={48} imageSrc="/gray.png" />
           <Heading className="font-medium">{template?.name}</Heading>
         </div>
         <div>
