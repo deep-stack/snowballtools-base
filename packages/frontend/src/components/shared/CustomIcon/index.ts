@@ -41,6 +41,10 @@ export * from './BranchStrokeIcon';
 export * from './StorageIcon';
 export * from './LinkIcon';
 export * from './CursorBoxIcon';
+export * from './CommitIcon';
+export * from './RocketIcon';
+export * from './RefreshIcon';
+export * from './UndoIcon';
 
 // Templates
 export * from './templates';

@@ -4,7 +4,7 @@ import type { VariantProps } from 'tailwind-variants';
 export const tagTheme = tv(
   {
     slots: {
-      wrapper: ['flex', 'gap-1.5', 'rounded-lg', 'border'],
+      wrapper: ['inline-flex', 'gap-1.5', 'rounded-lg', 'border'],
       icon: [],
       label: ['font-inter', 'text-xs'],
     },

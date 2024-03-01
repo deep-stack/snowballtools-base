@@ -12,6 +12,9 @@ export default withMT({
       zIndex: {
         tooltip: '52',
       },
+      letterSpacing: {
+        tight: '-0.084px',
+      },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Inter Display', 'sans-serif'],

@@ -88,17 +88,17 @@ const DeploymentsTabPanel = () => {
     setFilterValue(DEFAULT_FILTER_VALUE);
   }, []);
 
-  const onUpdateDeploymenToProd = async () => {
+  const onUpdateDeploymentToProd = async () => {
     await fetchDeployments();
   };
 
   return (
-    <div className="p-4">
+    <div className="max-w-[1440px]">
       <FilterForm
         value={filterValue}
         onChange={(value) => setFilterValue(value)}
       />
-      <div className="mt-2">
+      <div className="mt-3">
         {Boolean(filteredDeployments.length) ? (
           filteredDeployments.map((deployment, key) => {
             return (
@@ -106,7 +106,7 @@ const DeploymentsTabPanel = () => {
                 deployment={deployment}
                 key={key}
                 currentDeployment={currentDeployment!}
-                onUpdate={onUpdateDeploymenToProd}
+                onUpdate={onUpdateDeploymentToProd}
                 project={project}
                 prodBranchDomains={prodBranchDomains}
               />
