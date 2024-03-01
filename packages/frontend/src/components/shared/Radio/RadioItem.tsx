@@ -75,8 +75,11 @@ export const RadioItem = ({
           className={indicator({ className: indicatorProps?.className })}
         />
       </RadixRadio>
-      {leftIcon &&
-        cloneIcon(leftIcon, { className: icon(), 'aria-hidden': true })}
+      {leftIcon && (
+        <span>
+          {cloneIcon(leftIcon, { className: icon(), 'aria-hidden': true })}
+        </span>
+      )}
       {label && (
         <label
           {...labelProps}
