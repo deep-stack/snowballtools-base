@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import { toast as reactHotToast } from 'react-hot-toast';
 import { RequestError } from 'octokit';
 import assert from 'assert';
 
@@ -45,34 +44,16 @@ const CreateRepo = () => {
         const [owner, repo] = template.repoFullName.split('/');
 
         // TODO: Handle this functionality in backend
-        let gitRepo;
-        try {
-          gitRepo = await octokit?.rest.repos.createUsingTemplate({
-            template_owner: owner,
-            template_repo: repo,
-            owner: data.account,
-            name: data.repoName,
-            include_all_branches: false,
-            private: data.isPrivate,
-          });
-        } catch (error) {
-          if (
-            !(
-              error instanceof RequestError &&
-              error.message.includes(REPO_EXIST_ERROR)
-            )
-          ) {
-            throw error;
-          }
+        const gitRepo = await octokit?.rest.repos.createUsingTemplate({
+          template_owner: owner,
+          template_repo: repo,
+          owner: data.account,
+          name: data.repoName,
+          include_all_branches: false,
+          private: data.isPrivate,
+        });
 
-          toast({
-            id: 'repo-exist-error',
-            title: 'Could not create: repository already exists',
-            variant: 'error',
-            onDismiss: dismiss,
-          });
-
-          setIsLoading(false);
+        if (!gitRepo) {
           return;
         }
 
@@ -84,18 +65,31 @@ const CreateRepo = () => {
           template: 'webapp',
         });
 
-        if (Boolean(addProject)) {
-          setIsLoading(true);
-          navigate(
-            `deploy?projectId=${addProject.id}&templateId=${template.id}`,
-          );
-        } else {
-          setIsLoading(false);
-        }
+        navigate(`deploy?projectId=${addProject.id}&templateId=${template.id}`);
       } catch (err) {
-        console.error(err);
         setIsLoading(false);
-        reactHotToast.error('Error deploying project');
+
+        if (
+          err instanceof RequestError &&
+          err.message.includes(REPO_EXIST_ERROR)
+        ) {
+          toast({
+            id: 'repo-exist-error',
+            title: 'Could not create: repository already exists',
+            variant: 'error',
+            onDismiss: dismiss,
+          });
+
+          return;
+        }
+
+        console.error(err);
+        toast({
+          id: 'error-deploying-project',
+          title: 'Error deploying project',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
     },
     [octokit],
