@@ -87,7 +87,7 @@ export const Input = ({
   );
 
   return (
-    <div className="gap-y-2">
+    <div className="flex flex-col gap-y-2">
       {renderLabels}
       <div className={containerCls({ class: className })}>
         {leftIcon && renderLeftIcon}

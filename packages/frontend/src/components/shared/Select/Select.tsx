@@ -287,7 +287,7 @@ export const Select = ({
   const renderLabels = useMemo(() => {
     if (!label && !description) return null;
     return (
-      <div className="gap-y-1">
+      <div className="flex flex-col gap-y-1">
         <p className={theme.label()}>{label}</p>
         <p className={theme.description()}>{description}</p>
       </div>
