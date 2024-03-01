@@ -56,9 +56,21 @@ export class GiteaClient implements GitClient {
     return repoData;
   }
 
-  async searchRepo (query: string): Promise<any> {
-    const repos = (await this.api.repos.repoSearch({ q: query })).data;
-    return repos;
+  async searchRepo (query: string, user?: any, org?: any): Promise<any> {
+    const giteaQuery = {
+      q: query
+    };
+
+    if (user) {
+      Object.assign(giteaQuery, { uid: user.id, exclusive: true });
+    } else if (org) {
+      // TODO: Check org search not working for gitea
+      Object.assign(giteaQuery, { team_id: org.id });
+    }
+
+    const repos = (await this.api.repos.repoSearch(giteaQuery)).data;
+
+    return repos.data;
   }
 
   async getPackageJson (owner: string, repo: string, ref: string): Promise<any> {

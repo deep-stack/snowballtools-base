@@ -10,5 +10,5 @@ export interface GitClient {
   getBranches(owner: string, repo: string): Promise<any>
   getRepo(owner: string, repo: string): Promise<any>
   getPackageJson(owner: string, repo: string, ref: string): Promise<any>
-  searchRepo(query: string): Promise<any>
+  searchRepo(query: string, user?: any, org?: any): Promise<any>
 }

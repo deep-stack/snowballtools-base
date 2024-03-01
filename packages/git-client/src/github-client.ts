@@ -75,13 +75,21 @@ export class GitHubClient implements GitClient {
     return repoData;
   }
 
-  async searchRepo (query: string): Promise<any> {
+  async searchRepo (query: string, user?: any, org?: any): Promise<any> {
+    let githubQuery = `${query} in:name fork:true`;
+
+    if (user) {
+      githubQuery = githubQuery + ` user:${user.login}`;
+    } else if (org) {
+      githubQuery = githubQuery + ` org:${org.login}`;
+    }
+
     const repos = (await this.octokit.rest.search.repos({
-      q: query,
+      q: githubQuery,
       per_page: REPOS_PER_PAGE
     })).data;
 
-    return repos;
+    return repos.items;
   }
 
   async getPackageJson (owner: string, repo: string, ref: string): Promise<any> {
