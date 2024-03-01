@@ -9,13 +9,8 @@ import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { Template } from '../../../../../types';
 import { Heading } from 'components/shared/Heading';
 import { Input } from 'components/shared/Input';
-import { Radio } from 'components/shared/Radio';
 import { Select, SelectOption } from 'components/shared/Select';
-import {
-  ArrowRightCircleFilledIcon,
-  GitIcon,
-  GitTeaIcon,
-} from 'components/shared/CustomIcon';
+import { ArrowRightCircleFilledIcon } from 'components/shared/CustomIcon';
 import { Checkbox } from 'components/shared/Checkbox';
 import { Button } from 'components/shared/Button';
 
@@ -37,19 +32,6 @@ const CreateRepo = () => {
 
   const [gitAccounts, setGitAccounts] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const FRAMEWORK_OPTIONS = [
-    {
-      value: 'React',
-      label: 'React Native',
-      leftIcon: <GitIcon />,
-    },
-    {
-      value: 'Expo',
-      label: 'Expo',
-      leftIcon: <GitTeaIcon />,
-    },
-  ];
 
   const submitRepoHandler: SubmitHandler<SubmitRepoValues> = useCallback(
     async (data) => {
@@ -139,22 +121,6 @@ const CreateRepo = () => {
           <Heading as="h5" className="text-sm font-sans text-elements-low-em">
             The project will be cloned into this repository
           </Heading>
-        </div>
-        <div className="flex flex-col justify-start gap-3">
-          <span className="text-sm text-elements-high-em">Framework</span>
-          <Controller
-            name="framework"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Radio
-                variant="card"
-                options={FRAMEWORK_OPTIONS}
-                orientation="horizontal"
-                value={value}
-                onValueChange={onChange}
-              />
-            )}
-          />
         </div>
         <div className="flex flex-col justify-start gap-3">
           <span className="text-sm text-elements-high-em">Git account</span>
