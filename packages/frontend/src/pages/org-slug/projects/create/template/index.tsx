@@ -1,15 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
 
-import { Button, Option, Typography } from '@material-tailwind/react';
-
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import AsyncSelect from '../../../../../components/shared/AsyncSelect';
 import { Template } from '../../../../../types';
+import { Heading } from 'components/shared/Heading';
+import { Input } from 'components/shared/Input';
+import { Radio } from 'components/shared/Radio';
+import { Select } from 'components/shared/Select';
+import {
+  ArrowRightCircleFilledIcon,
+  GitIcon,
+  GitTeaIcon,
+} from 'components/shared/CustomIcon';
+import { Checkbox } from 'components/shared/Checkbox';
+import { Button } from 'components/shared/Button';
 
 type SubmitRepoValues = {
   framework: string;
@@ -29,6 +37,19 @@ const CreateRepo = () => {
 
   const [gitAccounts, setGitAccounts] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const FRAMEWORK_OPTIONS = [
+    {
+      value: 'react-native',
+      label: 'React Native',
+      leftIcon: <GitIcon />,
+    },
+    {
+      value: 'expo',
+      label: 'Expo',
+      leftIcon: <GitTeaIcon />,
+    },
+  ];
 
   const submitRepoHandler: SubmitHandler<SubmitRepoValues> = useCallback(
     async (data) => {
@@ -93,7 +114,7 @@ const CreateRepo = () => {
     fetchUserAndOrgs();
   }, [octokit]);
 
-  const { register, handleSubmit, control, reset } = useForm<SubmitRepoValues>({
+  const { handleSubmit, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
       framework: 'React',
       repoName: '',
@@ -110,86 +131,49 @@ const CreateRepo = () => {
 
   return (
     <form onSubmit={handleSubmit(submitRepoHandler)}>
-      <div className="mb-2">
-        <Typography variant="h6" placeholder={''}>
-          Create a repository
-        </Typography>
-        <Typography color="gray" placeholder={''}>
-          The project will be cloned into this repository
-        </Typography>
-      </div>
-      <div className="mb-2">
-        <h5>Framework</h5>
-        <div className="flex items-center gap-2">
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              value="React"
-              className="h-5 w-5 text-indigo-600 rounded"
-            />
-            <span className="ml-2">^React</span>
-          </label>
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              className="h-5 w-5 text-indigo-600 rounded"
-              value="Next"
-            />
-            <span className="ml-2">^Next</span>
-          </label>
-        </div>
-      </div>
-      <div className="mb-2">
-        <h5>Git account</h5>
+      <div className="flex flex-col gap-4 lg:gap-7 w-full">
         <div>
-          <Controller
-            name="account"
-            control={control}
-            render={({ field }) => (
-              <AsyncSelect {...field}>
-                {gitAccounts.map((account, key) => (
-                  <Option key={key} value={account}>
-                    ^ {account}
-                  </Option>
-                ))}
-              </AsyncSelect>
-            )}
+          <Heading className="text-lg font-medium">Create a repository</Heading>
+          <Heading className="text-sm text-elements-low-em">
+            The project will be cloned into this repository
+          </Heading>
+        </div>
+        <div className="flex flex-col justify-start gap-3">
+          <Heading className="text-sm">Framework</Heading>
+          <Radio
+            variant="card"
+            options={FRAMEWORK_OPTIONS}
+            orientation="horizontal"
           />
         </div>
-      </div>
-      <div className="mb-2">
-        <h5>Name the repo</h5>
+        <div className="flex flex-col justify-start gap-3">
+          <Heading className="text-sm">Git account</Heading>
+          <Select
+            options={
+              gitAccounts.map((account) => ({
+                value: account,
+                label: account,
+              })) ?? []
+            }
+          />
+        </div>
+        <div className="flex flex-col justify-start gap-3">
+          <Heading className="text-sm">Name the repo</Heading>
+          <Input />
+        </div>
         <div>
-          <input
-            type="text"
-            className="border border-gray-300 rounded p-2 w-full focus:border-blue-300 focus:outline-none focus:shadow-outline-blue"
-            placeholder=""
-            {...register('repoName')}
-          />
+          <Checkbox label="Make this repo private" value={'private-repo'} />
         </div>
-      </div>
-      <div className="mb-2">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            className="h-5 w-5 text-indigo-600 rounded"
-            {...register('isPrivate')}
-          />
-          <span className="ml-2">Make this repo private</span>
-        </label>
-      </div>
-      <div className="mb-2">
-        <Button
-          className="bg-blue-500 rounded-xl p-2"
-          type="submit"
-          disabled={!Boolean(template.repoFullName) || isLoading}
-          loading={isLoading}
-          placeholder={''}
-        >
-          Deploy ^
-        </Button>
+        <div>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={!Boolean(template.repoFullName) || isLoading}
+            rightIcon={<ArrowRightCircleFilledIcon />}
+          >
+            Deploy
+          </Button>
+        </div>
       </div>
     </form>
   );
