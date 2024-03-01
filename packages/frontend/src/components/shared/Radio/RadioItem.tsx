@@ -67,7 +67,10 @@ export const RadioItem = ({
   const componentId = id ?? kebabCaseLabel;
 
   return (
-    <label className={wrapper({ className: wrapperProps?.className })}>
+    <label
+      htmlFor={componentId}
+      className={wrapper({ className: wrapperProps?.className })}
+    >
       <RadixRadio {...props} className={radio({ className })} id={componentId}>
         <RadixIndicator
           forceMount
