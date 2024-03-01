@@ -284,15 +284,15 @@ export const Select = ({
     onClear?.();
   };
 
-  const renderLabels = useMemo(
-    () => (
-      <div className="space-y-1">
+  const renderLabels = useMemo(() => {
+    if (!label && !description) return null;
+    return (
+      <div className="gap-y-1">
         <p className={theme.label()}>{label}</p>
         <p className={theme.description()}>{description}</p>
       </div>
-    ),
-    [theme, label, description],
-  );
+    );
+  }, [theme, label, description]);
 
   const renderLeftIcon = useMemo(() => {
     return (
