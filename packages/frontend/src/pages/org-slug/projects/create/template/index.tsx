@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast as reactHotToast } from 'react-hot-toast';
+import { RequestError } from 'octokit';
 import assert from 'assert';
 
 import { Button, Option, Typography } from '@material-tailwind/react';
@@ -10,6 +11,9 @@ import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import AsyncSelect from '../../../../../components/shared/AsyncSelect';
 import { Template } from '../../../../../types';
+import { useToast } from 'components/shared/Toast';
+
+const REPO_EXIST_ERROR = 'Could not clone: Name already exists on this account';
 
 type SubmitRepoValues = {
   framework: string;
@@ -22,6 +26,7 @@ const CreateRepo = () => {
   const { octokit } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
+  const { toast, dismiss } = useToast();
 
   const { orgSlug } = useParams();
 
@@ -40,16 +45,34 @@ const CreateRepo = () => {
         const [owner, repo] = template.repoFullName.split('/');
 
         // TODO: Handle this functionality in backend
-        const gitRepo = await octokit?.rest.repos.createUsingTemplate({
-          template_owner: owner,
-          template_repo: repo,
-          owner: data.account,
-          name: data.repoName,
-          include_all_branches: false,
-          private: data.isPrivate,
-        });
+        let gitRepo;
+        try {
+          gitRepo = await octokit?.rest.repos.createUsingTemplate({
+            template_owner: owner,
+            template_repo: repo,
+            owner: data.account,
+            name: data.repoName,
+            include_all_branches: false,
+            private: data.isPrivate,
+          });
+        } catch (error) {
+          if (
+            !(
+              error instanceof RequestError &&
+              error.message.includes(REPO_EXIST_ERROR)
+            )
+          ) {
+            throw error;
+          }
 
-        if (!gitRepo) {
+          toast({
+            id: 'repo-exist-error',
+            title: REPO_EXIST_ERROR,
+            variant: 'error',
+            onDismiss: dismiss,
+          });
+
+          setIsLoading(false);
           return;
         }
 
@@ -72,7 +95,7 @@ const CreateRepo = () => {
       } catch (err) {
         console.error(err);
         setIsLoading(false);
-        toast.error('Error deploying project');
+        reactHotToast.error('Error deploying project');
       }
     },
     [octokit],
