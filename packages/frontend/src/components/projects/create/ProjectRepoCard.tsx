@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
+import { GitType } from 'gql-client';
 
 import { Chip, IconButton, Spinner } from '@material-tailwind/react';
 
@@ -11,9 +12,13 @@ import { GithubIcon, LockIcon } from 'components/shared/CustomIcon';
 
 interface ProjectRepoCardProps {
   repository: GitRepositoryDetails;
+  gitType: GitType;
 }
 
-const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
+const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
+  repository,
+  gitType,
+}) => {
   const client = useGQLClient();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -32,6 +37,7 @@ const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({ repository }) => {
       repository: repository.full_name,
       // TODO: Compute template from repo
       template: 'webapp',
+      gitType,
     });
 
     if (Boolean(addProject)) {

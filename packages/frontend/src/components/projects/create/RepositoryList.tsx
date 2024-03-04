@@ -127,7 +127,13 @@ const RepositoryList = ({ octokit, gitClient }: RepositoryListProps) => {
       </div>
       {Boolean(repositoryDetails.length) ? (
         repositoryDetails.map((repo, key) => {
-          return <ProjectRepoCard repository={repo} key={key} />;
+          return (
+            <ProjectRepoCard
+              repository={repo}
+              key={key}
+              gitType={gitClient.type}
+            />
+          );
         })
       ) : (
         <div className="mt-4 p-6 flex items-center justify-center">

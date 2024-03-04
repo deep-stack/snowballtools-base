@@ -15,6 +15,10 @@ import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 import { Deployment } from './Deployment';
 
+export enum GitType {
+  GitHub = 'GitHub',
+  Gitea = 'Gitea',
+}
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -39,6 +43,11 @@ export class Project {
 
   @Column('varchar')
     repository!: string;
+
+  @Column({
+    enum: GitType
+  })
+    gitType!: GitType;
 
   @Column('varchar', { length: 255, default: 'main' })
     prodBranch!: string;

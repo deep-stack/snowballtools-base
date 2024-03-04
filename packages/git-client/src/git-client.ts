@@ -1,6 +1,9 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { GitType } from 'gql-client';
+
 export interface GitClient {
+  type: GitType
   getUser(): Promise<any>
   getOrganizations(): Promise<any>
   getReposOfUser(user?: string): Promise<any>

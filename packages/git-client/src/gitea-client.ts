@@ -1,14 +1,18 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { giteaApi, Api } from 'gitea-js';
+import { GitType } from 'gql-client';
 
 import { GitClient } from './git-client';
 
 export class GiteaClient implements GitClient {
   token?: string;
   api: Api<any>;
+  type: GitType;
 
   constructor (giteaUrl: string, token?: string | null) {
+    this.type = GitType.Gitea;
+
     if (token) {
       this.token = token;
 

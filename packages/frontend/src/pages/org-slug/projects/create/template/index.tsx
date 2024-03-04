@@ -3,6 +3,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
+import { GitType } from 'gql-client';
 
 import { Button, Option, Typography } from '@material-tailwind/react';
 
@@ -59,6 +60,7 @@ const CreateRepo = () => {
           repository: gitRepo.data.full_name,
           // TODO: Set selected template
           template: 'webapp',
+          gitType: GitType.GitHub,
         });
 
         if (Boolean(addProject)) {

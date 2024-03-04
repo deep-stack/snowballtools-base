@@ -1,6 +1,7 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Octokit } from 'octokit';
+import { GitType } from 'gql-client';
 
 import { GitClient } from './git-client';
 import { COMMITS_PER_PAGE, REPOS_PER_PAGE } from './constants';
@@ -8,8 +9,11 @@ import { COMMITS_PER_PAGE, REPOS_PER_PAGE } from './constants';
 export class GitHubClient implements GitClient {
   token?: string;
   octokit: Octokit;
+  type: GitType;
 
   constructor (token?: string | null) {
+    this.type = GitType.GitHub;
+
     if (token) {
       this.token = token;
       this.octokit = new Octokit({ auth: token });

@@ -250,6 +250,7 @@ export type AddProjectInput = {
   name: string;
   repository: string;
   prodBranch: string;
+  gitType: string;
   template?: string;
 }
 

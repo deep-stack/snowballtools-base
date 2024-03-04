@@ -140,6 +140,7 @@ input AddProjectInput {
   repository: String!
   prodBranch: String!
   template: String
+  gitType: String!
 }
 
 input UpdateProjectInput {
