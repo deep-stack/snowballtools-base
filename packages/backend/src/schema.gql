@@ -68,6 +68,7 @@ type Project {
   deployments: [Deployment!]
   name: String!
   repository: String!
+  gitType: GitType!
   prodBranch: String!
   description: String
   template: String

@@ -26,6 +26,7 @@ query ($projectId: String!) {
     prodBranch
     framework
     repository
+    gitType
     webhooks
     icon
     subDomain

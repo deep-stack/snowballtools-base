@@ -128,6 +128,7 @@ export type Project = {
   deployments: Deployment[]
   name: string
   repository: string
+  gitType: GitType
   prodBranch: string
   description: string
   template: string

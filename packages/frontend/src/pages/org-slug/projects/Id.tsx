@@ -6,23 +6,23 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { Project as ProjectType } from 'gql-client';
+import { GitType, Project as ProjectType } from 'gql-client';
+import { GitClient } from 'git-client';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
-import { useOctokit } from '../../../context/OctokitContext';
 import { Button } from 'components/shared/Button';
 import { ChevronLeft } from 'components/shared/CustomIcon';
 import { WavyBorder } from 'components/shared/WavyBorder';
 import { Heading } from 'components/shared/Heading';
 import { Tabs } from 'components/shared/Tabs';
+import { useGitClient } from 'context/GitClientContext';
 
 const Id = () => {
   const { id } = useParams();
-  const { octokit } = useOctokit();
   const navigate = useNavigate();
   const client = useGQLClient();
   const location = useLocation();
-
+  const { gitHubClient, giteaClient } = useGitClient();
   const [project, setProject] = useState<ProjectType | null>(null);
   const [repoUrl, setRepoUrl] = useState('');
 
@@ -32,12 +32,18 @@ const Id = () => {
       setProject(project);
 
       if (project) {
+        let gitClient: GitClient | undefined;
+
+        if (project.gitType === GitType.GitHub) {
+          gitClient = gitHubClient;
+        } else if (project.gitType === GitType.Gitea) {
+          gitClient = giteaClient;
+        }
+
         const [owner, repo] = project.repository.split('/');
-        const { data: repoDetails } = await octokit.rest.repos.get({
-          owner,
-          repo,
-        });
-        setRepoUrl(repoDetails.html_url);
+
+        const repoUrl = (await gitClient?.getRepo(owner, repo)).html_url;
+        setRepoUrl(repoUrl);
       }
     }
   }, []);

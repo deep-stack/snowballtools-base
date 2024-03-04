@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Domain, DomainStatus } from 'gql-client';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Domain, DomainStatus, GitType } from 'gql-client';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
+import { GitClient } from 'git-client';
 
 import { useOctokit } from '../../../../context/OctokitContext';
 import { GitCommitWithBranch, OutletContextType } from '../../../../types';
@@ -25,6 +26,7 @@ import { Activity } from 'components/projects/project/overview/Activity';
 import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
 import { CalendarDaysIcon } from 'components/shared/CustomIcon/CalendarDaysIcon';
 import { relativeTimeMs } from 'utils/time';
+import { useGitClient } from 'context/GitClientContext';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -33,10 +35,19 @@ const OverviewTabPanel = () => {
   const navigate = useNavigate();
   const [activities, setActivities] = useState<GitCommitWithBranch[]>([]);
   const [liveDomain, setLiveDomain] = useState<Domain>();
+  const { gitHubClient, giteaClient } = useGitClient();
 
   const client = useGQLClient();
 
   const { project } = useOutletContext<OutletContextType>();
+
+  const gitClient = useMemo<GitClient | undefined>(() => {
+    if (project.gitType === GitType.GitHub) {
+      return gitHubClient;
+    } else if (project.gitType === GitType.Gitea) {
+      return giteaClient;
+    }
+  }, [project]);
 
   useEffect(() => {
     // TODO: Save repo commits in DB and avoid using GitHub API in frontend
@@ -51,21 +62,12 @@ const OverviewTabPanel = () => {
         }
 
         // Get all branches in project repo
-        const result = await octokit.rest.repos.listBranches({
-          owner,
-          repo,
-        });
-
+        const branches = await gitClient!.getBranches(owner, repo);
         // Get first 4 commits from repo branches
-        const commitsByBranchPromises = result.data.map(async (branch) => {
-          const result = await octokit.rest.repos.listCommits({
-            owner,
-            repo,
-            sha: branch.commit.sha,
-            per_page: COMMITS_PER_PAGE,
-          });
+        const commitsByBranchPromises = branches.map(async (branch) => {
+          const result = await gitClient!.getCommits(owner, repo, branch.name);
 
-          return result.data.map((data) => ({
+          return result.map((data) => ({
             ...data,
             branch,
           }));

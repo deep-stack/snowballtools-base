@@ -50,7 +50,7 @@ export class GitHubClient implements GitClient {
     return repos;
   }
 
-  async getCommits (owner: string, repo: string, branch: string): Promise<any> {
+  async getCommits (owner: string, repo: string, branch: string): Promise<any[]> {
     const commits = (await this.octokit.rest.repos.listCommits({
       owner,
       repo,
@@ -61,7 +61,7 @@ export class GitHubClient implements GitClient {
     return commits;
   }
 
-  async getBranches (owner: string, repo: string): Promise<any> {
+  async getBranches (owner: string, repo: string): Promise<any[]> {
     const branches = (await this.octokit.rest.repos.listBranches({
       owner,
       repo
