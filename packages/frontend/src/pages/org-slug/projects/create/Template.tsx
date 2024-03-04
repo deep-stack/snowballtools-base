@@ -49,13 +49,13 @@ const CreateWithTemplate = () => {
         <div className="grow px-2">{template?.name}</div>
         <div>
           <a
-            href={`https://github.com/${template?.repoFullName}`}
+            href={`https://github.com/${template?.gitHubRepoFullName}`}
             target="_blank"
             rel="noreferrer"
           >
             ^{' '}
-            {Boolean(template?.repoFullName)
-              ? template?.repoFullName
+            {Boolean(template?.gitHubRepoFullName)
+              ? template?.gitHubRepoFullName
               : 'Template not supported'}
           </a>
         </div>

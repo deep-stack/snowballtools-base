@@ -1,15 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
+import { GitType, Template } from 'gql-client';
+import { GitClient } from 'git-client';
 
 import { Button, Option, Typography } from '@material-tailwind/react';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import AsyncSelect from '../../../../../components/shared/AsyncSelect';
-import { Template } from '../../../../../types';
+import { useGitClient } from 'context/GitClientContext';
 
 type SubmitRepoValues = {
   framework: string;
@@ -22,6 +29,17 @@ const CreateRepo = () => {
   const { octokit } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
+  const [searchParams] = useSearchParams();
+  const gitType = searchParams.get('gitType');
+  const { gitHubClient, giteaClient } = useGitClient();
+
+  const currentGitClient: GitClient | undefined = useMemo(() => {
+    if (gitType === GitType.GitHub) {
+      return gitHubClient;
+    } else if (gitType === GitType.Gitea) {
+      return giteaClient;
+    }
+  }, [gitType]);
 
   const { orgSlug } = useParams();
 
@@ -36,17 +54,12 @@ const CreateRepo = () => {
       setIsLoading(true);
 
       try {
-        assert(template.repoFullName, 'Template URL not provided');
-        const [owner, repo] = template.repoFullName.split('/');
-
         // TODO: Handle this functionality in backend
-        const gitRepo = await octokit?.rest.repos.createUsingTemplate({
-          template_owner: owner,
-          template_repo: repo,
-          owner: data.account,
-          name: data.repoName,
-          include_all_branches: false,
-          private: data.isPrivate,
+        const gitRepo = await currentGitClient?.createUsingTemplate({
+          template,
+          repoName: data.repoName,
+          repoOwner: data.account,
+          isPrivate: data.isPrivate,
         });
 
         if (!gitRepo) {
@@ -184,7 +197,7 @@ const CreateRepo = () => {
         <Button
           className="bg-blue-500 rounded-xl p-2"
           type="submit"
-          disabled={!Boolean(template.repoFullName) || isLoading}
+          disabled={!Boolean(template.gitHubRepoFullName) || isLoading}
           loading={isLoading}
           placeholder={''}
         >

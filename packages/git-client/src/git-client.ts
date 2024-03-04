@@ -1,10 +1,9 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GitType } from 'gql-client';
+import { GitType, Template } from 'gql-client';
 
 export interface CreateUsingTemplateParams {
-  tempateOwner: string,
-  templateRepo: string,
+  template: Template,
   repoOwner: string,
   repoName: string,
   isPrivate: boolean

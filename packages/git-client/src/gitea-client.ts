@@ -86,12 +86,12 @@ export class GiteaClient implements GitClient {
         ref
       }
     )).data;
-
     return packageJSON;
   }
 
   async createUsingTemplate (data: CreateUsingTemplateParams): Promise<any> {
-    const repo = (await this.api.repos.generateRepo(data.tempateOwner, data.templateRepo, {
+    const [templateOwner, templateRepo] = data.template.giteaRepoFullName.split('/');
+    const repo = (await this.api.repos.generateRepo(templateOwner, templateRepo, {
       owner: data.repoOwner,
       name: data.repoName,
       private: data.isPrivate

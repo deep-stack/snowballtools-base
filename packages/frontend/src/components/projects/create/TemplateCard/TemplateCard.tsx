@@ -10,6 +10,7 @@ import { Tag } from 'components/shared/Tag';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { cn } from 'utils/classnames';
+import { GitType } from 'gql-client';
 
 export interface TemplateDetail {
   id: string;
@@ -22,11 +23,13 @@ export interface TemplateDetail {
 export interface TemplateCardProps extends ComponentPropsWithoutRef<'div'> {
   template: TemplateDetail;
   isGitAuth: boolean;
+  gitType: GitType;
 }
 
 export const TemplateCard: React.FC<TemplateCardProps> = ({
   template,
   isGitAuth,
+  gitType,
 }: TemplateCardProps) => {
   const { toast, dismiss } = useToast();
   const navigate = useNavigate();
@@ -43,7 +46,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
     }
     if (isGitAuth) {
       return navigate(
-        `/${orgSlug}/projects/create/template?templateId=${template.id}`,
+        `/${orgSlug}/projects/create/template?templateId=${template.id}&gitType=${gitType}`,
       );
     }
     return toast({

@@ -57,10 +57,3 @@ export type EnvironmentVariablesFormValues = {
     production: boolean;
   };
 };
-
-export type Template = {
-  id: string;
-  name: string;
-  icon: string;
-  repoFullName: string;
-};

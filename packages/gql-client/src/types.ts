@@ -303,3 +303,11 @@ export type AuthenticateGitResponse = {
 export type UnauthenticateGitResponse = {
   unauthenticateGit: boolean
 }
+
+export type Template = {
+  id: string;
+  name: string;
+  icon: string;
+  gitHubRepoFullName: string;
+  giteaRepoFullName: string;
+};

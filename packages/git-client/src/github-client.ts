@@ -108,9 +108,11 @@ export class GitHubClient implements GitClient {
   }
 
   async createUsingTemplate (data: CreateUsingTemplateParams): Promise<any> {
+    const [templateOwner, templateRepo] = data.template.gitHubRepoFullName.split('/');
+
     const repo = (await this.octokit.rest.repos.createUsingTemplate({
-      template_owner: data.tempateOwner,
-      template_repo: data.templateRepo,
+      template_owner: templateOwner,
+      template_repo: templateRepo,
       owner: data.repoOwner,
       name: data.repoName,
       include_all_branches: false,

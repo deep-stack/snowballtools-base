@@ -51,6 +51,7 @@ const NewProject = () => {
                 isGitAuth={Boolean(octokit)}
                 template={template}
                 key={template.id}
+                gitType={selectedGit.type}
               />
             );
           })}
