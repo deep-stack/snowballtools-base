@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { giteaApi, Api } from 'gitea-js';
 
-import { GitClient } from './git-client';
+import { GitAccountType, GitClient } from './git-client';
+import { REPOS_PER_PAGE } from './constants';
 
 export class GiteaClient implements GitClient {
   token?: string;
@@ -26,13 +27,13 @@ export class GiteaClient implements GitClient {
   }
 
   async getOrganizations (): Promise<any> {
-    const orgs = (await this.api.user.orgListCurrentUserOrgs()).data;
+    const orgs = (await this.api.user.orgListCurrentUserOrgs({ limit: REPOS_PER_PAGE })).data;
     const updatedOrgs = orgs.map((org: any) => { return { ...org, login: org.name }; });
     return updatedOrgs;
   }
 
   async getReposOfUser (user: string): Promise<any> {
-    const repos = (await this.api.users.userListRepos(user)).data;
+    const repos = (await this.api.users.userListRepos(user, { limit: REPOS_PER_PAGE })).data;
     return repos;
   }
 
@@ -56,16 +57,19 @@ export class GiteaClient implements GitClient {
     return repoData;
   }
 
-  async searchRepo (query: string, user?: any, org?: any): Promise<any> {
+  async searchRepos (query: string, account: any, accountType: GitAccountType): Promise<any> {
     const giteaQuery = {
-      q: query
+      q: query,
+      limit: REPOS_PER_PAGE
     };
 
-    if (user) {
-      Object.assign(giteaQuery, { uid: user.id, exclusive: true });
-    } else if (org) {
+    if (accountType === GitAccountType.User) {
+      Object.assign(giteaQuery, { uid: account.id, exclusive: true });
+    } else if (accountType === GitAccountType.Org) {
       // TODO: Check org search not working for gitea
-      Object.assign(giteaQuery, { team_id: org.id });
+      Object.assign(giteaQuery, { team_id: account.id });
+    } else {
+      throw new Error('Invalid account type');
     }
 
     const repos = (await this.api.repos.repoSearch(giteaQuery)).data;

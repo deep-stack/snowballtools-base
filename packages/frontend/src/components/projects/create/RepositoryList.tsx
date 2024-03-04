@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
-import { GitClient } from 'git-client';
+import { GitClient, GitAccountType } from 'git-client';
 
 import { Button, Typography, Option } from '@material-tailwind/react';
 
@@ -56,13 +56,17 @@ const RepositoryList = ({ octokit, gitClient }: RepositoryListProps) => {
         let result;
         // Check if selected account is an organization
         if (selectedAccount === gitUser.login) {
-          result = await gitClient.searchRepo(debouncedSearchedRepo, gitUser);
+          result = await gitClient.searchRepos(
+            debouncedSearchedRepo,
+            gitUser,
+            GitAccountType.User,
+          );
         } else {
           const org = orgs.find((org) => org.login === selectedAccount);
-          result = await gitClient.searchRepo(
+          result = await gitClient.searchRepos(
             debouncedSearchedRepo,
-            undefined,
             org,
+            GitAccountType.Org,
           );
         }
 

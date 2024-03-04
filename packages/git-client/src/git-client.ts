@@ -1,5 +1,11 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+export enum GitAccountType {
+  User = 'User',
+  Org = 'Org'
+}
+
 export interface GitClient {
   getUser(): Promise<any>
   getOrganizations(): Promise<any>
@@ -10,5 +16,5 @@ export interface GitClient {
   getBranches(owner: string, repo: string): Promise<any>
   getRepo(owner: string, repo: string): Promise<any>
   getPackageJson(owner: string, repo: string, ref: string): Promise<any>
-  searchRepo(query: string, user?: any, org?: any): Promise<any>
+  searchRepos(query: string, account: any, accountType: GitAccountType): Promise<any>
 }

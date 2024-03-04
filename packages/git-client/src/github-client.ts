@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Octokit } from 'octokit';
 
-import { GitClient } from './git-client';
+import { GitAccountType, GitClient } from './git-client';
 import { COMMITS_PER_PAGE, REPOS_PER_PAGE } from './constants';
 
 export class GitHubClient implements GitClient {
@@ -75,13 +75,15 @@ export class GitHubClient implements GitClient {
     return repoData;
   }
 
-  async searchRepo (query: string, user?: any, org?: any): Promise<any> {
+  async searchRepos (query: string, account: any, accountType: GitAccountType): Promise<any> {
     let githubQuery = `${query} in:name fork:true`;
 
-    if (user) {
-      githubQuery = githubQuery + ` user:${user.login}`;
-    } else if (org) {
-      githubQuery = githubQuery + ` org:${org.login}`;
+    if (accountType === GitAccountType.User) {
+      githubQuery = githubQuery + ` user:${account.login}`;
+    } else if (accountType === GitAccountType.Org) {
+      githubQuery = githubQuery + ` org:${account.login}`;
+    } else {
+      throw new Error('Invalid account type');
     }
 
     const repos = (await this.octokit.rest.search.repos({
