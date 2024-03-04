@@ -1,15 +1,19 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Octokit } from 'octokit';
+import { GitType } from 'gql-client';
 
-import { GitClient } from './git-client';
+import { CreateUsingTemplateParams, GitClient } from './git-client';
 import { COMMITS_PER_PAGE, REPOS_PER_PAGE } from './constants';
 
 export class GitHubClient implements GitClient {
   token?: string;
   octokit: Octokit;
+  type: GitType;
 
   constructor (token?: string | null) {
+    this.type = GitType.GitHub;
+
     if (token) {
       this.token = token;
       this.octokit = new Octokit({ auth: token });
@@ -101,5 +105,18 @@ export class GitHubClient implements GitClient {
     })).data;
 
     return packageJSON;
+  }
+
+  async createUsingTemplate (data: CreateUsingTemplateParams): Promise<any> {
+    const repo = (await this.octokit.rest.repos.createUsingTemplate({
+      template_owner: data.tempateOwner,
+      template_repo: data.templateRepo,
+      owner: data.repoOwner,
+      name: data.repoName,
+      include_all_branches: false,
+      private: data.isPrivate
+    })).data;
+
+    return repo;
   }
 }

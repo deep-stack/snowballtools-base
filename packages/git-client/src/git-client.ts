@@ -1,6 +1,17 @@
 // TODO: Replace the any type
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { GitType } from 'gql-client';
+
+export interface CreateUsingTemplateParams {
+  tempateOwner: string,
+  templateRepo: string,
+  repoOwner: string,
+  repoName: string,
+  isPrivate: boolean
+}
+
 export interface GitClient {
+  type: GitType
   getUser(): Promise<any>
   getOrganizations(): Promise<any>
   getReposOfUser(user?: string): Promise<any>
@@ -11,4 +22,5 @@ export interface GitClient {
   getRepo(owner: string, repo: string): Promise<any>
   getPackageJson(owner: string, repo: string, ref: string): Promise<any>
   searchRepo(query: string, user?: any, org?: any): Promise<any>
+  createUsingTemplate(data: CreateUsingTemplateParams): Promise<any>
 }
