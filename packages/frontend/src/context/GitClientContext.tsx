@@ -8,12 +8,12 @@ import React, {
 } from 'react';
 import { GitType } from 'gql-client';
 import { GitHubClient, GiteaClient } from 'git-client';
+import assert from 'assert';
 
 import { useGQLClient } from './GQLClientContext';
 
-// TODO: Get from env
-const GITEA_ORIGIN_URL = 'https://git.vdb.to';
-
+const GITEA_ORIGIN_URL = process.env.REACT_APP_GITEA_ORIGIN;
+assert(GITEA_ORIGIN_URL, 'Gitea origin URL not provided');
 interface ContextValue {
   gitHubClient: GitHubClient;
   giteaClient: GiteaClient;

@@ -288,12 +288,6 @@ export type AddDomainResponse = {
   addDomain: true
 }
 
-export type AuthenticateGitHubResponse = {
-  authenticateGitHub: {
-    token: string
-  }
-}
-
 export type AuthenticateGitResponse = {
   authenticateGit: {
     token: string

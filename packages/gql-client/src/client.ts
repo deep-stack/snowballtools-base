@@ -300,17 +300,6 @@ export class GQLClient {
     return data;
   }
 
-  async authenticateGitHub (code: string): Promise<types.AuthenticateGitHubResponse> {
-    const { data } = await this.client.mutate({
-      mutation: mutations.authenticateGitHub,
-      variables: {
-        code
-      }
-    });
-
-    return data;
-  }
-
   async authenticateGit (type: types.GitType, code: string): Promise<types.AuthenticateGitResponse> {
     const { data } = await this.client.mutate({
       mutation: mutations.authenticateGit,

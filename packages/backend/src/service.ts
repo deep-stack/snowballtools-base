@@ -794,16 +794,6 @@ export class Service {
     return updateResult;
   }
 
-  async authenticateGitHub (code:string, user: User): Promise<{token: string}> {
-    const { authentication: { token } } = await this.oauthApp.createToken({
-      code
-    });
-
-    await this.db.updateUser(user, { gitHubToken: token });
-
-    return { token };
-  }
-
   async authenticateGit (type: GitType, code:string, user: User): Promise<{token: string}> {
     let token: string;
 

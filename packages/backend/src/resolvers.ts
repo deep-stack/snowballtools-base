@@ -280,19 +280,6 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
-      authenticateGitHub: async (
-        _: any,
-        { code }: { code: string },
-        context: any
-      ) => {
-        try {
-          return await service.authenticateGitHub(code, context.user);
-        } catch (err) {
-          log(err);
-          return false;
-        }
-      },
-
       authenticateGit: async (_: any, { type, code }: { type: GitType, code: string }, context: any) => {
         try {
           return await service.authenticateGit(type, code, context.user);
