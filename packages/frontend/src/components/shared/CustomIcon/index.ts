@@ -45,6 +45,9 @@ export * from './CommitIcon';
 export * from './RocketIcon';
 export * from './RefreshIcon';
 export * from './UndoIcon';
+export * from './LoaderIcon';
+export * from './MinusCircleIcon';
+export * from './CopyIcon';
 
 // Templates
 export * from './templates';
