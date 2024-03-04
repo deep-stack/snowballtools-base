@@ -3,7 +3,10 @@ import { Input, InputProps } from 'components/shared/Input';
 import * as Popover from '@radix-ui/react-popover';
 import { datePickerTheme } from './DatePicker.theme';
 import { Calendar, CalendarProps } from 'components/shared/Calendar';
-import { CalendarIcon } from 'components/shared/CustomIcon';
+import {
+  CalendarIcon,
+  ChevronGrabberHorizontal,
+} from 'components/shared/CustomIcon';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import { format } from 'date-fns';
 
@@ -64,7 +67,7 @@ export const DatePicker = ({
     }
     return format(value, 'dd/MM/yyyy');
   }, [value, onReset]);
-  console.log(renderValue);
+
   /**
    * Handles the selection of a date from the calendar.
    */
@@ -86,7 +89,8 @@ export const DatePicker = ({
       <Popover.Trigger className="w-full">
         <Input
           {...props}
-          rightIcon={<CalendarIcon onClick={() => setOpen(true)} />}
+          leftIcon={<CalendarIcon onClick={() => setOpen(true)} />}
+          rightIcon={<ChevronGrabberHorizontal />}
           readOnly
           placeholder="Select a date..."
           value={renderValue}
