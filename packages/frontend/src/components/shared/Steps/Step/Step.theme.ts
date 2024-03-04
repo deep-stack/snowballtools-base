@@ -16,12 +16,16 @@ export const stepTheme = tv({
       'shrink-0',
     ],
     label: ['text-sm', 'font-sans', 'text-elements-mid-em'],
-    connector: ['bg-border-interactive-hovered'],
+    connector: [],
   },
   variants: {
     orientation: {
-      vertical: { connector: ['w-px', 'h-3', 'ml-5'] },
-      horizontal: { connector: ['h-px', 'w-full'] },
+      vertical: {
+        connector: ['bg-border-interactive-hovered', 'w-px', 'h-3', 'ml-5'],
+      },
+      horizontal: {
+        connector: ['text-border-interactive-hovered', 'h-3', 'w-3'],
+      },
     },
     active: {
       true: {

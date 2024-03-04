@@ -7,7 +7,7 @@ export const stepsTheme = tv({
   variants: {
     orientation: {
       vertical: { root: ['flex', 'flex-col'] },
-      horizontal: { root: ['flex', 'items-center'] },
+      horizontal: { root: ['flex', 'items-center', 'gap-1'] },
     },
   },
   defaultVariants: {

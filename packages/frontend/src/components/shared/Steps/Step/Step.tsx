@@ -1,6 +1,9 @@
 import React, { useCallback, ComponentPropsWithoutRef } from 'react';
 import { stepTheme, StepTheme } from './Step.theme';
-import { CheckRoundFilledIcon } from 'components/shared/CustomIcon';
+import {
+  CheckRoundFilledIcon,
+  ChevronRight,
+} from 'components/shared/CustomIcon';
 
 export interface StepProps extends ComponentPropsWithoutRef<'li'>, StepTheme {
   /**
@@ -35,9 +38,13 @@ export const Step = ({
         return null;
       }
 
-      return <div aria-hidden className={theme.connector({ orientation })} />;
+      return (
+        <div aria-hidden className={theme.connector({ orientation })}>
+          {orientation === 'horizontal' && <ChevronRight size={12} />}
+        </div>
+      );
     },
-    [theme],
+    [orientation, theme],
   );
 
   return (
