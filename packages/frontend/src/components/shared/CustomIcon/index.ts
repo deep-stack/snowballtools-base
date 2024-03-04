@@ -50,6 +50,10 @@ export * from './UndoIcon';
 export * from './LoaderIcon';
 export * from './MinusCircleIcon';
 export * from './CopyIcon';
+export * from './CirclePlaceholderOnIcon';
+export * from './WarningTriangleIcon';
+export * from './CheckRadioOutlineIcon';
+export * from './TrendingIcon';
 
 // Templates
 export * from './templates';

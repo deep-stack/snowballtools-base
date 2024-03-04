@@ -1,7 +1,7 @@
 import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
-export const CalendarIcon = (props: CustomIconProps) => {
+export const CheckRadioOutlineIcon = (props: CustomIconProps) => {
   return (
     <CustomIcon
       width="18"
@@ -11,7 +11,7 @@ export const CalendarIcon = (props: CustomIconProps) => {
       {...props}
     >
       <path
-        d="M2.625 7.125H15.375M5.625 3.375V1.875M12.375 3.375V1.875M4.125 15.375H13.875C14.7034 15.375 15.375 14.7034 15.375 13.875V4.875C15.375 4.04657 14.7034 3.375 13.875 3.375H4.125C3.29657 3.375 2.625 4.04657 2.625 4.875V13.875C2.625 14.7034 3.29657 15.375 4.125 15.375Z"
+        d="M11.25 7.125L7.875 11.25L6.375 9.75M16.125 9C16.125 12.935 12.935 16.125 9 16.125C5.06497 16.125 1.875 12.935 1.875 9C1.875 5.06497 5.06497 1.875 9 1.875C12.935 1.875 16.125 5.06497 16.125 9Z"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
