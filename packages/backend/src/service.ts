@@ -3,6 +3,7 @@ import debug from 'debug';
 import { DeepPartial, FindOptionsWhere } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
 import fetch from 'node-fetch';
+import { GitClient, GitHubClient, GiteaClient } from 'git-client';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
@@ -11,12 +12,12 @@ import { Deployment, DeploymentStatus, Environment } from './entity/Deployment';
 import { Domain } from './entity/Domain';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Organization } from './entity/Organization';
-import { Project } from './entity/Project';
+import { Project, GitType } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
-import { GitConfig, RegistryConfig, ServerConfig } from './config';
-import { AppDeploymentRecord, GitPushEventPayload, GitType, PackageJSON } from './types';
+import { GitConfig, GiteaConfig, RegistryConfig, ServerConfig } from './config';
+import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
 import { Role } from './entity/UserOrganization';
 
 const log = debug('snowball:service');
@@ -28,7 +29,7 @@ const GITEA_ACCESS_TOKEN_ENDPOINT = `${GITEA_ORIGIN}/login/oauth/access_token`;
 
 interface Config {
   gitHub: GitConfig
-  gitea: GitConfig
+  gitea: GiteaConfig
   registry: RegistryConfig
   server: ServerConfig
 }
@@ -197,6 +198,7 @@ export class Service {
     return user;
   }
 
+  // TODO: Remove after complete git client integration
   async getOctokit (userId: string): Promise<Octokit> {
     const user = await this.db.getUser({ where: { id: userId } });
     assert(
@@ -205,6 +207,23 @@ export class Service {
     );
 
     return new Octokit({ auth: user.gitHubToken });
+  }
+
+  async getGitClient (userId: string, gitType: GitType): Promise<GitClient> {
+    const user = await this.db.getUser({ where: { id: userId } });
+    assert(user, 'User doesnot exist');
+
+    if (gitType === GitType.GitHub) {
+      assert(user.gitHubToken, 'User needs to be authenticated with GitHub token');
+
+      return new GitHubClient(user.gitHubToken);
+    } else if (gitType === GitType.Gitea) {
+      assert(user.giteaToken, 'User needs to be authenticated with Gitea token');
+
+      return new GiteaClient(this.config.gitea.originUrl, user.giteaToken);
+    } else {
+      throw new Error('Invalid git type provided');
+    }
   }
 
   async getOrganizationsByUserId (user: User): Promise<Organization[]> {
@@ -369,10 +388,10 @@ export class Service {
       { branch: oldDeployment.project.prodBranch }
     );
 
-    const octokit = await this.getOctokit(user.id);
+    const gitClient = await this.getGitClient(user.id, oldDeployment.project.gitType);
 
     const newDeployment = await this.createDeployment(user.id,
-      octokit,
+      gitClient,
       {
         project: oldDeployment.project,
         branch: oldDeployment.branch,
@@ -387,7 +406,7 @@ export class Service {
 
   async createDeployment (
     userId: string,
-    octokit: Octokit,
+    gitClient: GitClient,
     data: DeepPartial<Deployment>
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
@@ -396,12 +415,7 @@ export class Service {
     );
     const [owner, repo] = data.project.repository.split('/');
 
-    const { data: packageJSONData } = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-      ref: data.commitHash
-    });
+    const packageJSONData = await gitClient.getPackageJson(owner, repo, data.commitHash!);
 
     if (!packageJSONData) {
       throw new Error('Package.json file not found');
@@ -412,10 +426,7 @@ export class Service {
 
     assert(packageJSON.name, "name field doesn't exist in package.json");
 
-    const repoUrl = (await octokit.rest.repos.get({
-      owner,
-      repo
-    })).data.html_url;
+    const repoUrl = (await gitClient.getRepo(owner, repo)).html_url;
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } =
@@ -500,21 +511,13 @@ export class Service {
 
     const project = await this.db.addProject(user, organization.id, data);
 
-    const octokit = await this.getOctokit(user.id);
+    const gitClient = await this.getGitClient(user.id, project.gitType);
     const [owner, repo] = project.repository.split('/');
-
-    const {
-      data: [latestCommit]
-    } = await octokit.rest.repos.listCommits({
-      owner,
-      repo,
-      sha: project.prodBranch,
-      per_page: 1
-    });
+    const [latestCommit] = await gitClient.getCommits(owner, repo, project.prodBranch);
 
     // Create deployment with prod branch and latest commit
     await this.createDeployment(user.id,
-      octokit,
+      gitClient,
       {
         project,
         branch: project.prodBranch,
@@ -525,6 +528,7 @@ export class Service {
       }
     );
 
+    const octokit = await this.getOctokit(user.id);
     await this.createRepoHook(octokit, project);
 
     return project;
@@ -582,13 +586,14 @@ export class Service {
     const branch = ref.split('/').pop();
 
     for await (const project of projects) {
-      const octokit = await this.getOctokit(project.ownerId);
+      const gitClient = await this.getGitClient(project.ownerId, project.gitType);
+
       const [domain] = await this.db.getDomainsByProjectId(project.id, {
         branch
       });
 
       // Create deployment with branch and latest commit in GitHub data
-      await this.createDeployment(project.ownerId, octokit, {
+      await this.createDeployment(project.ownerId, gitClient, {
         project,
         branch,
         environment:
@@ -646,10 +651,10 @@ export class Service {
       throw new Error('Deployment not found');
     }
 
-    const octokit = await this.getOctokit(user.id);
+    const gitClient = await this.getGitClient(user.id, oldDeployment.project.gitType);
 
     const newDeployment = await this.createDeployment(user.id,
-      octokit,
+      gitClient,
       {
         project: oldDeployment.project,
         // TODO: Put isCurrent field in project

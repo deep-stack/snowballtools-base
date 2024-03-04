@@ -18,6 +18,7 @@
     clientSecret = ""
 
 [gitea]
+  originUrl = "https://gitea.com"
   [gitea.oAuth]
     clientId = ""
     clientSecret = ""

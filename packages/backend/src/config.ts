@@ -26,6 +26,10 @@ export interface GitConfig {
   };
 }
 
+export interface GiteaConfig extends GitConfig {
+  originUrl: string;
+}
+
 export interface RegistryConfig {
   restEndpoint: string;
   gqlEndpoint: string;
@@ -49,7 +53,7 @@ export interface Config {
   server: ServerConfig;
   database: DatabaseConfig;
   gitHub: GitConfig;
-  gitea: GitConfig;
+  gitea: GiteaConfig;
   registry: RegistryConfig;
   misc: MiscConfig;
 }
