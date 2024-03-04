@@ -68,6 +68,8 @@ const Page: React.FC = () => {
           </div>
         </div>
 
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
         {/* Tag */}
         <div className="flex flex-col gap-10 items-center justify-between">
           <div className="flex flex-col gap-10 items-center justify-between">
