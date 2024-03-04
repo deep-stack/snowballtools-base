@@ -8,8 +8,8 @@ import {
 
 import { Avatar } from '@material-tailwind/react';
 
-import Stepper from '../../../../components/Stepper';
 import templates from '../../../../assets/templates';
+import { Steps } from 'components/shared/Steps';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -62,7 +62,7 @@ const CreateWithTemplate = () => {
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">
         <div>
-          <Stepper activeStep={activeStep} stepperValues={stepperValues} />
+          <Steps currentIndex={activeStep} steps={stepperValues} />
         </div>
         <div className="col-span-2">
           <Outlet context={{ template }} />
