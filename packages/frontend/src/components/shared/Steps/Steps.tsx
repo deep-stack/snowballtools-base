@@ -33,7 +33,7 @@ export const Steps = ({
             {...step}
             orientation={orientation}
             currentIndex={currentIndex}
-            index={i}
+            index={i + 1}
           />
         </Fragment>
       ))}

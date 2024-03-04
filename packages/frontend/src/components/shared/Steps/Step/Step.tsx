@@ -31,7 +31,7 @@ export const Step = ({
 
   const renderConnector = useCallback(
     (index: number) => {
-      if (index === 0) {
+      if (index === 1) {
         return null;
       }
 
@@ -49,7 +49,7 @@ export const Step = ({
             {completed ? (
               <CheckRoundFilledIcon className="w-full h-full" />
             ) : (
-              index + 1
+              index
             )}
           </div>
         }
