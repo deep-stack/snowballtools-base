@@ -10,7 +10,7 @@ import React, {
 import { useMultipleSelection, useCombobox } from 'downshift';
 import { SelectTheme, selectTheme } from './Select.theme';
 import {
-  ChevronDownIcon,
+  ChevronGrabberHorizontal,
   CrossCircleIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
@@ -293,10 +293,13 @@ export const Select = ({
   const renderLeftIcon = useMemo(() => {
     return (
       <div className={theme.iconContainer({ class: 'left-0 pl-4' })}>
-        {cloneIcon(leftIcon, { className: theme.icon(), 'aria-hidden': true })}
+        {cloneIcon(selectedItem?.leftIcon ? selectedItem.leftIcon : leftIcon, {
+          className: theme.icon(),
+          'aria-hidden': true,
+        })}
       </div>
     );
-  }, [cloneIcon, theme, leftIcon]);
+  }, [cloneIcon, theme, leftIcon, selectedItem]);
 
   const renderRightIcon = useMemo(() => {
     return (
@@ -310,7 +313,7 @@ export const Select = ({
         {rightIcon ? (
           cloneIcon(rightIcon, { className: theme.icon(), 'aria-hidden': true })
         ) : (
-          <ChevronDownIcon className={theme.icon()} />
+          <ChevronGrabberHorizontal className={theme.icon()} />
         )}
       </div>
     );
@@ -356,7 +359,7 @@ export const Select = ({
         onClick={() => !dropdownOpen && openMenu()}
       >
         {/* Left icon */}
-        {leftIcon && renderLeftIcon}
+        {renderLeftIcon}
 
         {/* Multiple input values */}
         {isMultipleHasValue &&
@@ -387,6 +390,8 @@ export const Select = ({
               'w-6': isMultipleHasValueButNotSearchable && !hideValues,
               // Add margin to the X icon
               'ml-6': isMultipleHasValueButNotSearchable && clearable,
+              // Add padding if there's a left icon
+              'pl-6': leftIcon,
             },
           )}
         />

@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { Input } from 'components/shared/Input';
-import { CrossCircleIcon, SearchIcon } from 'components/shared/CustomIcon';
+import {
+  CheckRadioOutlineIcon,
+  CrossCircleIcon,
+  LoaderIcon,
+  SearchIcon,
+  TrendingIcon,
+  WarningTriangleIcon,
+} from 'components/shared/CustomIcon';
 import { DatePicker } from 'components/shared/DatePicker';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import { Select, SelectOption } from 'components/shared/Select';
@@ -43,10 +50,25 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
     setDateRange(value.updateAtRange);
   }, [value]);
 
+  const getOptionIcon = (status: StatusOptions) => {
+    switch (status) {
+      case StatusOptions.BUILDING:
+        return <LoaderIcon />;
+      case StatusOptions.READY:
+        return <CheckRadioOutlineIcon />;
+      case StatusOptions.ERROR:
+        return <WarningTriangleIcon />;
+      case StatusOptions.ALL_STATUS:
+      default:
+        return <TrendingIcon />;
+    }
+  };
+
   const statusOptions = Object.values(StatusOptions)
     .map((status) => ({
       label: status,
       value: status,
+      leftIcon: getOptionIcon(status),
     }))
     .filter((status) => status.value !== StatusOptions.ALL_STATUS);
 
@@ -78,6 +100,7 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
       </div>
       <div className="col-span-2 flex items-center">
         <Select
+          leftIcon={getOptionIcon(selectedStatus as StatusOptions)}
           options={statusOptions}
           clearable
           placeholder="All status"
