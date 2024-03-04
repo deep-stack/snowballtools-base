@@ -289,7 +289,7 @@ export const Calendar = ({
       <div
         {...footerProps}
         className={cn(footer({ className: footerProps?.className }), {
-          'justify-between': value,
+          'justify-between': Boolean(value),
         })}
       >
         {actions ? (
