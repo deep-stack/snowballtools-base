@@ -1,31 +1,28 @@
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
+import React from 'react';
 import {
+  Deployment,
+  DeploymentStatus,
+  Domain,
   Environment,
   Project,
-  Domain,
-  DeploymentStatus,
-  Deployment,
 } from 'gql-client';
-
+import { Avatar } from 'components/shared/Avatar';
 import {
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Typography,
-  Chip,
-  ChipProps,
-  Tooltip,
-} from '@material-tailwind/react';
-
-import { relativeTimeMs } from '../../../../utils/time';
-import ConfirmDialog from '../../../shared/ConfirmDialog';
-import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
-import AssignDomainDialog from './AssignDomainDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+  BranchStrokeIcon,
+  CheckRoundFilledIcon,
+  ClockOutlineIcon,
+  CommitIcon,
+  LoadingIcon,
+  WarningIcon,
+} from 'components/shared/CustomIcon';
+import { Heading } from 'components/shared/Heading';
+import { OverflownText } from 'components/shared/OverflownText';
+import { Tag, TagTheme } from 'components/shared/Tag';
+import { getInitials } from 'utils/geInitials';
+import { relativeTimeMs } from 'utils/time';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 import { formatAddress } from '../../../../utils/format';
+import { DeploymentMenu } from './DeploymentMenu';
 
 interface DeployDetailsCardProps {
   deployment: Deployment;
@@ -35,10 +32,12 @@ interface DeployDetailsCardProps {
   prodBranchDomains: Domain[];
 }
 
-const STATUS_COLORS: { [key in DeploymentStatus]: ChipProps['color'] } = {
-  [DeploymentStatus.Building]: 'blue',
-  [DeploymentStatus.Ready]: 'green',
-  [DeploymentStatus.Error]: 'red',
+const STATUS_COLORS: {
+  [key in DeploymentStatus]: TagTheme['type'];
+} = {
+  [DeploymentStatus.Building]: 'emphasized',
+  [DeploymentStatus.Ready]: 'positive',
+  [DeploymentStatus.Error]: 'negative',
 };
 
 const DeploymentDetailsCard = ({
@@ -48,241 +47,99 @@ const DeploymentDetailsCard = ({
   project,
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
-  const client = useGQLClient();
-
-  const [changeToProduction, setChangeToProduction] = useState(false);
-  const [redeployToProduction, setRedeployToProduction] = useState(false);
-  const [rollbackDeployment, setRollbackDeployment] = useState(false);
-  const [assignDomainDialog, setAssignDomainDialog] = useState(false);
-
-  const updateDeployment = async () => {
-    const isUpdated = await client.updateDeploymentToProd(deployment.id);
-    if (isUpdated) {
-      await onUpdate();
-      toast.success('Deployment changed to production');
-    } else {
-      toast.error('Unable to change deployment to production');
+  const getIconByDeploymentStatus = (status: DeploymentStatus) => {
+    if (status === DeploymentStatus.Building) {
+      return <LoadingIcon className="animate-spin" />;
     }
-  };
-
-  const redeployToProd = async () => {
-    const isRedeployed = await client.redeployToProd(deployment.id);
-    if (isRedeployed) {
-      await onUpdate();
-      toast.success('Redeployed to production');
-    } else {
-      toast.error('Unable to redeploy to production');
+    if (status === DeploymentStatus.Ready) {
+      return <CheckRoundFilledIcon />;
     }
-  };
 
-  const rollbackDeploymentHandler = async () => {
-    const isRollbacked = await client.rollbackDeployment(
-      project.id,
-      deployment.id,
-    );
-    if (isRollbacked) {
-      await onUpdate();
-      toast.success('Deployment rolled back');
-    } else {
-      toast.error('Unable to rollback deployment');
+    if (status === DeploymentStatus.Error) {
+      return <WarningIcon />;
     }
   };
 
   return (
-    <div className="grid grid-cols-8 gap-2 border-b border-gray-300 p-3 my-2">
-      <div className="col-span-3">
-        <div className="flex">
-          {deployment.url && (
-            <Typography className="basis-3/4" placeholder={''}>
+    <div className="flex lg:flex gap-2 lg:gap-2 2xl:gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent ">
+      <div className="flex-1 max-w-[30%] space-y-2">
+        {/* DEPLOYMENT URL */}
+        {deployment.url && (
+          <Heading
+            className="text-sm font-medium text-elements-high-em tracking-tight"
+            as="h2"
+          >
+            <OverflownText content={deployment.url}>
               {deployment.url}
-            </Typography>
-          )}
-        </div>
-        <Typography color="gray" placeholder={''}>
+            </OverflownText>
+          </Heading>
+        )}
+        <span className="text-sm text-elements-low-em tracking-tight">
           {deployment.environment === Environment.Production
             ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
             : 'Preview'}
-        </Typography>
+        </span>
       </div>
-      <div className="col-span-1">
-        <Chip
-          value={deployment.status}
-          color={STATUS_COLORS[deployment.status] ?? 'gray'}
-          variant="ghost"
-          icon={<i>^</i>}
+
+      {/* DEPLOYMENT STATUS */}
+      <div className="w-[10%] max-w-[110px]">
+        <Tag
+          leftIcon={getIconByDeploymentStatus(deployment.status)}
+          size="xs"
+          type={STATUS_COLORS[deployment.status] ?? 'neutral'}
+        >
+          {deployment.status}
+        </Tag>
+      </div>
+
+      {/* DEPLOYMENT COMMIT DETAILS */}
+      <div className="text-sm w-[25%] space-y-2 text-elements-low-em">
+        <span className="flex gap-1.5 items-center">
+          <BranchStrokeIcon className="h-4 w-4" />
+          {deployment.branch}
+        </span>
+        <span className="flex gap-2 items-center">
+          <CommitIcon />
+          <OverflownText content={deployment.commitMessage}>
+            {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
+            {deployment.commitMessage}
+          </OverflownText>
+        </span>
+      </div>
+
+      {/* DEPLOYMENT INFOs */}
+      <div className="ml-auto max-w-[312px] w-[30%] gap-1 2xl:gap-5 flex items-center justify-between  text-elements-low-em text-sm">
+        <div className="flex w-[70%] items-center gap-0.5 2xl:gap-2 flex-1">
+          <ClockOutlineIcon className="h-4 w-4" />
+          <OverflownText content={relativeTimeMs(deployment.createdAt) ?? ''}>
+            {relativeTimeMs(deployment.createdAt)}
+          </OverflownText>
+          <div>
+            <Avatar
+              type="orange"
+              initials={getInitials(deployment.createdBy.name ?? '')}
+              className="lg:size-5 2xl:size-6"
+              // TODO: Add avatarUrl
+              // imageSrc={deployment.createdBy.avatarUrl}
+            ></Avatar>
+          </div>
+
+          <OverflownText
+            // className="min-w-[200px]"
+            content={formatAddress(deployment.createdBy?.name ?? '')}
+          >
+            {formatAddress(deployment.createdBy.name ?? '')}
+          </OverflownText>
+        </div>
+        <DeploymentMenu
+          className="ml-auto"
+          deployment={deployment}
+          currentDeployment={currentDeployment}
+          onUpdate={onUpdate}
+          project={project}
+          prodBranchDomains={prodBranchDomains}
         />
       </div>
-      <div className="col-span-2">
-        <Typography color="gray" placeholder={''}>
-          ^ {deployment.branch}
-        </Typography>
-        <Typography color="gray" placeholder={''}>
-          ^ {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
-          {deployment.commitMessage}
-        </Typography>
-      </div>
-      <div className="col-span-2 flex items-center">
-        <Typography color="gray" className="grow" placeholder={''}>
-          ^ {relativeTimeMs(deployment.createdAt)} ^{' '}
-          <Tooltip content={deployment.createdBy.name}>
-            {formatAddress(deployment.createdBy.name ?? '')}
-          </Tooltip>
-        </Typography>
-        <Menu placement="bottom-start">
-          <MenuHandler>
-            <button className="self-start">...</button>
-          </MenuHandler>
-          <MenuList placeholder={''}>
-            <a href={deployment.url} target="_blank" rel="noreferrer">
-              <MenuItem disabled={!Boolean(deployment.url)} placeholder={''}>
-                ^ Visit
-              </MenuItem>
-            </a>
-            <MenuItem
-              onClick={() => setAssignDomainDialog(!assignDomainDialog)}
-              placeholder={''}
-            >
-              ^ Assign domain
-            </MenuItem>
-            <MenuItem
-              onClick={() => setChangeToProduction(!changeToProduction)}
-              disabled={!(deployment.environment !== Environment.Production)}
-              placeholder={''}
-            >
-              ^ Change to production
-            </MenuItem>
-            <hr className="my-3" />
-            <MenuItem
-              onClick={() => setRedeployToProduction(!redeployToProduction)}
-              disabled={
-                !(
-                  deployment.environment === Environment.Production &&
-                  deployment.isCurrent
-                )
-              }
-              placeholder={''}
-            >
-              ^ Redeploy to production
-            </MenuItem>
-            <MenuItem
-              onClick={() => setRollbackDeployment(!rollbackDeployment)}
-              disabled={
-                deployment.isCurrent ||
-                deployment.environment !== Environment.Production ||
-                !Boolean(currentDeployment)
-              }
-              placeholder={''}
-            >
-              ^ Rollback to this version
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </div>
-      <ConfirmDialog
-        dialogTitle="Change to production?"
-        handleOpen={() => setChangeToProduction((preVal) => !preVal)}
-        open={changeToProduction}
-        confirmButtonTitle="Change"
-        color="blue"
-        handleConfirm={async () => {
-          await updateDeployment();
-          setChangeToProduction((preVal) => !preVal);
-        }}
-      >
-        <div className="flex flex-col gap-2">
-          <Typography variant="small" placeholder={''}>
-            Upon confirmation, this deployment will be changed to production.
-          </Typography>
-          <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small" placeholder={''}>
-            The new deployment will be associated with these domains:
-          </Typography>
-          {prodBranchDomains.length > 0 &&
-            prodBranchDomains.map((value) => {
-              return (
-                <Typography
-                  variant="small"
-                  color="blue"
-                  key={value.id}
-                  placeholder={''}
-                >
-                  ^ {value.name}
-                </Typography>
-              );
-            })}
-        </div>
-      </ConfirmDialog>
-      <ConfirmDialog
-        dialogTitle="Redeploy to production?"
-        handleOpen={() => setRedeployToProduction((preVal) => !preVal)}
-        open={redeployToProduction}
-        confirmButtonTitle="Redeploy"
-        color="blue"
-        handleConfirm={async () => {
-          await redeployToProd();
-          setRedeployToProduction((preVal) => !preVal);
-        }}
-      >
-        <div className="flex flex-col gap-2">
-          <Typography variant="small" placeholder={''}>
-            Upon confirmation, new deployment will be created with the same
-            source code as current deployment.
-          </Typography>
-          <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small" placeholder={''}>
-            These domains will point to your new deployment:
-          </Typography>
-          {deployment.domain?.name && (
-            <Typography variant="small" color="blue" placeholder={''}>
-              {deployment.domain?.name}
-            </Typography>
-          )}
-        </div>
-      </ConfirmDialog>
-      {Boolean(currentDeployment) && (
-        <ConfirmDialog
-          dialogTitle="Rollback to this deployment?"
-          handleOpen={() => setRollbackDeployment((preVal) => !preVal)}
-          open={rollbackDeployment}
-          confirmButtonTitle="Rollback"
-          color="blue"
-          handleConfirm={async () => {
-            await rollbackDeploymentHandler();
-            setRollbackDeployment((preVal) => !preVal);
-          }}
-        >
-          <div className="flex flex-col gap-2">
-            <Typography variant="small" placeholder={''}>
-              Upon confirmation, this deployment will replace your current
-              deployment
-            </Typography>
-            <DeploymentDialogBodyCard
-              deployment={currentDeployment}
-              chip={{
-                value: 'Live Deployment',
-                color: 'green',
-              }}
-            />
-            <DeploymentDialogBodyCard
-              deployment={deployment}
-              chip={{
-                value: 'New Deployment',
-                color: 'orange',
-              }}
-            />
-            <Typography variant="small" placeholder={''}>
-              These domains will point to your new deployment:
-            </Typography>
-            <Typography variant="small" color="blue" placeholder={''}>
-              ^ {currentDeployment.domain?.name}
-            </Typography>
-          </div>
-        </ConfirmDialog>
-      )}
-      <AssignDomainDialog
-        open={assignDomainDialog}
-        handleOpen={() => setAssignDomainDialog(!assignDomainDialog)}
-      />
     </div>
   );
 };

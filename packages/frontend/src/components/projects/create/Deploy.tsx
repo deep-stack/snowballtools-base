@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { Button, Typography } from '@material-tailwind/react';
+import { Typography } from '@material-tailwind/react';
 
 import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
 import ConfirmDialog from 'components/shared/ConfirmDialog';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
+import { ClockOutlineIcon, WarningIcon } from 'components/shared/CustomIcon';
 
 const TIMEOUT_DURATION = 5000;
 const Deploy = () => {
@@ -31,27 +34,27 @@ const Deploy = () => {
   }, []);
 
   return (
-    <div>
-      <div className="flex justify-between mb-6">
-        <div>
-          <h4>Deployment started ...</h4>
-          <div className="flex">
-            ^&nbsp;
+    <div className="space-y-7">
+      <div className="flex justify-between">
+        <div className="space-y-1.5">
+          <Heading as="h4" className="md:text-lg font-medium">
+            Deployment started ...
+          </Heading>
+          <div className="flex items-center gap-1.5">
+            <ClockOutlineIcon size={16} className="text-elements-mid-em" />
             <Stopwatch
               offsetTimestamp={setStopWatchOffset(Date.now().toString())}
             />
           </div>
         </div>
-        <div>
-          <Button
-            onClick={handleOpen}
-            variant="outlined"
-            size="sm"
-            placeholder={''}
-          >
-            ^ Cancel
-          </Button>
-        </div>
+        <Button
+          onClick={handleOpen}
+          size="sm"
+          variant="tertiary"
+          leftIcon={<WarningIcon size={16} />}
+        >
+          Cancel
+        </Button>
         <ConfirmDialog
           dialogTitle="Cancel deployment?"
           handleOpen={handleOpen}
@@ -66,28 +69,31 @@ const Deploy = () => {
           </Typography>
         </ConfirmDialog>
       </div>
-      <DeployStep
-        title="Building"
-        status={DeployStatus.COMPLETE}
-        step="1"
-        processTime="72000"
-      />
-      <DeployStep
-        title="Deployment summary"
-        status={DeployStatus.PROCESSING}
-        step="2"
-        startTime={Date.now().toString()}
-      />
-      <DeployStep
-        title="Running checks"
-        status={DeployStatus.NOT_STARTED}
-        step="3"
-      />
-      <DeployStep
-        title="Assigning domains"
-        status={DeployStatus.NOT_STARTED}
-        step="4"
-      />
+
+      <div>
+        <DeployStep
+          title="Building"
+          status={DeployStatus.COMPLETE}
+          step="1"
+          processTime="72000"
+        />
+        <DeployStep
+          title="Deployment summary"
+          status={DeployStatus.PROCESSING}
+          step="2"
+          startTime={Date.now().toString()}
+        />
+        <DeployStep
+          title="Running checks"
+          status={DeployStatus.NOT_STARTED}
+          step="3"
+        />
+        <DeployStep
+          title="Assigning domains"
+          status={DeployStatus.NOT_STARTED}
+          step="4"
+        />
+      </div>
     </div>
   );
 };

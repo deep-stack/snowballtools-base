@@ -12,12 +12,14 @@ import {
   ApplicationDeploymentRequest
 } from './entity/Deployment';
 import { AppDeploymentRecord, PackageJSON } from './types';
+import { sleep } from './utils';
 
 const log = debug('snowball:registry');
 
 const APP_RECORD_TYPE = 'ApplicationRecord';
 const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
+const SLEEP_DURATION = 1000;
 
 // TODO: Move registry code to laconic-sdk/watcher-ts
 export class Registry {
@@ -111,16 +113,21 @@ export class Registry {
     const crn = this.getCrn(appName);
     log(`Setting name: ${crn} for record ID: ${result.data.id}`);
 
+    await sleep(SLEEP_DURATION);
     await this.registry.setName(
       { cid: result.data.id, crn },
       this.registryConfig.privateKey,
       this.registryConfig.fee
     );
+
+    await sleep(SLEEP_DURATION);
     await this.registry.setName(
       { cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` },
       this.registryConfig.privateKey,
       this.registryConfig.fee
     );
+
+    await sleep(SLEEP_DURATION);
     await this.registry.setName(
       {
         cid: result.data.id,
@@ -139,9 +146,9 @@ export class Registry {
   async createApplicationDeploymentRequest (data: {
     deployment: Deployment,
     appName: string,
-    packageJsonName: string,
     repository: string,
-    environmentVariables: { [key: string]: string }
+    environmentVariables: { [key: string]: string },
+    dns: string,
   }): Promise<{
     applicationDeploymentRequestId: string;
     applicationDeploymentRequestData: ApplicationDeploymentRequest;
@@ -160,7 +167,7 @@ export class Registry {
       version: '1.0.0',
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
       application: `${crn}@${applicationRecord.attributes.app_version}`,
-      dns: `${data.deployment.project.name}-${data.deployment.id}`,
+      dns: data.dns,
 
       // TODO: Not set in test-progressive-web-app CI
       // deployment: '$CERC_REGISTRY_DEPLOYMENT_CRN',
@@ -178,6 +185,7 @@ export class Registry {
       })
     };
 
+    await sleep(SLEEP_DURATION);
     const result = await this.registry.setRecord(
       {
         privateKey: this.registryConfig.privateKey,
@@ -211,11 +219,12 @@ export class Registry {
       true
     );
 
-    // Filter records with ApplicationRecord ids
+    // Filter records with ApplicationRecord ID and Deployment specific URL
     return records.filter((record: AppDeploymentRecord) =>
       deployments.some(
         (deployment) =>
-          deployment.applicationRecordId === record.attributes.application
+          deployment.applicationRecordId === record.attributes.application &&
+          record.attributes.url.includes(deployment.id)
       )
     );
   }

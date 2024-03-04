@@ -43,6 +43,13 @@ export * from './LinkIcon';
 export * from './CursorBoxIcon';
 export * from './CrossCircleIcon';
 export * from './RefreshIcon';
+export * from './CommitIcon';
+export * from './RocketIcon';
+export * from './RefreshIcon';
+export * from './UndoIcon';
+export * from './LoaderIcon';
+export * from './MinusCircleIcon';
+export * from './CopyIcon';
 
 // Templates
 export * from './templates';

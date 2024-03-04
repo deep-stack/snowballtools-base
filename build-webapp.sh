@@ -9,14 +9,6 @@ if [[ -d "$DEST_DIR" ]]; then
   exit 1
 fi
 
-if [[ -f "$PKG_DIR/.env" ]]; then
-  echo "Using existing .env file"
-else
-  mv "$PKG_DIR/.env.example" "$PKG_DIR/.env"
-  echo "Created .env file. Please populate with the correct values."
-  exit 1
-fi
-
 cat > $PKG_DIR/.env <<EOF
 REACT_APP_SERVER_URL = 'LACONIC_HOSTED_CONFIG_app_server_url'
 REACT_APP_GITHUB_CLIENT_ID = 'LACONIC_HOSTED_CONFIG_app_github_clientid'

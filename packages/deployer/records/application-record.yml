@@ -1,10 +1,8 @@
 record:
   type: ApplicationRecord
-  version: 0.0.11
-  repository_ref: 513ca69d01bee857cf207a0605483205b384e218
+  version: 0.0.1
+  repository_ref: 1ff5ab3dfdba9dcf5dd1cb0f9435bd863a6d0340
   repository: ["https://git.vdb.to/cerc-io/snowballtools-base"]
   app_type: webapp
-  # name is set to repo name
   name: snowballtools-base-frontend
-  # app_version is set from package.json
-  app_version: 0.1.3
+  app_version: 0.1.7

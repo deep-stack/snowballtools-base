@@ -1,3 +1,4 @@
+import React, { ComponentPropsWithoutRef, useCallback } from 'react';
 import { Button } from 'components/shared/Button';
 import {
   ArrowRightCircleIcon,
@@ -6,8 +7,7 @@ import {
   TemplateIconType,
 } from 'components/shared/CustomIcon';
 import { Tag } from 'components/shared/Tag';
-import React, { ComponentPropsWithoutRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { cn } from 'utils/classnames';
 
@@ -24,9 +24,13 @@ export interface TemplateCardProps extends ComponentPropsWithoutRef<'div'> {
   isGitAuth: boolean;
 }
 
-export const TemplateCard = ({ template, isGitAuth }: TemplateCardProps) => {
+export const TemplateCard: React.FC<TemplateCardProps> = ({
+  template,
+  isGitAuth,
+}: TemplateCardProps) => {
   const { toast, dismiss } = useToast();
   const navigate = useNavigate();
+  const { orgSlug } = useParams();
 
   const handleClick = useCallback(() => {
     if (template?.isComingSoon) {
@@ -38,7 +42,9 @@ export const TemplateCard = ({ template, isGitAuth }: TemplateCardProps) => {
       });
     }
     if (isGitAuth) {
-      return navigate(`/template?templateId=${template.id}`);
+      return navigate(
+        `/${orgSlug}/projects/create/template?templateId=${template.id}`,
+      );
     }
     return toast({
       id: 'connect-git-account',
@@ -46,7 +52,7 @@ export const TemplateCard = ({ template, isGitAuth }: TemplateCardProps) => {
       variant: 'error',
       onDismiss: dismiss,
     });
-  }, [isGitAuth, navigate, template, toast]);
+  }, [orgSlug, dismiss, isGitAuth, navigate, template, toast]);
 
   return (
     <button

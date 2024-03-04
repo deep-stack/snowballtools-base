@@ -95,7 +95,7 @@ const DeploymentsTabPanel = () => {
     setFilterValue(DEFAULT_FILTER_VALUE);
   }, []);
 
-  const onUpdateDeploymenToProd = async () => {
+  const onUpdateDeploymentToProd = async () => {
     await fetchDeployments();
   };
 
@@ -113,7 +113,7 @@ const DeploymentsTabPanel = () => {
                 deployment={deployment}
                 key={key}
                 currentDeployment={currentDeployment!}
-                onUpdate={onUpdateDeploymenToProd}
+                onUpdate={onUpdateDeploymentToProd}
                 project={project}
                 prodBranchDomains={prodBranchDomains}
               />
