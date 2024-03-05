@@ -3,17 +3,12 @@ import { useCombobox } from 'downshift';
 import { Project } from 'gql-client';
 import { useDebounce } from 'usehooks-ts';
 
-import {
-  List,
-  ListItem,
-  ListItemPrefix,
-  Card,
-  Typography,
-  Avatar,
-} from '@material-tailwind/react';
-
-import SearchBar from '../SearchBar';
-import { useGQLClient } from '../../context/GQLClientContext';
+import SearchBar from 'components/SearchBar';
+import { useGQLClient } from 'context/GQLClientContext';
+import { cn } from 'utils/classnames';
+import { InfoRoundFilledIcon } from 'components/shared/CustomIcon';
+import { Avatar } from 'components/shared/Avatar';
+import { getInitials } from 'utils/geInitials';
 
 interface ProjectsSearchProps {
   onChange?: (data: Project) => void;
@@ -67,59 +62,59 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
   return (
     <div className="relative">
       <SearchBar {...getInputProps()} />
-      <Card
-        className={`absolute w-1/2 max-h-52 -mt-1 overflow-y-auto ${
-          (!inputValue || !isOpen) && 'hidden'
-        }`}
-        placeholder={''}
+      <div
+        {...getMenuProps()}
+        className={cn(
+          'flex flex-col shadow-dropdown rounded-xl bg-surface-card absolute w-[459px] max-h-52 overflow-y-auto px-2 py-2 gap-1 z-50',
+          { hidden: !inputValue || !isOpen },
+        )}
       >
-        <List {...getMenuProps()}>
-          {items.length ? (
-            <>
-              <div className="p-3">
-                <Typography variant="small" color="gray" placeholder={''}>
-                  Suggestions
-                </Typography>
-              </div>
-              {items.map((item, index) => (
-                <ListItem
-                  selected={highlightedIndex === index || selectedItem === item}
-                  key={item.id}
-                  placeholder={''}
-                  {...getItemProps({ item, index })}
-                >
-                  <ListItemPrefix placeholder={''}>
-                    <Avatar
-                      src={item.icon || '/gray.png'}
-                      variant="rounded"
-                      placeholder={''}
-                    />
-                  </ListItemPrefix>
-                  <div>
-                    <Typography variant="h6" color="blue-gray" placeholder={''}>
-                      {item.name}
-                    </Typography>
-                    <Typography
-                      variant="small"
-                      color="gray"
-                      className="font-normal"
-                      placeholder={''}
-                    >
-                      {item.organization.name}
-                    </Typography>
-                  </div>
-                </ListItem>
-              ))}
-            </>
-          ) : (
-            <div className="p-3">
-              <Typography placeholder={''}>
-                ^ No projects matching this name
-              </Typography>
+        {items.length ? (
+          <>
+            <div className="px-2 py-2">
+              <p className="text-elements-mid-em text-xs font-medium">
+                Suggestions
+              </p>
             </div>
-          )}
-        </List>
-      </Card>
+            {items.map((item, index) => (
+              <div
+                {...getItemProps({ item, index })}
+                key={item.id}
+                className={cn(
+                  'px-2 py-2 flex items-center gap-3 rounded-lg hover:bg-base-bg-emphasized',
+                  {
+                    'bg-base-bg-emphasized':
+                      highlightedIndex === index || selectedItem === item,
+                  },
+                )}
+              >
+                <Avatar
+                  size={32}
+                  imageSrc={item.icon}
+                  initials={getInitials(item.name)}
+                />
+                <div className="flex flex-col flex-1">
+                  <p className="text-sm tracking-[-0.006em] text-elements-high-em">
+                    {item.name}
+                  </p>
+                  <p className="text-xs text-elements-low-em">
+                    {item.organization.name}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className="flex items-center px-2 py-2 gap-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 text-elements-warning">
+              <InfoRoundFilledIcon size={16} />
+            </div>
+            <p className="text-elements-low-em text-sm tracking-[-0.006em]">
+              No projects matching this name
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
