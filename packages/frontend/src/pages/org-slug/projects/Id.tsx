@@ -107,9 +107,6 @@ const Id = () => {
                 <Tabs.Trigger value="deployments">
                   <Link to="deployments">Deployments</Link>
                 </Tabs.Trigger>
-                <Tabs.Trigger value="database">
-                  <Link to="database">Database</Link>
-                </Tabs.Trigger>
                 <Tabs.Trigger value="integrations">
                   <Link to="integrations">Integrations</Link>
                 </Tabs.Trigger>
