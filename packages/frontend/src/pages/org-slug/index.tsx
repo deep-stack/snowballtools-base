@@ -26,7 +26,7 @@ const Projects = () => {
   }, [orgSlug]);
 
   return (
-    <section className="px-6 py-6 flex flex-col gap-6">
+    <section className="px-4 md:px-6 py-6 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center">
         <div className="grow">
@@ -44,7 +44,7 @@ const Projects = () => {
         </Link>
       </div>
       {/* List of projects */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {projects.length > 0 &&
           projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;

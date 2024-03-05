@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization } from 'gql-client';
 
 import { Option } from '@material-tailwind/react';
@@ -16,7 +16,7 @@ import {
   SettingsSlidersIcon,
 } from 'components/shared/CustomIcon';
 import { Tabs } from 'components/shared/Tabs';
-import { Heading } from 'components/shared/Heading';
+import { Logo } from 'components/Logo';
 
 export const Sidebar = () => {
   const { orgSlug } = useParams();
@@ -43,18 +43,8 @@ export const Sidebar = () => {
   }, [disconnect, navigate]);
 
   return (
-    <nav className="flex flex-col h-full px-6 py-8 gap-9">
-      {/* Logo */}
-      <Link to={`/${orgSlug}`}>
-        <div className="flex items-center gap-3 px-2">
-          <img
-            src="/logo.svg"
-            alt="Snowball Logo"
-            className="h-10 w-10 rounded-lg"
-          />
-          <Heading className="text-[24px] font-semibold">Snowball</Heading>
-        </div>
-      </Link>
+    <nav className="lg:flex hidden flex-col h-full px-6 py-8 gap-9">
+      <Logo orgSlug={orgSlug} />
       {/* Switch organization */}
       <div className="flex flex-1 flex-col gap-4">
         <AsyncSelect
