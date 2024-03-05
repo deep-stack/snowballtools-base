@@ -15,7 +15,12 @@ export const stepTheme = tv({
       'shadow-button',
       'shrink-0',
     ],
-    label: ['text-sm', 'font-sans', 'text-elements-mid-em'],
+    label: [
+      'text-sm',
+      'font-sans',
+      'text-elements-mid-em',
+      'whitespace-nowrap',
+    ],
     connector: [],
   },
   variants: {
