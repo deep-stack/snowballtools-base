@@ -48,6 +48,7 @@ export * from './UndoIcon';
 export * from './LoaderIcon';
 export * from './MinusCircleIcon';
 export * from './CopyIcon';
+export * from './MenuIcon';
 
 // Templates
 export * from './templates';
