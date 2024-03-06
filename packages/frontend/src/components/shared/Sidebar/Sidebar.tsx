@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
 import { motion } from 'framer-motion';
@@ -10,12 +10,10 @@ import { useGQLClient } from 'context/GQLClientContext';
 import AsyncSelect from 'components/shared/AsyncSelect';
 import {
   ChevronGrabberHorizontal,
-  FolderIcon,
   GlobeIcon,
   LifeBuoyIcon,
   LogoutIcon,
   QuestionMarkRoundIcon,
-  SettingsSlidersIcon,
 } from 'components/shared/CustomIcon';
 import { Tabs } from 'components/shared/Tabs';
 import { Logo } from 'components/Logo';
@@ -25,6 +23,7 @@ import { getInitials } from 'utils/geInitials';
 import { Button } from 'components/shared/Button';
 import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
+import { SIDEBAR_MENU } from './constants';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -61,11 +60,39 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
     setSelectedOrgSlug(orgSlug);
   }, [orgSlug]);
 
+  const renderOrganizations = useMemo(() => {
+    return organizations.map((org) => (
+      <Option key={org.id} value={org.slug}>
+        <div className="flex items-center space-x-3">
+          <img
+            src="/logo.svg"
+            alt="Application Logo"
+            className="h-8 w-8 rounded-lg"
+          />
+          <div>
+            <div className="text-sm font-semibold">{org.name}</div>
+            <div className="text-xs text-gray-500">Organization</div>
+          </div>
+        </div>
+      </Option>
+    ));
+  }, [organizations]);
+
+  const renderMenu = useMemo(() => {
+    return SIDEBAR_MENU(orgSlug).map(({ title, icon, url }, index) => (
+      <NavLink to={url} key={index}>
+        <Tabs.Trigger icon={icon} value={title}>
+          {title}
+        </Tabs.Trigger>
+      </NavLink>
+    ));
+  }, [orgSlug]);
+
   const handleLogOut = useCallback(() => {
     disconnect();
     navigate('/login');
   }, [disconnect, navigate]);
-  console.log(isDesktop);
+
   return (
     <motion.nav
       initial={{ x: -320 }}
@@ -116,43 +143,10 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
             }
           >
             {/* // TODO: Show label organization and manage in option */}
-            {organizations.map((org) => (
-              <Option key={org.id} value={org.slug}>
-                <div className="flex items-center space-x-3">
-                  <img
-                    src="/logo.svg"
-                    alt="Application Logo"
-                    className="h-8 w-8 rounded-lg"
-                  />
-                  <div>
-                    <div className="text-sm font-semibold">{org.name}</div>
-                    <div className="text-xs text-gray-500">Organization</div>
-                  </div>
-                </div>
-              </Option>
-            ))}
+            {renderOrganizations}
           </AsyncSelect>
           <Tabs defaultValue="Projects" orientation="vertical">
-            <Tabs.List>
-              {[
-                {
-                  title: 'Projects',
-                  url: `/${orgSlug}/`,
-                  icon: <FolderIcon />,
-                },
-                {
-                  title: 'Settings',
-                  url: `/${orgSlug}/settings`,
-                  icon: <SettingsSlidersIcon />,
-                },
-              ].map(({ title, icon, url }, index) => (
-                <NavLink to={url} key={index}>
-                  <Tabs.Trigger icon={icon} value={title}>
-                    {title}
-                  </Tabs.Trigger>
-                </NavLink>
-              ))}
-            </Tabs.List>
+            <Tabs.List>{renderMenu}</Tabs.List>
           </Tabs>
         </div>
         {/* Bottom navigation */}
