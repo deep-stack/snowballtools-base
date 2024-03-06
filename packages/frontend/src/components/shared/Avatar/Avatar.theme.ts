@@ -2,7 +2,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 
 export const avatarTheme = tv(
   {
-    base: ['relative', 'block', 'rounded-full', 'overflow-hidden'],
+    base: ['relative', 'block', 'rounded-full', 'overflow-hidden', 'shrink-0'],
     slots: {
       image: [
         'h-full',

@@ -49,7 +49,7 @@
     "siwe": "^2.1.4",
     "tailwind-variants": "^0.2.0",
     "typescript": "^4.9.5",
-    "usehooks-ts": "^2.10.0",
+    "usehooks-ts": "^2.15.1",
     "vertical-stepper-nav": "^1.0.2",
     "viem": "^2.7.11",
     "wagmi": "^2.5.7",

@@ -7,6 +7,7 @@ import {
   useParams,
 } from 'react-router-dom';
 import { Project as ProjectType } from 'gql-client';
+import { useMediaQuery } from 'usehooks-ts';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
 import { useOctokit } from '../../../context/OctokitContext';
@@ -22,6 +23,9 @@ const Id = () => {
   const navigate = useNavigate();
   const client = useGQLClient();
   const location = useLocation();
+
+  const isDesktopView = useMediaQuery('(min-width: 768px)'); // md:
+  const buttonSize = isDesktopView ? {} : { size: 'sm' as const };
 
   const [project, setProject] = useState<ProjectType | null>(null);
   const [repoUrl, setRepoUrl] = useState('');
@@ -65,25 +69,32 @@ const Id = () => {
       {project ? (
         <>
           <div className="px-6 py-4 flex justify-between items-center gap-4">
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 overflow-hidden">
               <Button
                 variant="tertiary"
-                className="rounded-full h-11 w-11 p-0"
+                iconOnly
+                className="rounded-full h-11 w-11 p-0 shrink-0"
                 aria-label="Go back"
                 leftIcon={<ChevronLeft />}
                 onClick={() => navigate(-1)}
               />
-              <Heading className="text-2xl font-medium">
+              <Heading className="text-2xl font-medium truncate">
                 {project?.name}
               </Heading>
             </div>
             <div className="flex items-center justify-center gap-3">
               <Link to={repoUrl} target="_blank">
-                <Button className="h-11 transition-colors" variant="tertiary">
+                <Button
+                  {...buttonSize}
+                  className="h-11 transition-colors"
+                  variant="tertiary"
+                >
                   Open repo
                 </Button>
               </Link>
-              <Button className="h-11 transition-colors">Go to app</Button>
+              <Button {...buttonSize} className="h-11 transition-colors">
+                Go to app
+              </Button>
             </div>
           </div>
           <WavyBorder />
@@ -95,9 +106,6 @@ const Id = () => {
                 </Tabs.Trigger>
                 <Tabs.Trigger value="deployments">
                   <Link to="deployments">Deployments</Link>
-                </Tabs.Trigger>
-                <Tabs.Trigger value="database">
-                  <Link to="database">Database</Link>
                 </Tabs.Trigger>
                 <Tabs.Trigger value="integrations">
                   <Link to="integrations">Integrations</Link>

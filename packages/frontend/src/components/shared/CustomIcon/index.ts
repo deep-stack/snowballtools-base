@@ -40,6 +40,7 @@ export * from './GithubStrokeIcon';
 export * from './BranchStrokeIcon';
 export * from './StorageIcon';
 export * from './LinkIcon';
+export * from './LinkChainIcon';
 export * from './CursorBoxIcon';
 export * from './CrossCircleIcon';
 export * from './RefreshIcon';
