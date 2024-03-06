@@ -44,7 +44,7 @@ export const ProjectSearchBarDialog = ({
       },
     });
 
-  const debouncedInputValue = useDebounce<string>(inputValue, 500);
+  const debouncedInputValue = useDebounce<string>(inputValue, 300);
 
   const fetchProjects = useCallback(
     async (inputValue: string) => {
