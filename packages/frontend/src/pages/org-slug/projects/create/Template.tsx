@@ -20,7 +20,7 @@ import { useMediaQuery } from 'usehooks-ts';
 const CreateWithTemplate = () => {
   const { orgSlug } = useParams();
 
-  const isDesktopView = useMediaQuery('(min-width: 720px)'); // md:
+  const isDesktopView = useMediaQuery('(min-width: 960px)'); // lg:
   const stepsOrientation = isDesktopView ? 'vertical' : 'horizontal';
 
   const stepperValues = [
@@ -51,8 +51,8 @@ const CreateWithTemplate = () => {
   );
 
   return (
-    <div className="flex flex-col items-center gap-6 md:gap-10">
-      <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
+    <div className="flex flex-col items-center gap-6 lg:gap-10 mx-auto w-full lg:w-5/6">
+      <div className="flex flex-col lg:flex-row justify-between w-full my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
         <div className="flex items-center gap-3">
           <TemplateIcon type={template?.icon as TemplateIconType} size={48} />
           <Heading className="font-medium">{template?.name}</Heading>
@@ -73,15 +73,15 @@ const CreateWithTemplate = () => {
           </a>
         </div>
       </div>
-      <div className="grid grid-cols-3 w-5/6 p-0 md:p-6 gap-8 md:gap-0">
-        <div className="col-span-3 md:col-span-1">
+      <div className="grid grid-cols-3 p-0 lg:p-6 w-full gap-8 lg:gap-0">
+        <div className="col-span-3 lg:col-span-1">
           <Steps
             orientation={stepsOrientation}
             currentIndex={activeStep}
             steps={stepperValues}
           />
         </div>
-        <div className="col-span-3 md:col-span-2">
+        <div className="col-span-3 lg:col-span-2">
           <Outlet context={{ template }} />
         </div>
       </div>
