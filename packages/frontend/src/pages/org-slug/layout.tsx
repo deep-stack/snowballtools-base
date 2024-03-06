@@ -107,24 +107,16 @@ export const DashboardLayout = ({
               'w-full h-full pr-1 pl-1 py-1 md:pl-0 md:pr-3 md:py-3 overflow-y-hidden min-w-[320px]',
               { 'flex-shrink-0': isSidebarOpen || !isDesktop },
             )}
-            initial={{ x: 0 }} // Initial state, no translation
             animate={{
-              x: isSidebarOpen ? '10px' : 0, // Translate X based on sidebar state
+              x: isSidebarOpen || isDesktop ? 0 : -320,
             }}
             transition={{ ease: 'easeInOut', duration: 0.3 }}
           >
-            <motion.div
-              className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: isSidebarOpen ? '10px' : 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              // transition={{ duration: 0.5 }}
-              transition={{ ease: 'easeInOut', duration: 0.3 }}
-            >
+            <div className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
               <OctokitProvider>
                 <Outlet />
               </OctokitProvider>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>

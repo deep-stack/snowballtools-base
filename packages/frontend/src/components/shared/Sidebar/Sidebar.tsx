@@ -72,17 +72,19 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       animate={{ x: isDesktop || mobileOpen ? 0 : -320 }}
       exit={{ x: -320 }}
       transition={{ ease: 'easeInOut', duration: 0.3 }}
-      className={cn('h-full flex-none w-[320px] lg:flex hidden flex-col', {
+      className={cn('h-full flex-none w-[320px] flex flex-col', {
         flex: mobileOpen,
       })}
     >
       <div
-        className={cn('flex flex-col h-full pt-8 pb-0 px-6 lg:pb-8 gap-9', {
-          'px-4 pt-5': mobileOpen,
-        })}
+        className={cn(
+          'flex flex-col h-full pt-5 lg:pt-8 pb-0 px-4 lg:px-6 lg:pb-8 gap-9',
+        )}
       >
         {/* Logo */}
-        {!mobileOpen && <Logo orgSlug={orgSlug} />}
+        <div className="hidden lg:flex">
+          <Logo orgSlug={orgSlug} />
+        </div>
         {/* Switch organization */}
         <div className="flex flex-1 flex-col gap-4">
           <AsyncSelect
