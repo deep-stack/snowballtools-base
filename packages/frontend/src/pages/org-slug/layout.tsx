@@ -104,7 +104,7 @@ export const DashboardLayout = ({
           <Sidebar mobileOpen={isSidebarOpen} />
           <motion.div
             className={cn(
-              'w-full h-full pr-1 pl-1 py-1 md:pl-0 md:pr-3 md:py-3 overflow-y-hidden min-w-[320px]',
+              'w-full h-full pr-1 pl-1 py-1 lg:pl-0 lg:pr-3 lg:py-3 overflow-y-hidden min-w-[320px]',
               { 'flex-shrink-0': isSidebarOpen || !isDesktop },
             )}
             animate={{
