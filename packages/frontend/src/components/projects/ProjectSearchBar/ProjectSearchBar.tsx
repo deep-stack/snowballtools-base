@@ -6,15 +6,14 @@ import { useDebounce } from 'usehooks-ts';
 import SearchBar from 'components/SearchBar';
 import { useGQLClient } from 'context/GQLClientContext';
 import { cn } from 'utils/classnames';
-import { InfoRoundFilledIcon } from 'components/shared/CustomIcon';
-import { Avatar } from 'components/shared/Avatar';
-import { getInitials } from 'utils/geInitials';
+import { ProjectSearchBarItem } from './ProjectSearchBarItem';
+import { ProjectSearchBarEmpty } from './ProjectSearchBarEmpty';
 
-interface ProjectsSearchProps {
+interface ProjectSearchBarProps {
   onChange?: (data: Project) => void;
 }
 
-const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
+export const ProjectSearchBar = ({ onChange }: ProjectSearchBarProps) => {
   const [items, setItems] = useState<Project[]>([]);
   const [selectedItem, setSelectedItem] = useState<Project | null>(null);
   const client = useGQLClient();
@@ -60,7 +59,7 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
   }, [fetchProjects, debouncedInputValue]);
 
   return (
-    <div className="relative">
+    <div className="relative w-full lg:w-fit">
       <SearchBar {...getInputProps()} />
       <div
         {...getMenuProps()}
@@ -77,46 +76,18 @@ const ProjectSearchBar = ({ onChange }: ProjectsSearchProps) => {
               </p>
             </div>
             {items.map((item, index) => (
-              <div
+              <ProjectSearchBarItem
                 {...getItemProps({ item, index })}
                 key={item.id}
-                className={cn(
-                  'px-2 py-2 flex items-center gap-3 rounded-lg hover:bg-base-bg-emphasized',
-                  {
-                    'bg-base-bg-emphasized':
-                      highlightedIndex === index || selectedItem === item,
-                  },
-                )}
-              >
-                <Avatar
-                  size={32}
-                  imageSrc={item.icon}
-                  initials={getInitials(item.name)}
-                />
-                <div className="flex flex-col flex-1">
-                  <p className="text-sm tracking-[-0.006em] text-elements-high-em">
-                    {item.name}
-                  </p>
-                  <p className="text-xs text-elements-low-em">
-                    {item.organization.name}
-                  </p>
-                </div>
-              </div>
+                item={item}
+                active={highlightedIndex === index || selectedItem === item}
+              />
             ))}
           </>
         ) : (
-          <div className="flex items-center px-2 py-2 gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 text-elements-warning">
-              <InfoRoundFilledIcon size={16} />
-            </div>
-            <p className="text-elements-low-em text-sm tracking-[-0.006em]">
-              No projects matching this name
-            </p>
-          </div>
+          <ProjectSearchBarEmpty />
         )}
       </div>
     </div>
   );
 };
-
-export default ProjectSearchBar;

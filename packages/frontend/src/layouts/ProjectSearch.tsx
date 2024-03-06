@@ -2,16 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { User } from 'gql-client';
 
-// import { Tooltip } from '@material-tailwind/react';
-
 import HorizontalLine from 'components/HorizontalLine';
-import ProjectSearchBar from 'components/projects/ProjectSearchBar';
 import { useGQLClient } from 'context/GQLClientContext';
 import { NotificationBellIcon, PlusIcon } from 'components/shared/CustomIcon';
 import { Button } from 'components/shared/Button';
 import { Avatar } from 'components/shared/Avatar';
 import { getInitials } from 'utils/geInitials';
-import { formatAddress } from '../utils/format';
+import { formatAddress } from 'utils/format';
+import { ProjectSearchBar } from 'components/projects/ProjectSearchBar';
 
 const ProjectSearch = () => {
   const navigate = useNavigate();
