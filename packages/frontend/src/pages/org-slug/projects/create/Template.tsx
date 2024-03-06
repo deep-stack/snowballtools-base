@@ -7,8 +7,11 @@ import {
 } from 'react-router-dom';
 
 import templates from '../../../../assets/templates';
-import { Avatar } from 'components/shared/Avatar';
-import { LinkChainIcon } from 'components/shared/CustomIcon';
+import {
+  LinkChainIcon,
+  TemplateIcon,
+  TemplateIconType,
+} from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
 import { Steps } from 'components/shared/Steps';
 
@@ -47,7 +50,7 @@ const CreateWithTemplate = () => {
     <div className="flex flex-col items-center">
       <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
         <div className="flex items-center gap-3">
-          <Avatar size={48} imageSrc="/gray.png" />
+          <TemplateIcon type={template?.icon as TemplateIconType} size={48} />
           <Heading className="font-medium">{template?.name}</Heading>
         </div>
         <div>
