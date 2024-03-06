@@ -167,7 +167,8 @@ export const Select = ({
     }
   }, [dropdownOpen]); // Re-calculate whenever the dropdown is opened
 
-  const handleSelectedItemChange = (selectedItem: SelectOption | null) => {
+  const handleSelectedItemChange = (selectedItem: SelectOption | undefined) => {
+    if (!selectedItem) return;
     setSelectedItem(selectedItem);
     setInputValue(selectedItem ? selectedItem.label : '');
     onChange?.(selectedItem as SelectOption);
@@ -185,7 +186,7 @@ export const Select = ({
     onSelectedItemsChange: multiple
       ? undefined
       : ({ selectedItems }) => {
-          handleSelectedItemChange(selectedItems?.[0] || null);
+          handleSelectedItemChange(selectedItems?.[0]);
         },
   });
 
