@@ -8,18 +8,46 @@ import { Project } from 'gql-client';
 import { useDebounce } from 'usehooks-ts';
 import { ProjectSearchBarItem } from './ProjectSearchBarItem';
 import { ProjectSearchBarEmpty } from './ProjectSearchBarEmpty';
+import { useNavigate } from 'react-router-dom';
+import { useCombobox } from 'downshift';
 
 interface ProjectSearchBarDialogProps extends Dialog.DialogProps {
   onClose?: () => void;
+  onClickItem?: (data: Project) => void;
 }
 
 export const ProjectSearchBarDialog = ({
   onClose,
+  onClickItem,
   ...props
 }: ProjectSearchBarDialogProps) => {
   const [items, setItems] = useState<Project[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [selectedItem, setSelectedItem] = useState<Project | null>(null);
   const client = useGQLClient();
+  const navigate = useNavigate();
+
+  const {
+    getMenuProps,
+    getInputProps,
+    getItemProps,
+    inputValue,
+    setInputValue,
+  } = useCombobox({
+    items,
+    itemToString(item) {
+      return item ? item.name : '';
+    },
+    selectedItem,
+    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
+      if (newSelectedItem) {
+        setSelectedItem(newSelectedItem);
+        onClickItem?.(newSelectedItem);
+        navigate(
+          `/${newSelectedItem.organization.slug}/projects/${newSelectedItem.id}`,
+        );
+      }
+    },
+  });
 
   const debouncedInputValue = useDebounce<string>(inputValue, 500);
 
@@ -42,7 +70,7 @@ export const ProjectSearchBarDialog = ({
     setItems([]);
     onClose?.();
   };
-  console.log(items);
+
   return (
     <Dialog.Root {...props}>
       <Dialog.Portal>
@@ -50,28 +78,31 @@ export const ProjectSearchBarDialog = ({
           <Dialog.Content>
             <div className="py-2.5 px-4 w-full flex items-center justify-between border-b border-border-separator/[0.06]">
               <Input
+                {...getInputProps()}
                 leftIcon={<SearchIcon />}
                 placeholder="Search"
                 appearance="borderless"
-                value={inputValue}
                 autoFocus
-                onChange={(e) => setInputValue(e.target.value)}
               />
               <Button iconOnly variant="ghost" onClick={handleClose}>
                 <CrossIcon size={16} />
               </Button>
             </div>
             {/* Content */}
-            <div className="flex flex-col gap-1 px-2 py-2">
+            <div {...getMenuProps()} className="flex flex-col gap-1 px-2 py-2">
               {items.length > 0
-                ? items.map((item) => (
+                ? items.map((item, index) => (
                     <>
                       <div className="px-2 py-2">
                         <p className="text-elements-mid-em text-xs font-medium">
                           Suggestions
                         </p>
                       </div>
-                      <ProjectSearchBarItem key={item.id} item={item} />
+                      <ProjectSearchBarItem
+                        {...getItemProps({ item, index })}
+                        key={item.id}
+                        item={item}
+                      />
                     </>
                   ))
                 : inputValue && <ProjectSearchBarEmpty />}

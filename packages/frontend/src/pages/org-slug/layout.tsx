@@ -123,6 +123,7 @@ export const DashboardLayout = ({
       </section>
       <ProjectSearchBarDialog
         open={isSearchOpen}
+        onClickItem={() => setIsSearchOpen(false)}
         onClose={() => setIsSearchOpen(false)}
       />
     </>
