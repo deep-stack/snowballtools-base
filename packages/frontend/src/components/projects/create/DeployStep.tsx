@@ -101,7 +101,12 @@ const DeployStep = ({
         )}
         {status === DeployStatus.COMPLETE && (
           <div className="flex items-center gap-1.5">
-            <CheckRoundFilledIcon className="text-elements-success" size={18} />
+            <div className="w-4.5 h-4.5 grid place-content-center">
+              <CheckRoundFilledIcon
+                className="text-elements-success"
+                size={15}
+              />
+            </div>
             <FormatMillisecond time={Number(processTime)} />{' '}
           </div>
         )}

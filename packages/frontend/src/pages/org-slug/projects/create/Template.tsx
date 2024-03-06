@@ -6,10 +6,14 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { Avatar } from '@material-tailwind/react';
-
-import Stepper from '../../../../components/Stepper';
 import templates from '../../../../assets/templates';
+import {
+  LinkChainIcon,
+  TemplateIcon,
+  TemplateIconType,
+} from 'components/shared/CustomIcon';
+import { Heading } from 'components/shared/Heading';
+import { Steps } from 'components/shared/Steps';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -44,25 +48,30 @@ const CreateWithTemplate = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex justify-between w-5/6 my-4 bg-gray-200 rounded-xl p-6 items-center">
-        <Avatar variant="rounded" src="/gray.png" placeholder={''} />
-        <div className="grow px-2">{template?.name}</div>
+      <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
+        <div className="flex items-center gap-3">
+          <TemplateIcon type={template?.icon as TemplateIconType} size={48} />
+          <Heading className="font-medium">{template?.name}</Heading>
+        </div>
         <div>
           <a
             href={`https://github.com/${template?.repoFullName}`}
             target="_blank"
             rel="noreferrer"
+            className="flex gap-1.5 items-center text-sm"
           >
-            ^{' '}
-            {Boolean(template?.repoFullName)
-              ? template?.repoFullName
-              : 'Template not supported'}
+            <LinkChainIcon size={18} />
+            <span className="underline">
+              {Boolean(template?.repoFullName)
+                ? template?.repoFullName
+                : 'Template not supported'}
+            </span>
           </a>
         </div>
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">
         <div>
-          <Stepper activeStep={activeStep} stepperValues={stepperValues} />
+          <Steps currentIndex={activeStep} steps={stepperValues} />
         </div>
         <div className="col-span-2">
           <Outlet context={{ template }} />
