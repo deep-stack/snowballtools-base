@@ -111,7 +111,7 @@ export const DashboardLayout = ({
             animate={{
               x: isSidebarOpen ? '10px' : 0, // Translate X based on sidebar state
             }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+            transition={{ ease: 'easeInOut', duration: 0.3 }}
           >
             <motion.div
               className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative"
@@ -119,7 +119,7 @@ export const DashboardLayout = ({
               animate={{ opacity: 1, x: isSidebarOpen ? '10px' : 0 }}
               exit={{ opacity: 0, x: 100 }}
               // transition={{ duration: 0.5 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+              transition={{ ease: 'easeInOut', duration: 0.3 }}
             >
               <OctokitProvider>
                 <Outlet />

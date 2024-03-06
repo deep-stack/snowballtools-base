@@ -71,7 +71,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       initial={{ x: -320 }}
       animate={{ x: isDesktop || mobileOpen ? 0 : -320 }}
       exit={{ x: -320 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+      transition={{ ease: 'easeInOut', duration: 0.3 }}
       className={cn('h-full flex-none w-[320px] lg:flex hidden flex-col', {
         flex: mobileOpen,
       })}
