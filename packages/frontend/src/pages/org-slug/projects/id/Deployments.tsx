@@ -14,7 +14,7 @@ import { RefreshIcon } from 'components/shared/CustomIcon';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
-  status: StatusOptions.ALL_STATUS,
+  status: '',
 };
 const FETCH_DEPLOYMENTS_INTERVAL = 5000;
 

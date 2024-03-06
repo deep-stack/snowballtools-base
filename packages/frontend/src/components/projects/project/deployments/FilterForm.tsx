@@ -22,7 +22,7 @@ export enum StatusOptions {
 
 export interface FilterValue {
   searchedBranch: string;
-  status: StatusOptions;
+  status: StatusOptions | string;
   updateAtRange?: Value;
 }
 
@@ -64,13 +64,11 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
     }
   };
 
-  const statusOptions = Object.values(StatusOptions)
-    .map((status) => ({
-      label: status,
-      value: status,
-      leftIcon: getOptionIcon(status),
-    }))
-    .filter((status) => status.value !== StatusOptions.ALL_STATUS);
+  const statusOptions = Object.values(StatusOptions).map((status) => ({
+    label: status,
+    value: status,
+    leftIcon: getOptionIcon(status),
+  }));
 
   const handleReset = () => {
     setSearchedBranch('');
@@ -104,11 +102,15 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
           options={statusOptions}
           clearable
           placeholder="All status"
-          value={{ label: selectedStatus, value: selectedStatus }}
+          value={
+            selectedStatus
+              ? { label: selectedStatus, value: selectedStatus }
+              : undefined
+          }
           onChange={(item) =>
             setSelectedStatus((item as SelectOption).value as StatusOptions)
           }
-          onClear={() => setSelectedStatus(StatusOptions.ALL_STATUS)}
+          onClear={() => setSelectedStatus('')}
         />
       </div>
     </div>
