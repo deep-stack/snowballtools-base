@@ -26,28 +26,23 @@ export const ProjectSearchBarDialog = ({
   const client = useGQLClient();
   const navigate = useNavigate();
 
-  const {
-    getMenuProps,
-    getInputProps,
-    getItemProps,
-    inputValue,
-    setInputValue,
-  } = useCombobox({
-    items,
-    itemToString(item) {
-      return item ? item.name : '';
-    },
-    selectedItem,
-    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
-      if (newSelectedItem) {
-        setSelectedItem(newSelectedItem);
-        onClickItem?.(newSelectedItem);
-        navigate(
-          `/${newSelectedItem.organization.slug}/projects/${newSelectedItem.id}`,
-        );
-      }
-    },
-  });
+  const { getInputProps, getItemProps, inputValue, setInputValue } =
+    useCombobox({
+      items,
+      itemToString(item) {
+        return item ? item.name : '';
+      },
+      selectedItem,
+      onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
+        if (newSelectedItem) {
+          setSelectedItem(newSelectedItem);
+          onClickItem?.(newSelectedItem);
+          navigate(
+            `/${newSelectedItem.organization.slug}/projects/${newSelectedItem.id}`,
+          );
+        }
+      },
+    });
 
   const debouncedInputValue = useDebounce<string>(inputValue, 500);
 
@@ -74,9 +69,10 @@ export const ProjectSearchBarDialog = ({
   return (
     <Dialog.Root {...props}>
       <Dialog.Portal>
-        <div className="bg-base-bg fixed inset-0 md:hidden overflow-y-auto">
-          <Dialog.Content>
-            <div className="py-2.5 px-4 w-full flex items-center justify-between border-b border-border-separator/[0.06]">
+        <Dialog.Overlay className="bg-base-bg fixed inset-0 md:hidden overflow-y-auto" />
+        <Dialog.Content>
+          <div className="h-full flex flex-col fixed top-0 inset-0">
+            <div className="py-2.5 px-4 flex items-center justify-between border-b border-border-separator/[0.06]">
               <Input
                 {...getInputProps()}
                 leftIcon={<SearchIcon />}
@@ -89,7 +85,7 @@ export const ProjectSearchBarDialog = ({
               </Button>
             </div>
             {/* Content */}
-            <div {...getMenuProps()} className="flex flex-col gap-1 px-2 py-2">
+            <div className="flex flex-col gap-1 px-2 py-2">
               {items.length > 0
                 ? items.map((item, index) => (
                     <>
@@ -107,8 +103,8 @@ export const ProjectSearchBarDialog = ({
                   ))
                 : inputValue && <ProjectSearchBarEmpty />}
             </div>
-          </Dialog.Content>
-        </div>
+          </div>
+        </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
