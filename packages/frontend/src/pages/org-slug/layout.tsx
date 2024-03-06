@@ -25,7 +25,7 @@ export const DashboardLayout = ({
     <section
       {...props}
       className={cn(
-        'lg:grid flex flex-col lg:grid-cols-5 h-screen bg-snowball-50',
+        'flex flex-col lg:flex-row h-screen bg-snowball-50',
         className,
       )}
     >
@@ -45,7 +45,7 @@ export const DashboardLayout = ({
           </Button>
         </div>
       </div>
-      <div className="lg:col-span-4 w-full h-full px-1 py-1 md:px-3 md:py-3 overflow-y-hidden">
+      <div className="flex-1 w-full h-full px-1 py-1 md:px-3 md:py-3 overflow-y-hidden">
         <div className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
           <OctokitProvider>
             <Outlet />
