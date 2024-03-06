@@ -113,11 +113,18 @@ export const DashboardLayout = ({
             }}
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
           >
-            <div className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
+            <motion.div
+              className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: isSidebarOpen ? '10px' : 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              // transition={{ duration: 0.5 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+            >
               <OctokitProvider>
                 <Outlet />
               </OctokitProvider>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
