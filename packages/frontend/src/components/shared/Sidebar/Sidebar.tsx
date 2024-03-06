@@ -66,6 +66,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       imgSrc: '/logo.svg',
     };
   }, [organizations, selectedOrgSlug, orgSlug]);
+
   const formattedSelectOptions = useMemo(() => {
     return organizations.map((org) => ({
       value: org.slug,
