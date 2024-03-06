@@ -2,7 +2,7 @@ import { VariantProps, tv } from 'tailwind-variants';
 
 export const datePickerTheme = tv({
   slots: {
-    input: [],
+    input: ['w-full'],
   },
 });
 

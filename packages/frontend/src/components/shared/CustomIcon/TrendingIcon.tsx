@@ -1,7 +1,7 @@
 import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
-export const CalendarIcon = (props: CustomIconProps) => {
+export const TrendingIcon = (props: CustomIconProps) => {
   return (
     <CustomIcon
       width="18"
@@ -11,7 +11,7 @@ export const CalendarIcon = (props: CustomIconProps) => {
       {...props}
     >
       <path
-        d="M2.625 7.125H15.375M5.625 3.375V1.875M12.375 3.375V1.875M4.125 15.375H13.875C14.7034 15.375 15.375 14.7034 15.375 13.875V4.875C15.375 4.04657 14.7034 3.375 13.875 3.375H4.125C3.29657 3.375 2.625 4.04657 2.625 4.875V13.875C2.625 14.7034 3.29657 15.375 4.125 15.375Z"
+        d="M1.875 9.79623L2.68636 7.88111C2.95597 7.24472 3.86788 7.28002 4.08767 7.93535L5.09939 10.9518C5.33069 11.6415 6.30748 11.6322 6.52567 10.9383L8.97436 3.15067C9.2032 2.42289 10.2437 2.46059 10.4194 3.20303L13.1643 14.7969C13.3368 15.5254 14.3502 15.5807 14.6007 14.8754L16.125 10.583"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"

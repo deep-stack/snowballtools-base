@@ -87,7 +87,7 @@ export const Input = ({
   }, [cloneIcon, state, helperIconCls, helperText, helperTextCls]);
 
   return (
-    <div className="flex flex-col gap-y-2">
+    <div className="flex flex-col gap-y-2 w-full">
       {renderLabels}
       <div className={containerCls({ class: className })}>
         {leftIcon && renderLeftIcon}

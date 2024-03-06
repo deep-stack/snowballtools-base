@@ -42,6 +42,8 @@ export * from './StorageIcon';
 export * from './LinkIcon';
 export * from './LinkChainIcon';
 export * from './CursorBoxIcon';
+export * from './CrossCircleIcon';
+export * from './RefreshIcon';
 export * from './CommitIcon';
 export * from './RocketIcon';
 export * from './RefreshIcon';
@@ -49,6 +51,10 @@ export * from './UndoIcon';
 export * from './LoaderIcon';
 export * from './MinusCircleIcon';
 export * from './CopyIcon';
+export * from './CirclePlaceholderOnIcon';
+export * from './WarningTriangleIcon';
+export * from './CheckRadioOutlineIcon';
+export * from './TrendingIcon';
 
 // Templates
 export * from './templates';

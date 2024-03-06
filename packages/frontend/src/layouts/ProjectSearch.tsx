@@ -32,7 +32,7 @@ const ProjectSearch = () => {
   }, []);
 
   return (
-    <div>
+    <div className="h-full">
       <div className="sticky top-0 bg-white z-30">
         <div className="flex pl-3 pr-8 pt-3 pb-3 items-center">
           <div className="grow">
@@ -64,7 +64,7 @@ const ProjectSearch = () => {
         </div>
         <HorizontalLine />
       </div>
-      <div className="z-0">
+      <div className="z-0 h-full">
         <Outlet />
       </div>
     </div>
