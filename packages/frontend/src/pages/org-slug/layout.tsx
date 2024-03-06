@@ -23,7 +23,7 @@ export const DashboardLayout = ({
   ...props
 }: DashboardLayoutProps) => {
   const { orgSlug } = useParams();
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);

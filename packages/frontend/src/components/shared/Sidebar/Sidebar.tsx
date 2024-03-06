@@ -34,7 +34,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   const navigate = useNavigate();
   const client = useGQLClient();
   const { disconnect } = useDisconnect();
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [user, setUser] = useState<User>();
 
