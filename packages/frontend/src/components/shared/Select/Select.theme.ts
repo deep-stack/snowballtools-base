@@ -2,7 +2,7 @@ import { VariantProps, tv } from 'tailwind-variants';
 
 export const selectTheme = tv({
   slots: {
-    container: ['flex', 'flex-col', 'relative', 'gap-2'],
+    container: ['flex', 'flex-col', 'relative', 'gap-2', 'w-full'],
     label: ['text-sm', 'text-elements-high-em'],
     description: ['text-xs', 'text-elements-low-em'],
     inputWrapper: [

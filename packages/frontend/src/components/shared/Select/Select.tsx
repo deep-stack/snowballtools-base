@@ -10,8 +10,8 @@ import React, {
 import { useMultipleSelection, useCombobox } from 'downshift';
 import { SelectTheme, selectTheme } from './Select.theme';
 import {
-  ChevronDownIcon,
-  CrossIcon,
+  ChevronGrabberHorizontal,
+  CrossCircleIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
 import { cloneIcon } from 'utils/cloneIcon';
@@ -167,7 +167,8 @@ export const Select = ({
     }
   }, [dropdownOpen]); // Re-calculate whenever the dropdown is opened
 
-  const handleSelectedItemChange = (selectedItem: SelectOption | null) => {
+  const handleSelectedItemChange = (selectedItem: SelectOption | undefined) => {
+    if (!selectedItem) return;
     setSelectedItem(selectedItem);
     setInputValue(selectedItem ? selectedItem.label : '');
     onChange?.(selectedItem as SelectOption);
@@ -185,7 +186,7 @@ export const Select = ({
     onSelectedItemsChange: multiple
       ? undefined
       : ({ selectedItems }) => {
-          handleSelectedItemChange(selectedItems?.[0] || null);
+          handleSelectedItemChange(selectedItems?.[0]);
         },
   });
 
@@ -279,16 +280,19 @@ export const Select = ({
   const renderLeftIcon = useMemo(() => {
     return (
       <div className={theme.iconContainer({ class: 'left-0 pl-4' })}>
-        {cloneIcon(leftIcon, { className: theme.icon(), 'aria-hidden': true })}
+        {cloneIcon(selectedItem?.leftIcon ? selectedItem.leftIcon : leftIcon, {
+          className: theme.icon(),
+          'aria-hidden': true,
+        })}
       </div>
     );
-  }, [cloneIcon, theme, leftIcon]);
+  }, [cloneIcon, theme, leftIcon, selectedItem]);
 
   const renderRightIcon = useMemo(() => {
     return (
       <div className={theme.iconContainer({ class: 'pr-4 right-0' })}>
         {clearable && (selectedItems.length > 0 || selectedItem) && (
-          <CrossIcon
+          <CrossCircleIcon
             className={theme.icon({ class: 'h-4 w-4' })}
             onClick={handleClear}
           />
@@ -296,11 +300,11 @@ export const Select = ({
         {rightIcon ? (
           cloneIcon(rightIcon, { className: theme.icon(), 'aria-hidden': true })
         ) : (
-          <ChevronDownIcon className={theme.icon()} />
+          <ChevronGrabberHorizontal className={theme.icon()} />
         )}
       </div>
     );
-  }, [cloneIcon, theme, rightIcon]);
+  }, [cloneIcon, theme, rightIcon, selectedItem, selectedItems, clearable]);
 
   const renderHelperText = useMemo(() => {
     if (!helperText) return null;
@@ -343,7 +347,7 @@ export const Select = ({
         onClick={() => !dropdownOpen && openMenu()}
       >
         {/* Left icon */}
-        {leftIcon && renderLeftIcon}
+        {renderLeftIcon}
 
         {/* Multiple input values */}
         {isMultipleHasValue &&

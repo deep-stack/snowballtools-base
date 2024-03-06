@@ -62,7 +62,9 @@ const SelectItem = forwardRef<HTMLLIElement, SelectItemProps>(
           <p className={theme.label()} data-disabled={disabled}>
             {label}
           </p>
-          {orientation === 'horizontal' && <span className={theme.dot()} />}
+          {orientation === 'horizontal' && description && (
+            <span className={theme.dot()} />
+          )}
           {description && (
             <p className={theme.description()} data-disabled={disabled}>
               {description}

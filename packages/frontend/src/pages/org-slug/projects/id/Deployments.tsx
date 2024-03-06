@@ -2,19 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Deployment, Domain } from 'gql-client';
 import { useOutletContext } from 'react-router-dom';
 
-import { Button, Typography } from '@material-tailwind/react';
-
-import DeploymentDetailsCard from '../../../../components/projects/project/deployments/DeploymentDetailsCard';
+import DeploymentDetailsCard from 'components/projects/project/deployments/DeploymentDetailsCard';
 import FilterForm, {
   FilterValue,
   StatusOptions,
-} from '../../../../components/projects/project/deployments/FilterForm';
-import { OutletContextType } from '../../../../types';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+} from 'components/projects/project/deployments/FilterForm';
+import { OutletContextType } from 'types';
+import { useGQLClient } from 'context/GQLClientContext';
+import { Button } from 'components/shared/Button';
+import { RefreshIcon } from 'components/shared/CustomIcon';
 
 const DEFAULT_FILTER_VALUE: FilterValue = {
   searchedBranch: '',
-  status: StatusOptions.ALL_STATUS,
+  status: '',
 };
 const FETCH_DEPLOYMENTS_INTERVAL = 5000;
 
@@ -73,12 +73,19 @@ const DeploymentsTabPanel = () => {
         // TODO: match status field types
         (deployment.status as unknown as StatusOptions) === filterValue.status;
 
+      const startDate =
+        filterValue.updateAtRange instanceof Array
+          ? filterValue.updateAtRange[0]
+          : null;
+      const endDate =
+        filterValue.updateAtRange instanceof Array
+          ? filterValue.updateAtRange[1]
+          : null;
+
       const dateMatch =
         !filterValue.updateAtRange ||
-        (new Date(Number(deployment.createdAt)) >=
-          filterValue.updateAtRange!.from! &&
-          new Date(Number(deployment.createdAt)) <=
-            filterValue.updateAtRange!.to!);
+        (new Date(Number(deployment.createdAt)) >= startDate! &&
+          new Date(Number(deployment.createdAt)) <= endDate!);
 
       return branchMatch && statusMatch && dateMatch;
     });
@@ -93,12 +100,12 @@ const DeploymentsTabPanel = () => {
   };
 
   return (
-    <div className="max-w-[1440px]">
+    <section className="h-full">
       <FilterForm
         value={filterValue}
         onChange={(value) => setFilterValue(value)}
       />
-      <div className="mt-3">
+      <div className="mt-2 h-full">
         {Boolean(filteredDeployments.length) ? (
           filteredDeployments.map((deployment, key) => {
             return (
@@ -113,27 +120,27 @@ const DeploymentsTabPanel = () => {
             );
           })
         ) : (
-          <div className="h-[50vh] bg-gray-100 flex rounded items-center justify-center">
-            <div className="text-center">
-              <Typography variant="h5" placeholder={''}>
+          // TODO: Update the height based on the layout, need to re-styling the layout similar to create project layout
+          <div className="h-3/4 bg-base-bg-alternate flex flex-col rounded-xl items-center justify-center text-center gap-5">
+            <div className="space-y-1">
+              <p className="font-medium tracking-[-0.011em] text-elements-high-em">
                 No deployments found
-              </Typography>
-              <Typography placeholder={''}>
-                Please change your search query or filters
-              </Typography>
-              <Button
-                className="rounded-full mt-5"
-                color="white"
-                onClick={handleResetFilters}
-                placeholder={''}
-              >
-                ^ Reset filters
-              </Button>
+              </p>
+              <p className="text-sm tracking-[-0.006em] text-elements-mid-em">
+                Please change your search query or filters.
+              </p>
             </div>
+            <Button
+              variant="tertiary"
+              leftIcon={<RefreshIcon />}
+              onClick={handleResetFilters}
+            >
+              Reset filters
+            </Button>
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 
