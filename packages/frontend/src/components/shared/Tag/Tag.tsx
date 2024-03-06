@@ -27,6 +27,8 @@ export const Tag = ({
   type = 'attention',
   style = 'default',
   size = 'sm',
+  className,
+  ...props
 }: TagProps) => {
   const {
     wrapper: wrapperCls,
@@ -51,7 +53,7 @@ export const Tag = ({
   }, [cloneIcon, iconCls, rightIcon]);
 
   return (
-    <div className={wrapperCls()}>
+    <div className={wrapperCls({ className })} {...props}>
       {renderLeftIcon}
       <p className={labelCls()}>{children}</p>
       {renderRightIcon}

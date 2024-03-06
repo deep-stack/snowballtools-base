@@ -2,7 +2,7 @@ import { VariantProps, tv } from 'tailwind-variants';
 
 export const radioTheme = tv({
   slots: {
-    root: ['flex', 'gap-3', 'flex-wrap'],
+    root: ['flex', 'gap-3'],
     wrapper: ['flex', 'items-center', 'gap-2', 'group'],
     label: ['text-sm', 'tracking-[-0.006em]', 'text-elements-high-em'],
     radio: [
@@ -39,15 +39,34 @@ export const radioTheme = tv({
       'after:data-[state=checked]:group-hover:bg-elements-on-primary',
       'after:data-[state=checked]:group-focus-visible:bg-elements-on-primary',
     ],
+    icon: ['w-[18px]', 'h-[18px]'],
   },
   variants: {
     orientation: {
       vertical: { root: ['flex-col'] },
       horizontal: { root: ['flex-row'] },
     },
+    variant: {
+      unstyled: {},
+      card: {
+        wrapper: [
+          'px-4',
+          'py-3',
+          'rounded-lg',
+          'border',
+          'border-border-interactive',
+          'bg-controls-tertiary',
+          'shadow-button',
+          'w-full',
+          'cursor-pointer',
+        ],
+        label: ['select-none', 'cursor-pointer'],
+      },
+    },
   },
   defaultVariants: {
     orientation: 'vertical',
+    variant: 'unstyled',
   },
 });
 

@@ -382,8 +382,7 @@ export class Service {
   async createDeployment (
     userId: string,
     octokit: Octokit,
-    data: DeepPartial<Deployment>,
-    recordData: { repoUrl?: string } = {}
+    data: DeepPartial<Deployment>
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
@@ -407,13 +406,10 @@ export class Service {
 
     assert(packageJSON.name, "name field doesn't exist in package.json");
 
-    if (!recordData.repoUrl) {
-      const { data: repoDetails } = await octokit.rest.repos.get({
-        owner,
-        repo
-      });
-      recordData.repoUrl = repoDetails.html_url;
-    }
+    const repoUrl = (await octokit.rest.repos.get({
+      owner,
+      repo
+    })).data.html_url;
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } =
@@ -422,7 +418,7 @@ export class Service {
         packageJSON,
         appType: data.project!.template!,
         commitHash: data.commitHash!,
-        repoUrl: recordData.repoUrl
+        repoUrl
       });
 
     // Update previous deployment with prod branch domain
@@ -464,10 +460,22 @@ export class Service {
       {
         deployment: newDeployment,
         appName: repo,
-        packageJsonName: packageJSON.name,
-        repository: recordData.repoUrl,
-        environmentVariables: environmentVariablesObj
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`
       });
+
+    // To set project DNS
+    if (data.environment === Environment.Production) {
+      await this.registry.createApplicationDeploymentRequest(
+        {
+          deployment: newDeployment,
+          appName: repo,
+          repository: repoUrl,
+          environmentVariables: environmentVariablesObj,
+          dns: `${newDeployment.project.name}`
+        });
+    }
 
     await this.db.updateDeploymentById(newDeployment.id, { applicationDeploymentRequestId, applicationDeploymentRequestData });
 
@@ -498,8 +506,6 @@ export class Service {
       per_page: 1
     });
 
-    const { data: repoDetails } = await octokit.rest.repos.get({ owner, repo });
-
     // Create deployment with prod branch and latest commit
     await this.createDeployment(user.id,
       octokit,
@@ -510,9 +516,6 @@ export class Service {
         domain: null,
         commitHash: latestCommit.sha,
         commitMessage: latestCommit.commit.message
-      },
-      {
-        repoUrl: repoDetails.html_url
       }
     );
 
@@ -555,8 +558,14 @@ export class Service {
   }
 
   async handleGitHubPush (data: GitPushEventPayload): Promise<void> {
-    const { repository, ref, head_commit: headCommit } = data;
-    log(`Handling GitHub push event from repository: ${repository.full_name}`);
+    const { repository, ref, head_commit: headCommit, deleted } = data;
+
+    if (deleted) {
+      log(`Branch ${ref} deleted for project ${repository.full_name}`);
+      return;
+    }
+
+    log(`Handling GitHub push event from repository: ${repository.full_name}, branch: ${ref}`);
     const projects = await this.db.getProjects({
       where: { repository: repository.full_name }
     });

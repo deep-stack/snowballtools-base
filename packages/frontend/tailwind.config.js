@@ -12,6 +12,9 @@ export default withMT({
       zIndex: {
         tooltip: '52',
       },
+      letterSpacing: {
+        tight: '-0.084px',
+      },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Inter Display', 'sans-serif'],
@@ -84,6 +87,7 @@ export default withMT({
           900: '#0a3a5c',
         },
         base: {
+          canvas: '#ECF6FE',
           bg: '#ffffff',
           'bg-alternate': '#f8fafc',
           'bg-emphasized': '#f1f5f9',

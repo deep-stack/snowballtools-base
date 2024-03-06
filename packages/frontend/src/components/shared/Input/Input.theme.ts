@@ -8,6 +8,8 @@ export const inputTheme = tv(
         'items-center',
         'rounded-lg',
         'relative',
+        'gap-2',
+        'w-full',
         'placeholder:text-elements-disabled',
         'disabled:cursor-not-allowed',
         'disabled:bg-controls-disabled',
@@ -27,7 +29,7 @@ export const inputTheme = tv(
         'disabled:shadow-none',
         'disabled:border-none',
       ],
-      icon: ['text-elements-mid-em'],
+      icon: ['text-elements-low-em'],
       iconContainer: [
         'absolute',
         'inset-y-0',

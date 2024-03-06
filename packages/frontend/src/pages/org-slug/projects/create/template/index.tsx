@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
 
-import { Button, Option, Typography } from '@material-tailwind/react';
-
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import AsyncSelect from '../../../../../components/shared/AsyncSelect';
 import { Template } from '../../../../../types';
+import { Heading } from 'components/shared/Heading';
+import { Input } from 'components/shared/Input';
+import { Select, SelectOption } from 'components/shared/Select';
+import { ArrowRightCircleFilledIcon } from 'components/shared/CustomIcon';
+import { Checkbox } from 'components/shared/Checkbox';
+import { Button } from 'components/shared/Button';
 
 type SubmitRepoValues = {
   framework: string;
@@ -93,7 +96,7 @@ const CreateRepo = () => {
     fetchUserAndOrgs();
   }, [octokit]);
 
-  const { register, handleSubmit, control, reset } = useForm<SubmitRepoValues>({
+  const { handleSubmit, control, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
       framework: 'React',
       repoName: '',
@@ -110,86 +113,67 @@ const CreateRepo = () => {
 
   return (
     <form onSubmit={handleSubmit(submitRepoHandler)}>
-      <div className="mb-2">
-        <Typography variant="h6" placeholder={''}>
-          Create a repository
-        </Typography>
-        <Typography color="gray" placeholder={''}>
-          The project will be cloned into this repository
-        </Typography>
-      </div>
-      <div className="mb-2">
-        <h5>Framework</h5>
-        <div className="flex items-center gap-2">
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              value="React"
-              className="h-5 w-5 text-indigo-600 rounded"
-            />
-            <span className="ml-2">^React</span>
-          </label>
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              className="h-5 w-5 text-indigo-600 rounded"
-              value="Next"
-            />
-            <span className="ml-2">^Next</span>
-          </label>
-        </div>
-      </div>
-      <div className="mb-2">
-        <h5>Git account</h5>
+      <div className="flex flex-col gap-4 lg:gap-7 w-full">
         <div>
+          <Heading as="h3" className="text-lg font-medium">
+            Create a repository
+          </Heading>
+          <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+            The project will be cloned into this repository
+          </Heading>
+        </div>
+        <div className="flex flex-col justify-start gap-3">
+          <span className="text-sm text-elements-high-em">Git account</span>
           <Controller
             name="account"
             control={control}
-            render={({ field }) => (
-              <AsyncSelect {...field}>
-                {gitAccounts.map((account, key) => (
-                  <Option key={key} value={account}>
-                    ^ {account}
-                  </Option>
-                ))}
-              </AsyncSelect>
+            render={({ field: { value, onChange } }) => (
+              <Select
+                value={{ value } as SelectOption}
+                onChange={(value) => onChange((value as SelectOption).value)}
+                options={
+                  gitAccounts.map((account) => ({
+                    value: account,
+                    label: account,
+                  })) ?? []
+                }
+              />
             )}
           />
         </div>
-      </div>
-      <div className="mb-2">
-        <h5>Name the repo</h5>
-        <div>
-          <input
-            type="text"
-            className="border border-gray-300 rounded p-2 w-full focus:border-blue-300 focus:outline-none focus:shadow-outline-blue"
-            placeholder=""
-            {...register('repoName')}
+        <div className="flex flex-col justify-start gap-3">
+          <span className="text-sm text-elements-high-em">Name the repo</span>
+          <Controller
+            name="repoName"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Input value={value} onChange={onChange} />
+            )}
           />
         </div>
-      </div>
-      <div className="mb-2">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            className="h-5 w-5 text-indigo-600 rounded"
-            {...register('isPrivate')}
+        <div>
+          <Controller
+            name="isPrivate"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Checkbox
+                label="Make this repo private"
+                checked={value}
+                onCheckedChange={onChange}
+              />
+            )}
           />
-          <span className="ml-2">Make this repo private</span>
-        </label>
-      </div>
-      <div className="mb-2">
-        <Button
-          className="bg-blue-500 rounded-xl p-2"
-          type="submit"
-          disabled={!Boolean(template.repoFullName) || isLoading}
-          loading={isLoading}
-          placeholder={''}
-        >
-          Deploy ^
-        </Button>
+        </div>
+        <div>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={!Boolean(template.repoFullName) || isLoading}
+            rightIcon={<ArrowRightCircleFilledIcon />}
+          >
+            Deploy
+          </Button>
+        </div>
       </div>
     </form>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStopwatch } from 'react-timer-hook';
 
-import FormatMillisecond from './FormatMilliSecond';
+import FormatMillisecond, { FormatMilliSecondProps } from './FormatMilliSecond';
 
 const setStopWatchOffset = (time: string) => {
   const providedTime = new Date(time);
@@ -11,13 +11,17 @@ const setStopWatchOffset = (time: string) => {
   return currentTime;
 };
 
-const Stopwatch = ({ offsetTimestamp }: { offsetTimestamp: Date }) => {
+interface StopwatchProps extends Omit<FormatMilliSecondProps, 'time'> {
+  offsetTimestamp: Date;
+}
+
+const Stopwatch = ({ offsetTimestamp, ...props }: StopwatchProps) => {
   const { totalSeconds } = useStopwatch({
     autoStart: true,
     offsetTimestamp: offsetTimestamp,
   });
 
-  return <FormatMillisecond time={totalSeconds * 1000} />;
+  return <FormatMillisecond time={totalSeconds * 1000} {...props} />;
 };
 
 export { Stopwatch, setStopWatchOffset };

@@ -4,26 +4,26 @@ import type { VariantProps } from 'tailwind-variants';
 export const tagTheme = tv(
   {
     slots: {
-      wrapper: ['flex', 'gap-1.5', 'rounded-lg', 'border'],
-      icon: ['h-4', 'w-4'],
+      wrapper: ['inline-flex', 'gap-1.5', 'rounded-lg', 'border'],
+      icon: [],
       label: ['font-inter', 'text-xs'],
     },
     variants: {
       type: {
         attention: {
-          icon: ['text-elements-warning'],
+          wrapper: ['text-elements-warning'],
         },
         negative: {
-          icon: ['text-elements-danger'],
+          wrapper: ['text-elements-danger'],
         },
         positive: {
-          icon: ['text-elements-success'],
+          wrapper: ['text-elements-success'],
         },
         emphasized: {
-          icon: ['text-elements-on-secondary'],
+          wrapper: ['text-elements-on-secondary'],
         },
         neutral: {
-          icon: ['text-elements-mid-em'],
+          wrapper: ['text-elements-mid-em'],
         },
       },
       style: {
@@ -36,9 +36,11 @@ export const tagTheme = tv(
       size: {
         sm: {
           wrapper: ['px-2', 'py-2'],
+          icon: ['h-4', 'w-4'],
         },
         xs: {
-          wrapper: ['px-2', 'py-1.5'],
+          wrapper: ['px-2', 'py-1'],
+          icon: ['h-3', 'w-3'],
         },
       },
     },

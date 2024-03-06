@@ -1,6 +1,7 @@
 {
   // IntelliSense for taiwind variants
   "tailwindCSS.experimental.classRegex": [
-    ["tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+    "tv\\('([^)]*)\\')",
+    "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"
   ]
 }

@@ -8,7 +8,6 @@ export const tabsTheme = tv({
     triggerWrapper: [
       // Horizontal – default
       'px-1',
-      'pb-5',
       'cursor-default',
       'select-none',
       'text-elements-low-em',
@@ -55,9 +54,13 @@ export const tabsTheme = tv({
       'outline-none',
       'leading-none',
       'tracking-[-0.006em]',
+      'text-sm',
       'rounded-md',
       // Horizontal – default
       'data-[orientation=horizontal]:focus-ring',
+      'data-[orientation=horizontal]:h-10',
+      // select direct child of data-[orientation=horizontal]
+      '[&[data-orientation=horizontal]_>_*]:h-full',
       // Vertical
       'data-[orientation=vertical]:gap-2',
       'data-[orientation=vertical]:justify-start',
@@ -68,6 +71,7 @@ export const tabsTheme = tv({
       'gap-5',
       'border-b',
       'border-transparent',
+      'overflow-scroll',
       // Horizontal – default
       'data-[orientation=horizontal]:border-border-interactive/10',
       // Vertical
