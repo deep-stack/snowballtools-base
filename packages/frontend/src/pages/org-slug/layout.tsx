@@ -63,7 +63,7 @@ export const DashboardLayout = ({
                     variant="ghost"
                     onClick={() => setIsSidebarOpen(false)}
                   >
-                    <CrossIcon size={20} />
+                    <CrossIcon size={18} />
                   </Button>
                 </motion.div>
               ) : (
