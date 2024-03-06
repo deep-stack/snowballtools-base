@@ -47,15 +47,15 @@ export const Input = ({
     helperIcon: helperIconCls,
   } = inputTheme({ ...styleProps });
 
-  const renderLabels = useMemo(
-    () => (
-      <div className="space-y-1">
+  const renderLabels = useMemo(() => {
+    if (!label && !description) return null;
+    return (
+      <div className="flex flex-col gap-y-1">
         <p className={labelCls()}>{label}</p>
         <p className={descriptionCls()}>{description}</p>
       </div>
-    ),
-    [labelCls, descriptionCls, label, description],
-  );
+    );
+  }, [labelCls, descriptionCls, label, description]);
 
   const renderLeftIcon = useMemo(() => {
     return (
@@ -73,8 +73,9 @@ export const Input = ({
     );
   }, [cloneIcon, iconCls, iconContainerCls, rightIcon]);
 
-  const renderHelperText = useMemo(
-    () => (
+  const renderHelperText = useMemo(() => {
+    if (!helperText) return null;
+    return (
       <div className={helperTextCls()}>
         {state &&
           cloneIcon(<WarningIcon className={helperIconCls()} />, {
@@ -82,12 +83,11 @@ export const Input = ({
           })}
         <p>{helperText}</p>
       </div>
-    ),
-    [cloneIcon, state, helperIconCls, helperText, helperTextCls],
-  );
+    );
+  }, [cloneIcon, state, helperIconCls, helperText, helperTextCls]);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-y-2">
       {renderLabels}
       <div className={containerCls({ class: className })}>
         {leftIcon && renderLeftIcon}

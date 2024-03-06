@@ -266,15 +266,15 @@ export const Select = ({
     onClear?.();
   };
 
-  const renderLabels = useMemo(
-    () => (
-      <div className="space-y-1">
+  const renderLabels = useMemo(() => {
+    if (!label && !description) return null;
+    return (
+      <div className="flex flex-col gap-y-1">
         <p className={theme.label()}>{label}</p>
         <p className={theme.description()}>{description}</p>
       </div>
-    ),
-    [theme, label, description],
-  );
+    );
+  }, [theme, label, description]);
 
   const renderLeftIcon = useMemo(() => {
     return (
@@ -302,8 +302,9 @@ export const Select = ({
     );
   }, [cloneIcon, theme, rightIcon]);
 
-  const renderHelperText = useMemo(
-    () => (
+  const renderHelperText = useMemo(() => {
+    if (!helperText) return null;
+    return (
       <div className={theme.helperText()}>
         {error &&
           cloneIcon(<WarningIcon className={theme.helperIcon()} />, {
@@ -311,9 +312,8 @@ export const Select = ({
           })}
         <p>{helperText}</p>
       </div>
-    ),
-    [cloneIcon, error, theme, helperText],
-  );
+    );
+  }, [cloneIcon, error, theme, helperText]);
 
   const isMultipleHasValue = multiple && selectedItems.length > 0;
   const isMultipleHasValueButNotSearchable =

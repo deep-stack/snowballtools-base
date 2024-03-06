@@ -49,14 +49,15 @@ export const Radio = ({
   className,
   options,
   orientation,
+  variant,
   ...props
 }: RadioProps) => {
-  const { root } = radioTheme({ orientation });
+  const { root } = radioTheme({ orientation, variant });
 
   return (
     <RadixRoot {...props} className={root({ className })}>
       {options.map((option) => (
-        <RadioItem key={option.value} {...option} />
+        <RadioItem key={option.value} variant={variant} {...option} />
       ))}
     </RadixRoot>
   );
