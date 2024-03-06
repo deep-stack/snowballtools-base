@@ -44,7 +44,7 @@ const Projects = () => {
         </Link>
       </div>
       {/* List of projects */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-flow-row grid-cols-[repeat(auto-fill,_minmax(340px,_1fr))] gap-4">
         {projects.length > 0 &&
           projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;
