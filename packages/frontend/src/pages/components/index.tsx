@@ -26,6 +26,7 @@ import {
 import { renderInputs } from './renders/input';
 import { RADIO_OPTIONS } from './renders/radio';
 import { SEGMENTED_CONTROLS_OPTIONS } from './renders/segmentedControls';
+import { renderHorizontalSteps, renderVerticalSteps } from './renders/steps';
 import {
   renderTabWithBadges,
   renderTabs,
@@ -53,6 +54,19 @@ const Page: React.FC = () => {
             packages/frontend/src/pages/components/index.tsx
           </code>
         </p>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        {/* Steps */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Steps</h1>
+            <div className="flex flex-col gap-10 items-center justify-center">
+              {renderVerticalSteps()}
+              {renderHorizontalSteps()}
+            </div>
+          </div>
+        </div>
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 

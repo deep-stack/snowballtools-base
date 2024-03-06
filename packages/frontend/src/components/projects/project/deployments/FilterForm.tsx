@@ -44,7 +44,7 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
   }, [value]);
 
   return (
-    <div className="grid grid-cols-8 gap-2 text-sm text-gray-600">
+    <div className="grid items-center grid-cols-8 gap-2 text-sm text-gray-600">
       <div className="col-span-4">
         <SearchBar
           placeholder="Search branches"

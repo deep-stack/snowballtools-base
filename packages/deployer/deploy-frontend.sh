@@ -12,18 +12,17 @@ PACKAGE_VERSION=$(jq -r '.version' ../frontend/package.json)
 # Current date and time for note
 CURRENT_DATE_TIME=$(date -u)
 
-# Increment application-record version
-APPLICATION_RECORD_FILE="./records/application-record.yml"
-if [ -f "$APPLICATION_RECORD_FILE" ]; then
-    # Extract current version and increment it
-    CURRENT_VERSION=$(grep 'version:' $APPLICATION_RECORD_FILE | head -1 | awk '{print $2}')
-    IFS='.' read -ra ADDR <<< "$CURRENT_VERSION"
-    VERSION_NUMBER=${ADDR[2]}
-    NEW_VERSION_NUMBER=$((VERSION_NUMBER + 1))
-    NEW_APPLICATION_VERSION="${ADDR[0]}.${ADDR[1]}.$NEW_VERSION_NUMBER"
-else
-    # If file does not exist, start from version 0.0.1
-    NEW_APPLICATION_VERSION="0.0.1"
+CONFIG_FILE=config.yml
+REGISTRY_BOND_ID="8fcf44b2f326b4b63ac57547777f1c78b7d494e5966e508f09001af53cb440ac"
+
+# Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
+
+# Get latest version from registry and increment application-record version
+NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationRecord --all --name "snowballtools-base-frontend" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+
+if [ -z "$NEW_APPLICATION_VERSION" ] || [ "1" == "$NEW_APPLICATION_VERSION" ]; then
+  # Set application-record version if no previous records were found
+  NEW_APPLICATION_VERSION=0.0.1
 fi
 
 # Generate application-deployment-request.yml
@@ -62,10 +61,7 @@ EOF
 
 echo "Files generated successfully."
 
-# Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
-
 RECORD_FILE=records/application-record.yml
-CONFIG_FILE=config.yml
 
 # Publish ApplicationRecord
 RECORD_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
@@ -75,8 +71,11 @@ echo $RECORD_ID
 # Set name to record
 REGISTRY_APP_CRN="crn://snowballtools/applications/snowballtools-base-frontend"
 
+sleep 2
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${PACKAGE_VERSION}" "$RECORD_ID"
+sleep 2
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${LATEST_HASH}" "$RECORD_ID"
+sleep 2
 # Set name if latest release
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN" "$RECORD_ID"
 echo "$REGISTRY_APP_CRN set for ApplicationRecord"
@@ -90,6 +89,7 @@ fi
 
 RECORD_FILE=records/application-deployment-request.yml
 
+sleep 2
 DEPLOYMENT_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
 echo "ApplicationDeploymentRequest published"
 echo $DEPLOYMENT_REQUEST_ID

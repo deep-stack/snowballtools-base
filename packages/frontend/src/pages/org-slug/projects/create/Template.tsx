@@ -6,11 +6,11 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import Stepper from '../../../../components/Stepper';
 import templates from '../../../../assets/templates';
 import { Avatar } from 'components/shared/Avatar';
 import { LinkChainIcon } from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
+import { Steps } from 'components/shared/Steps';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
@@ -68,7 +68,7 @@ const CreateWithTemplate = () => {
       </div>
       <div className="grid grid-cols-3 w-5/6 p-6">
         <div>
-          <Stepper activeStep={activeStep} stepperValues={stepperValues} />
+          <Steps currentIndex={activeStep} steps={stepperValues} />
         </div>
         <div className="col-span-2">
           <Outlet context={{ template }} />

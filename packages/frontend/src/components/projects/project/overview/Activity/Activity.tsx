@@ -11,7 +11,7 @@ export const Activity = ({
   activities: GitCommitWithBranch[];
 }) => {
   return (
-    <div className="col-span-2 mr-1">
+    <div className="col-span-5 md:col-span-2 mr-1">
       <div className="flex items-center justify-between">
         <Heading className="text-lg leading-6 font-medium">Activity</Heading>
         <Button variant="tertiary" size="sm">

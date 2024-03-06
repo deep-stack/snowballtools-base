@@ -115,8 +115,8 @@ const OverviewTabPanel = () => {
   }, [project]);
 
   return (
-    <div className="grid grid-cols-5 gap-[72px]">
-      <div className="col-span-3">
+    <div className="grid grid-cols-5 gap-6 md:gap-[72px]">
+      <div className="col-span-5 md:col-span-3">
         <div className="flex items-center gap-4 mb-6">
           <Avatar
             size={48}
@@ -124,13 +124,13 @@ const OverviewTabPanel = () => {
             imageSrc={project.icon}
             type="blue"
           />
-          <div className="flex-1 space-y-1">
-            <Heading className="text-lg leading-6 font-medium">
+          <div className="flex-1 space-y-1 overflow-hidden">
+            <Heading className="text-lg leading-6 font-medium truncate">
               {project.name}
             </Heading>
-            <span className="text-sm text-elements-low-em tracking-tight">
+            <p className="text-sm text-elements-low-em tracking-tight truncate">
               {project.subDomain}
-            </span>
+            </p>
           </div>
         </div>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
