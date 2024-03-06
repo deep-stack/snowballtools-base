@@ -14,10 +14,14 @@ import {
 } from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
 import { Steps } from 'components/shared/Steps';
+import { useMediaQuery } from 'usehooks-ts';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
   const { orgSlug } = useParams();
+
+  const isDesktopView = useMediaQuery('(min-width: 720px)'); // md:
+  const stepsOrientation = isDesktopView ? 'vertical' : 'horizontal';
 
   const stepperValues = [
     {
@@ -47,7 +51,7 @@ const CreateWithTemplate = () => {
   );
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-6 md:gap-10">
       <div className="flex flex-col lg:flex-row justify-between w-5/6 my-4 bg-base-bg-alternate rounded-xl p-6 gap-3 items-start lg:items-center">
         <div className="flex items-center gap-3">
           <TemplateIcon type={template?.icon as TemplateIconType} size={48} />
@@ -69,11 +73,15 @@ const CreateWithTemplate = () => {
           </a>
         </div>
       </div>
-      <div className="grid grid-cols-3 w-5/6 p-6">
-        <div>
-          <Steps currentIndex={activeStep} steps={stepperValues} />
+      <div className="grid grid-cols-3 w-5/6 p-0 md:p-6 gap-8 md:gap-0">
+        <div className="col-span-3 md:col-span-1">
+          <Steps
+            orientation={stepsOrientation}
+            currentIndex={activeStep}
+            steps={stepperValues}
+          />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-3 md:col-span-2">
           <Outlet context={{ template }} />
         </div>
       </div>
