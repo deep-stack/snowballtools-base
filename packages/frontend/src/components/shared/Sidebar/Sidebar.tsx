@@ -148,6 +148,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
         {user?.name && (
           <div className="flex items-center flex-1 gap-3">
             <Avatar
+              fallbackProps={{ className: 'bg-base-bg-alternate' }}
               size={44}
               initials={getInitials(formatAddress(user.name))}
             />
