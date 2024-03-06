@@ -112,7 +112,7 @@ export const DashboardLayout = ({
             }}
             transition={{ ease: 'easeInOut', duration: 0.3 }}
           >
-            <div className="rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
+            <div className="rounded-t-3xl lg:rounded-3xl bg-base-bg h-full shadow-card overflow-y-auto relative">
               <OctokitProvider>
                 <Outlet />
               </OctokitProvider>
