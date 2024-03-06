@@ -96,9 +96,12 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       animate={{ x: isDesktop || mobileOpen ? 0 : -320 }}
       exit={{ x: -320 }}
       transition={{ ease: 'easeInOut', duration: 0.3 }}
-      className={cn('h-full flex-none w-[320px] flex flex-col', {
-        flex: mobileOpen,
-      })}
+      className={cn(
+        'h-full flex-none w-[320px] flex flex-col overflow-y-auto',
+        {
+          flex: mobileOpen,
+        },
+      )}
     >
       <div
         className={cn(
