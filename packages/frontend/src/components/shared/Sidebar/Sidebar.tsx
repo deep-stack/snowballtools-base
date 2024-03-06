@@ -3,13 +3,10 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
 import { motion } from 'framer-motion';
 
-import { Option } from '@material-tailwind/react';
 import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from 'context/GQLClientContext';
-import AsyncSelect from 'components/shared/AsyncSelect';
 import {
-  ChevronGrabberHorizontal,
   GlobeIcon,
   LifeBuoyIcon,
   LogoutIcon,
@@ -24,6 +21,7 @@ import { Button } from 'components/shared/Button';
 import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
 import { SIDEBAR_MENU } from './constants';
+import { UserSelect } from 'components/shared/UserSelect';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -60,23 +58,21 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
     setSelectedOrgSlug(orgSlug);
   }, [orgSlug]);
 
-  const renderOrganizations = useMemo(() => {
-    return organizations.map((org) => (
-      <Option key={org.id} value={org.slug}>
-        <div className="flex items-center space-x-3">
-          <img
-            src="/logo.svg"
-            alt="Application Logo"
-            className="h-8 w-8 rounded-lg"
-          />
-          <div>
-            <div className="text-sm font-semibold">{org.name}</div>
-            <div className="text-xs text-gray-500">Organization</div>
-          </div>
-        </div>
-      </Option>
-    ));
-  }, [organizations]);
+  const formattedSelected = useMemo(() => {
+    const selected = organizations.find((org) => org.slug === selectedOrgSlug);
+    return {
+      value: selected?.slug ?? '',
+      label: selected?.name ?? '',
+      imgSrc: '/logo.svg',
+    };
+  }, [organizations, selectedOrgSlug, orgSlug]);
+  const formattedSelectOptions = useMemo(() => {
+    return organizations.map((org) => ({
+      value: org.slug,
+      label: org.name,
+      imgSrc: '/logo.svg',
+    }));
+  }, [organizations, selectedOrgSlug, orgSlug]);
 
   const renderMenu = useMemo(() => {
     return SIDEBAR_MENU(orgSlug).map(({ title, icon, url }, index) => (
@@ -114,37 +110,10 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
         </div>
         {/* Switch organization */}
         <div className="flex flex-1 flex-col gap-4">
-          <AsyncSelect
-            containerProps={{ className: 'h-14 border-none' }}
-            labelProps={{ className: 'before:border-none after:border-none' }}
-            className="bg-white rounded-lg shadow border-none"
-            value={selectedOrgSlug}
-            onChange={(value) => {
-              setSelectedOrgSlug(value!);
-              navigate(`/${value}`);
-            }}
-            selected={(_, index) => (
-              <div className="flex items-center space-x-3">
-                <img
-                  src="/logo.svg"
-                  alt="Application Logo"
-                  className="h-8 w-8 rounded-lg"
-                />
-                <div>
-                  <div className="text-sm font-semibold">
-                    {organizations[index!]?.name}
-                  </div>
-                  <div className="text-xs text-gray-500">Organization</div>
-                </div>
-              </div>
-            )}
-            arrow={
-              <ChevronGrabberHorizontal className="h-4 w-4 text-gray-500" />
-            }
-          >
-            {/* // TODO: Show label organization and manage in option */}
-            {renderOrganizations}
-          </AsyncSelect>
+          <UserSelect
+            value={formattedSelected}
+            options={formattedSelectOptions}
+          />
           <Tabs defaultValue="Projects" orientation="vertical">
             <Tabs.List>{renderMenu}</Tabs.List>
           </Tabs>
