@@ -34,7 +34,7 @@ const ProjectSearch = () => {
   return (
     <section className="h-full flex flex-col">
       {/* Header */}
-      <div className="sticky hidden lg:block top-0 border-b border-border-separator/[0.06] z-30">
+      <div className="sticky hidden lg:block top-0 border-b bg-base-bg border-border-separator/[0.06] z-30">
         <div className="flex pr-6 pl-2 py-2 items-center">
           <div className="flex-1">
             <ProjectSearchBar
@@ -72,7 +72,7 @@ const ProjectSearch = () => {
       </div>
 
       {/* Content */}
-      <section className="z-0">
+      <section className="h-full z-0">
         <Outlet />
       </section>
     </section>
