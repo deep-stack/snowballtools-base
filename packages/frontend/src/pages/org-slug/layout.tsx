@@ -44,7 +44,7 @@ export const DashboardLayout = ({
         )}
       >
         {/* Header on mobile */}
-        <div className="flex lg:hidden items-center px-4 py-4 justify-between">
+        <div className="flex lg:hidden items-center px-4 py-2.5 justify-between">
           <Logo orgSlug={orgSlug} />
           <div className="flex items-center gap-0.5">
             <AnimatePresence>

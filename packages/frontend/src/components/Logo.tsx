@@ -13,9 +13,11 @@ export const Logo = ({ orgSlug }: LogoProps) => {
         <img
           src="/logo.svg"
           alt="Snowball Logo"
-          className="h-10 w-10 rounded-lg"
+          className="lg:h-10 lg:w-10 h-8 w-8 rounded-lg"
         />
-        <Heading className="text-[24px] font-semibold">Snowball</Heading>
+        <Heading className="lg:text-[24px] text-[19px] font-semibold">
+          Snowball
+        </Heading>
       </div>
     </Link>
   );
