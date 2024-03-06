@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
+import { motion } from 'framer-motion';
 
 import { Option } from '@material-tailwind/react';
 import { useDisconnect } from 'wagmi';
@@ -22,12 +23,19 @@ import { Avatar } from 'components/shared/Avatar';
 import { formatAddress } from 'utils/format';
 import { getInitials } from 'utils/geInitials';
 import { Button } from 'components/shared/Button';
+import { cn } from 'utils/classnames';
+import { useMediaQuery } from 'usehooks-ts';
 
-export const Sidebar = () => {
+interface SidebarProps {
+  mobileOpen?: boolean;
+}
+
+export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
   const { disconnect } = useDisconnect();
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   const [user, setUser] = useState<User>();
 
@@ -57,11 +65,24 @@ export const Sidebar = () => {
     disconnect();
     navigate('/login');
   }, [disconnect, navigate]);
-
+  console.log(isDesktop);
   return (
-    <nav className="h-full w-[320px] lg:flex hidden flex-col">
-      <div className="flex flex-col h-full pt-8 pb-0 px-6 lg:pb-8 gap-9">
-        <Logo orgSlug={orgSlug} />
+    <motion.nav
+      initial={{ x: -320 }}
+      animate={{ x: isDesktop || mobileOpen ? 0 : -320 }}
+      exit={{ x: -320 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+      className={cn('h-full flex-none w-[320px] lg:flex hidden flex-col', {
+        flex: mobileOpen,
+      })}
+    >
+      <div
+        className={cn('flex flex-col h-full pt-8 pb-0 px-6 lg:pb-8 gap-9', {
+          'px-4 pt-5': mobileOpen,
+        })}
+      >
+        {/* Logo */}
+        {!mobileOpen && <Logo orgSlug={orgSlug} />}
         {/* Switch organization */}
         <div className="flex flex-1 flex-col gap-4">
           <AsyncSelect
@@ -156,6 +177,7 @@ export const Sidebar = () => {
           </Tabs>
         </div>
       </div>
+      {/* Only shows when on mobile */}
       <div className="shadow-card-sm py-4 pl-4 pr-2 flex lg:hidden items-center border-t border-border-separator/[0.06]">
         {user?.name && (
           <div className="flex items-center flex-1 gap-3">
@@ -169,6 +191,7 @@ export const Sidebar = () => {
           </div>
         )}
         <Button
+          iconOnly
           variant="ghost"
           className="text-elements-low-em"
           onClick={handleLogOut}
@@ -176,6 +199,6 @@ export const Sidebar = () => {
           <LogoutIcon />
         </Button>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
