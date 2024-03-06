@@ -11,7 +11,7 @@ import { getInitials } from 'utils/geInitials';
  * @type {MergedComponentPropsWithoutRef}
  */
 type MergedComponentPropsWithoutRef = OmitCommon<
-  ComponentPropsWithoutRef<'div'>,
+  ComponentPropsWithoutRef<'button'>,
   Omit<
     Overwrite<UseComboboxGetItemPropsReturnValue, Project[]>,
     'index' | 'item'
@@ -24,16 +24,16 @@ interface ProjectSearchBarItemProps extends MergedComponentPropsWithoutRef {
 }
 
 const ProjectSearchBarItem = forwardRef<
-  HTMLDivElement,
+  HTMLButtonElement,
   ProjectSearchBarItemProps
 >(({ item, active, ...props }, ref) => {
   return (
-    <div
+    <button
       {...props}
       ref={ref}
       key={item.id}
       className={cn(
-        'px-2 py-2 flex items-center gap-3 rounded-lg hover:bg-base-bg-emphasized',
+        'px-2 py-2 flex items-center gap-3 rounded-lg text-left hover:bg-base-bg-emphasized',
         {
           'bg-base-bg-emphasized': active,
         },
@@ -50,7 +50,7 @@ const ProjectSearchBarItem = forwardRef<
         </p>
         <p className="text-xs text-elements-low-em">{item.organization.name}</p>
       </div>
-    </div>
+    </button>
   );
 });
 
