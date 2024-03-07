@@ -35,12 +35,14 @@ const Id = () => {
           Your project has been deployed at{' '}
           <Button
             className="no-underline text-elements-link"
+            // TODO: use dynamic value
             href="https://www.iglootools.snowballtools.xyz"
             as="a"
             variant="link-emphasized"
             external
             leftIcon={<LinkChainIcon />}
           >
+            {/* // TODO: use dynamic value */}
               www.iglootools.snowballtools.xyz
           </Button>
         </p>
