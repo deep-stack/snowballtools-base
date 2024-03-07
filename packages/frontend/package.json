@@ -32,6 +32,7 @@
     "downshift": "^8.3.2",
     "eslint-config-react-app": "^7.0.1",
     "gql-client": "^1.0.0",
+    "lottie-react": "^2.4.0",
     "luxon": "^3.4.4",
     "octokit": "^3.1.2",
     "react": "^18.2.0",
