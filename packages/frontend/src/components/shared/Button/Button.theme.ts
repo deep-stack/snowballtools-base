@@ -20,7 +20,7 @@ export const buttonTheme = tv(
     variants: {
       size: {
         lg: ['gap-2', 'py-3.5', 'px-5', 'text-base', 'tracking-[-0.011em]'],
-        md: ['gap-2', 'py-3.25', 'px-5', 'text-sm', 'tracking-[-0.006em]'],
+        md: ['gap-2', 'py-3', 'px-5', 'text-sm', 'tracking-[-0.006em]'],
         sm: ['gap-1', 'py-2', 'px-3', 'text-xs'],
         xs: ['gap-1', 'py-1', 'px-2', 'text-xs'],
       },

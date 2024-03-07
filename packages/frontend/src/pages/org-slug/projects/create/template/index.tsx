@@ -3,6 +3,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import assert from 'assert';
+import { useMediaQuery } from 'usehooks-ts';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
@@ -27,6 +28,9 @@ const CreateRepo = () => {
   const client = useGQLClient();
 
   const { orgSlug } = useParams();
+
+  const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
+  const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
   const navigate = useNavigate();
 
@@ -166,8 +170,8 @@ const CreateRepo = () => {
         </div>
         <div>
           <Button
+            {...buttonSize}
             type="submit"
-            size="lg"
             disabled={!Boolean(template.repoFullName) || isLoading}
             rightIcon={<ArrowRightCircleFilledIcon />}
           >
