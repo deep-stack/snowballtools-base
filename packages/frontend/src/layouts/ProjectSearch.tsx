@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { User } from 'gql-client';
 
-// import { Tooltip } from '@material-tailwind/react';
-
-import HorizontalLine from '../components/HorizontalLine';
-import ProjectSearchBar from '../components/projects/ProjectSearchBar';
-import { useGQLClient } from '../context/GQLClientContext';
-import { formatAddress } from '../utils/format';
+import HorizontalLine from 'components/HorizontalLine';
+import { useGQLClient } from 'context/GQLClientContext';
 import { NotificationBellIcon, PlusIcon } from 'components/shared/CustomIcon';
 import { Button } from 'components/shared/Button';
+import { Avatar } from 'components/shared/Avatar';
+import { getInitials } from 'utils/geInitials';
+import { formatAddress } from 'utils/format';
+import { ProjectSearchBar } from 'components/projects/ProjectSearchBar';
 
 const ProjectSearch = () => {
   const navigate = useNavigate();
@@ -32,10 +32,11 @@ const ProjectSearch = () => {
   }, []);
 
   return (
-    <div className="h-full">
-      <div className="sticky top-0 bg-white z-30">
-        <div className="flex pl-3 pr-8 pt-3 pb-3 items-center">
-          <div className="grow">
+    <section className="h-full flex flex-col">
+      {/* Header */}
+      <div className="sticky hidden lg:block top-0 border-b bg-base-bg border-border-separator/[0.06] z-30">
+        <div className="flex pr-6 pl-2 py-2 items-center">
+          <div className="flex-1">
             <ProjectSearchBar
               onChange={(project) => {
                 navigate(
@@ -44,30 +45,37 @@ const ProjectSearch = () => {
               }}
             />
           </div>
-          <Button
-            variant={'secondary'}
-            iconOnly
-            onClick={() => {
-              fetchOrgSlug().then((organizationSlug) => {
-                navigate(`/${organizationSlug}/projects/create`);
-              });
-            }}
-          >
-            <PlusIcon />
-          </Button>
-          <Button variant={'ghost'} iconOnly>
-            <NotificationBellIcon />
-          </Button>
-          {user?.name ? (
-            <Button variant={'tertiary'}>{formatAddress(user.name)}</Button>
-          ) : null}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="secondary"
+              iconOnly
+              onClick={() => {
+                fetchOrgSlug().then((organizationSlug) => {
+                  navigate(`/${organizationSlug}/projects/create`);
+                });
+              }}
+            >
+              <PlusIcon />
+            </Button>
+            <Button variant="ghost" iconOnly>
+              <NotificationBellIcon />
+            </Button>
+            {user?.name && (
+              <Avatar
+                size={44}
+                initials={getInitials(formatAddress(user.name))}
+              />
+            )}
+          </div>
         </div>
         <HorizontalLine />
       </div>
-      <div className="z-0 h-full">
+
+      {/* Content */}
+      <section className="h-full z-0">
         <Outlet />
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 

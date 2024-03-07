@@ -55,6 +55,8 @@ export * from './UndoIcon';
 export * from './LoaderIcon';
 export * from './MinusCircleIcon';
 export * from './CopyIcon';
+export * from './MenuIcon';
+export * from './LogoutIcon';
 export * from './CirclePlaceholderOnIcon';
 export * from './WarningTriangleIcon';
 export * from './CheckRadioOutlineIcon';
