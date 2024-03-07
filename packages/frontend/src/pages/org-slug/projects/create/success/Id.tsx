@@ -43,7 +43,7 @@ const Id = () => {
             leftIcon={<LinkChainIcon />}
           >
             {/* // TODO: use dynamic value */}
-              www.iglootools.snowballtools.xyz
+            www.iglootools.snowballtools.xyz
           </Button>
         </p>
       </div>
@@ -56,7 +56,7 @@ const Id = () => {
             <QuestionMarkRoundFilledIcon size={18} />
           </div>
           <Heading as="h5" className="font-sans font-medium text-sm">
-            Wondering what’s next?
+            {`Wondering what's next?`}
           </Heading>
         </div>
 
