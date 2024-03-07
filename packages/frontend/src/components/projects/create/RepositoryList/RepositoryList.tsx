@@ -3,17 +3,17 @@ import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
 
-import { Button, Typography } from '@material-tailwind/react';
-
 import { ProjectRepoCard } from 'components/projects/create/ProjectRepoCard';
 import { GitOrgDetails, GitRepositoryDetails } from 'types';
 import {
   ChevronGrabberHorizontal,
   GithubIcon,
+  RefreshIcon,
   SearchIcon,
 } from 'components/shared/CustomIcon';
 import { Select, SelectOption } from 'components/shared/Select';
 import { Input } from 'components/shared/Input';
+import { Button } from 'components/shared/Button';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
@@ -160,18 +160,16 @@ export const RepositoryList = ({ octokit }: RepositoryListProps) => {
           ))}
         </div>
       ) : (
-        <div className="mt-4 p-6 flex items-center justify-center">
-          <div className="text-center">
-            <Typography placeholder={''}>No repository found</Typography>
-            <Button
-              className="rounded-full mt-5"
-              size="sm"
-              onClick={handleResetFilters}
-              placeholder={''}
-            >
-              ^ Reset filters
-            </Button>
-          </div>
+        <div className="mt-4 p-6 flex flex-col gap-4 items-center justify-center">
+          <p className="text-elements-high-em font-sans">No repository found</p>
+          <Button
+            variant="tertiary"
+            leftIcon={<RefreshIcon />}
+            size="sm"
+            onClick={handleResetFilters}
+          >
+            Reset filters
+          </Button>
         </div>
       )}
     </section>

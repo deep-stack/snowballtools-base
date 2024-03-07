@@ -71,7 +71,7 @@ export const tabsTheme = tv({
       'gap-5',
       'border-b',
       'border-transparent',
-      'overflow-scroll',
+      'overflow-auto',
       // Horizontal – default
       'data-[orientation=horizontal]:border-border-interactive/10',
       // Vertical

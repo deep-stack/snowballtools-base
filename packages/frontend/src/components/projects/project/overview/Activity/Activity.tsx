@@ -4,10 +4,13 @@ import { GitCommitWithBranch } from 'types';
 import { Heading } from 'components/shared/Heading';
 import ActivityCard from './ActivityCard';
 import { Button } from 'components/shared/Button';
+import { LoadingIcon } from 'components/shared/CustomIcon';
 
 export const Activity = ({
+  isLoading,
   activities,
 }: {
+  isLoading: boolean;
   activities: GitCommitWithBranch[];
 }) => {
   return (
@@ -19,9 +22,17 @@ export const Activity = ({
         </Button>
       </div>
       <div className="mt-5">
-        {activities.map((activity, index) => {
-          return <ActivityCard activity={activity} key={`activity-${index}`} />;
-        })}
+        {isLoading ? (
+          <div className="grid place-content-center mt-10">
+            <LoadingIcon className="animate-spin" />
+          </div>
+        ) : (
+          activities.map((activity, index) => {
+            return (
+              <ActivityCard activity={activity} key={`activity-${index}`} />
+            );
+          })
+        )}
       </div>
     </div>
   );
