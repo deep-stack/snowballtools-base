@@ -1,82 +1,95 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { Button } from '@material-tailwind/react';
+import { Badge } from 'components/shared/Badge';
+import { Button } from 'components/shared/Button';
+import {
+  ArrowLeftCircleFilledIcon,
+  LinkChainIcon,
+  QuestionMarkRoundFilledIcon,
+} from 'components/shared/CustomIcon';
+import { Heading } from 'components/shared/Heading';
 
 const Id = () => {
   const { id, orgSlug } = useParams();
+
+  const handleSetupDomain = () => {
+    //TODO: Implement this
+  };
   return (
-    <div className="flex justify-center">
-      <div className="w-1/2">
-        <div className="flex justify-center">^</div>
-        <div className="flex flex-col items-center my-10">
-          <div>
-            <h4>Project deployed successfully.</h4>
-          </div>
-          <div>
-            <span>
-              Your project has been deployed at{' '}
-              <Link to="https://www.iglootools.snowballtools.xyz">
-                <span className="text-blue-600">
-                  ^ www.iglootools.snowballtools.xyz
-                </span>
-              </Link>
+    <div className="flex flex-col gap-8 lg:gap-11 max-w-[522px] mx-auto">
+      {/* Icon */}
+      <div className="flex justify-center">^</div>
+
+      {/* Heading */}
+      <div className="flex flex-col items-center gap-1.5">
+        <Heading as="h3" className="font-medium text-xl">
+          Project deployed successfully.
+        </Heading>
+        <p className="flex flex-col lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
+          Your project has been deployed at{' '}
+          <Link to="https://www.iglootools.snowballtools.xyz">
+            <span className="flex gap-1.5 text-elements-link">
+              <LinkChainIcon size={18} />
+              www.iglootools.snowballtools.xyz
             </span>
+          </Link>
+        </p>
+      </div>
+
+      {/* Card */}
+      <div className="bg-base-bg-alternate rounded-xl shadow-inset w-full px-1 py-1">
+        {/* Trigger question */}
+        <div className="flex gap-2 justify-center items-center py-3">
+          <div className="h-5 w-5">
+            <QuestionMarkRoundFilledIcon size={18} />
           </div>
+          <Heading as="h5" className="font-sans font-medium text-sm">
+            Wondering what’s next?
+          </Heading>
         </div>
 
-        <div className="bg-gray-100 rounded border w-full">
-          <div className="flex justify-center items-center h-14">
-            ^?&nbsp;<h6>Wondering what’s next?</h6>
-          </div>
-          <div className="bg-white rounded border w-full">
-            <div className="flex p-4">
-              <div className="w-6"> 1</div>
-              <div className="grow">
-                <h6>Add a custom domain</h6>
-                <p className="text-sm text-gray-500">
+        {/* CTA card */}
+        <div className="bg-surface-card rounded-xl shadow-card-sm px-4 py-4">
+          <div className="flex gap-2">
+            <Badge variant="secondary">1</Badge>
+            <div className="space-y-3">
+              <div className="flex flex-col gap-1">
+                <Heading as="h6" className="text-sm font-sans">
+                  Add a custom domain
+                </Heading>
+                <p className="text-xs text-elements-low-em font-sans">
                   Make it easy for your visitors to remember your URL with a
                   custom domain.
                 </p>
-                <div className="my-2">
-                  <Button
-                    className="rounded-full"
-                    variant="outlined"
-                    size="sm"
-                    placeholder={''}
-                  >
-                    Setup domain
-                  </Button>
-                </div>
               </div>
+              <Button onClick={handleSetupDomain} variant="tertiary" size="sm">
+                Setup domain
+              </Button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="flex justify-center p-4 gap-2 my-5">
-          <div>
-            <Link to="/">
-              <Button
-                className="rounded-full"
-                variant="outlined"
-                placeholder={''}
-              >
-                ^Back to projects
-              </Button>
-            </Link>
-          </div>
-          <div>
-            <Link to={`/${orgSlug}/projects/${id}`}>
-              <Button
-                className="rounded-full"
-                variant="gradient"
-                color="blue"
-                placeholder={''}
-              >
-                View project
-              </Button>
-            </Link>
-          </div>
+      {/* CTA Buttons */}
+      <div className="flex flex-col lg:flex-row justify-center gap-3">
+        <div className="w-full lg:w-fit">
+          <Link to="/">
+            <Button
+              leftIcon={<ArrowLeftCircleFilledIcon />}
+              fullWidth
+              variant="tertiary"
+            >
+              Back to projects
+            </Button>
+          </Link>
+        </div>
+        <div className="w-full lg:w-fit">
+          <Link to={`/${orgSlug}/projects/${id}`}>
+            <Button fullWidth variant="primary">
+              View project
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
