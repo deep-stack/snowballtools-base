@@ -20,8 +20,8 @@ import { useMediaQuery } from 'usehooks-ts';
 const CreateWithTemplate = () => {
   const { orgSlug } = useParams();
 
-  const isTabletView = useMediaQuery('(min-width: 960px)'); // lg:
-  const stepsOrientation = isTabletView ? 'vertical' : 'horizontal';
+  const isDesktopView = useMediaQuery('(min-width: 960px)'); // lg:
+  const stepsOrientation = isDesktopView ? 'vertical' : 'horizontal';
 
   const stepperValues = [
     {
