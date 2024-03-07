@@ -29,8 +29,8 @@ const CreateRepo = () => {
 
   const { orgSlug } = useParams();
 
-  const isDesktopView = useMediaQuery('(min-width: 720px)'); // md:
-  const buttonSize = isDesktopView ? { size: 'lg' as const } : {};
+  const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
+  const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
   const navigate = useNavigate();
 

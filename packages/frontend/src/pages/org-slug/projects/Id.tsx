@@ -24,8 +24,8 @@ const Id = () => {
   const client = useGQLClient();
   const location = useLocation();
 
-  const isDesktopView = useMediaQuery('(min-width: 720px)'); // md:
-  const buttonSize = isDesktopView ? {} : { size: 'sm' as const };
+  const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
+  const buttonSize = isTabletView ? {} : { size: 'sm' as const };
 
   const [project, setProject] = useState<ProjectType | null>(null);
   const [repoUrl, setRepoUrl] = useState('');
