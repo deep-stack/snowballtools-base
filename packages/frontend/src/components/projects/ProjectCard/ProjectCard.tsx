@@ -1,12 +1,18 @@
+import {
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
+} from '@material-tailwind/react';
 import React, {
   ComponentPropsWithoutRef,
   MouseEvent,
   useCallback,
 } from 'react';
-import { ProjectCardTheme, projectCardTheme } from './ProjectCard.theme';
+import { useNavigate } from 'react-router-dom';
 import { Project } from 'gql-client';
+import { Avatar } from 'components/shared/Avatar';
 import { Button } from 'components/shared/Button';
-import { WavyBorder } from 'components/shared/WavyBorder';
 import {
   BranchIcon,
   ClockIcon,
@@ -14,16 +20,11 @@ import {
   HorizontalDotIcon,
   WarningDiamondIcon,
 } from 'components/shared/CustomIcon';
+import { Tooltip } from 'components/shared/Tooltip';
+import { WavyBorder } from 'components/shared/WavyBorder';
 import { relativeTimeMs } from 'utils/time';
-import { useNavigate } from 'react-router-dom';
-import { Avatar } from 'components/shared/Avatar';
 import { getInitials } from 'utils/geInitials';
-import {
-  Menu,
-  MenuHandler,
-  MenuItem,
-  MenuList,
-} from '@material-tailwind/react';
+import { ProjectCardTheme, projectCardTheme } from './ProjectCard.theme';
 
 export interface ProjectCardProps
   extends ComponentPropsWithoutRef<'div'>,
@@ -72,7 +73,9 @@ export const ProjectCard = ({
         />
         {/* Title and website */}
         <div className={theme.content()}>
-          <p className={theme.title()}>{project.name}</p>
+          <Tooltip content={project.name}>
+            <p className={theme.title()}>{project.name}</p>
+          </Tooltip>
           <p className={theme.description()}>
             {project.deployments[0]?.domain?.name ?? 'No domain'}
           </p>
