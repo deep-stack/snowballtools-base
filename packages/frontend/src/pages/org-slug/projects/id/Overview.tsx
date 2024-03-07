@@ -32,6 +32,7 @@ const OverviewTabPanel = () => {
   const { octokit } = useOctokit();
   const navigate = useNavigate();
   const [activities, setActivities] = useState<GitCommitWithBranch[]>([]);
+  const [fetchingActivities, setFetchingActivities] = useState(true);
   const [liveDomain, setLiveDomain] = useState<Domain>();
 
   const client = useGQLClient();
@@ -39,6 +40,7 @@ const OverviewTabPanel = () => {
   const { project } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
+    setFetchingActivities(true);
     // TODO: Save repo commits in DB and avoid using GitHub API in frontend
     // TODO: Figure out fetching latest commits for all branches
     const fetchRepoActivity = async () => {
@@ -91,6 +93,8 @@ const OverviewTabPanel = () => {
 
         // TODO: Show warning in activity section on request error
         console.log(err.message);
+      } finally {
+        setFetchingActivities(false);
       }
     };
 
@@ -217,7 +221,7 @@ const OverviewTabPanel = () => {
           </p>
         )}
       </div>
-      <Activity activities={activities} />
+      <Activity activities={activities} isLoading={fetchingActivities} />
     </div>
   );
 };
