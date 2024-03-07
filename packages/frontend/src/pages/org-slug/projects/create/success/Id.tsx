@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
+import Lottie from 'lottie-react';
 
 import { Badge } from 'components/shared/Badge';
 import { Button } from 'components/shared/Button';
@@ -10,6 +11,8 @@ import {
 } from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
 
+import logoAnimation from 'components/../../public/lottie/logo.json';
+
 const Id = () => {
   const { id, orgSlug } = useParams();
 
@@ -17,16 +20,18 @@ const Id = () => {
     //TODO: Implement this
   };
   return (
-    <div className="flex flex-col gap-8 lg:gap-11 max-w-[522px] mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-11 max-w-[522px] mx-auto py-6 lg:py-12">
       {/* Icon */}
-      <div className="flex justify-center">^</div>
+      <div className="flex justify-center">
+        <Lottie animationData={logoAnimation} loop={false} size={40} />
+      </div>
 
       {/* Heading */}
       <div className="flex flex-col items-center gap-1.5">
         <Heading as="h3" className="font-medium text-xl">
           Project deployed successfully.
         </Heading>
-        <p className="flex flex-col lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
+        <p className="flex flex-col items-center lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
           Your project has been deployed at{' '}
           <Link to="https://www.iglootools.snowballtools.xyz">
             <span className="flex gap-1.5 text-elements-link">
