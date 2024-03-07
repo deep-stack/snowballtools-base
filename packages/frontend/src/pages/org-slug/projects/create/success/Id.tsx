@@ -33,12 +33,16 @@ const Id = () => {
         </Heading>
         <p className="flex flex-col items-center lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
           Your project has been deployed at{' '}
-          <Link to="https://www.iglootools.snowballtools.xyz">
-            <span className="flex gap-1.5 text-elements-link">
-              <LinkChainIcon size={18} />
+          <Button
+            className="no-underline text-elements-link"
+            href="https://www.iglootools.snowballtools.xyz"
+            as="a"
+            variant="link-emphasized"
+            external
+            leftIcon={<LinkChainIcon />}
+          >
               www.iglootools.snowballtools.xyz
-            </span>
-          </Link>
+          </Button>
         </p>
       </div>
 
