@@ -60,22 +60,6 @@ const DeploymentDetailsCard = ({
     }
   };
 
-  const renderDeploymentMenu = useCallback(
-    (className?: string) => {
-      return (
-        <DeploymentMenu
-          className={className}
-          deployment={deployment}
-          currentDeployment={currentDeployment}
-          onUpdate={onUpdate}
-          project={project}
-          prodBranchDomains={prodBranchDomains}
-        />
-      );
-    },
-    [deployment, currentDeployment, onUpdate, project, prodBranchDomains],
-  );
-
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
       return (
@@ -94,9 +78,9 @@ const DeploymentDetailsCard = ({
   );
 
   return (
-    <div className="flex md:flex-row flex-col gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent">
+    <div className="flex md:flex-row flex-col gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent relative">
       <div className="flex-1 flex justify-between w-full md:max-w-[25%] lg:max-w-[28%]">
-        <div className="flex-1 w-full space-y-2 max-w-[80%] sm:max-w-full">
+        <div className="flex-1 w-full space-y-2 max-w-[90%] sm:max-w-full">
           {/* DEPLOYMENT URL */}
           {deployment.url && (
             <Heading
@@ -114,8 +98,6 @@ const DeploymentDetailsCard = ({
               : 'Preview'}
           </span>
         </div>
-        {/* MENU ON MOBILE */}
-        {renderDeploymentMenu('flex md:hidden ml-auto')}
       </div>
 
       {/* DEPLOYMENT STATUS */}
@@ -167,7 +149,14 @@ const DeploymentDetailsCard = ({
             </OverflownText>
           </div>
         </div>
-        {renderDeploymentMenu('ml-auto hidden md:flex')}
+        <DeploymentMenu
+          className="ml-auto md:static absolute top-4 right-0"
+          deployment={deployment}
+          currentDeployment={currentDeployment}
+          onUpdate={onUpdate}
+          project={project}
+          prodBranchDomains={prodBranchDomains}
+        />
       </div>
     </div>
   );
