@@ -75,7 +75,7 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
   };
 
   return (
-    <div className="xl:grid xl:grid-cols-8 flex flex-col xl:gap-3 gap-0">
+    <div className="xl:grid xl:grid-cols-8 flex flex-col xl:gap-3 gap-3">
       <div className="col-span-4 flex items-center">
         <Input
           placeholder="Search branches"
