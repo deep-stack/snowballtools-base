@@ -13,6 +13,7 @@ import {
 import { useToast } from 'components/shared/Toast';
 import { IconWithFrame } from 'components/shared/IconWithFrame';
 import { Heading } from 'components/shared/Heading';
+import { MockConnectGitCard } from './MockConnectGitCard';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
@@ -93,6 +94,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
       </div>
 
       {/* TODO: Add ConnectAccountTabPanel */}
+      <MockConnectGitCard />
       {/* <div className="rounded-l shadow p-2 flex-col justify-start items-start gap-2 inline-flex">
         <ConnectAccountTabPanel />
       </div> */}
