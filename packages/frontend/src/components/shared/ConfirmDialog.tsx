@@ -1,16 +1,10 @@
 import React from 'react';
 
 import { color } from '@material-tailwind/react/types/components/button';
-import {
-  Typography,
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from '@material-tailwind/react';
+import { Modal, ModalProps } from './Modal';
+import { Button } from './Button';
 
-type ConfirmDialogProp = {
+type ConfirmDialogProp = ModalProps & {
   children: React.ReactNode;
   dialogTitle: string;
   open: boolean;
@@ -23,42 +17,24 @@ type ConfirmDialogProp = {
 const ConfirmDialog = ({
   children,
   dialogTitle,
-  open,
   handleOpen,
   confirmButtonTitle,
   handleConfirm,
-  color,
+  ...props
 }: ConfirmDialogProp) => {
   return (
-    <Dialog open={open} handler={handleOpen} placeholder={''}>
-      <DialogHeader className="flex justify-between" placeholder={''}>
-        <Typography variant="h6" placeholder={''}>
-          {dialogTitle}{' '}
-        </Typography>
-        <Button
-          variant="outlined"
-          onClick={handleOpen}
-          className=" rounded-full"
-          placeholder={''}
-        >
-          X
-        </Button>
-      </DialogHeader>
-      <DialogBody placeholder={''}>{children}</DialogBody>
-      <DialogFooter className="flex justify-start gap-2" placeholder={''}>
-        <Button variant="outlined" onClick={handleOpen} placeholder={''}>
-          Cancel
-        </Button>
-        <Button
-          variant="gradient"
-          color={color}
-          onClick={handleConfirm}
-          placeholder={''}
-        >
-          {confirmButtonTitle}
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <Modal {...props}>
+      <Modal.Content>
+        <Modal.Header>{dialogTitle}</Modal.Header>
+        <Modal.Body>{children}</Modal.Body>
+        <Modal.Footer className="flex justify-start gap-2">
+          <Button variant="tertiary" onClick={handleOpen}>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirm}>{confirmButtonTitle}</Button>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   );
 };
 
