@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Deployment,
   DeploymentStatus,
@@ -60,85 +60,114 @@ const DeploymentDetailsCard = ({
     }
   };
 
-  return (
-    <div className="flex lg:flex gap-2 lg:gap-2 2xl:gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent ">
-      <div className="flex-1 max-w-[30%] space-y-2">
-        {/* DEPLOYMENT URL */}
-        {deployment.url && (
-          <Heading
-            className="text-sm font-medium text-elements-high-em tracking-tight"
-            as="h2"
-          >
-            <OverflownText content={deployment.url}>
-              {deployment.url}
-            </OverflownText>
-          </Heading>
-        )}
-        <span className="text-sm text-elements-low-em tracking-tight">
-          {deployment.environment === Environment.Production
-            ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
-            : 'Preview'}
-        </span>
-      </div>
-
-      {/* DEPLOYMENT STATUS */}
-      <div className="w-[10%] max-w-[110px]">
-        <Tag
-          leftIcon={getIconByDeploymentStatus(deployment.status)}
-          size="xs"
-          type={STATUS_COLORS[deployment.status] ?? 'neutral'}
-        >
-          {deployment.status}
-        </Tag>
-      </div>
-
-      {/* DEPLOYMENT COMMIT DETAILS */}
-      <div className="text-sm w-[25%] space-y-2 text-elements-low-em">
-        <span className="flex gap-1.5 items-center">
-          <BranchStrokeIcon className="h-4 w-4" />
-          {deployment.branch}
-        </span>
-        <span className="flex gap-2 items-center">
-          <CommitIcon />
-          <OverflownText content={deployment.commitMessage}>
-            {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
-            {deployment.commitMessage}
-          </OverflownText>
-        </span>
-      </div>
-
-      {/* DEPLOYMENT INFOs */}
-      <div className="ml-auto max-w-[312px] w-[30%] gap-1 2xl:gap-5 flex items-center justify-between  text-elements-low-em text-sm">
-        <div className="flex w-[70%] items-center gap-0.5 2xl:gap-2 flex-1">
-          <ClockOutlineIcon className="h-4 w-4" />
-          <OverflownText content={relativeTimeMs(deployment.createdAt) ?? ''}>
-            {relativeTimeMs(deployment.createdAt)}
-          </OverflownText>
-          <div>
-            <Avatar
-              type="orange"
-              initials={getInitials(deployment.createdBy.name ?? '')}
-              className="lg:size-5 2xl:size-6"
-              // TODO: Add avatarUrl
-              // imageSrc={deployment.createdBy.avatarUrl}
-            ></Avatar>
-          </div>
-
-          <OverflownText
-            // className="min-w-[200px]"
-            content={formatAddress(deployment.createdBy?.name ?? '')}
-          >
-            {formatAddress(deployment.createdBy.name ?? '')}
-          </OverflownText>
-        </div>
+  const renderDeploymentMenu = useCallback(
+    (className?: string) => {
+      return (
         <DeploymentMenu
-          className="ml-auto"
+          className={className}
           deployment={deployment}
           currentDeployment={currentDeployment}
           onUpdate={onUpdate}
           project={project}
           prodBranchDomains={prodBranchDomains}
         />
+      );
+    },
+    [deployment, currentDeployment, onUpdate, project, prodBranchDomains],
+  );
+
+  const renderDeploymentStatus = useCallback(
+    (className?: string) => {
+      return (
+        <div className={className}>
+          <Tag
+            leftIcon={getIconByDeploymentStatus(deployment.status)}
+            size="xs"
+            type={STATUS_COLORS[deployment.status] ?? 'neutral'}
+          >
+            {deployment.status}
+          </Tag>
+        </div>
+      );
+    },
+    [deployment.status, deployment.commitHash],
+  );
+
+  return (
+    <div className="flex md:flex-row flex-col gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent">
+      <div className="flex-1 flex justify-between w-full  md:max-w-[25%] lg:max-w-[28%]">
+        <div className="flex-1 w-full space-y-2 max-w-[80%] sm:max-w-full">
+          {/* DEPLOYMENT URL */}
+          {deployment.url && (
+            <Heading
+              className="text-sm font-medium text-elements-high-em tracking-tight"
+              as="h2"
+            >
+              <OverflownText content={deployment.url}>
+                {deployment.url}
+              </OverflownText>
+            </Heading>
+          )}
+          <span className="text-sm text-elements-low-em tracking-tight">
+            {deployment.environment === Environment.Production
+              ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
+              : 'Preview'}
+          </span>
+        </div>
+        {/* MENU ON MOBILE */}
+        {renderDeploymentMenu('flex md:hidden ml-auto')}
+      </div>
+
+      {/* DEPLOYMENT STATUS */}
+      {renderDeploymentStatus('w-[10%] max-w-[110px] hidden md:flex h-fit')}
+
+      {/* DEPLOYMENT COMMIT DETAILS */}
+      <div className="flex w-full justify-between md:w-[25%]">
+        <div className="text-sm max-w-[60%] md:max-w-full space-y-2 w-full text-elements-low-em">
+          <span className="flex gap-1.5 items-center">
+            <BranchStrokeIcon className="h-4 w-4" />
+            <OverflownText content={deployment.branch}>
+              {deployment.branch}
+            </OverflownText>
+          </span>
+          <span className="flex w-full gap-2 items-center">
+            <CommitIcon />
+            <OverflownText content={deployment.commitMessage}>
+              {deployment.commitHash.substring(0, SHORT_COMMIT_HASH_LENGTH)}{' '}
+              {deployment.commitMessage}
+            </OverflownText>
+          </span>
+        </div>
+        {renderDeploymentStatus('flex md:hidden h-fit')}
+      </div>
+
+      {/* DEPLOYMENT INFOs */}
+      <div className="md:ml-auto w-full md:max-w-[312px] md:w-[30%] gap-1 2xl:gap-5 flex items-center justify-between text-elements-low-em text-sm">
+        <div className="flex md:w-[70%] xl:items-center gap-2 flex-1 xl:flex-row md:flex-col">
+          <div className="flex gap-2 items-center">
+            <ClockOutlineIcon className="h-4 w-4" />
+            <OverflownText content={relativeTimeMs(deployment.createdAt) ?? ''}>
+              {relativeTimeMs(deployment.createdAt)}
+            </OverflownText>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div>
+              <Avatar
+                type="orange"
+                initials={getInitials(deployment.createdBy.name ?? '')}
+                className="lg:size-5 2xl:size-6"
+                // TODO: Add avatarUrl
+                // imageSrc={deployment.createdBy.avatarUrl}
+              ></Avatar>
+            </div>
+            <OverflownText
+              content={formatAddress(deployment.createdBy?.name ?? '')}
+            >
+              {formatAddress(deployment.createdBy.name ?? '')}
+            </OverflownText>
+          </div>
+        </div>
+        {renderDeploymentMenu('ml-auto hidden md:flex')}
       </div>
     </div>
   );
