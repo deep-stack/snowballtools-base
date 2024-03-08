@@ -95,7 +95,7 @@ const DeploymentDetailsCard = ({
 
   return (
     <div className="flex md:flex-row flex-col gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent">
-      <div className="flex-1 flex justify-between w-full  md:max-w-[25%] lg:max-w-[28%]">
+      <div className="flex-1 flex justify-between w-full md:max-w-[25%] lg:max-w-[28%]">
         <div className="flex-1 w-full space-y-2 max-w-[80%] sm:max-w-full">
           {/* DEPLOYMENT URL */}
           {deployment.url && (
