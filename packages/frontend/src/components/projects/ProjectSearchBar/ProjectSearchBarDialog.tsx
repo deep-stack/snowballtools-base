@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCombobox } from 'downshift';
 
 interface ProjectSearchBarDialogProps extends Dialog.DialogProps {
+  open?: boolean;
   onClose?: () => void;
   onClickItem?: (data: Project) => void;
 }
