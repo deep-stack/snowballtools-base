@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { Typography } from '@material-tailwind/react';
-
 import { DeployStep, DeployStatus } from './DeployStep';
-import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
-import ConfirmDialog from 'components/shared/ConfirmDialog';
+import { Stopwatch, setStopWatchOffset } from 'components/StopWatch';
 import { Heading } from 'components/shared/Heading';
 import { Button } from 'components/shared/Button';
 import { ClockOutlineIcon, WarningIcon } from 'components/shared/CustomIcon';
+import { CancelDeploymentDialog } from 'components/projects/Dialog/CancelDeploymentDialog';
 
 const TIMEOUT_DURATION = 5000;
 const Deploy = () => {
@@ -55,19 +53,11 @@ const Deploy = () => {
         >
           Cancel
         </Button>
-        <ConfirmDialog
-          dialogTitle="Cancel deployment?"
-          handleOpen={handleOpen}
+        <CancelDeploymentDialog
+          handleCancel={handleOpen}
           open={open}
-          confirmButtonTitle="Yes, Cancel deployment"
           handleConfirm={handleCancel}
-          color="red"
-        >
-          <Typography variant="small" placeholder={''}>
-            This will halt the deployment and you will have to start the process
-            from scratch.
-          </Typography>
-        </ConfirmDialog>
+        />
       </div>
 
       <div>
