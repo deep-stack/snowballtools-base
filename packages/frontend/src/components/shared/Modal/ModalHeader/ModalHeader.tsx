@@ -4,6 +4,7 @@ import { Description, Title } from '@radix-ui/react-dialog';
 import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 import { Heading } from 'components/shared/Heading';
 import { modalTheme } from 'components/shared/Modal/Modal.theme';
+import { WavyBorder } from 'components/shared/WavyBorder';
 
 type ModalHeaderProps = ComponentPropsWithoutRef<'div'> & {
   className?: string;
@@ -23,30 +24,33 @@ export const ModalHeader = ({
   const { header, headerDescription, headerTitle } = modalTheme();
 
   return (
-    <div
-      className={header({
-        className,
-      })}
-      {...props}
-    >
-      <Title asChild>
-        <Heading
-          {...headingProps}
-          className={headerTitle({ className: headingProps?.className })}
-        >
-          {children}
-        </Heading>
-      </Title>
-      {description && (
-        <Description
-          {...descriptionProps}
-          className={headerDescription({
-            className: descriptionProps?.className,
-          })}
-        >
-          {description}
-        </Description>
-      )}
-    </div>
+    <>
+      <div
+        className={header({
+          className,
+        })}
+        {...props}
+      >
+        <Title asChild>
+          <Heading
+            {...headingProps}
+            className={headerTitle({ className: headingProps?.className })}
+          >
+            {children}
+          </Heading>
+        </Title>
+        {description && (
+          <Description
+            {...descriptionProps}
+            className={headerDescription({
+              className: descriptionProps?.className,
+            })}
+          >
+            {description}
+          </Description>
+        )}
+      </div>
+      <WavyBorder className="-mt-0.5" variant="stroke" />
+    </>
   );
 };
