@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import { Button, Typography } from '@material-tailwind/react';
 
-import { GitRepositoryDetails } from '../../../../types';
-import ConfirmDialog from '../../../shared/ConfirmDialog';
+import { GitRepositoryDetails } from 'types';
+import { DisconnectRepositoryDialog } from 'components/projects/Dialog/DisconnectRepositoryDialog';
 
 const RepoConnectedSection = ({
   linkedRepo,
@@ -34,21 +34,13 @@ const RepoConnectedSection = ({
           ^ Disconnect
         </Button>
       </div>
-      <ConfirmDialog
-        dialogTitle="Disconnect repository?"
-        handleOpen={() => setDisconnectRepoDialogOpen((preVal) => !preVal)}
+      <DisconnectRepositoryDialog
+        handleCancel={() => setDisconnectRepoDialogOpen((preVal) => !preVal)}
         open={disconnectRepoDialogOpen}
-        confirmButtonTitle="Yes, confirm disconnect"
         handleConfirm={() => {
           setDisconnectRepoDialogOpen((preVal) => !preVal);
         }}
-        color="red"
-      >
-        <Typography variant="small" placeholder={''}>
-          Any data tied to your Git project may become misconfigured. Are you
-          sure you want to continue?
-        </Typography>
-      </ConfirmDialog>
+      />
     </div>
   );
 };
