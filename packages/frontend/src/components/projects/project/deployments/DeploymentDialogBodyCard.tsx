@@ -50,7 +50,7 @@ const DeploymentDialogBodyCard = ({
           </div>
           <div className="flex items-center gap-2 w-full">
             <CommitIcon size={16} />
-            <p className="text-sm tracking-[0.006em] max-w-[80%]">
+            <p className="text-sm tracking-[0.006em] max-w-[67.5%] sm:max-w-[80%]">
               <OverflownText content={commit}>{commit}</OverflownText>
             </p>
           </div>
