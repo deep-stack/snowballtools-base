@@ -17,12 +17,10 @@ import {
   MenuList,
 } from '@material-tailwind/react';
 import { ComponentPropsWithRef } from 'react';
-import ConfirmDialog from '../../../shared/ConfirmDialog';
 import AssignDomainDialog from './AssignDomainDialog';
-import DeploymentDialogBodyCard from './DeploymentDialogBodyCard';
-import { Typography } from '@material-tailwind/react';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import { cn } from 'utils/classnames';
+import { ChangeStateToProductionDialog } from 'components/projects/Dialog/ChangeStateToProductionDialog';
 
 interface DeploymentMenuProps extends ComponentPropsWithRef<'div'> {
   deployment: Deployment;
@@ -158,106 +156,44 @@ export const DeploymentMenu = ({
         </Menu>
       </div>
       {/* Dialogs */}
-      <ConfirmDialog
+      <ChangeStateToProductionDialog
         dialogTitle="Change to production?"
-        handleOpen={() => setChangeToProduction((preVal) => !preVal)}
-        open={changeToProduction}
         confirmButtonTitle="Change"
-        color="blue"
+        handleCancel={() => setChangeToProduction((preVal) => !preVal)}
+        open={changeToProduction}
         handleConfirm={async () => {
           await updateDeployment();
           setChangeToProduction((preVal) => !preVal);
         }}
-      >
-        <div className="flex flex-col gap-2">
-          <Typography variant="small" placeholder={''}>
-            Upon confirmation, this deployment will be changed to production.
-          </Typography>
-          <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small" placeholder={''}>
-            The new deployment will be associated with these domains:
-          </Typography>
-          {prodBranchDomains.length > 0 &&
-            prodBranchDomains.map((value) => {
-              return (
-                <Typography
-                  variant="small"
-                  color="blue"
-                  key={value.id}
-                  placeholder={''}
-                >
-                  ^ {value.name}
-                </Typography>
-              );
-            })}
-        </div>
-      </ConfirmDialog>
-      <ConfirmDialog
+        deployment={deployment}
+        domains={prodBranchDomains}
+      />
+      <ChangeStateToProductionDialog
         dialogTitle="Redeploy to production?"
-        handleOpen={() => setRedeployToProduction((preVal) => !preVal)}
+        handleCancel={() => setRedeployToProduction((preVal) => !preVal)}
         open={redeployToProduction}
         confirmButtonTitle="Redeploy"
-        color="blue"
         handleConfirm={async () => {
           await redeployToProd();
           setRedeployToProduction((preVal) => !preVal);
         }}
-      >
-        <div className="flex flex-col gap-2">
-          <Typography variant="small" placeholder={''}>
-            Upon confirmation, new deployment will be created with the same
-            source code as current deployment.
-          </Typography>
-          <DeploymentDialogBodyCard deployment={deployment} />
-          <Typography variant="small" placeholder={''}>
-            These domains will point to your new deployment:
-          </Typography>
-          {deployment.domain?.name && (
-            <Typography variant="small" color="blue" placeholder={''}>
-              {deployment.domain?.name}
-            </Typography>
-          )}
-        </div>
-      </ConfirmDialog>
+        deployment={deployment}
+        domains={deployment.domain ? [deployment.domain] : []}
+      />
       {Boolean(currentDeployment) && (
-        <ConfirmDialog
+        <ChangeStateToProductionDialog
           dialogTitle="Rollback to this deployment?"
-          handleOpen={() => setRollbackDeployment((preVal) => !preVal)}
+          handleCancel={() => setRollbackDeployment((preVal) => !preVal)}
           open={rollbackDeployment}
           confirmButtonTitle="Rollback"
-          color="blue"
           handleConfirm={async () => {
             await rollbackDeploymentHandler();
             setRollbackDeployment((preVal) => !preVal);
           }}
-        >
-          <div className="flex flex-col gap-2">
-            <Typography variant="small" placeholder={''}>
-              Upon confirmation, this deployment will replace your current
-              deployment
-            </Typography>
-            <DeploymentDialogBodyCard
-              deployment={currentDeployment}
-              chip={{
-                value: 'Live Deployment',
-                color: 'green',
-              }}
-            />
-            <DeploymentDialogBodyCard
-              deployment={deployment}
-              chip={{
-                value: 'New Deployment',
-                color: 'orange',
-              }}
-            />
-            <Typography variant="small" placeholder={''}>
-              These domains will point to your new deployment:
-            </Typography>
-            <Typography variant="small" color="blue" placeholder={''}>
-              ^ {currentDeployment.domain?.name}
-            </Typography>
-          </div>
-        </ConfirmDialog>
+          deployment={currentDeployment}
+          newDeployment={deployment}
+          domains={currentDeployment.domain ? [currentDeployment.domain] : []}
+        />
       )}
       <AssignDomainDialog
         open={assignDomainDialog}
