@@ -61,6 +61,7 @@ export * from './CirclePlaceholderOnIcon';
 export * from './WarningTriangleIcon';
 export * from './CheckRadioOutlineIcon';
 export * from './TrendingIcon';
+export * from './ChevronDoubleDownIcon';
 
 // Templates
 export * from './templates';

@@ -6,7 +6,7 @@ import React, {
 import { tagTheme, type TagTheme } from './Tag.theme';
 import { cloneIcon } from 'utils/cloneIcon';
 
-type TagProps = ComponentPropsWithoutRef<'div'> &
+export type TagProps = ComponentPropsWithoutRef<'div'> &
   TagTheme & {
     /**
      * The optional left icon element for a component.

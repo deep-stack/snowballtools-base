@@ -5,8 +5,8 @@ import { EnvironmentVariable } from 'gql-client';
 
 import { IconButton, Input, Typography } from '@material-tailwind/react';
 
-import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
+import { DeleteVariableDialog } from 'components/projects/Dialog/DeleteVariableDialog';
 
 const ShowPasswordIcon = ({
   handler,
@@ -161,20 +161,12 @@ const EditEnvironmentVariableRow = ({
           </>
         )}
       </div>
-
-      <ConfirmDialog
-        dialogTitle="Delete variable"
-        handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
+      <DeleteVariableDialog
+        handleCancel={() => setDeleteDialogOpen((preVal) => !preVal)}
         open={deleteDialogOpen}
-        confirmButtonTitle="Yes, Confirm delete"
         handleConfirm={removeEnvironmentVariableHandler}
-        color="red"
-      >
-        <Typography variant="small" placeholder={''}>
-          Are you sure you want to delete the variable&nbsp;
-          <span className="bg-blue-100">{variable.key}</span>?
-        </Typography>
-      </ConfirmDialog>
+        variableKey={variable.key}
+      />
     </>
   );
 };

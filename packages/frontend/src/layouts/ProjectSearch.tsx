@@ -72,7 +72,7 @@ const ProjectSearch = () => {
       </div>
 
       {/* Content */}
-      <section className="h-full z-0">
+      <section className="h-full z-0 overflow-y-auto">
         <Outlet />
       </section>
     </section>

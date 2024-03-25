@@ -35,6 +35,8 @@ import {
 import { renderDefaultTag, renderMinimalTag } from './renders/tag';
 import { renderToast, renderToastsWithCta } from './renders/toast';
 import { renderTooltips } from './renders/tooltip';
+import { Button } from 'components/shared/Button';
+import { Modal } from 'components/shared/Modal';
 
 const Page: React.FC = () => {
   const [singleDate, setSingleDate] = useState<Value>();
@@ -54,6 +56,32 @@ const Page: React.FC = () => {
             packages/frontend/src/pages/components/index.tsx
           </code>
         </p>
+
+        <div className="w-full h border border-gray-200 px-20 my-10" />
+
+        {/* Modal */}
+        <div className="flex flex-col gap-10 items-center justify-between">
+          <div className="flex flex-col gap-10 items-center justify-between">
+            <h1 className="text-2xl font-bold">Modal</h1>
+            <div className="flex gap-4 flex-wrap items-center justify-center">
+              {/* Modal example */}
+              <Modal>
+                <Modal.Trigger asChild>
+                  <Button>Open modal</Button>
+                </Modal.Trigger>
+                <Modal.Content>
+                  <Modal.Header>Modal title</Modal.Header>
+                  <Modal.Body>
+                    <p>Modal content</p>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button>Close</Button>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            </div>
+          </div>
+        </div>
 
         <div className="w-full h border border-gray-200 px-20 my-10" />
 

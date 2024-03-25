@@ -3,15 +3,14 @@ import { Permission, User } from 'gql-client';
 
 import {
   Select,
-  Typography,
   Option,
   Chip,
   IconButton,
   Tooltip,
 } from '@material-tailwind/react';
 
-import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { formatAddress } from '../../../../utils/format';
+import { formatAddress } from 'utils/format';
+import { RemoveMemberDialog } from 'components/projects/Dialog/RemoveMemberDialog';
 
 const PERMISSION_OPTIONS = [
   {
@@ -141,25 +140,19 @@ const MemberCard = ({
           </div>
         )}
       </div>
-      <ConfirmDialog
-        dialogTitle="Remove member?"
-        handleOpen={() => setRemoveMemberDialogOpen((preVal) => !preVal)}
+      <RemoveMemberDialog
+        handleCancel={() => setRemoveMemberDialogOpen((preVal) => !preVal)}
         open={removeMemberDialogOpen}
-        confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
           setRemoveMemberDialogOpen((preVal) => !preVal);
           if (onRemoveProjectMember) {
             onRemoveProjectMember();
           }
         }}
-        color="red"
-      >
-        <Typography variant="small" placeholder={''}>
-          Once removed, {formatAddress(member.name ?? '')} (
-          {formatAddress(ethAddress)}@{emailDomain}) will not be able to access
-          this project.
-        </Typography>
-      </ConfirmDialog>
+        memberName={member.name ?? ''}
+        ethAddress={ethAddress}
+        emailDomain={emailDomain}
+      />
     </div>
   );
 };

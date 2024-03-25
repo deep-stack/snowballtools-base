@@ -6,11 +6,11 @@ import { Organization } from 'gql-client';
 
 import { Button, Typography, Input, Option } from '@material-tailwind/react';
 
-import DeleteProjectDialog from '../../../../../components/projects/project/settings/DeleteProjectDialog';
-import ConfirmDialog from '../../../../../components/shared/ConfirmDialog';
-import { useGQLClient } from '../../../../../context/GQLClientContext';
-import AsyncSelect from '../../../../../components/shared/AsyncSelect';
-import { OutletContextType } from '../../../../../types';
+import DeleteProjectDialog from 'components/projects/project/settings/DeleteProjectDialog';
+import { useGQLClient } from 'context/GQLClientContext';
+import AsyncSelect from 'components/shared/AsyncSelect';
+import { OutletContextType } from 'types';
+import { TransferProjectDialog } from 'components/projects/Dialog/TransferProjectDialog';
 
 const CopyIcon = ({ value }: { value: string }) => {
   return (
@@ -230,19 +230,14 @@ const GeneralTabPanel = () => {
             Transfer
           </Button>
         </form>
-        <ConfirmDialog
-          dialogTitle="Transfer project"
-          handleOpen={() => setOpenTransferDialog(!openTransferDialog)}
+        <TransferProjectDialog
+          handleCancel={() => setOpenTransferDialog(!openTransferDialog)}
           open={openTransferDialog}
-          confirmButtonTitle="Yes, Confirm transfer"
           handleConfirm={handleTransferProject}
-          color="blue"
-        >
-          <Typography variant="small" placeholder={''}>
-            Upon confirmation, your project {project.name} will be transferred
-            from {project.organization.name} to {selectedUserOrgName}.
-          </Typography>
-        </ConfirmDialog>
+          projectName={project.name}
+          from={project.organization.name}
+          to={selectedUserOrgName}
+        />
       </div>
       <div className="mb-1">
         <Typography variant="h6" placeholder={''}>

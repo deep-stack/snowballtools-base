@@ -12,9 +12,9 @@ import {
   Card,
 } from '@material-tailwind/react';
 
-import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
+import { DeleteDomainDialog } from 'components/projects/Dialog/DeleteDomainDialog';
 
 enum RefreshStatus {
   IDLE,
@@ -118,28 +118,16 @@ const DomainCard = ({
           </Menu>
         </div>
 
-        <ConfirmDialog
-          dialogTitle="Delete domain?"
-          handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
+        <DeleteDomainDialog
+          handleCancel={() => setDeleteDialogOpen((preVal) => !preVal)}
           open={deleteDialogOpen}
-          confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
             deleteDomain();
             setDeleteDialogOpen((preVal) => !preVal);
           }}
-          color="red"
-        >
-          <Typography variant="small" placeholder={''}>
-            Once deleted, the project{' '}
-            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {project.name}
-            </span>{' '}
-            will not be accessible from the domain{' '}
-            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {domain.name}.
-            </span>
-          </Typography>
-        </ConfirmDialog>
+          projectName={project.name}
+          domainName={domain.name}
+        />
       </div>
 
       <Typography variant="small" placeholder={''}>
