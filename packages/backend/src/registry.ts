@@ -232,7 +232,7 @@ export class Registry {
   }
 
   async createApplicationDeploymentRemovalRequest (data: {
-    deployment: Deployment
+    deploymentId: string;
   }): Promise<{
     applicationDeploymentRemovalRequestId: string;
     applicationDeploymentRemovalRequestData: ApplicationDeploymentRemovalRequest;
@@ -240,7 +240,7 @@ export class Registry {
     const applicationDeploymentRemovalRequest = {
       type: APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE,
       version: '1.0.0',
-      deployment: data.deployment.id
+      deployment: data.deploymentId
     };
 
     const result = await this.registry.setRecord(

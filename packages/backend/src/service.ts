@@ -694,6 +694,11 @@ export class Service {
     return newCurrentDeploymentUpdate && oldCurrentDeploymentUpdate;
   }
 
+  async deleteDeployment (deploymentId: string): Promise<boolean> {
+    const result = await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId });
+    return (result !== undefined || result !== null);
+  }
+
   async addDomain (
     projectId: string,
     data: { name: string }
