@@ -276,6 +276,17 @@ export class GQLClient {
     return data;
   }
 
+  async deleteDeployment (deploymentId: string): Promise<types.DeleteDeploymentResponse> {
+    const { data } = await this.client.mutate({
+      mutation: mutations.deleteDeployment,
+      variables: {
+        deploymentId
+      }
+    });
+
+    return data;
+  }
+
   async addDomain (projectId: string, data: types.AddDomainInput): Promise<types.AddDomainResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addDomain,

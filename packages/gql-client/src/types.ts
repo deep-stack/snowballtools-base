@@ -269,6 +269,10 @@ export type RollbackDeploymentResponse = {
   rollbackDeployment: boolean
 }
 
+export type DeleteDeploymentResponse = {
+  deleteDeployment: boolean
+}
+
 export type AddDomainInput = {
   name: string
 }

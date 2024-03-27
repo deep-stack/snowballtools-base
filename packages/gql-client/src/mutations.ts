@@ -82,6 +82,12 @@ mutation ($projectId: String! ,$deploymentId: String!) {
 }
 `;
 
+export const deleteDeployment = gql`
+mutation ($deploymentId: String!) {
+  deleteDeployment(deploymentId: $deploymentId)
+}
+`;
+
 export const addDomain = gql`
 mutation ($projectId: String!, $data: AddDomainInput!) {
   addDomain(projectId: $projectId, data: $data)
