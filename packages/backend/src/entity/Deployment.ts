@@ -35,6 +35,12 @@ export interface ApplicationDeploymentRequest {
   meta: string;
 }
 
+export interface ApplicationDeploymentRemovalRequest {
+  type: string;
+  version: string;
+  deployment: string;
+}
+
 export interface ApplicationRecord {
   type: string;
   version: string;
