@@ -22,6 +22,9 @@ const log = debug('snowball:service');
 
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
 
+// Define a constant for an hour in milliseconds
+const HOUR = 1000 * 60 * 60;
+
 interface Config {
   gitHubConfig: GitHubConfig;
   registryConfig: RegistryConfig;
@@ -75,6 +78,28 @@ export class Service {
       log(
         `Found ${deployments.length} deployments in ${DeploymentStatus.Building} state`
       );
+
+      // Calculate a timestamp for one hour ago
+      const anHourAgo = Date.now() - HOUR;
+
+      // Filter out deployments started more than an hour ago and mark them as Error
+      const oldDeploymentsToUpdate = deployments.filter(
+        deployment => (Number(deployment.updatedAt) < anHourAgo)
+      )
+        .map((deployment) => {
+          return this.db.updateDeploymentById(deployment.id, {
+            status: DeploymentStatus.Error,
+            isCurrent: false
+          });
+        });
+
+      // If there are old deployments to update, log and perform the updates
+      if (oldDeploymentsToUpdate.length > 0) {
+        log(
+          `Cleaning up ${oldDeploymentsToUpdate.length} deployments stuck in ${DeploymentStatus.Building} state for over an hour`
+        );
+        await Promise.all(oldDeploymentsToUpdate);
+      }
 
       // Fetch ApplicationDeploymentRecord for deployments
       const records = await this.registry.getDeploymentRecords(deployments);
