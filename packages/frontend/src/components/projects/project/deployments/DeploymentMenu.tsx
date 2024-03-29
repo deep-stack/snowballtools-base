@@ -9,6 +9,7 @@ import {
   RefreshIcon,
   RocketIcon,
   UndoIcon,
+  CrossCircleIcon,
 } from 'components/shared/CustomIcon';
 import {
   Menu,
@@ -79,6 +80,16 @@ export const DeploymentMenu = ({
     }
   };
 
+  const deleteDeployment = async () => {
+    const isDeleted = await client.deleteDeployment(deployment.id);
+    if (isDeleted) {
+      await onUpdate();
+      toast.success('Deleted deployment');
+    } else {
+      toast.error('Unable to delete deployment');
+    }
+  };
+
   return (
     <>
       <div className={cn('max-w-[32px]', className)} {...props}>
@@ -146,6 +157,18 @@ export const DeploymentMenu = ({
               }
             >
               <UndoIcon /> Rollback to this version
+            </MenuItem>
+            <MenuItem
+              className="hover:bg-base-bg-emphasized flex items-center gap-3"
+              onClick={() => deleteDeployment()}
+              disabled={
+                deployment.isCurrent ||
+                deployment.environment !== Environment.Production ||
+                !Boolean(currentDeployment)
+              }
+              placeholder={''}
+            >
+              <CrossCircleIcon /> Delete deployment
             </MenuItem>
           </MenuList>
         </Menu>

@@ -720,8 +720,16 @@ export class Service {
   }
 
   async deleteDeployment (deploymentId: string): Promise<boolean> {
-    const result = await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId });
-    return (result !== undefined || result !== null);
+    const deployment = await this.db.getDeployment({
+      where: {
+        id: deploymentId
+      }
+    });
+    if (deployment && deployment.applicationDeploymentRecordId) {
+      const result = await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId: deployment.applicationDeploymentRecordId });
+      return (result !== undefined || result !== null);
+    }
+    return false;
   }
 
   async addDomain (
