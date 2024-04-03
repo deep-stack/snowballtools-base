@@ -30,8 +30,8 @@
 
 ## Troubleshoot
 
-- Check deployment status [here](https://console.laconic.com/deployer).
-- Check records [here](https://console.laconic.com/#/registry).
+- Check deployment status in [web-app deployer](https://console.laconic.com/deployer).
+- Check records in [registry console app](https://console.laconic.com/#/registry).
 
 - If deployment fails due to low bond balance
   - Check balances
@@ -40,9 +40,9 @@
     yarn laconic cns account get
 
     # Bond balance
-    yarn laconic cns bond get --id 8fcf44b2f326b4b63ac57547777f1c78b7d494e5966e508f09001af53cb440ac
+    yarn laconic cns bond get --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32
     ```
   - Command to refill bond
     ```bash
-    yarn laconic cns bond refill --id 8fcf44b2f326b4b63ac57547777f1c78b7d494e5966e508f09001af53cb440ac --type aphoton --quantity 10000000
+    yarn laconic cns bond refill --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32 --type aphoton --quantity 10000000
     ```

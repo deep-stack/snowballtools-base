@@ -1313,10 +1313,10 @@
     lodash-clean "^2.2.3"
     yargs "^17.4.1"
 
-"@cerc-io/laconic-sdk@^0.1.14", "@cerc-io/laconic-sdk@^0.1.15":
-  version "0.1.15"
-  resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Flaconic-sdk/-/0.1.15/laconic-sdk-0.1.15.tgz#1011a07933c6f1525e05e1ba7dd6a4e4df9b6edb"
-  integrity sha512-Ifl4JUGpckZsu2RkaGyGlObpu9B9GhwFVoDCt8WM9ApdtFnGEVSbDzRuh4f2vLj9WaZkbfdSI/Xci1Fugj3lZg==
+"@cerc-io/laconic-sdk@^0.1.15", "@cerc-io/laconic-sdk@^0.1.16":
+  version "0.1.16"
+  resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Flaconic-sdk/-/0.1.16/laconic-sdk-0.1.16.tgz#53f12a32f156a177987f89e727eb5f16743df7db"
+  integrity sha512-wu6k711qHPxowgyzAmjxz8i/ZTGxW+4sHf9WQ+0hW/E9PlR3Gn8OIsN3J8tvY45wvNdKKR3bm+7w/byyYLRF9A==
   dependencies:
     "@cosmjs/amino" "^0.28.1"
     "@cosmjs/crypto" "^0.28.1"

@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import assert from 'assert';
 import { useMediaQuery } from 'usehooks-ts';
+import { RequestError } from 'octokit';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
@@ -14,6 +14,9 @@ import { Select, SelectOption } from 'components/shared/Select';
 import { ArrowRightCircleFilledIcon } from 'components/shared/CustomIcon';
 import { Checkbox } from 'components/shared/Checkbox';
 import { Button } from 'components/shared/Button';
+import { useToast } from 'components/shared/Toast';
+
+const REPO_EXIST_ERROR = 'Could not clone: Name already exists on this account';
 
 type SubmitRepoValues = {
   framework: string;
@@ -28,6 +31,7 @@ const CreateRepo = () => {
   const client = useGQLClient();
 
   const { orgSlug } = useParams();
+  const { toast, dismiss } = useToast();
 
   const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
   const buttonSize = isTabletView ? { size: 'lg' as const } : {};
@@ -68,18 +72,31 @@ const CreateRepo = () => {
           template: 'webapp',
         });
 
-        if (Boolean(addProject)) {
-          setIsLoading(true);
-          navigate(
-            `deploy?projectId=${addProject.id}&templateId=${template.id}`,
-          );
-        } else {
-          setIsLoading(false);
-        }
+        navigate(`deploy?projectId=${addProject.id}&templateId=${template.id}`);
       } catch (err) {
-        console.error(err);
         setIsLoading(false);
-        toast.error('Error deploying project');
+
+        if (
+          err instanceof RequestError &&
+          err.message.includes(REPO_EXIST_ERROR)
+        ) {
+          toast({
+            id: 'repo-exist-error',
+            title: 'Could not create: repository already exists',
+            variant: 'error',
+            onDismiss: dismiss,
+          });
+
+          return;
+        }
+
+        console.error((err as Error).message);
+        toast({
+          id: 'failed-to-create-project',
+          title: 'Failed to create project',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
     },
     [octokit],

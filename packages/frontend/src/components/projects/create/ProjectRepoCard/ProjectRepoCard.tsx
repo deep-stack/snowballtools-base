@@ -58,7 +58,7 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
         });
       }
     } catch (error) {
-      console.error(error);
+      console.error((error as Error).message);
       toast({
         id: 'failed-to-create-project',
         title: 'Failed to create project',
