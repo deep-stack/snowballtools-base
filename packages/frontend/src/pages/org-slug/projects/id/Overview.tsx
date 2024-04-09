@@ -18,7 +18,6 @@ import {
   GithubStrokeIcon,
   GlobeIcon,
   LinkIcon,
-  StorageIcon,
 } from 'components/shared/CustomIcon';
 import { Tag } from 'components/shared/Tag';
 import { Activity } from 'components/projects/project/overview/Activity';
@@ -168,20 +167,6 @@ const OverviewTabPanel = () => {
                 <span className="text-elements-high-em text-sm tracking-tighter">
                   {project.deployments[0]?.branch}
                 </span>
-              </div>
-            </OverviewInfo>
-
-            {/* DATABASE */}
-            <OverviewInfo label="Database" icon={<StorageIcon />}>
-              <div className="flex gap-2 items-center">
-                <Link to="#">
-                  <span className="group text-controls-primary hover:border-controls-primary transition-colors border-b border-b-transparent flex gap-2 items-center text-sm tracking-tight">
-                    {/* // TODO: add db name
-                      dbname
-                    */}
-                    <LinkIcon className="group-hover:rotate-45 transition-transform" />
-                  </span>
-                </Link>
               </div>
             </OverviewInfo>
 
