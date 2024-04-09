@@ -130,7 +130,7 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
             ) : (
               <div className="animate-pulse h-1.5 mb-1 w-full rounded-full bg-elements-on-disabled" />
             )}
-            <p className="text-xs text-elements-low-em">Organization</p>
+            <p className="text-xs text-elements-low-em">Team</p>
           </div>
         </div>
 
