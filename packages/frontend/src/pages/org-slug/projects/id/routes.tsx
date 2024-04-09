@@ -9,16 +9,6 @@ import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariables';
 import MembersTabPanel from './settings/Members';
 import Domains from './settings/Domains';
 
-const Database = () => (
-  <div>
-    Content of database tab
-    <p className="block">
-      It is a long established fact that a reader will be distracted by the
-      readable content of a page when looking at its layout.
-    </p>
-  </div>
-);
-
 const Integrations = () => (
   <div>
     Content of integrations tab
@@ -59,10 +49,6 @@ export const projectTabRoutes = [
   {
     path: 'deployments',
     element: <DeploymentsTabPanel />,
-  },
-  {
-    path: 'database',
-    element: <Database />,
   },
   {
     path: 'integrations',
