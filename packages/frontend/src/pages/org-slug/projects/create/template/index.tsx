@@ -143,24 +143,29 @@ const CreateRepo = () => {
             The project will be cloned into this repository
           </Heading>
         </div>
+
         <div className="flex flex-col justify-start gap-3">
           <span className="text-sm text-elements-high-em">Git account</span>
-          <Controller
-            name="account"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Select
-                value={{ value } as SelectOption}
-                onChange={(value) => onChange((value as SelectOption).value)}
-                options={
-                  gitAccounts.map((account) => ({
-                    value: account,
-                    label: account,
-                  })) ?? []
-                }
-              />
-            )}
-          />
+          {gitAccounts.length > 0 ? (
+            <Controller
+              name="account"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  value={{ value } as SelectOption}
+                  onChange={(value) => onChange((value as SelectOption).value)}
+                  options={
+                    gitAccounts.map((account) => ({
+                      value: account,
+                      label: account,
+                    })) ?? []
+                  }
+                />
+              )}
+            />
+          ) : (
+            <Select options={[]} disabled />
+          )}
         </div>
         <div className="flex flex-col justify-start gap-3">
           <span className="text-sm text-elements-high-em">Name the repo</span>
