@@ -94,3 +94,51 @@ sleep 2
 DEPLOYMENT_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $REQUEST_RECORD_FILE | jq -r '.id')
 echo "ApplicationDeploymentRequest published"
 echo $DEPLOYMENT_REQUEST_ID
+
+# Deployment checks
+RETRY_INTERVAL=30
+MAX_RETRIES=10
+
+# Check that a ApplicationDeploymentRecord is published
+retry_count=0
+while true; do
+  deployment_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRecord --all --name "$APP_NAME" request $DEPLOYMENT_REQUEST_ID)
+  len_deployment_records=$(echo $deployment_records_response | jq 'length')
+
+  # Check if number of records returned is 0
+  if [ $len_deployment_records -eq 0 ]; then
+    # Check if retries are exhausted
+    if [ $retry_count -eq $MAX_RETRIES ]; then
+      echo "Retries exhausted"
+      echo "ApplicationDeploymentRecord for deployment request $DEPLOYMENT_REQUEST_ID not found"
+      exit 1
+    else
+      echo "ApplicationDeploymentRecord not found, retrying in $RETRY_INTERVAL sec..."
+      sleep $RETRY_INTERVAL
+      retry_count=$((retry_count+1))
+    fi
+  else
+    echo "ApplicationDeploymentRecord found"
+    break
+  fi
+done
+
+fetched_application_record_id=$(echo $deployment_records_response | jq -r '.[0].attributes.application')
+fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
+
+# Check if ApplicationDeploymentRecord has the correct record id
+if [ "$fetched_application_record_id" = "$RECORD_ID" ]; then
+  echo "ApplicationRecord id matched"
+else
+  echo "ApplicationRecord id does not match, expected: $RECORD_ID, received: $fetched_application_record_id"
+  exit 1
+fi
+
+# Check if url present in ApplicationDeploymentRecord active
+url_response=$(curl -s -o /dev/null -I -w "%{http_code}" "$fetched_url")
+if [ "$url_response" = "200" ]; then
+  echo "Deployment URL $fetched_url is active"
+else
+  echo "Deployment URL $fetched_url is not active, received code $url_response"
+  exit 1
+fi
