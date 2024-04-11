@@ -1,4 +1,3 @@
-import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
 export const GitIcon: React.FC<CustomIconProps> = (props) => {

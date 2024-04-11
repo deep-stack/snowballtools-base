@@ -1,4 +1,4 @@
-import React, { ReactNode, ComponentPropsWithoutRef } from 'react';
+import { ReactNode, ComponentPropsWithoutRef } from 'react';
 import {
   Item as RadixRadio,
   Indicator as RadixIndicator,

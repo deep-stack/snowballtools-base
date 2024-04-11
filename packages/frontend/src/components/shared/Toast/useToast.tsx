@@ -1,5 +1,6 @@
-// Inspired by react-hot-toast library
 import React from 'react';
+// Inspired by react-hot-toast library
+
 import { type ToastProps } from '@radix-ui/react-toast';
 import { SimpleToastProps } from './SimpleToast';
 

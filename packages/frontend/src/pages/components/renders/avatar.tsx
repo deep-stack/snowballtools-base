@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, AvatarVariants } from 'components/shared/Avatar';
 
 const avatarSizes: AvatarVariants['size'][] = [18, 20, 24, 28, 32, 36, 40, 44];

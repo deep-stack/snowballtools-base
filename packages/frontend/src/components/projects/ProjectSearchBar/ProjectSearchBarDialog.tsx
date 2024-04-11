@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Button } from 'components/shared/Button';
 import { CrossIcon, SearchIcon } from 'components/shared/CustomIcon';

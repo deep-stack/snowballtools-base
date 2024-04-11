@@ -1,4 +1,3 @@
-import React from 'react';
 import { FolderIcon, SettingsSlidersIcon } from 'components/shared/CustomIcon';
 
 export const SIDEBAR_MENU = (orgSlug?: string) => [

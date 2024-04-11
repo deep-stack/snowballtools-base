@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
@@ -11,13 +11,13 @@ import {
   Button,
   Checkbox,
   Chip,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 import AddEnvironmentVariableRow from '../../../../../components/projects/project/settings/AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from '../../../../../components/projects/project/settings/DisplayEnvironmentVariables';
 import HorizontalLine from '../../../../../components/HorizontalLine';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { EnvironmentVariablesFormValues } from '../../../../../types';
+import { EnvironmentVariablesFormValues } from '../../../../../types/types';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -133,14 +133,8 @@ export const EnvironmentVariablesTabPanel = () => {
 
   return (
     <>
-      <Typography variant="h6" placeholder={''}>
-        Environment variables
-      </Typography>
-      <Typography
-        variant="small"
-        className="font-medium text-gray-800"
-        placeholder={''}
-      >
+      <Typography variant="h6">Environment variables</Typography>
+      <Typography variant="small" className="font-medium text-gray-800">
         A new deployment is required for your changes to take effect.
       </Typography>
       <div className="bg-gray-300 rounded-lg p-2">
@@ -151,7 +145,7 @@ export const EnvironmentVariablesTabPanel = () => {
           + Create new variable
         </div>
         <Collapse open={createNewVariable}>
-          <Card className="bg-white p-2" placeholder={''}>
+          <Card className="bg-white p-2">
             <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
               {fields.map((field, index) => {
                 return (
@@ -174,12 +168,11 @@ export const EnvironmentVariablesTabPanel = () => {
                       value: '',
                     })
                   }
-                  placeholder={''}
                 >
                   + Add variable
                 </Button>
                 {/* TODO: Implement import environment varible functionality */}
-                <Button variant="outlined" size="sm" disabled placeholder={''}>
+                <Button variant="outlined" size="sm" disabled>
                   ^ Import .env
                 </Button>
               </div>
@@ -193,26 +186,23 @@ export const EnvironmentVariablesTabPanel = () => {
               )}
               <div>
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Production"
                   {...register(`environment.production`)}
                   color="blue"
                 />
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Preview"
                   {...register(`environment.preview`)}
                   color="blue"
                 />
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Development"
                   {...register(`environment.development`)}
                   color="blue"
                 />
               </div>
               <div className="p-2">
-                <Button size="lg" color="blue" type="submit" placeholder={''}>
+                <Button size="lg" color="blue" type="submit">
                   Save changes
                 </Button>
               </div>

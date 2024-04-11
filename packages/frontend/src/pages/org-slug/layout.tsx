@@ -8,7 +8,7 @@ import {
 } from 'components/shared/CustomIcon';
 import { Sidebar } from 'components/shared/Sidebar';
 import { OctokitProvider } from 'context/OctokitContext';
-import React, { ComponentPropsWithoutRef, useEffect, useState } from 'react';
+import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from 'utils/classnames';

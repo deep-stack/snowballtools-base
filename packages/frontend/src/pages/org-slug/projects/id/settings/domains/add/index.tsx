@@ -1,6 +1,9 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams, useLocation, Outlet, Link } from 'react-router-dom';
-import { Typography, IconButton } from '@material-tailwind/react';
+import {
+  Typography,
+  IconButton,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import Stepper from '../../../../../../../components/Stepper';
 
@@ -30,15 +33,9 @@ const AddDomain = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between">
-        <Typography variant="h3" placeholder={''}>
-          Add Domain
-        </Typography>
+        <Typography variant="h3">Add Domain</Typography>
         <Link to={`/${orgSlug}/projects/${id}`}>
-          <IconButton
-            className="rounded-full"
-            variant="outlined"
-            placeholder={''}
-          >
+          <IconButton className="rounded-full" variant="outlined">
             X
           </IconButton>
         </Link>
@@ -48,7 +45,7 @@ const AddDomain = () => {
         <div className="bg-blue-gray-50 rounded-lg mt-6 mb-10">
           <div className="flex justify-start gap-3 p-5">
             <i className="bg-gray-100 w-12 h-12 rounded-lg">^</i>
-            <Typography className="my-auto w-1/3" variant="h5" placeholder={''}>
+            <Typography className="my-auto w-1/3" variant="h5">
               Project Name
             </Typography>
           </div>

@@ -1,7 +1,7 @@
 import ConfirmDialog, {
   ConfirmDialogProps,
 } from 'components/shared/ConfirmDialog';
-import React from 'react';
+
 import { formatAddress } from 'utils/format';
 
 interface RemoveMemberDialogProps extends ConfirmDialogProps {

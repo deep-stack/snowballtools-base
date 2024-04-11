@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { GQLClient } from 'gql-client';
 
 const GQLClientContext = createContext({} as GQLClient);

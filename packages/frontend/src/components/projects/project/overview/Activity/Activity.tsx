@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { GitCommitWithBranch } from 'types';
+import { GitCommitWithBranch } from '../../../../../types/types';
 import { Heading } from 'components/shared/Heading';
 import ActivityCard from './ActivityCard';
 import { Button } from 'components/shared/Button';

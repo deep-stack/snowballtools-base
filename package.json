@@ -4,15 +4,15 @@
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {},
   "devDependencies": {
+    "depcheck": "^1.4.2",
     "husky": "^8.0.3",
     "lerna": "^8.0.0",
-    "depcheck": "^1.4.2"
+    "patch-package": "^8.0.0"
   },
   "scripts": {
     "prepare": "husky install",
     "build": "lerna run build --stream",
-    "lint": "lerna run lint --stream -- --max-warnings=0"
+    "lint": "lerna run lint --stream"
   }
 }

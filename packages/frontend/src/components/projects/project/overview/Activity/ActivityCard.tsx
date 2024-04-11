@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { GitCommitWithBranch } from '../../../../../types';
+import { GitCommitWithBranch } from '../../../../../types/types';
 import { Avatar } from 'components/shared/Avatar';
 import { Button } from 'components/shared/Button';
 import {

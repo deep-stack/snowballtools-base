@@ -2,7 +2,7 @@ import ConfirmDialog, {
   ConfirmDialogProps,
 } from 'components/shared/ConfirmDialog';
 import { Deployment, Domain } from 'gql-client';
-import React from 'react';
+
 import DeploymentDialogBodyCard from 'components/projects/project/deployments/DeploymentDialogBodyCard';
 import { Button } from 'components/shared/Button';
 import {

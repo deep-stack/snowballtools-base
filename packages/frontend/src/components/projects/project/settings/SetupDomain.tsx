@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -8,7 +8,7 @@ import {
   Button,
   Input,
   Alert,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 const SetupDomain = () => {
   const {
@@ -54,23 +54,18 @@ const SetupDomain = () => {
       className="flex flex-col gap-6 w-full"
     >
       <div>
-        <Typography variant="h5" placeholder={''}>
-          Setup domain name
-        </Typography>
-        <Typography variant="small" placeholder={''}>
+        <Typography variant="h5">Setup domain name</Typography>
+        <Typography variant="small">
           Add your domain and setup redirects
         </Typography>
       </div>
 
       <div className="w-auto">
-        <Typography variant="small" placeholder={''}>
-          Domain name
-        </Typography>
+        <Typography variant="small">Domain name</Typography>
         <Input
           type="text"
           variant="outlined"
           size="lg"
-          crossOrigin={undefined}
           className="w-full"
           {...register('domainName', {
             required: true,
@@ -80,18 +75,16 @@ const SetupDomain = () => {
 
       {isValid && (
         <div>
-          <Typography placeholder={''}>Primary domain</Typography>
+          <Typography>Primary domain</Typography>
           <div className="flex flex-col gap-3">
             <Radio
               label={domainStr}
-              crossOrigin={undefined}
               {...register('isWWW')}
               value="false"
               type="radio"
             />
             <Radio
               label={`www.${domainStr}`}
-              crossOrigin={undefined}
               {...register('isWWW')}
               value="true"
               type="radio"
@@ -112,7 +105,6 @@ const SetupDomain = () => {
         className="w-fit"
         color={isValid ? 'blue' : 'gray'}
         type="submit"
-        placeholder={''}
       >
         <i>^</i> Next
       </Button>

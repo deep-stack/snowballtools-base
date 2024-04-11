@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSnowball } from 'utils/use-snowball';
 
 export const SnowballLogin = () => {

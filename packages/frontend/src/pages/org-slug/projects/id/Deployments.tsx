@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Deployment, Domain } from 'gql-client';
 import { useOutletContext } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import FilterForm, {
   FilterValue,
   StatusOptions,
 } from 'components/projects/project/deployments/FilterForm';
-import { OutletContextType } from 'types';
+import { OutletContextType } from '../../../../types/types';
 import { useGQLClient } from 'context/GQLClientContext';
 import { Button } from 'components/shared/Button';
 import { RefreshIcon } from 'components/shared/CustomIcon';

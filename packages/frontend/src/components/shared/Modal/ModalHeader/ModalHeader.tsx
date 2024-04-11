@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DialogDescriptionProps } from '@radix-ui/react-dialog';
 import { Description, Title } from '@radix-ui/react-dialog';
 import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react';

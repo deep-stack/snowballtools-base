@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { Root, Trigger } from '@radix-ui/react-dialog';
 import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react';

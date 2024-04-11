@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, useMemo } from 'react';
+import { ComponentPropsWithoutRef, useMemo } from 'react';
 import { Provider, Viewport } from '@radix-ui/react-toast';
 import { SimpleToast, SimpleToastProps } from './SimpleToast';
 import { useToast } from './useToast';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useCombobox } from 'downshift';
 import { Project } from 'gql-client';
 import { useDebounce } from 'usehooks-ts';

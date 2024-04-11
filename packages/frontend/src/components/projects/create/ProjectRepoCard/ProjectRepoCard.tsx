@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Spinner } from '@material-tailwind/react';
+import { Spinner } from '@snowballtools/material-tailwind-react-fork';
 
 import { relativeTimeISO } from 'utils/time';
-import { GitRepositoryDetails } from 'types';
+import { GitRepositoryDetails } from '../../../../types/types';
 import { useGQLClient } from 'context/GQLClientContext';
 import {
   ArrowRightCircleIcon,

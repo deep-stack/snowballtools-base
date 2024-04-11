@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Button, Typography } from '@material-tailwind/react';
+import {
+  Button,
+  Typography,
+} from '@snowballtools/material-tailwind-react-fork';
 
-import { GitRepositoryDetails } from 'types';
+import { GitRepositoryDetails } from '../../../../types/types';
 import { DisconnectRepositoryDialog } from 'components/projects/Dialog/DisconnectRepositoryDialog';
 
 const RepoConnectedSection = ({
@@ -17,19 +20,14 @@ const RepoConnectedSection = ({
     <div className="flex gap-4">
       <div>^</div>
       <div className="grow">
-        <Typography variant="small" placeholder={''}>
-          {linkedRepo.full_name}
-        </Typography>
-        <Typography variant="small" placeholder={''}>
-          Connected just now
-        </Typography>
+        <Typography variant="small">{linkedRepo.full_name}</Typography>
+        <Typography variant="small">Connected just now</Typography>
       </div>
       <div>
         <Button
           onClick={() => setDisconnectRepoDialogOpen(true)}
           variant="outlined"
           size="sm"
-          placeholder={''}
         >
           ^ Disconnect
         </Button>

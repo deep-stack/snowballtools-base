@@ -1,4 +1,4 @@
-import React, { type ComponentPropsWithoutRef } from 'react';
+import { type ComponentPropsWithoutRef } from 'react';
 import { type SwitchProps as SwitchRadixProps } from '@radix-ui/react-switch';
 import * as SwitchRadix from '@radix-ui/react-switch';
 

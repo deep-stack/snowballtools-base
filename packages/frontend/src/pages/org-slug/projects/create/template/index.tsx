@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import assert from 'assert';
@@ -7,7 +7,7 @@ import { RequestError } from 'octokit';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { Template } from '../../../../../types';
+import { Template } from '../../../../../types/types';
 import { Heading } from 'components/shared/Heading';
 import { Input } from 'components/shared/Input';
 import { Select, SelectOption } from 'components/shared/Select';

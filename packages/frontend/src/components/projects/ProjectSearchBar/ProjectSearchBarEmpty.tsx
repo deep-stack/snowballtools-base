@@ -1,5 +1,5 @@
 import { InfoRoundFilledIcon } from 'components/shared/CustomIcon';
-import React, { ComponentPropsWithoutRef } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 import { cn } from 'utils/classnames';
 
 interface ProjectSearchBarEmptyProps extends ComponentPropsWithoutRef<'div'> {}

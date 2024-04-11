@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import React, { useCallback, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { DeployStep, DeployStatus } from "./DeployStep";
-import { Stopwatch, setStopWatchOffset } from "../../StopWatch";
-import { Heading } from "../../shared/Heading";
-import { Button } from "../../shared/Button";
-import { ClockOutlineIcon, WarningIcon } from "../../shared/CustomIcon";
-import { CancelDeploymentDialog } from "../../projects/Dialog/CancelDeploymentDialog";
+import { DeployStep, DeployStatus } from './DeployStep';
+import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
+import { Heading } from '../../shared/Heading';
+import { Button } from '../../shared/Button';
+import { ClockOutlineIcon, WarningIcon } from '../../shared/CustomIcon';
+import { CancelDeploymentDialog } from '../../projects/Dialog/CancelDeploymentDialog';
 
 const TIMEOUT_DURATION = 5000;
 const Deploy = () => {
   const [searchParams] = useSearchParams();
-  const projectId = searchParams.get("projectId");
+  const projectId = searchParams.get('projectId');
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);

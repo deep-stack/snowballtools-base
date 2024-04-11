@@ -3,12 +3,8 @@ import {
   MenuHandler,
   MenuItem,
   MenuList,
-} from '@material-tailwind/react';
-import React, {
-  ComponentPropsWithoutRef,
-  MouseEvent,
-  useCallback,
-} from 'react';
+} from '@snowballtools/material-tailwind-react-fork';
+import { ComponentPropsWithoutRef, MouseEvent, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Project } from 'gql-client';
 import { Avatar } from 'components/shared/Avatar';
@@ -95,11 +91,9 @@ export const ProjectCard = ({
                 <HorizontalDotIcon />
               </Button>
             </MenuHandler>
-            <MenuList placeholder={''}>
-              <MenuItem placeholder={''}>Project settings</MenuItem>
-              <MenuItem className="text-red-500" placeholder={''}>
-                Delete project
-              </MenuItem>
+            <MenuList>
+              <MenuItem>Project settings</MenuItem>
+              <MenuItem className="text-red-500">Delete project</MenuItem>
             </MenuList>
           </Menu>
         </div>

@@ -1,9 +1,14 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 
-import { Tabs, TabsHeader, TabsBody, Tab } from '@material-tailwind/react';
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+} from '@snowballtools/material-tailwind-react-fork';
 
-import { OutletContextType } from '../../../../types';
+import { OutletContextType } from '../../../../types/types';
 
 const tabsData = [
   {
@@ -59,14 +64,12 @@ const SettingsTabPanel = () => {
           indicatorProps={{
             className: 'bg-gray-900/10 shadow-none !text-gray-900',
           }}
-          placeholder={''}
         >
           {tabsData.map(({ label, value, icon }) => (
             <Link key={value} to={value === 'general' ? '' : value}>
               <Tab
                 value={value === 'general' ? '' : `/${value}`}
                 className="flex justify-start"
-                placeholder={''}
               >
                 <div className="flex gap-2">
                   <div>{icon}</div>
@@ -76,7 +79,7 @@ const SettingsTabPanel = () => {
             </Link>
           ))}
         </TabsHeader>
-        <TabsBody className="col-span-2" placeholder={''}>
+        <TabsBody className="col-span-2">
           <Outlet context={{ project, onUpdate }} />
         </TabsBody>
       </Tabs>

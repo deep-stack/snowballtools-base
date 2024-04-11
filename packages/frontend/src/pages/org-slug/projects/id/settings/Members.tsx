@@ -1,14 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Permission, AddProjectMemberInput, ProjectMember } from 'gql-client';
 
-import { Chip, Button, Typography } from '@material-tailwind/react';
+import {
+  Chip,
+  Button,
+  Typography,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import MemberCard from '../../../../../components/projects/project/settings/MemberCard';
 import AddMemberDialog from '../../../../../components/projects/project/settings/AddMemberDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types';
+import { OutletContextType } from '../../../../../types/types';
 
 const FIRST_MEMBER_CARD = 0;
 
@@ -75,9 +79,7 @@ const MembersTabPanel = () => {
     <div className="p-2 mb-20">
       <div className="flex justify-between mb-2">
         <div className="flex">
-          <Typography variant="h6" placeholder={''}>
-            Members
-          </Typography>
+          <Typography variant="h6">Members</Typography>
           <div>
             <Chip
               className="normal-case ml-3 font-normal"
@@ -90,7 +92,6 @@ const MembersTabPanel = () => {
           <Button
             size="sm"
             onClick={() => setAddMemberDialogOpen((preVal) => !preVal)}
-            placeholder={''}
           >
             + Add member
           </Button>

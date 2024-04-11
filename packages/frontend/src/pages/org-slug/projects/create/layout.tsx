@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 
 import { Heading } from 'components/shared/Heading';

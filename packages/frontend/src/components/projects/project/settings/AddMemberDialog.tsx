@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { AddProjectMemberInput, Permission } from 'gql-client';
 
@@ -11,7 +11,7 @@ import {
   Input,
   Typography,
   Checkbox,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 interface AddMemberDialogProp {
   open: boolean;
@@ -61,59 +61,46 @@ const AddMemberDialog = ({
   }, []);
 
   return (
-    <Dialog open={open} handler={handleOpen} placeholder={''}>
-      <DialogHeader className="flex justify-between" placeholder={''}>
+    <Dialog open={open} handler={handleOpen}>
+      <DialogHeader className="flex justify-between">
         <div>Add member</div>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className="mr-1 rounded-3xl"
-          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
       <form onSubmit={handleSubmit(submitHandler)}>
-        <DialogBody className="flex flex-col gap-2 p-4" placeholder={''}>
-          <Typography variant="small" placeholder={''}>
+        <DialogBody className="flex flex-col gap-2 p-4">
+          <Typography variant="small">
             We will send an invitation link to this email address.
           </Typography>
-          <Typography variant="small" placeholder={''}>
-            Email address
-          </Typography>
+          <Typography variant="small">Email address</Typography>
           <Input
             type="email"
-            crossOrigin={undefined}
             {...register('emailAddress', {
               required: 'email field cannot be empty',
             })}
           />
-          <Typography variant="small" placeholder={''}>
-            Permissions
-          </Typography>
-          <Typography variant="small" placeholder={''}>
+          <Typography variant="small">Permissions</Typography>
+          <Typography variant="small">
             You can change this later if required.
           </Typography>
           <Checkbox
-            crossOrigin={undefined}
             label={Permission.View}
             {...register(`permissions.view`)}
             color="blue"
           />
           <Checkbox
-            crossOrigin={undefined}
             label={Permission.Edit}
             {...register(`permissions.edit`)}
             color="blue"
           />
         </DialogBody>
-        <DialogFooter className="flex justify-start" placeholder={''}>
-          <Button
-            variant="outlined"
-            onClick={handleOpen}
-            className="mr-1"
-            placeholder={''}
-          >
+        <DialogFooter className="flex justify-start">
+          <Button variant="outlined" onClick={handleOpen} className="mr-1">
             Cancel
           </Button>
           <Button
@@ -121,7 +108,6 @@ const AddMemberDialog = ({
             color="blue"
             type="submit"
             disabled={!isValid}
-            placeholder={''}
           >
             Send invite
           </Button>

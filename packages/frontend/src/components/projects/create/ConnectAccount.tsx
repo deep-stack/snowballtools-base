@@ -1,21 +1,21 @@
-import React from "react";
-import OauthPopup from "react-oauth-popup";
+import React from 'react';
+import OauthPopup from 'react-oauth-popup';
 
-import { useGQLClient } from "../../../context/GQLClientContext";
-import { Button } from "../../shared/Button";
+import { useGQLClient } from '../../../context/GQLClientContext';
+import { Button } from '../../shared/Button';
 import {
   GitIcon,
   EllipsesIcon,
   SnowballIcon,
   GithubIcon,
   GitTeaIcon,
-} from "../../shared/CustomIcon";
-import { useToast } from "../../shared/Toast";
-import { IconWithFrame } from "../../shared/IconWithFrame";
-import { Heading } from "../../shared/Heading";
-import { MockConnectGitCard } from "./MockConnectGitCard";
+} from '../../shared/CustomIcon';
+import { useToast } from '../../shared/Toast';
+import { IconWithFrame } from '../../shared/IconWithFrame';
+import { Heading } from '../../shared/Heading';
+import { MockConnectGitCard } from './MockConnectGitCard';
 
-const SCOPES = "repo user";
+const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
   import.meta.env.VITE_GITHUB_CLIENT_ID
 }&scope=${encodeURIComponent(SCOPES)}`;
@@ -39,9 +39,9 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
     onToken(token);
     toast({
       onDismiss: dismiss,
-      id: "connected-to-github",
-      title: "The Git account is connected.",
-      variant: "success",
+      id: 'connected-to-github',
+      title: 'The Git account is connected.',
+      variant: 'success',
     });
   };
 

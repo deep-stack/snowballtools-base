@@ -1,7 +1,6 @@
 import ConfirmDialog, {
   ConfirmDialogProps,
 } from 'components/shared/ConfirmDialog';
-import React from 'react';
 
 interface DeleteWebhookDialogProps extends ConfirmDialogProps {
   webhookUrl: string;

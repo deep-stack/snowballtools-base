@@ -1,13 +1,16 @@
 import { RequestError } from 'octokit';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { Domain } from 'gql-client';
 
-import { Button, Typography } from '@material-tailwind/react';
+import {
+  Button,
+  Typography,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import DomainCard from '../../../../../components/projects/project/settings/DomainCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types';
+import { OutletContextType } from '../../../../../types/types';
 import { useOctokit } from '../../../../../context/OctokitContext';
 
 const Domains = () => {
@@ -59,16 +62,9 @@ const Domains = () => {
   return (
     <>
       <div className="flex justify-between p-2">
-        <Typography variant="h3" placeholder={''}>
-          Domain
-        </Typography>
+        <Typography variant="h3">Domain</Typography>
         <Link to="add">
-          <Button
-            color="blue"
-            variant="outlined"
-            className="rounded-full"
-            placeholder={''}
-          >
+          <Button color="blue" variant="outlined" className="rounded-full">
             <i>^</i> Add domain
           </Button>
         </Link>

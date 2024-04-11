@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Domain, DomainStatus, Project } from 'gql-client';
 
@@ -10,7 +10,7 @@ import {
   MenuList,
   MenuItem,
   Card,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
@@ -68,7 +68,7 @@ const DomainCard = ({
     <>
       <div className="flex justify-between py-3">
         <div className="flex justify-start gap-1">
-          <Typography variant="h6" placeholder={''}>
+          <Typography variant="h6">
             <i>^</i> {domain.name}
           </Typography>
           <Chip
@@ -97,20 +97,18 @@ const DomainCard = ({
             <MenuHandler>
               <button className="border-2 rounded-full w-8 h-8">...</button>
             </MenuHandler>
-            <MenuList placeholder={''}>
+            <MenuList>
               <MenuItem
                 className="text-black"
                 onClick={() => {
                   setEditDialogOpen((preVal) => !preVal);
                 }}
-                placeholder={''}
               >
                 ^ Edit domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
-                placeholder={''}
               >
                 ^ Delete domain
               </MenuItem>
@@ -130,21 +128,15 @@ const DomainCard = ({
         />
       </div>
 
-      <Typography variant="small" placeholder={''}>
-        Production
-      </Typography>
+      <Typography variant="small">Production</Typography>
       {domain.status === DomainStatus.Pending && (
-        <Card className="bg-gray-200 p-4 text-sm" placeholder={''}>
+        <Card className="bg-gray-200 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
-            <Typography variant="small" placeholder={''}>
+            <Typography variant="small">
               ^ Add these records to your domain and refresh to check
             </Typography>
           ) : refreshStatus === RefreshStatus.CHECKING ? (
-            <Typography
-              variant="small"
-              className="text-blue-500"
-              placeholder={''}
-            >
+            <Typography variant="small" className="text-blue-500">
               ^ Checking records for {domain.name}
             </Typography>
           ) : (

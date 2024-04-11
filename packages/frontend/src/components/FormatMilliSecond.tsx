@@ -1,5 +1,5 @@
 import { Duration } from 'luxon';
-import React, { ComponentPropsWithoutRef } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 import { cn } from 'utils/classnames';
 
 export interface FormatMilliSecondProps

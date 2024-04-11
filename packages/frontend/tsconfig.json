@@ -6,6 +6,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "types": ["vite/client"],
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -21,6 +23,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
+      "types/*": ["./src/types/*"],
       "utils/*": ["./src/utils/*"],
       "assets/*": ["./src/assets/*"],
       "context/*": ["./src/context/*"],

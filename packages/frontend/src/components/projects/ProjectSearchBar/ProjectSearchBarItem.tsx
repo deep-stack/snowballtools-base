@@ -1,7 +1,7 @@
 import { Avatar } from 'components/shared/Avatar';
 import { Overwrite, UseComboboxGetItemPropsReturnValue } from 'downshift';
 import { Project } from 'gql-client';
-import React, { ComponentPropsWithoutRef, forwardRef } from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { OmitCommon } from 'types/common';
 import { cn } from 'utils/classnames';
 import { getInitials } from 'utils/geInitials';

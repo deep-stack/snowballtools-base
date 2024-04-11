@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   default as ReactDropdown,
   Option as ReactDropdownOption,

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import OverviewTabPanel from './Overview';
 import DeploymentsTabPanel from './Deployments';
 import SettingsTabPanel from './Settings';

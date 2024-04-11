@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Config from './Config';
 import SetupDomain from '../../../../../../../components/projects/project/settings/SetupDomain';
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Permission, User } from 'gql-client';
 
 import {
@@ -7,7 +7,7 @@ import {
   Chip,
   IconButton,
   Tooltip,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 import { formatAddress } from 'utils/format';
 import { RemoveMemberDialog } from 'components/projects/Dialog/RemoveMemberDialog';
@@ -103,7 +103,6 @@ const MemberCard = ({
             selected={(_, index) => (
               <span>{DROPDOWN_OPTIONS[index!]?.label}</span>
             )}
-            placeholder={''}
           >
             {DROPDOWN_OPTIONS.map((permission, key) => (
               <Option key={key} value={permission.value}>
@@ -132,7 +131,6 @@ const MemberCard = ({
                 onClick={() => {
                   setRemoveMemberDialogOpen((prevVal) => !prevVal);
                 }}
-                placeholder={''}
               >
                 D
               </IconButton>

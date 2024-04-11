@@ -1,4 +1,3 @@
-import React from 'react';
 import { CopyBlock, atomOneLight } from 'react-code-blocks';
 import { Link } from 'react-router-dom';
 
@@ -8,7 +7,7 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 interface AssignDomainProps {
   open: boolean;
@@ -17,9 +16,9 @@ interface AssignDomainProps {
 
 const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
   return (
-    <Dialog open={open} handler={handleOpen} placeholder={''}>
-      <DialogHeader placeholder={''}>Assign Domain</DialogHeader>
-      <DialogBody placeholder={''}>
+    <Dialog open={open} handler={handleOpen}>
+      <DialogHeader>Assign Domain</DialogHeader>
+      <DialogBody>
         In order to assign a domain to your production deployments, configure it
         in the{' '}
         {/* TODO: Fix selection of project settings tab on navigation to domains */}
@@ -36,13 +35,12 @@ const AssignDomainDialog = ({ open, handleOpen }: AssignDomainProps) => {
           theme={atomOneLight}
         />
       </DialogBody>
-      <DialogFooter className="flex justify-start" placeholder={''}>
+      <DialogFooter className="flex justify-start">
         <Button
           className="rounded-3xl"
           variant="gradient"
           color="blue"
           onClick={handleOpen}
-          placeholder={''}
         >
           <span>Okay</span>
         </Button>

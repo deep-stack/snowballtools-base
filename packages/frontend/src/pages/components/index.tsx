@@ -1,11 +1,9 @@
-import React from 'react';
 import { Calendar } from 'components/shared/Calendar';
 import { DatePicker } from 'components/shared/DatePicker';
 import { Radio } from 'components/shared/Radio';
 import { SegmentedControls } from 'components/shared/SegmentedControls';
 import { Switch } from 'components/shared/Switch';
 import { useState } from 'react';
-import { Value } from 'react-calendar/dist/cjs/shared/types';
 import { avatars, avatarsFallback } from './renders/avatar';
 import { renderBadges } from './renders/badge';
 import {
@@ -37,6 +35,7 @@ import { renderToast, renderToastsWithCta } from './renders/toast';
 import { renderTooltips } from './renders/tooltip';
 import { Button } from 'components/shared/Button';
 import { Modal } from 'components/shared/Modal';
+import { Value } from 'types/vendor';
 
 const Page: React.FC = () => {
   const [singleDate, setSingleDate] = useState<Value>();

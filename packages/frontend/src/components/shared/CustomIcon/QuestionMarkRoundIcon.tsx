@@ -1,4 +1,3 @@
-import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
 export const QuestionMarkRoundIcon = (props: CustomIconProps) => {

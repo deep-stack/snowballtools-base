@@ -1,4 +1,4 @@
-import React, { Fragment, ComponentPropsWithoutRef } from 'react';
+import { Fragment, ComponentPropsWithoutRef } from 'react';
 import { stepsTheme, StepsTheme } from './Steps.theme';
 import { Step, StepProps, StepTheme } from './Step';
 

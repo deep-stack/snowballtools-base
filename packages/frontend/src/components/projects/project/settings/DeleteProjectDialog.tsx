@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -12,7 +12,7 @@ import {
   DialogFooter,
   Input,
   Typography,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 
 interface DeleteProjectDialogProp {
@@ -53,21 +53,20 @@ const DeleteProjectDialog = ({
   }, [client, project, handleOpen]);
 
   return (
-    <Dialog open={open} handler={handleOpen} placeholder={''}>
-      <DialogHeader className="flex justify-between" placeholder={''}>
+    <Dialog open={open} handler={handleOpen}>
+      <DialogHeader className="flex justify-between">
         <div>Delete project?</div>
         <Button
           variant="outlined"
           onClick={handleOpen}
           className="mr-1 rounded-3xl"
-          placeholder={''}
         >
           X
         </Button>
       </DialogHeader>
       <form onSubmit={handleSubmit(deleteProjectHandler)}>
-        <DialogBody className="flex flex-col gap-2" placeholder={''}>
-          <Typography variant="paragraph" placeholder={''}>
+        <DialogBody className="flex flex-col gap-2">
+          <Typography variant="paragraph">
             Deleting your project is irreversible. Enter your project’s
             name&nbsp;
             <span className="bg-blue-100 text-blue-700">({project.name})</span>
@@ -75,23 +74,17 @@ const DeleteProjectDialog = ({
           </Typography>
           <Input
             id="input"
-            crossOrigin={undefined}
             {...register('projectName', {
               required: 'Project name is required',
               validate: (value) => value === project.name,
             })}
           />
-          <Typography variant="small" color="red" placeholder={''}>
+          <Typography variant="small" color="red">
             ^ Deleting your project is irreversible.
           </Typography>
         </DialogBody>
-        <DialogFooter className="flex justify-start" placeholder={''}>
-          <Button
-            variant="outlined"
-            onClick={handleOpen}
-            className="mr-1"
-            placeholder={''}
-          >
+        <DialogFooter className="flex justify-start">
+          <Button variant="outlined" onClick={handleOpen} className="mr-1">
             Cancel
           </Button>
           <Button
@@ -99,7 +92,6 @@ const DeleteProjectDialog = ({
             color="red"
             type="submit"
             disabled={!isValid}
-            placeholder={''}
           >
             Yes, Delete project
           </Button>

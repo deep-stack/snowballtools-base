@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { cn } from 'utils/classnames';
 
 interface IconWithFrameProps extends ComponentPropsWithoutRef<'div'> {

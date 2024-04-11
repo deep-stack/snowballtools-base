@@ -1,15 +1,20 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Organization } from 'gql-client';
 
-import { Button, Typography, Input, Option } from '@material-tailwind/react';
+import {
+  Button,
+  Typography,
+  Input,
+  Option,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import DeleteProjectDialog from 'components/projects/project/settings/DeleteProjectDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import AsyncSelect from 'components/shared/AsyncSelect';
-import { OutletContextType } from 'types';
+import { OutletContextType } from '../../../../../types/types';
 import { TransferProjectDialog } from 'components/projects/Dialog/TransferProjectDialog';
 
 const CopyIcon = ({ value }: { value: string }) => {
@@ -121,45 +126,25 @@ const GeneralTabPanel = () => {
           }
         })}
       >
-        <Typography variant="h6" placeholder={''}>
-          Project info
-        </Typography>
-        <Typography
-          variant="small"
-          className="font-medium text-gray-800"
-          placeholder={''}
-        >
+        <Typography variant="h6">Project info</Typography>
+        <Typography variant="small" className="font-medium text-gray-800">
           App name
         </Typography>
         <Input
           variant="outlined"
           // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
-          crossOrigin={undefined}
+
           size="md"
           {...register('appName')}
         />
-        <Typography
-          variant="small"
-          className="font-medium text-gray-800"
-          placeholder={''}
-        >
+        <Typography variant="small" className="font-medium text-gray-800">
           Description (Optional)
         </Typography>
-        <Input
-          variant="outlined"
-          crossOrigin={undefined}
-          size="md"
-          {...register('description')}
-        />
-        <Typography
-          variant="small"
-          className="font-medium text-gray-800"
-          placeholder={''}
-        >
+        <Input variant="outlined" size="md" {...register('description')} />
+        <Typography variant="small" className="font-medium text-gray-800">
           Project ID
         </Typography>
         <Input
-          crossOrigin={undefined}
           variant="outlined"
           value={project.id}
           size="md"
@@ -172,16 +157,13 @@ const GeneralTabPanel = () => {
           size="sm"
           className="mt-1"
           disabled={!updateProjectFormState.isDirty}
-          placeholder={''}
         >
           Save
         </Button>
       </form>
       <div className="mb-1">
-        <Typography variant="h6" placeholder={''}>
-          Transfer project
-        </Typography>
-        <Typography variant="small" placeholder={''}>
+        <Typography variant="h6">Transfer project</Typography>
+        <Typography variant="small">
           Transfer this app to your personal account or a team you are a member
           of.
           <Link to="" className="text-blue-500">
@@ -194,11 +176,7 @@ const GeneralTabPanel = () => {
             setOpenTransferDialog(!openTransferDialog);
           })}
         >
-          <Typography
-            variant="small"
-            className="font-medium text-gray-800"
-            placeholder={''}
-          >
+          <Typography variant="small" className="font-medium text-gray-800">
             Choose team
           </Typography>
           <Controller
@@ -225,7 +203,6 @@ const GeneralTabPanel = () => {
             className="mt-1"
             disabled={!formState.isValid}
             type="submit"
-            placeholder={''}
           >
             Transfer
           </Button>
@@ -240,10 +217,8 @@ const GeneralTabPanel = () => {
         />
       </div>
       <div className="mb-1">
-        <Typography variant="h6" placeholder={''}>
-          Delete project
-        </Typography>
-        <Typography variant="small" placeholder={''}>
+        <Typography variant="h6">Delete project</Typography>
+        <Typography variant="small">
           The project will be permanently deleted, including its deployments and
           domains. This action is irreversible and can not be undone.
         </Typography>
@@ -252,7 +227,6 @@ const GeneralTabPanel = () => {
           size="sm"
           color="red"
           onClick={handleDeleteProjectDialog}
-          placeholder={''}
         >
           ^ Delete project
         </Button>

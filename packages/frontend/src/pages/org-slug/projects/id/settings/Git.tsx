@@ -1,13 +1,18 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import { Button, Input, Switch, Typography } from '@material-tailwind/react';
+import {
+  Button,
+  Input,
+  Switch,
+  Typography,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import WebhookCard from '../../../../../components/projects/project/settings/WebhookCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types';
+import { OutletContextType } from '../../../../../types/types';
 
 type UpdateProdBranchValues = {
   prodBranch: string;
@@ -100,52 +105,43 @@ const GitTabPanel = () => {
   return (
     <>
       <div className="mb-2 p-2">
-        <Typography variant="h6" className="text-black" placeholder={''}>
+        <Typography variant="h6" className="text-black">
           Git repository
         </Typography>
 
         <div className="flex justify-between mt-4">
           <div>
-            <Typography variant="small" placeholder={''}>
-              Pull request comments
-            </Typography>
+            <Typography variant="small">Pull request comments</Typography>
           </div>
           <div>
-            <Switch crossOrigin={undefined} defaultChecked />
+            <Switch defaultChecked />
           </div>
         </div>
 
         <div className="flex justify-between">
           <div>
-            <Typography variant="small" placeholder={''}>
-              Commit comments
-            </Typography>
+            <Typography variant="small">Commit comments</Typography>
           </div>
           <div>
-            <Switch crossOrigin={undefined} />
+            <Switch />
           </div>
         </div>
       </div>
 
       <form onSubmit={handleSubmitProdBranch(updateProdBranchHandler)}>
         <div className="mb-2 p-2">
-          <Typography variant="h6" className="text-black" placeholder={''}>
+          <Typography variant="h6" className="text-black">
             Production branch
           </Typography>
-          <Typography variant="small" placeholder={''}>
+          <Typography variant="small">
             By default, each commit pushed to the{' '}
             <span className="font-bold">{project.prodBranch}</span> branch
             initiates a production deployment. You can opt for a different
             branch for deployment in the settings.
           </Typography>
-          <Typography variant="small" placeholder={''}>
-            Branch name
-          </Typography>
-          <Input
-            crossOrigin={undefined}
-            {...registerProdBranch('prodBranch')}
-          />
-          <Button size="sm" className="mt-1" type="submit" placeholder={''}>
+          <Typography variant="small">Branch name</Typography>
+          <Input {...registerProdBranch('prodBranch')} />
+          <Button size="sm" className="mt-1" type="submit">
             Save
           </Button>
         </div>
@@ -153,25 +149,20 @@ const GitTabPanel = () => {
 
       <form onSubmit={handleSubmitWebhooks(updateWebhooksHandler)}>
         <div className="mb-2 p-2">
-          <Typography variant="h6" className="text-black" placeholder={''}>
+          <Typography variant="h6" className="text-black">
             Deploy webhooks
           </Typography>
-          <Typography variant="small" placeholder={''}>
+          <Typography variant="small">
             Webhooks configured to trigger when there is a change in a
             project&apos;s build or deployment status.
           </Typography>
           <div className="flex gap-1">
             <div className="grow">
-              <Typography variant="small" placeholder={''}>
-                Webhook URL
-              </Typography>
-              <Input
-                crossOrigin={undefined}
-                {...registerWebhooks('webhookUrl')}
-              />
+              <Typography variant="small">Webhook URL</Typography>
+              <Input {...registerWebhooks('webhookUrl')} />
             </div>
             <div className="self-end">
-              <Button size="sm" type="submit" placeholder={''}>
+              <Button size="sm" type="submit">
                 Save
               </Button>
             </div>

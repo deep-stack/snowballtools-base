@@ -1,7 +1,6 @@
 import ConfirmDialog, {
   ConfirmDialogProps,
 } from 'components/shared/ConfirmDialog';
-import React from 'react';
 
 interface CancelDeploymentDialogProps extends ConfirmDialogProps {}
 

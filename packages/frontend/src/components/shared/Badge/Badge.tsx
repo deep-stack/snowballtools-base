@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComponentPropsWithoutRef } from 'react';
 import { BadgeTheme, badgeTheme } from './Badge.theme';
 

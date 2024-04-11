@@ -1,4 +1,4 @@
-import React, { useCallback, ComponentPropsWithoutRef } from 'react';
+import { useCallback, ComponentPropsWithoutRef } from 'react';
 import { stepTheme, StepTheme } from './Step.theme';
 import {
   CheckRoundFilledIcon,

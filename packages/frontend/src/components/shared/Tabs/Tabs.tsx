@@ -1,4 +1,4 @@
-import React, { type ComponentPropsWithoutRef } from 'react';
+import { type ComponentPropsWithoutRef } from 'react';
 import { Root as TabsRoot } from '@radix-ui/react-tabs';
 
 import { tabsTheme } from './Tabs.theme';

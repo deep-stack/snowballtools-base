@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
 
 import { ProjectRepoCard } from 'components/projects/create/ProjectRepoCard';
-import { GitOrgDetails, GitRepositoryDetails } from 'types';
+import { GitOrgDetails, GitRepositoryDetails } from '../../../../types/types';
 import {
   ChevronGrabberHorizontal,
   GithubIcon,

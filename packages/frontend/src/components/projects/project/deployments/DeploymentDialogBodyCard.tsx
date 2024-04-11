@@ -1,4 +1,3 @@
-import React from 'react';
 import { Deployment } from 'gql-client';
 
 import { relativeTimeMs } from 'utils/time';

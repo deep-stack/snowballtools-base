@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { Button } from '@material-tailwind/react';
+import { Button } from '@snowballtools/material-tailwind-react-fork';
 
 import { DeleteWebhookDialog } from 'components/projects/Dialog/DeleteWebhookDialog';
 
@@ -22,7 +22,6 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
             navigator.clipboard.writeText(webhookUrl);
             toast.success('Copied to clipboard');
           }}
-          placeholder={''}
         >
           C
         </Button>
@@ -32,7 +31,6 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
           onClick={() => {
             setDeleteDialogOpen(true);
           }}
-          placeholder={''}
         >
           X
         </Button>

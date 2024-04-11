@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DialogContentProps } from '@radix-ui/react-dialog';
 import { Close, Content, Overlay, Portal } from '@radix-ui/react-dialog';
 import { Ref, forwardRef, type PropsWithChildren } from 'react';

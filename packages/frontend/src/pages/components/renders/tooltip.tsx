@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from 'components/shared/Button';
 import { Tooltip } from 'components/shared/Tooltip';
 import { ContentProps } from 'components/shared/Tooltip/TooltipContent';

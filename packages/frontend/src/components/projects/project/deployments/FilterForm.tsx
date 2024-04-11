@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Input } from 'components/shared/Input';
 import {
@@ -10,8 +10,8 @@ import {
   WarningTriangleIcon,
 } from 'components/shared/CustomIcon';
 import { DatePicker } from 'components/shared/DatePicker';
-import { Value } from 'react-calendar/dist/cjs/shared/types';
 import { Select, SelectOption } from 'components/shared/Select';
+import { Value } from 'types/vendor';
 
 export enum StatusOptions {
   ALL_STATUS = 'All status',

@@ -1,8 +1,10 @@
-import React from 'react';
-
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Typography, Alert, Button } from '@material-tailwind/react';
+import {
+  Typography,
+  Alert,
+  Button,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from '../../../../../../../context/GQLClientContext';
 
@@ -39,10 +41,8 @@ const Config = () => {
   return (
     <div className="flex flex-col gap-6 w-full">
       <div>
-        <Typography variant="h5" placeholder={''}>
-          Configure DNS
-        </Typography>
-        <Typography variant="small" placeholder={''}>
+        <Typography variant="h5">Configure DNS</Typography>
+        <Typography variant="small">
           Add the following records to your domain.&nbsp;
           <a href="https://www.namecheap.com/" target="_blank" rel="noreferrer">
             <span className="underline">Go to NameCheap</span> ^
@@ -74,12 +74,7 @@ const Config = () => {
         <i>^</i>It can take up to 48 hours for these updates to reflect
         globally.
       </Alert>
-      <Button
-        className="w-fit"
-        color="blue"
-        onClick={handleSubmitDomain}
-        placeholder={''}
-      >
+      <Button className="w-fit" color="blue" onClick={handleSubmitDomain}>
         Finish <i>{'>'}</i>
       </Button>
     </div>

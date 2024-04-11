@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 import { modalTheme } from 'components/shared/Modal/Modal.theme';
 

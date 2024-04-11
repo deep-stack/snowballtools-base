@@ -1,7 +1,7 @@
 import { cn } from 'utils/classnames';
 import { Tooltip, TooltipProps } from 'components/shared/Tooltip';
 import { debounce } from 'lodash';
-import React, {
+import {
   ComponentPropsWithRef,
   PropsWithChildren,
   useRef,

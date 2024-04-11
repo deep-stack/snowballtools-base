@@ -1,9 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { EnvironmentVariable } from 'gql-client';
 
-import { IconButton, Input, Typography } from '@material-tailwind/react';
+import {
+  IconButton,
+  Input,
+  Typography,
+} from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteVariableDialog } from 'components/projects/Dialog/DeleteVariableDialog';
@@ -84,21 +88,12 @@ const EditEnvironmentVariableRow = ({
     <>
       <div className="flex gap-1 p-2">
         <div>
-          <Typography variant="small" placeholder={''}>
-            Key
-          </Typography>
-          <Input
-            crossOrigin={undefined}
-            disabled={!edit}
-            {...register(`key`)}
-          />
+          <Typography variant="small">Key</Typography>
+          <Input disabled={!edit} {...register(`key`)} />
         </div>
         <div>
-          <Typography variant="small" placeholder={''}>
-            Value
-          </Typography>
+          <Typography variant="small">Value</Typography>
           <Input
-            crossOrigin={undefined}
             disabled={!edit}
             type={showPassword ? 'text' : 'password'}
             icon={
@@ -118,7 +113,6 @@ const EditEnvironmentVariableRow = ({
               <IconButton
                 onClick={handleSubmit(updateEnvironmentVariableHandler)}
                 size="sm"
-                placeholder={''}
               >
                 {'S'}
               </IconButton>
@@ -130,7 +124,6 @@ const EditEnvironmentVariableRow = ({
                   reset();
                   setEdit((preVal) => !preVal);
                 }}
-                placeholder={''}
               >
                 {'C'}
               </IconButton>
@@ -144,7 +137,6 @@ const EditEnvironmentVariableRow = ({
                 onClick={() => {
                   setEdit((preVal) => !preVal);
                 }}
-                placeholder={''}
               >
                 {'E'}
               </IconButton>
@@ -153,7 +145,6 @@ const EditEnvironmentVariableRow = ({
               <IconButton
                 size="sm"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
-                placeholder={''}
               >
                 {'D'}
               </IconButton>

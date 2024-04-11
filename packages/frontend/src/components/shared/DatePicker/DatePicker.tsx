@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Input, InputProps } from 'components/shared/Input';
 import * as Popover from '@radix-ui/react-popover';
 import { datePickerTheme } from './DatePicker.theme';
@@ -7,8 +7,8 @@ import {
   CalendarIcon,
   ChevronGrabberHorizontal,
 } from 'components/shared/CustomIcon';
-import { Value } from 'react-calendar/dist/cjs/shared/types';
 import { format } from 'date-fns';
+import { Value } from 'types/vendor';
 
 export interface DatePickerProps
   extends Omit<InputProps, 'onChange' | 'value'> {

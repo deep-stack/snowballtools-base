@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { ComponentPropsWithoutRef } from 'react';
 import { InputTheme, inputTheme } from './Input.theme';
 import { WarningIcon } from 'components/shared/CustomIcon';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Checkbox } from 'components/shared/Checkbox';
 
 export const renderCheckbox = () => {

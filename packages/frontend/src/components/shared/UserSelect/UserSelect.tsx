@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  ComponentPropsWithoutRef,
-  useRef,
-  useEffect,
-} from 'react';
+import { useState, ComponentPropsWithoutRef, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelect } from 'downshift';
 import { UserSelectTheme, userSelectTheme } from './UserSelect.theme';

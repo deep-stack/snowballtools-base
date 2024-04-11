@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Deployment, Domain, Environment, Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
@@ -15,7 +15,7 @@ import {
   MenuHandler,
   MenuItem,
   MenuList,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 import { ComponentPropsWithRef } from 'react';
 import AssignDomainDialog from './AssignDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
@@ -96,11 +96,10 @@ export const DeploymentMenu = ({
               aria-label="Toggle Menu"
             />
           </MenuHandler>
-          <MenuList className="text-elements-high-em" placeholder={''}>
+          <MenuList className="text-elements-high-em">
             <MenuItem
               className="hover:bg-base-bg-emphasized"
               disabled={!Boolean(deployment.url)}
-              placeholder={''}
             >
               <a
                 className="flex items-center gap-3"
@@ -114,7 +113,6 @@ export const DeploymentMenu = ({
             <MenuItem
               className="hover:bg-base-bg-emphasized flex items-center gap-3"
               onClick={() => setAssignDomainDialog(!assignDomainDialog)}
-              placeholder={''}
             >
               <GlobeIcon /> Assign domain
             </MenuItem>
@@ -122,7 +120,6 @@ export const DeploymentMenu = ({
               className="hover:bg-base-bg-emphasized flex items-center gap-3"
               onClick={() => setChangeToProduction(!changeToProduction)}
               disabled={!(deployment.environment !== Environment.Production)}
-              placeholder={''}
             >
               <RocketIcon /> Change to production
             </MenuItem>
@@ -136,7 +133,6 @@ export const DeploymentMenu = ({
                   deployment.isCurrent
                 )
               }
-              placeholder={''}
             >
               <RefreshIcon /> Redeploy to production
             </MenuItem>
@@ -148,7 +144,6 @@ export const DeploymentMenu = ({
                 deployment.environment !== Environment.Production ||
                 !Boolean(currentDeployment)
               }
-              placeholder={''}
             >
               <UndoIcon /> Rollback to this version
             </MenuItem>
