@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Tabs } from 'components/shared/Tabs';
+import { Tabs } from "components/shared/Tabs";
 
 const ConnectAccountTabPanel: React.FC = () => {
   return (
@@ -11,8 +11,8 @@ const ConnectAccountTabPanel: React.FC = () => {
     >
       <Tabs.List>
         {[
-          { title: 'Import a repository' },
-          { title: 'Start with a template' },
+          { title: "Import a repository" },
+          { title: "Start with a template" },
         ].map(({ title }, index) => (
           <Tabs.Trigger value={title} key={index}>
             {title}

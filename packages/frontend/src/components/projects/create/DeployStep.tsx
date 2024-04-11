@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { Collapse } from '@material-tailwind/react';
+import { Collapse } from "@material-tailwind/react";
 
-import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
-import FormatMillisecond from '../../FormatMilliSecond';
-import processLogs from '../../../assets/process-logs.json';
-import { cn } from 'utils/classnames';
+import { Stopwatch, setStopWatchOffset } from "../../StopWatch";
+import FormatMillisecond from "../../FormatMilliSecond";
+import processLogs from "../../../assets/process-logs.json";
+import { cn } from "utils/classnames";
 import {
   CheckRoundFilledIcon,
   ClockOutlineIcon,
@@ -13,15 +13,15 @@ import {
   LoaderIcon,
   MinusCircleIcon,
   PlusIcon,
-} from 'components/shared/CustomIcon';
-import { Button } from 'components/shared/Button';
-import { useToast } from 'components/shared/Toast';
-import { useIntersectionObserver } from 'usehooks-ts';
+} from "components/shared/CustomIcon";
+import { Button } from "components/shared/Button";
+import { useToast } from "components/shared/Toast";
+import { useIntersectionObserver } from "usehooks-ts";
 
 enum DeployStatus {
-  PROCESSING = 'progress',
-  COMPLETE = 'complete',
-  NOT_STARTED = 'notStarted',
+  PROCESSING = "progress",
+  COMPLETE = "complete",
+  NOT_STARTED = "notStarted",
 }
 
 interface DeployStepsProps {
@@ -52,8 +52,8 @@ const DeployStep = ({
       {/* Collapisble trigger */}
       <button
         className={cn(
-          'flex justify-between w-full py-5 gap-2',
-          disableCollapse && 'cursor-auto',
+          "flex justify-between w-full py-5 gap-2",
+          disableCollapse && "cursor-auto",
         )}
         tabIndex={disableCollapse ? -1 : undefined}
         onClick={() => {
@@ -62,7 +62,7 @@ const DeployStep = ({
           }
         }}
       >
-        <div className={cn('grow flex items-center gap-3')}>
+        <div className={cn("grow flex items-center gap-3")}>
           {/* Icon */}
           <div className="w-6 h-6 grid place-content-center">
             {status === DeployStatus.NOT_STARTED && (
@@ -84,8 +84,8 @@ const DeployStep = ({
           {/* Title */}
           <span
             className={cn(
-              'text-left text-sm md:text-base',
-              status === DeployStatus.PROCESSING && 'text-elements-link',
+              "text-left text-sm md:text-base",
+              status === DeployStatus.PROCESSING && "text-elements-link",
             )}
           >
             {title}
@@ -107,7 +107,7 @@ const DeployStep = ({
                 size={15}
               />
             </div>
-            <FormatMillisecond time={Number(processTime)} />{' '}
+            <FormatMillisecond time={Number(processTime)} />{" "}
           </div>
         )}
       </button>
@@ -133,15 +133,15 @@ const DeployStep = ({
           )}
 
           {/* Copy log button */}
-          <div className={cn('sticky bottom-4 left-1/2 flex justify-center')}>
+          <div className={cn("sticky bottom-4 left-1/2 flex justify-center")}>
             <Button
               size="xs"
               onClick={() => {
-                navigator.clipboard.writeText(processLogs.join('\n'));
+                navigator.clipboard.writeText(processLogs.join("\n"));
                 toast({
-                  title: 'Logs copied',
-                  variant: 'success',
-                  id: 'logs',
+                  title: "Logs copied",
+                  variant: "success",
+                  id: "logs",
                   onDismiss: dismiss,
                 });
               }}

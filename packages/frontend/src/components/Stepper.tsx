@@ -1,9 +1,9 @@
-import React from 'react';
-import { StepperNav } from 'vertical-stepper-nav';
+import React from "react";
+import { StepperNav } from "./VerticalStepper";
 
-const COLOR_COMPLETED = '#059669';
-const COLOR_ACTIVE = '#CFE6FC';
-const COLOR_NOT_STARTED = '#F1F5F9';
+const COLOR_COMPLETED = "#059669";
+const COLOR_ACTIVE = "#CFE6FC";
+const COLOR_NOT_STARTED = "#F1F5F9";
 
 interface StepperValue {
   step: number;
@@ -25,8 +25,8 @@ const Stepper = ({ activeStep, stepperValues }: StepperProps) => {
             <div
               className={`text-sm ${
                 activeStep === stepperValue.step
-                  ? 'text-black font-semibold'
-                  : 'text-gray-600'
+                  ? "text-black font-semibold"
+                  : "text-gray-600"
               }`}
             >
               {stepperValue.label}

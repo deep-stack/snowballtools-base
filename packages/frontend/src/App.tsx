@@ -1,51 +1,51 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Projects from './pages/org-slug';
-import Settings from './pages/org-slug/Settings';
+import Projects from "./pages/org-slug";
+import Settings from "./pages/org-slug/Settings";
 import {
   projectsRoutesWithSearch,
   projectsRoutesWithoutSearch,
-} from './pages/org-slug/projects/routes';
-import ProjectSearchLayout from './layouts/ProjectSearch';
-import Index from './pages';
-import Login from './pages/Login';
-import { DashboardLayout } from 'pages/org-slug/layout';
+} from "./pages/org-slug/projects/routes";
+import ProjectSearchLayout from "./layouts/ProjectSearch";
+import Index from "./pages";
+import Login from "./pages/Login";
+import { DashboardLayout } from "./pages/org-slug/layout";
 
 const router = createBrowserRouter([
   {
-    path: ':orgSlug',
+    path: ":orgSlug",
     element: <DashboardLayout />,
     children: [
       {
         element: <ProjectSearchLayout />,
         children: [
           {
-            path: '',
+            path: "",
             element: <Projects />,
           },
           {
-            path: 'projects',
+            path: "projects",
             children: projectsRoutesWithSearch,
           },
         ],
       },
       {
-        path: 'settings',
+        path: "settings",
         element: <Settings />,
       },
       {
-        path: 'projects',
+        path: "projects",
         children: projectsRoutesWithoutSearch,
       },
     ],
   },
   {
-    path: '/',
+    path: "/",
     element: <Index />,
   },
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
 ]);

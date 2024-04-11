@@ -1,28 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import assert from 'assert';
-import { GQLClient } from 'gql-client';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import assert from "assert";
+import { GQLClient } from "gql-client";
 
-import { ThemeProvider } from '@material-tailwind/react';
+import { ThemeProvider } from "@material-tailwind/react";
 
-import './index.css';
-import '@fontsource/inter';
-import '@fontsource-variable/jetbrains-mono';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { GQLClientProvider } from './context/GQLClientContext';
-import { SERVER_GQL_PATH } from './constants';
-import { Toaster } from 'components/shared/Toast';
-import Web3ModalProvider from './context/Web3ModalProvider';
+import "./index.css";
+import "@fontsource/inter";
+import "@fontsource-variable/jetbrains-mono";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { GQLClientProvider } from "./context/GQLClientContext";
+import { SERVER_GQL_PATH } from "./constants";
+import { Toaster } from "components/shared/Toast";
+import Web3ModalProvider from "./context/Web3ModalProvider";
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
+  document.getElementById("root") as HTMLElement,
 );
 
 assert(
-  process.env.REACT_APP_SERVER_URL,
-  'REACT_APP_SERVER_URL is not set in env',
+  import.meta.env.VITE_SERVER_URL,
+  "REACT_APP_SERVER_URL is not set in env",
 );
-const gqlEndpoint = `${process.env.REACT_APP_SERVER_URL}/${SERVER_GQL_PATH}`;
+const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 
