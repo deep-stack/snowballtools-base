@@ -6,8 +6,8 @@ record:
   dns: test
   config:
     env:
-      CERC_TEST_WEBAPP_CONFIG1="this string"
-      CERC_TEST_WEBAPP_CONFIG2="this different string"
+      CERC_TEST_WEBAPP_CONFIG1="deployment test config 1"
+      CERC_TEST_WEBAPP_CONFIG2="deployment test config 2"
       CERC_WEBAPP_DEBUG=0
   meta:
     note: Deployment test @ Thu 11 Apr 2024 07:29:19 AM UTC
