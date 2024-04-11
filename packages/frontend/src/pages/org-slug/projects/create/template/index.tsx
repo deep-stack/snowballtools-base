@@ -26,7 +26,7 @@ type SubmitRepoValues = {
 };
 
 const CreateRepo = () => {
-  const { octokit } = useOctokit();
+  const { octokit, isAuth } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
 
@@ -114,8 +114,11 @@ const CreateRepo = () => {
       }
     };
 
-    fetchUserAndOrgs();
-  }, [octokit]);
+    // TODO: Implement protected routes for GitHub auth routes
+    if (isAuth) {
+      fetchUserAndOrgs();
+    }
+  }, [octokit, isAuth]);
 
   const { handleSubmit, control, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
