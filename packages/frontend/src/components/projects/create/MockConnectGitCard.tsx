@@ -74,12 +74,12 @@ export const MockConnectGitCard = () => {
       return (
         <div className="flex flex-col gap-2 relative z-0">
           {IMPORT_CONTENT.map((repo, index) => (
-            <>
-              <MockProjectCard key={index} {...repo} />
+            <React.Fragment key={index}>
+              <MockProjectCard {...repo} />
               {index !== IMPORT_CONTENT.length - 1 && (
                 <div className="border-b border-base-border" />
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       );

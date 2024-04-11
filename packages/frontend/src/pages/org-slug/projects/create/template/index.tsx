@@ -104,17 +104,22 @@ const CreateRepo = () => {
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      const user = await octokit?.rest.users.getAuthenticated();
-      const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
+      try {
+        const user = await octokit?.rest.users.getAuthenticated();
+        const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
 
-      if (user && orgs) {
-        const orgsLoginArr = orgs.data.map((org) => org.login);
+        if (user && orgs) {
+          const orgsLoginArr = orgs.data.map((org) => org.login);
 
-        setGitAccounts([user.data.login, ...orgsLoginArr]);
+          setGitAccounts([user.data.login, ...orgsLoginArr]);
+        }
+      } catch (error) {
+        // Error handled by octokit error hook interceptor in Octokit context
+        console.error(error);
+        return;
       }
     };
 
-    // TODO: Implement protected routes for GitHub auth routes
     if (isAuth) {
       fetchUserAndOrgs();
     }
