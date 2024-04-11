@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Octokit } from 'octokit';
 import assert from 'assert';
 import { useDebounce } from 'usehooks-ts';
 
@@ -14,20 +13,18 @@ import {
 import { Select, SelectOption } from 'components/shared/Select';
 import { Input } from 'components/shared/Input';
 import { Button } from 'components/shared/Button';
+import { useOctokit } from 'context/OctokitContext';
 
 const DEFAULT_SEARCHED_REPO = '';
 const REPOS_PER_PAGE = 5;
 
-interface RepositoryListProps {
-  octokit: Octokit;
-}
-
-export const RepositoryList = ({ octokit }: RepositoryListProps) => {
+export const RepositoryList = () => {
   const [searchedRepo, setSearchedRepo] = useState(DEFAULT_SEARCHED_REPO);
   const [selectedAccount, setSelectedAccount] = useState<SelectOption>();
   const [orgs, setOrgs] = useState<GitOrgDetails[]>([]);
   // TODO: Add new type for Git user when required
   const [gitUser, setGitUser] = useState<GitOrgDetails>();
+  const { octokit, isAuth } = useOctokit();
 
   const [repositoryDetails, setRepositoryDetails] = useState<
     GitRepositoryDetails[]
@@ -35,15 +32,23 @@ export const RepositoryList = ({ octokit }: RepositoryListProps) => {
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      const user = await octokit.rest.users.getAuthenticated();
-      const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
-      setOrgs(orgs.data);
-      setGitUser(user.data);
-      setSelectedAccount({ label: user.data.login, value: user.data.login });
+      try {
+        const user = await octokit.rest.users.getAuthenticated();
+        const orgs = await octokit.rest.orgs.listForAuthenticatedUser();
+        setOrgs(orgs.data);
+        setGitUser(user.data);
+        setSelectedAccount({ label: user.data.login, value: user.data.login });
+      } catch (error) {
+        // Error handled by octokit error hook interceptor in Octokit context
+        console.error(error);
+        return;
+      }
     };
 
-    fetchUserAndOrgs();
-  }, [octokit]);
+    if (isAuth) {
+      fetchUserAndOrgs();
+    }
+  }, [octokit, isAuth]);
 
   const debouncedSearchedRepo = useDebounce<string>(searchedRepo, 500);
 

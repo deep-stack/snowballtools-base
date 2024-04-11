@@ -31,7 +31,7 @@ const NewProject = () => {
       <Heading as="h3" className="font-medium text-lg mt-10 pl-1 mb-3">
         Import a repository
       </Heading>
-      <RepositoryList octokit={octokit} />
+      <RepositoryList />
     </>
   ) : (
     <ConnectAccount onAuth={updateAuth} />

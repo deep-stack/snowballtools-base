@@ -26,7 +26,7 @@ type SubmitRepoValues = {
 };
 
 const CreateRepo = () => {
-  const { octokit } = useOctokit();
+  const { octokit, isAuth } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
 
@@ -104,18 +104,26 @@ const CreateRepo = () => {
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      const user = await octokit?.rest.users.getAuthenticated();
-      const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
+      try {
+        const user = await octokit?.rest.users.getAuthenticated();
+        const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
 
-      if (user && orgs) {
-        const orgsLoginArr = orgs.data.map((org) => org.login);
+        if (user && orgs) {
+          const orgsLoginArr = orgs.data.map((org) => org.login);
 
-        setGitAccounts([user.data.login, ...orgsLoginArr]);
+          setGitAccounts([user.data.login, ...orgsLoginArr]);
+        }
+      } catch (error) {
+        // Error handled by octokit error hook interceptor in Octokit context
+        console.error(error);
+        return;
       }
     };
 
-    fetchUserAndOrgs();
-  }, [octokit]);
+    if (isAuth) {
+      fetchUserAndOrgs();
+    }
+  }, [octokit, isAuth]);
 
   const { handleSubmit, control, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
