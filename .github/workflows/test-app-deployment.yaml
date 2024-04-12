@@ -1,4 +1,4 @@
-name: Test webapp deployment flow
+name: Test webapp deployment and undeployment flow
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Test webapp deployment
-        run: ./packages/deployer/test/test-webapp-deployment.sh
+        run: ./packages/deployer/test/test-webapp-deployment-undeployment.sh
