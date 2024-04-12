@@ -97,7 +97,7 @@ echo $DEPLOYMENT_REQUEST_ID
 
 # Deployment checks
 RETRY_INTERVAL=30
-MAX_RETRIES=10
+MAX_RETRIES=20
 
 # Check that a ApplicationDeploymentRecord is published
 retry_count=0
@@ -163,7 +163,7 @@ echo $REMOVAL_REQUEST_ID
 # Check that a ApplicationDeploymentRemovalRecord is published
 retry_count=0
 while true; do
-  removal_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRemovalRecord --all --name "$APP_NAME" request $REMOVAL_REQUEST_ID)
+  removal_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRemovalRecord --all request $REMOVAL_REQUEST_ID)
   len_removal_records=$(echo $removal_records_response | jq 'length')
 
   # Check if number of records returned is 0
@@ -180,7 +180,7 @@ while true; do
     fi
   else
     echo "ApplicationDeploymentRemovalRecord found"
-    REMOVAL_RECORD_ID=$(echo $deployment_records_response | jq -r '.[0].id')
+    REMOVAL_RECORD_ID=$(echo $removal_records_response | jq -r '.[0].id')
     echo $REMOVAL_RECORD_ID
     break
   fi
