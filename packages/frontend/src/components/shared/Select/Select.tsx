@@ -219,6 +219,7 @@ export const Select = ({
     getItemProps,
     openMenu,
   } = useCombobox({
+    defaultInputValue: (options[0] as unknown as SelectOption)?.value,
     items: filteredItems,
     selectedItem: multiple ? null : (value as SelectOption) || null,
     // @ts-expect-error – there are two params but we don't need the second one
