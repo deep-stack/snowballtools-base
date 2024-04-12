@@ -110,7 +110,7 @@ while true; do
     # Check if retries are exhausted
     if [ $retry_count -eq $MAX_RETRIES ]; then
       echo "Retries exhausted"
-      echo "ApplicationDeploymentRecord for deployment request $DEPLOYMENT_REQUEST_ID not found"
+      echo "ApplicationDeploymentRecord for deployment request $DEPLOYMENT_REQUEST_ID not found, exiting"
       exit 1
     else
       echo "ApplicationDeploymentRecord not found, retrying in $RETRY_INTERVAL sec..."
@@ -137,13 +137,27 @@ fi
 
 # Check if url present in ApplicationDeploymentRecord active
 fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
-url_response=$(curl -s -o /dev/null -I -w "%{http_code}" "$fetched_url")
-if [ "$url_response" = "200" ]; then
-  echo "Deployment URL $fetched_url is active"
-else
-  echo "Deployment URL $fetched_url is not active, received code $url_response"
-  exit 1
-fi
+
+retry_count=0
+max_retries=10
+retry_interval=5
+while true; do
+  url_response=$(curl -s -o /dev/null -I -w "%{http_code}" $fetched_url)
+  if [ "$url_response" = "200" ]; then
+    echo "Deployment URL $fetched_url is active"
+    break
+  else
+    if [ $retry_count -eq $max_retries ]; then
+      echo "Retries exhausted"
+      echo "Deployment URL $fetched_url is not active, exiting"
+      exit 1
+    else
+      echo "Deployment URL $fetched_url is not active, received code $url_response, retrying in $retry_interval sec..."
+      sleep $retry_interval
+      retry_count=$((retry_count+1))
+    fi
+  fi
+done
 
 # Generate application-deployment-request.yml
 REMOVAL_REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-removal-request.yml
@@ -187,11 +201,25 @@ while true; do
 done
 
 # Check if the application url is down after deployment removal
-fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
-url_response=$(curl -s -o /dev/null -I -w "%{http_code}" "$fetched_url")
-if [ "$url_response" = "200" ]; then
-  echo "Deployment URL $fetched_url is still active, received code $url_response"
-  exit 1
-else
-  echo "Deployment URL $fetched_url is down, received code $url_response"
-fi
+retry_count=0
+max_retries=10
+retry_interval=5
+while true; do
+  url_response=$(curl -s -o /dev/null -I -w "%{http_code}" $fetched_url)
+  if [ "$url_response" = "404" ]; then
+    echo "Deployment URL $fetched_url is down"
+    break
+  else
+    if [ $retry_count -eq $max_retries ]; then
+      echo "Retries exhausted"
+      echo "Deployment URL $fetched_url is still active, exiting"
+      exit 1
+    else
+      echo "Deployment URL $fetched_url is still active, received code $url_response, retrying in $retry_interval sec..."
+      sleep $retry_interval
+      retry_count=$((retry_count+1))
+    fi
+  fi
+done
+
+echo "Test successful"
