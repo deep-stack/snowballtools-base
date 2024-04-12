@@ -123,10 +123,11 @@ while true; do
   fi
 done
 
-fetched_application_record_id=$(echo $deployment_records_response | jq -r '.[0].attributes.application')
-fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
+DEPLOYMENT_RECORD_ID=$(echo $deployment_records_response | jq -r '.[0].id')
+echo $DEPLOYMENT_RECORD_ID
 
 # Check if ApplicationDeploymentRecord has the correct record id
+fetched_application_record_id=$(echo $deployment_records_response | jq -r '.[0].attributes.application')
 if [ "$fetched_application_record_id" = "$RECORD_ID" ]; then
   echo "ApplicationRecord id matched"
 else
@@ -135,10 +136,62 @@ else
 fi
 
 # Check if url present in ApplicationDeploymentRecord active
+fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
 url_response=$(curl -s -o /dev/null -I -w "%{http_code}" "$fetched_url")
 if [ "$url_response" = "200" ]; then
   echo "Deployment URL $fetched_url is active"
 else
   echo "Deployment URL $fetched_url is not active, received code $url_response"
   exit 1
+fi
+
+# Generate application-deployment-request.yml
+REMOVAL_REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-request.yml
+
+cat > $REMOVAL_REQUEST_RECORD_FILE <<EOF
+record:
+  deployment: $DEPLOYMENT_RECORD_ID
+  type: ApplicationDeploymentRemovalRequest
+  version: 1.0.0
+EOF
+
+sleep 2
+REMOVAL_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $REMOVAL_REQUEST_RECORD_FILE | jq -r '.id')
+echo "ApplicationDeploymentRemovalRequest published"
+echo $REMOVAL_REQUEST_ID
+
+# Check that a ApplicationDeploymentRemovalRecord is published
+retry_count=0
+while true; do
+  removal_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRemovalRecord --all --name "$APP_NAME" request $REMOVAL_REQUEST_ID)
+  len_removal_records=$(echo $removal_records_response | jq 'length')
+
+  # Check if number of records returned is 0
+  if [ $len_removal_records -eq 0 ]; then
+    # Check if retries are exhausted
+    if [ $retry_count -eq $MAX_RETRIES ]; then
+      echo "Retries exhausted"
+      echo "ApplicationDeploymentRemovalRecord for deployment removal request $REMOVAL_REQUEST_ID not found"
+      exit 1
+    else
+      echo "ApplicationDeploymentRemovalRecord not found, retrying in $RETRY_INTERVAL sec..."
+      sleep $RETRY_INTERVAL
+      retry_count=$((retry_count+1))
+    fi
+  else
+    echo "ApplicationDeploymentRemovalRecord found"
+    REMOVAL_RECORD_ID=$(echo $deployment_records_response | jq -r '.[0].id')
+    echo $REMOVAL_RECORD_ID
+    break
+  fi
+done
+
+# Check if the application url is down after deployment removal
+fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
+url_response=$(curl -s -o /dev/null -I -w "%{http_code}" "$fetched_url")
+if [ "$url_response" = "200" ]; then
+  echo "Deployment URL $fetched_url is still active, received code $url_response"
+  exit 1
+else
+  echo "Deployment URL $fetched_url is down, received code $url_response"
 fi
