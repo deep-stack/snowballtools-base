@@ -19,5 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
+      - name: Build libs
+        run: yarn workspace gql-client run build
       - name: Linter check
         run: yarn lint
