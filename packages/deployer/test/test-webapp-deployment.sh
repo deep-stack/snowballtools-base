@@ -52,12 +52,12 @@ record:
   version: '1.0.0'
   name: $APP_NAME@$PACKAGE_VERSION
   application: crn://snowballtools/applications/$APP_NAME@$PACKAGE_VERSION
-  dns: test
+  dns: deployment-ci-test
   config:
     env:
-      CERC_TEST_WEBAPP_CONFIG1="this string"
-      CERC_TEST_WEBAPP_CONFIG2="this different string"
-      CERC_WEBAPP_DEBUG=0
+      CERC_TEST_WEBAPP_CONFIG1: "deployment test config 1"
+      CERC_TEST_WEBAPP_CONFIG2: "deployment test config 2"
+      CERC_WEBAPP_DEBUG: 0
   meta:
     note: Deployment test @ $CURRENT_DATE_TIME
     repository: "$REPO_URL"
@@ -146,7 +146,7 @@ else
 fi
 
 # Generate application-deployment-request.yml
-REMOVAL_REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-request.yml
+REMOVAL_REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-removal-request.yml
 
 cat > $REMOVAL_REQUEST_RECORD_FILE <<EOF
 record:
