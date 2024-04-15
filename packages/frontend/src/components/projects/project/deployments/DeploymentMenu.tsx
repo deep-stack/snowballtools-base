@@ -166,7 +166,6 @@ export const DeploymentMenu = ({
                 deployment.environment !== Environment.Production ||
                 !Boolean(currentDeployment)
               }
-              placeholder={''}
             >
               <CrossCircleIcon /> Delete deployment
             </MenuItem>

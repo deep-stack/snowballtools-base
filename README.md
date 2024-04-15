@@ -99,25 +99,13 @@ Let us assume the following domains for backend and frontend
         - Get the private key and set `registryConfig.privateKey` in backend [config file](packages/backend/environments/local.toml)
       
           ```bash
-          laconic-so --stack fixturenet-laconic-loaded deploy exec laconicd "laconicd keys export mykey --unarmored-hex --unsafe"
+          laconic-so deployment --dir laconic-loaded-deployment exec laconicd "laconicd keys export mykey --unarmored-hex --unsafe"
           # WARNING: The private key will be exported as an unarmored hexadecimal string. USE AT YOUR OWN RISK. Continue? [y/N]: y
           # 754cca7b4b729a99d156913aea95366411d072856666e95ba09ef6c664357d81
           ```
-      
-        - Get the REST and GQL endpoint ports of Laconicd and replace the ports for `registryConfig.restEndpoint` and `registryConfig.gqlEndpoint` in backend [config file](packages/backend/environments/local.toml)
-      
-          ```bash
-          # For registryConfig.restEndpoint
-          laconic-so --stack fixturenet-laconic-loaded deploy port laconicd 1317
-          # 0.0.0.0:32777
-      
-          # For registryConfig.gqlEndpoint
-          laconic-so --stack fixturenet-laconic-loaded deploy port laconicd 9473
-          # 0.0.0.0:32771
-          ```
-      
+
         - Set authority in `registryConfig.authority` in backend [config file](packages/backend/environments/local.toml)
-      
+
         - Run the script to create bond, reserve the authority and set authority bond
       
           ```bash
