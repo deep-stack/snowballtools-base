@@ -38,6 +38,13 @@ export interface AppDeploymentRecordAttributes {
   version: string;
 }
 
+export interface AppDeploymentRemovalRecordAttributes {
+  deployment: string;
+  request: string;
+  type: "ApplicationDeploymentRemovalRecord";
+  version: string;
+}
+
 interface RegistryRecord {
   id: string;
   names: string[] | null;
@@ -49,4 +56,8 @@ interface RegistryRecord {
 
 export interface AppDeploymentRecord extends RegistryRecord {
   attributes: AppDeploymentRecordAttributes;
+}
+
+export interface AppDeploymentRemovalRecord extends RegistryRecord {
+  attributes: AppDeploymentRemovalRecordAttributes;
 }

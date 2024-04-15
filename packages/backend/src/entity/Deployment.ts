@@ -12,7 +12,7 @@ import {
 import { Project } from './Project';
 import { Domain } from './Domain';
 import { User } from './User';
-import { AppDeploymentRecordAttributes } from '../types';
+import { AppDeploymentRecordAttributes, AppDeploymentRemovalRecordAttributes } from '../types';
 
 export enum Environment {
   Production = 'Production',
@@ -24,6 +24,7 @@ export enum DeploymentStatus {
   Building = 'Building',
   Ready = 'Ready',
   Error = 'Error',
+  Deleting = 'Deleting',
 }
 
 export interface ApplicationDeploymentRequest {
@@ -33,6 +34,12 @@ export interface ApplicationDeploymentRequest {
   application: string;
   config: string;
   meta: string;
+}
+
+export interface ApplicationDeploymentRemovalRequest {
+  type: string;
+  version: string;
+  deployment: string;
 }
 
 export interface ApplicationDeploymentRemovalRequest {
@@ -104,6 +111,18 @@ export class Deployment {
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRecordData!: AppDeploymentRecordAttributes | null;
+  
+  @Column('varchar', { nullable: true })
+    applicationDeploymentRemovalRequestId!: string | null;
+
+  @Column('simple-json', { nullable: true })
+    applicationDeploymentRemovalRequestData!: ApplicationDeploymentRemovalRequest | null;
+  
+  @Column('varchar', { nullable: true })
+    applicationDeploymentRemovalRecordId!: string | null;
+
+  @Column('simple-json', { nullable: true })
+    applicationDeploymentRemovalRecordData!: AppDeploymentRemovalRecordAttributes | null;
 
   @Column({
     enum: Environment

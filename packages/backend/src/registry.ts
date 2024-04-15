@@ -12,7 +12,7 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, PackageJSON } from './types';
 import { sleep } from './utils';
 
 const log = debug('snowball:registry');
@@ -21,6 +21,7 @@ const APP_RECORD_TYPE = 'ApplicationRecord';
 const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
 const APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE = 'ApplicationDeploymentRemovalRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
+const APP_DEPLOYMENT_REMOVAL_RECORD_TYPE = 'ApplicationDeploymentRemovalRecord';
 const SLEEP_DURATION = 1000;
 
 // TODO: Move registry code to laconic-sdk/watcher-ts
@@ -227,6 +228,30 @@ export class Registry {
         (deployment) =>
           deployment.applicationRecordId === record.attributes.application &&
           record.attributes.url.includes(deployment.id)
+      )
+    );
+  }
+
+  /**
+   * Fetch ApplicationDeploymentRemovalRecords for deployments
+   */
+  async getDeploymentRemovalRecords (
+    deployments: Deployment[]
+  ): Promise<AppDeploymentRemovalRecord[]> {
+    // Fetch ApplicationDeploymentRemovalRecords for corresponding ApplicationDeploymentRecord set in deployments
+    const records = await this.registry.queryRecords(
+      {
+        type: APP_DEPLOYMENT_REMOVAL_RECORD_TYPE
+      },
+      true
+    );
+
+    // Filter records with ApplicationDeploymentRecord and ApplicationDeploymentRemovalRequest IDs
+    return records.filter((record: AppDeploymentRemovalRecord) =>
+      deployments.some(
+        (deployment) =>
+          deployment.applicationDeploymentRemovalRequestId === record.attributes.request &&
+          deployment.applicationDeploymentRecordId === record.attributes.deployment
       )
     );
   }
