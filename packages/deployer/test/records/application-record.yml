@@ -1,0 +1,8 @@
+record:
+  type: ApplicationRecord
+  version: 0.0.1
+  repository_ref: 05819619487a0d2dbc5453b6d1ccff3044c0dd26
+  repository: ["https://github.com/snowball-tools-platform/test-progressive-web-app"]
+  app_type: webapp
+  name: deployment-test-app
+  app_version: 0.1.24
