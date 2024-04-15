@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Tests
+exit 1
+
 # Repository URL
 REPO_URL="https://github.com/snowball-tools-platform/test-progressive-web-app"
 
