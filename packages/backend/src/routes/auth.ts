@@ -1,16 +1,12 @@
 import { Router } from 'express';
-import { SiweMessage, generateNonce } from 'siwe';
+import { SiweMessage } from 'siwe';
 
 const router = Router();
-
-router.get('/nonce', async (_, res) => {
-  res.send(generateNonce());
-});
 
 router.post('/validate', async (req, res) => {
   const { message, signature } = req.body;
   const { success, data } = await new SiweMessage(message).verify({
-    signature
+    signature,
   });
 
   if (success) {
