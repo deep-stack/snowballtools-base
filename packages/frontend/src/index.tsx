@@ -13,6 +13,7 @@ import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
 import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
+import Web3ModalProvider from './context/Web3ModalProvider';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -29,7 +30,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider>
       <GQLClientProvider client={gqlClient}>
-        <App />
+        <Web3ModalProvider>
+          <App />
+        </Web3ModalProvider>
         <Toaster />
       </GQLClientProvider>
     </ThemeProvider>

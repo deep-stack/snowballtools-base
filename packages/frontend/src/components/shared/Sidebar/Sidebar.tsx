@@ -85,13 +85,8 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
     ));
   }, [orgSlug]);
 
-  const handleLogOut = useCallback(async () => {
-    await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+  const handleLogOut = useCallback(() => {
     disconnect();
-    localStorage.clear();
     navigate('/login');
   }, [disconnect, navigate]);
 

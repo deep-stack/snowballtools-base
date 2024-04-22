@@ -1,5 +1,4 @@
 import withMT from '@snowballtools/material-tailwind-react-fork/utils/withMT';
-import colors from 'tailwindcss/colors'
 
 /** @type {import('tailwindcss').Config} */
 export default withMT({
@@ -10,11 +9,7 @@ export default withMT({
   ],
   theme: {
     extend: {
-      screens: {
-        xxs: '400px',
-        xs: '480px',
-      },
-        zIndex: {
+      zIndex: {
         tooltip: '52',
       },
       letterSpacing: {
@@ -30,8 +25,6 @@ export default withMT({
         '3xs': '0.5rem',
       },
       colors: {
-        sky: colors.sky, // TODO: WHy is this necessary? We're already using tailwind v3
-        slate: colors.slate, // TODO: WHy is this necessary? We're already using tailwind v3
         emerald: {
           100: '#d1fae5',
           200: '#a9f1d0',
@@ -180,9 +173,6 @@ export default withMT({
       zIndex: {
         toast: '9999',
       },
-      animation: {
-        'spin': 'spin 3s linear infinite',
-      }
     },
   },
   plugins: [],

@@ -52,8 +52,7 @@ export const InlineNotification = ({
 
   // Render custom icon or default icon
   const renderIcon = useCallback(() => {
-    if (!icon)
-      return <InfoSquareIcon className={`${iconClass()} flex-shrink-0`} />;
+    if (!icon) return <InfoSquareIcon className={iconClass()} />;
     return cloneIcon(icon, { className: iconClass() });
   }, [icon]);
 

@@ -3,18 +3,11 @@ import path from 'path';
 import toml from 'toml';
 import debug from 'debug';
 import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
-import { Config } from './config';
-import { DEFAULT_CONFIG_FILE_PATH } from './constants';
 
 const log = debug('snowball:utils');
 
-export async function getConfig() {
-  // TODO: get config path using cli
-  return await _getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
-}
-
-const _getConfig = async <ConfigType>(
-  configFile: string,
+export const getConfig = async <ConfigType>(
+  configFile: string
 ): Promise<ConfigType> => {
   const configFilePath = path.resolve(configFile);
   const fileExists = await fs.pathExists(configFilePath);
@@ -48,7 +41,7 @@ export const loadAndSaveData = async <Entity extends ObjectLiteral>(
   entityType: EntityTarget<Entity>,
   dataSource: DataSource,
   entities: any,
-  relations?: any | undefined,
+  relations?: any | undefined
 ): Promise<Entity[]> => {
   const entityRepository = dataSource.getRepository(entityType);
 
@@ -63,7 +56,7 @@ export const loadAndSaveData = async <Entity extends ObjectLiteral>(
 
         entity = {
           ...entity,
-          [field]: relations[field][entityData[valueIndex]],
+          [field]: relations[field][entityData[valueIndex]]
         };
       }
     }
@@ -74,5 +67,4 @@ export const loadAndSaveData = async <Entity extends ObjectLiteral>(
   return savedEntity;
 };
 
-export const sleep = async (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = async (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
