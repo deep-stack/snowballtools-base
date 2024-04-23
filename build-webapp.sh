@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PKG_DIR="./packages/frontend"
-OUTPUT_DIR="${PKG_DIR}/build"
+OUTPUT_DIR="${PKG_DIR}/dist"
 DEST_DIR=${1:-/data}
 
 if [[ -d "$DEST_DIR" ]]; then
