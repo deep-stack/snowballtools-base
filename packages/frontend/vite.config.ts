@@ -12,9 +12,6 @@ export default defineConfig({
       components: "/src/components",
     },
   },
-  define: {
-    "process.env": "import.meta.env",
-  },
   optimizeDeps: {
     include: [
       // "@snowballtools/types",
