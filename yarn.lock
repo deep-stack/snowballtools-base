@@ -3960,10 +3960,10 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
-"@snowballtools/auth-lit@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@snowballtools/auth-lit/-/auth-lit-0.1.0.tgz#1ed97cf55dd20c29b46ee3e5ad053662e17fdc41"
-  integrity sha512-WfGbdqd34I5wDcviSn9f8I1aTpY0ExJYGvkrwy/l0aeEotRBXoMDFNAM23RQN/aYzaewCOYGTPl1DJ1/hBYDyw==
+"@snowballtools/auth-lit@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/auth-lit/-/auth-lit-0.1.1.tgz#838a13464740010b7fd5934851da27ebef853472"
+  integrity sha512-GQ20/oFuRKMFFrww6/m1/YUuzK/+7D3m2w2IdMGt47iKuGK3JkjJ+wSSWPws3rEWmluztfMBnTWYZpSc/udgNg==
   dependencies:
     "@lit-protocol/auth-helpers" "3.0.32"
     "@lit-protocol/constants" "3.0.32"
@@ -3975,7 +3975,7 @@
     "@snowballtools/types" "*"
     "@snowballtools/utils" "*"
 
-"@snowballtools/auth@*", "@snowballtools/auth@^0.1.0":
+"@snowballtools/auth@*":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@snowballtools/auth/-/auth-0.1.0.tgz#f6bca8e631d754b524525153769bf28fa956cfa8"
   integrity sha512-jsviORyBcDporAFDCKGNHK4WCNBD68DdMJJ4wcnIa5DNXHjYLU4YYLqcbpccgnL1l+02o2nC/FyIwwDNcxWtjw==
@@ -3986,19 +3986,30 @@
     "@snowballtools/utils" "*"
     debug "*"
 
-"@snowballtools/js-sdk@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@snowballtools/js-sdk/-/js-sdk-0.1.0.tgz#69835d4c0fdb1023a2ff3e75d916eb23e98084e1"
-  integrity sha512-ejyzeRjUiffaWZiBwLhCi9vVyJp+eNBlTYQIwfTipAQlr1q0yCfCHJic2z2CIt2w6Vzayfgi2KRmNyQpRd3img==
+"@snowballtools/auth@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/auth/-/auth-0.1.1.tgz#d99226111e1648fc0a89ea062ae2fae850eef58e"
+  integrity sha512-ETLWkiLSpI7GBJd6a9pDPrQ9RJxvvSLUD0A5UgETH6T1gd+qY5FlJK1HfwdpbfBfyDShj4CaPTYKRXiTSZexfQ==
+  dependencies:
+    "@lit-protocol/pkp-ethers" "3.0.32"
+    "@lit-protocol/types" "3.0.32"
+    "@snowballtools/types" "*"
+    "@snowballtools/utils" "*"
+    debug "*"
+
+"@snowballtools/js-sdk@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/js-sdk/-/js-sdk-0.1.1.tgz#f463b34d49246b0cccff2fe6004fe7bd238e29fd"
+  integrity sha512-ViPvKeuOdbPVup5YYZUoWPRWVdM44EERzg1+gLi4tpdo0NjWC5gHr+w3+ESr88CV1Tr/vIn5HfOLxL5DT32qyw==
   dependencies:
     "@snowballtools/auth" "*"
     "@snowballtools/types" "*"
     "@snowballtools/utils" "*"
 
-"@snowballtools/link-lit-alchemy-light@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@snowballtools/link-lit-alchemy-light/-/link-lit-alchemy-light-0.1.0.tgz#3198bd75ad8002f76481680b1c792a7a13b84111"
-  integrity sha512-f6CEaol7qunra+1Tnk0Yb/M7l/EmYg40dlA7C+lYr0TQcGmIBQhT3rWtuluAlIsmKDPm1Ri7CCGfAYD7ioR/JQ==
+"@snowballtools/link-lit-alchemy-light@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/link-lit-alchemy-light/-/link-lit-alchemy-light-0.1.1.tgz#55142771399578d7775e7d231a5cf26600a53b71"
+  integrity sha512-7vyxWLpkgLLGTaiFflklIz7dnluKwzTbF+EOsuHTFETHy+mt7GhgFkbG1/1EgxQ05oIccTtxzN/VclnZp06L5g==
   dependencies:
     "@alchemy/aa-alchemy" "^3.6.1"
     "@alchemy/aa-core" "^3.6.1"
@@ -4024,7 +4035,7 @@
     react-dom "18.2.0"
     tailwind-merge "1.8.1"
 
-"@snowballtools/smartwallet-alchemy-light@*", "@snowballtools/smartwallet-alchemy-light@^0.1.0":
+"@snowballtools/smartwallet-alchemy-light@*":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@snowballtools/smartwallet-alchemy-light/-/smartwallet-alchemy-light-0.1.0.tgz#659be4924c15c015b56453c508ee78cd3d64f837"
   integrity sha512-gR69Kq3Bl8qxmMqBjac5lINRlABH25U+oUmrzUsul9TtUdfJMtA/96jR48v6upliKyncGoSIf+KJQ8opA5DqHw==
@@ -4037,15 +4048,43 @@
     "@snowballtools/types" "*"
     "@snowballtools/utils" "*"
 
-"@snowballtools/types@*", "@snowballtools/types@^0.1.0":
+"@snowballtools/smartwallet-alchemy-light@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/smartwallet-alchemy-light/-/smartwallet-alchemy-light-0.1.1.tgz#b8b159247fc56c25af68b1aa1f19b51359cf58e6"
+  integrity sha512-KzjBrGrQO3oSZgZP8c9niAEV7N1D0LBMjc8hjVKG6ox9udw+e3u+rzRzEfqDZc8W19pvYxjoUq9jCdaU5zc+Kw==
+  dependencies:
+    "@alchemy/aa-accounts" "^3.6.1"
+    "@alchemy/aa-alchemy" "^3.6.1"
+    "@alchemy/aa-core" "^3.6.1"
+    "@lit-protocol/pkp-ethers" "3.0.32"
+    "@lit-protocol/types" "3.0.32"
+    "@snowballtools/types" "*"
+    "@snowballtools/utils" "*"
+
+"@snowballtools/types@*":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@snowballtools/types/-/types-0.1.0.tgz#b76b20f76cc4192b250712d148991f04d68bade6"
   integrity sha512-lYLtUGjTO2BDqpM/KA83ojRB9sKw7IPQ9IVrd0FWJlyHtmQ5MvDRIcXJXO85lIUUe4SIkxXdrJMvda0GMDMV0A==
 
-"@snowballtools/utils@*", "@snowballtools/utils@^0.1.0":
+"@snowballtools/types@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/types/-/types-0.1.1.tgz#b9162576ebf2e2a026303cd453786e381509ddbf"
+  integrity sha512-FmVk1fdwLRRPdFdDvgt+/NmWbviPKSTzsdmbPI5TbviDbVZPBCQImo1fYGq+5T5zK7WqN9ULAi04DbiPSpTVVA==
+
+"@snowballtools/utils@*":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@snowballtools/utils/-/utils-0.1.0.tgz#1f0c69f357a899301d0716e0b30121242617c464"
   integrity sha512-0dx3ct6pSbMdhSi/Yg3unM3sPuDIk+lv57YNvqRhv8e+wz+5IfRj0Bm12BB10Dav1PMJAXkLMYKJ5OYJJn6ALA==
+  dependencies:
+    "@alchemy/aa-core" "^3.6.1"
+    "@snowballtools/types" "*"
+    alchemy-sdk "^3.2.0"
+    viem "2.x"
+
+"@snowballtools/utils@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@snowballtools/utils/-/utils-0.1.1.tgz#30c64a317e5dba613bf8fdd66dc4067c362f6ec0"
+  integrity sha512-GL9G8EUJUB/MxW1aaUtS4/KaKpND8CyWOG46wQ1SdEhrWooCg8fsU/0mG/lS/E/uoAUoaP0aG+hxo8v/wxKI9g==
   dependencies:
     "@alchemy/aa-core" "^3.6.1"
     "@snowballtools/types" "*"
