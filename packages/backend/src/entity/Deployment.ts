@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn
+  JoinColumn,
+  DeleteDateColumn
 } from 'typeorm';
 
 import { Project } from './Project';
@@ -146,4 +147,7 @@ export class Deployment {
 
   @UpdateDateColumn()
     updatedAt!: Date;
+  
+  @DeleteDateColumn()
+    deletedAt!: Date | null;
 }

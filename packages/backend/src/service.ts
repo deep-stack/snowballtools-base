@@ -52,6 +52,8 @@ export class Service {
   init (): void {
     // Start check for ApplicationDeploymentRecords asynchronously
     this.checkDeployRecordsAndUpdate();
+    // Start check for ApplicationDeploymentRemovalRecords asynchronously
+    this.checkDeploymentRemovalRecordsAndUpdate();
   }
 
   /**

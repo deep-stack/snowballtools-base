@@ -19,6 +19,7 @@ enum DeploymentStatus {
   Building
   Ready
   Error
+  Deleting
 }
 
 enum DomainStatus {
