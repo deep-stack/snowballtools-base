@@ -23,4 +23,7 @@ export default defineConfig({
       // "@snowballtools/js-sdk",
     ],
   },
+  define: {
+    'process.env': 'import.meta.env',
+  },
 });
