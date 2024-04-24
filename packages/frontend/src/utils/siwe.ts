@@ -5,8 +5,13 @@ import { v4 as uuid } from 'uuid';
 const domain = window.location.host;
 const origin = window.location.origin;
 
-export async function signInWithEthereum(wallet: PKPEthersWallet) {
+export async function signInWithEthereum(
+  chainId: number,
+  action: 'signup' | 'login',
+  wallet: PKPEthersWallet,
+) {
   const message = await createSiweMessage(
+    chainId,
     await wallet.getAddress(),
     'Sign in with Ethereum to the app.',
   );
@@ -17,20 +22,24 @@ export async function signInWithEthereum(wallet: PKPEthersWallet) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ message, signature }),
+    body: JSON.stringify({ action, message, signature }),
     credentials: 'include',
   });
-  console.log(await res.text());
+  return (await res.json()) as { success: boolean; error?: string };
 }
 
-async function createSiweMessage(address: string, statement: string) {
+async function createSiweMessage(
+  chainId: number,
+  address: string,
+  statement: string,
+) {
   const message = new SiweMessage({
     domain,
     address,
     statement,
     uri: origin,
     version: '1',
-    chainId: 1,
+    chainId,
     nonce: uuid().replace(/[^a-z0-9]/g, ''),
   });
   return message.prepareMessage();

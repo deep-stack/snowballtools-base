@@ -64,10 +64,8 @@ function App() {
     }).then((res) => {
       if (res.status !== 200) {
         localStorage.clear();
-        if (
-          window.location.pathname !== '/login' &&
-          window.location.pathname !== '/signup'
-        ) {
+        const path = window.location.pathname;
+        if (path !== '/login' && path !== '/signup') {
           window.location.pathname = '/login';
         }
       }
@@ -76,7 +74,7 @@ function App() {
 
   return (
     <Web3Provider>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </Web3Provider>
   );
 }

@@ -23,8 +23,8 @@ const log = debug('snowball:server');
 
 declare module 'express-session' {
   interface SessionData {
+    userId: string;
     address: string;
-    chainId: number;
   }
 }
 

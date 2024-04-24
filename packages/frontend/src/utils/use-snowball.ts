@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Snowball, SnowballChain } from '@snowballtools/js-sdk';
-import { LitGoogleAuth, LitPasskeyAuth } from '@snowballtools/auth-lit';
+import {
+  // LitAppleAuth,
+  LitGoogleAuth,
+  LitPasskeyAuth,
+} from '@snowballtools/auth-lit';
 
 export const snowball = Snowball.withAuth({
   google: LitGoogleAuth.configure({
     litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
   }),
+  // apple: LitAppleAuth.configure({
+  //   litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
+  // }),
   passkey: LitPasskeyAuth.configure({
     litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
   }),

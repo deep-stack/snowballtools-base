@@ -9,12 +9,15 @@ import {
 import { GoogleIcon } from 'components/shared/CustomIcon/GoogleIcon';
 import { DotBorder } from 'components/shared/DotBorder';
 import { WavyBorder } from 'components/shared/WavyBorder';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreatePasskey } from './CreatePasskey';
 import { AppleIcon } from 'components/shared/CustomIcon/AppleIcon';
 import { KeyIcon } from 'components/shared/CustomIcon/KeyIcon';
 import { useToast } from 'components/shared/Toast';
 import { Link } from 'react-router-dom';
+import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
+import { signInWithEthereum } from 'utils/siwe';
+import { useSnowball } from 'utils/use-snowball';
 
 type Provider = 'google' | 'github' | 'apple' | 'email' | 'passkey';
 
@@ -23,6 +26,8 @@ type Props = {
 };
 
 export const Login = ({ onDone }: Props) => {
+  const snowball = useSnowball();
+  const [error, setError] = useState<string>('');
   const [provider, setProvider] = useState<Provider | false>(false);
 
   // const loading = snowball.auth.state.loading && provider;
@@ -32,6 +37,59 @@ export const Login = ({ onDone }: Props) => {
   if (provider === 'email') {
     return <CreatePasskey onDone={onDone} />;
   }
+
+  async function handleSigninRedirect() {
+    let wallet: PKPEthersWallet | undefined;
+    const { google } = snowball.auth;
+    if (google.canHandleOAuthRedirectBack()) {
+      setProvider('google');
+      console.log('Handling google redirect back');
+      try {
+        await google.handleOAuthRedirectBack();
+        wallet = await google.getEthersWallet();
+        const result = await signInWithEthereum(1, 'login', wallet);
+        if (result.error) {
+          setError(result.error);
+          setProvider(false);
+          wallet = undefined;
+          return;
+        }
+      } catch (err: any) {
+        setError(err.message);
+        console.log(err.message, err.name, err.details);
+        setProvider(false);
+        return;
+      }
+    }
+    // if (apple.canHandleOAuthRedirectBack()) {
+    //   setProvider('apple');
+    //   console.log('Handling apple redirect back');
+    //   try {
+    //     await apple.handleOAuthRedirectBack();
+    //     wallet = await apple.getEthersWallet();
+    //     const result = await signInWithEthereum(1, 'login', wallet);
+    //     if (result.error) {
+    //       setError(result.error);
+    //       setProvider(false);
+    //       wallet = undefined;
+    //       return;
+    //     }
+    //   } catch (err: any) {
+    //     setError(err.message);
+    //     console.log(err.message, err.name, err.details);
+    //     setProvider(false);
+    //     return;
+    //   }
+    // }
+
+    if (wallet) {
+      window.location.pathname = '/';
+    }
+  }
+
+  useEffect(() => {
+    handleSigninRedirect();
+  }, []);
 
   return (
     <div>
@@ -114,7 +172,7 @@ export const Login = ({ onDone }: Props) => {
             }
             onClick={() => {
               setProvider('google');
-              // snowball.auth.createPasskey();
+              snowball.auth.google.startOAuthRedirect();
             }}
             className="flex-1 self-stretch"
             variant={'tertiary'}
@@ -157,6 +215,7 @@ export const Login = ({ onDone }: Props) => {
             }
             onClick={async () => {
               setProvider('apple');
+              // snowball.auth.apple.startOAuthRedirect();
               await new Promise((resolve) => setTimeout(resolve, 800));
               setProvider(false);
               toast({
@@ -175,17 +234,26 @@ export const Login = ({ onDone }: Props) => {
             Continue with Apple
           </Button>
         </div>
-        <div className="h-5 justify-center items-center gap-2 inline-flex">
-          <div className="text-center text-slate-600 text-sm font-normal font-['Inter'] leading-tight">
-            Don't have an account?
-          </div>
-          <div className="justify-center items-center gap-1.5 flex">
-            <Link
-              to="/signup"
-              className="text-sky-950 text-sm font-normal font-['Inter'] underline leading-tight"
-            >
-              Sign up now
-            </Link>
+
+        <div className="flex flex-col gap-3">
+          {error && (
+            <div className="justify-center items-center gap-2 inline-flex">
+              <div className="text-red-500 text-sm">Error: {error}</div>
+            </div>
+          )}
+
+          <div className="h-5 justify-center items-center gap-2 inline-flex">
+            <div className="text-center text-slate-600 text-sm font-normal font-['Inter'] leading-tight">
+              Don't have an account?
+            </div>
+            <div className="justify-center items-center gap-1.5 flex">
+              <Link
+                to="/signup"
+                className="text-sky-950 text-sm font-normal font-['Inter'] underline leading-tight"
+              >
+                Sign up now
+              </Link>
+            </div>
           </div>
         </div>
       </div>
