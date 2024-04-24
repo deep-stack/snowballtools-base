@@ -9,8 +9,6 @@ import { Database } from './database';
 import { createAndStartServer } from './server';
 import { createResolvers } from './resolvers';
 import { getConfig } from './utils';
-import { Config } from './config';
-import { DEFAULT_CONFIG_FILE_PATH } from './constants';
 import { Service } from './service';
 import { Registry } from './registry';
 
@@ -18,13 +16,12 @@ const log = debug('snowball:server');
 const OAUTH_CLIENT_TYPE = 'oauth-app';
 
 export const main = async (): Promise<void> => {
-  // TODO: get config path using cli
-  const { server, database, gitHub, registryConfig, misc } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { server, database, gitHub, registryConfig, misc } = await getConfig();
 
   const app = new OAuthApp({
     clientType: OAUTH_CLIENT_TYPE,
     clientId: gitHub.oAuth.clientId,
-    clientSecret: gitHub.oAuth.clientSecret
+    clientSecret: gitHub.oAuth.clientSecret,
   });
 
   const db = new Database(database, misc);
@@ -35,7 +32,7 @@ export const main = async (): Promise<void> => {
     { gitHubConfig: gitHub, registryConfig },
     db,
     app,
-    registry
+    registry,
   );
 
   const typeDefs = fs

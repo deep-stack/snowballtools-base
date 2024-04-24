@@ -161,13 +161,17 @@ export class Service {
     });
   }
 
-  async loadOrCreateUser (ethAddress: string): Promise<User> {
-    // Get user by ETH address
-    let user = await this.db.getUser({
+  async getUserByEthAddress (ethAddress: string): Promise<User | null> {
+    return await this.db.getUser({
       where: {
         ethAddress
       }
     });
+  }
+
+  async loadOrCreateUser (ethAddress: string): Promise<User> {
+    // Get user by ETH address
+    let user = await this.getUserByEthAddress(ethAddress);
 
     if (!user) {
       const [org] = await this.db.getOrganizations({});

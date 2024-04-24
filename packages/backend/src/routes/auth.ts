@@ -1,41 +1,55 @@
 import { Router } from 'express';
-import { SiweMessage, generateNonce } from 'siwe';
+import { SiweMessage } from 'siwe';
+import { Service } from '../service';
 
 const router = Router();
 
-router.get('/nonce', async (_, res) => {
-  res.send(generateNonce());
-});
-
 router.post('/validate', async (req, res) => {
-  const { message, signature } = req.body;
+  const { message, signature, action } = req.body;
   const { success, data } = await new SiweMessage(message).verify({
-    signature
+    signature,
   });
 
-  if (success) {
-    req.session.address = data.address;
-    req.session.chainId = data.chainId;
+  if (!success) {
+    return res.send({ success });
   }
+
+  const service: Service = req.app.get('service');
+  const user = await service.getUserByEthAddress(data.address);
+
+  if (action === 'signup') {
+    if (user) {
+      return res.send({ success: false, error: 'user_already_exists' });
+    }
+    const newUser = await service.loadOrCreateUser(data.address);
+    req.session.userId = newUser.id;
+  } else if (action === 'login') {
+    if (!user) {
+      return res.send({ success: false, error: 'user_not_found' });
+    }
+    req.session.userId = user.id;
+  }
+
+  req.session.address = data.address;
 
   res.send({ success });
 });
 
 router.get('/session', (req, res) => {
-  if (req.session.address && req.session.chainId) {
-    res.send({ address: req.session.address, chainId: req.session.chainId });
+  if (req.session.address) {
+    res.send({
+      userId: req.session.userId,
+      address: req.session.address,
+    });
   } else {
     res.status(401).send({ error: 'Unauthorized: No active session' });
   }
 });
 
 router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.send({ success: false });
-    }
-    res.send({ success: true });
-  });
+  // This is how you clear cookie-session
+  (req as any).session = null;
+  res.send({ success: true });
 });
 
 export default router;
