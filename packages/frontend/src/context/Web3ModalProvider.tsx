@@ -105,7 +105,7 @@ const siweConfig = createSIWEConfig({
 });
 
 if (!import.meta.env.VITE_WALLET_CONNECT_ID) {
-  throw new Error('Error: REACT_APP_WALLET_CONNECT_ID env config is not set');
+  throw new Error('Error: VITE_WALLET_CONNECT_ID env config is not set');
 }
 
 createWeb3Modal({
