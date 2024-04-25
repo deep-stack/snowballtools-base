@@ -161,11 +161,6 @@ export const DeploymentMenu = ({
             <MenuItem
               className="hover:bg-base-bg-emphasized flex items-center gap-3"
               onClick={() => deleteDeployment()}
-              disabled={
-                deployment.isCurrent ||
-                deployment.environment !== Environment.Production ||
-                !Boolean(currentDeployment)
-              }
             >
               <CrossCircleIcon /> Delete deployment
             </MenuItem>

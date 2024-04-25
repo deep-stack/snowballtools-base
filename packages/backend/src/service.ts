@@ -553,17 +553,10 @@ export class Service {
       return acc;
     }, {} as { [key: string]: string });
 
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        deployment: newDeployment,
-        appName: repo,
-        repository: repoUrl,
-        environmentVariables: environmentVariablesObj,
-        dns: `${newDeployment.project.name}-${newDeployment.id}`
-      });
-
     // To set project DNS
     if (data.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
       await this.registry.createApplicationDeploymentRequest(
         {
           deployment: newDeployment,
@@ -573,6 +566,15 @@ export class Service {
           dns: `${newDeployment.project.name}`
         });
     }
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`
+      });
 
     await this.db.updateDeploymentById(newDeployment.id, { applicationDeploymentRequestId, applicationDeploymentRequestData });
 
@@ -795,10 +797,30 @@ export class Service {
     const deployment = await this.db.getDeployment({
       where: {
         id: deploymentId
+      },
+      relations: {
+        project: true
       }
     });
 
     if (deployment && deployment.applicationDeploymentRecordId) {
+      // If deployment is current, remove deployment for project subdomain as well
+      if (deployment.isCurrent) {
+        const currentDeploymentURL = `https://${deployment.project.subDomain}`;
+        
+        const deploymentRecords = await this.registry.getDeploymentRecordsByFilter({
+          application: deployment.applicationRecordId,
+          url: currentDeploymentURL
+        })
+
+        if (!deploymentRecords.length) {
+          log(`No ApplicationDeploymentRecord found for URL ${currentDeploymentURL} and ApplicationDeploymentRecord id ${deployment.applicationDeploymentRecordId}`);
+          return false;
+        }
+
+        await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId: deploymentRecords[0].id });
+      }
+
       const result = await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId: deployment.applicationDeploymentRecordId });
 
       await this.db.updateDeploymentById(

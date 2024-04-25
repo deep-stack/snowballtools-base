@@ -21,6 +21,7 @@ export enum DeploymentStatus {
   Building = 'Building',
   Ready = 'Ready',
   Error = 'Error',
+  Deleting = 'Deleting'
 }
 
 export enum DomainStatus {

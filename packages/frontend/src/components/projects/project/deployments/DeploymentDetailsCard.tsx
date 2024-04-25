@@ -38,6 +38,7 @@ const STATUS_COLORS: {
   [DeploymentStatus.Building]: 'emphasized',
   [DeploymentStatus.Ready]: 'positive',
   [DeploymentStatus.Error]: 'negative',
+  [DeploymentStatus.Deleting]: 'neutral',
 };
 
 const DeploymentDetailsCard = ({
@@ -48,7 +49,7 @@ const DeploymentDetailsCard = ({
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
   const getIconByDeploymentStatus = (status: DeploymentStatus) => {
-    if (status === DeploymentStatus.Building) {
+    if (status === DeploymentStatus.Building || status === DeploymentStatus.Deleting) {
       return <LoadingIcon className="animate-spin" />;
     }
     if (status === DeploymentStatus.Ready) {

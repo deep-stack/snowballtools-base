@@ -233,6 +233,19 @@ export class Registry {
   }
 
   /**
+   * Fetch ApplicationDeploymentRecords by filter
+   */
+  async getDeploymentRecordsByFilter (filter: { [key: string]: any }): Promise<AppDeploymentRecord[]> {
+    return this.registry.queryRecords(
+      {
+        type: APP_DEPLOYMENT_RECORD_TYPE,
+        ...filter
+      },
+      true
+    );
+  }
+
+  /**
    * Fetch ApplicationDeploymentRemovalRecords for deployments
    */
   async getDeploymentRemovalRecords (
