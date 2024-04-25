@@ -24,6 +24,6 @@ export default defineConfig({
     ],
   },
   define: {
-    'process.env': 'import.meta.env',
+    'process.env': {},
   },
 });
