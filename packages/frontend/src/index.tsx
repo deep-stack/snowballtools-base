@@ -39,7 +39,9 @@ const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 
-const ErrorBoundary = Bugsnag.getPlugin('react')!.createErrorBoundary(React);
+const ErrorBoundary = bugsnagApiKey
+  ? Bugsnag.getPlugin('react')!.createErrorBoundary(React)
+  : ({ children }: any) => children;
 
 root.render(
   <ErrorBoundary>
