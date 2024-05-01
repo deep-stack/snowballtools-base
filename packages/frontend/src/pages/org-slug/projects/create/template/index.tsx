@@ -194,6 +194,7 @@ const CreateRepo = () => {
                 label="Make this repo private"
                 checked={value}
                 onCheckedChange={onChange}
+                disabled={true}
               />
             )}
           />
