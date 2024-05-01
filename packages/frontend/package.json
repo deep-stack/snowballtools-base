@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bugsnag/browser-performance": "^2.4.1",
+    "@bugsnag/js": "^7.22.7",
+    "@bugsnag/plugin-react": "^7.22.7",
     "@fontsource-variable/jetbrains-mono": "^5.0.19",
     "@fontsource/inter": "^5.0.16",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -66,8 +69,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.0",
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.3.7",
     "@types/node": "^16.18.68",
     "@types/react": "^18.2.66",

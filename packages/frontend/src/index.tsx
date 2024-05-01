@@ -13,6 +13,20 @@ import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
 import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
+
+import Bugsnag from '@bugsnag/js';
+import BugsnagPluginReact from '@bugsnag/plugin-react';
+import BugsnagPerformance from '@bugsnag/browser-performance';
+
+const bugsnagApiKey = import.meta.env.VITE_BUGSNAG_API_KEY;
+if (bugsnagApiKey) {
+  Bugsnag.start({
+    apiKey: bugsnagApiKey,
+    plugins: [new BugsnagPluginReact()],
+  });
+  BugsnagPerformance.start({ apiKey: bugsnagApiKey });
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -25,15 +39,20 @@ const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 
+const ErrorBoundary = Bugsnag.getPlugin('react')!.createErrorBoundary(React);
+
 root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <GQLClientProvider client={gqlClient}>
-        <App />
-        <Toaster />
-      </GQLClientProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+  <ErrorBoundary>
+    <React.StrictMode>
+      <ThemeProvider>
+        <GQLClientProvider client={gqlClient}>
+          <App />
+          <Toaster />
+        </GQLClientProvider>
+      </ThemeProvider>
+    </React.StrictMode>
+    ,
+  </ErrorBoundary>,
 );
 
 // If you want to start measuring performance in your app, pass a function
