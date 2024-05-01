@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
 import { signInWithEthereum } from 'utils/siwe';
+import { logError } from 'utils/log-error';
 
 type Provider = 'google' | 'github' | 'apple' | 'email';
 
@@ -46,11 +47,13 @@ export const SignUp = ({ onDone }: Props) => {
           setError({ type: 'provider', message: result.error });
           setProvider(false);
           wallet = undefined;
+          logError(new Error(result.error));
           return;
         }
       } catch (err: any) {
         setError({ type: 'provider', message: err.message });
         setProvider(false);
+        logError(err);
         return;
       }
     }
