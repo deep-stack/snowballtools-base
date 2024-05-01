@@ -7,7 +7,6 @@ import { useGQLClient } from 'context/GQLClientContext';
 import { NotificationBellIcon, PlusIcon } from 'components/shared/CustomIcon';
 import { Button } from 'components/shared/Button';
 import { Avatar } from 'components/shared/Avatar';
-import { getInitials } from 'utils/geInitials';
 import { formatAddress } from 'utils/format';
 import { ProjectSearchBar } from 'components/projects/ProjectSearchBar';
 
@@ -63,7 +62,7 @@ const ProjectSearch = () => {
             {user?.name && (
               <Avatar
                 size={44}
-                initials={getInitials(formatAddress(user.name))}
+                initials={formatAddress(user.name)}
               />
             )}
           </div>
