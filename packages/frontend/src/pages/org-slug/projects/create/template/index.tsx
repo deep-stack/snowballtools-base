@@ -189,11 +189,9 @@ const CreateRepo = () => {
           <Controller
             name="isPrivate"
             control={control}
-            render={({ field: { value, onChange } }) => (
+            render={({ }) => (
               <Checkbox
                 label="Make this repo private"
-                checked={value}
-                onCheckedChange={onChange}
                 disabled={true}
               />
             )}
