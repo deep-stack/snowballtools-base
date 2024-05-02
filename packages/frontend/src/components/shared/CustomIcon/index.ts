@@ -62,6 +62,7 @@ export * from './WarningTriangleIcon';
 export * from './CheckRadioOutlineIcon';
 export * from './TrendingIcon';
 export * from './ChevronDoubleDownIcon';
+export * from './GearIcon';
 
 // Templates
 export * from './templates';
