@@ -12,17 +12,6 @@ export default defineConfig({
       components: '/src/components',
     },
   },
-  optimizeDeps: {
-    include: [
-      // "@snowballtools/types",
-      // "@snowballtools/utils",
-      // "@snowballtools/auth",
-      // "@snowballtools/auth-lit",
-      // "@snowballtools/smartwallet-alchemy-light",
-      // "@snowballtools/link-lit-alchemy-light",
-      // "@snowballtools/js-sdk",
-    ],
-  },
   define: {
     'process.env': {},
   },
