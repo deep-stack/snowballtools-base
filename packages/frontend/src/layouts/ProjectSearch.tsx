@@ -6,7 +6,6 @@ import HorizontalLine from 'components/HorizontalLine';
 import { useGQLClient } from 'context/GQLClientContext';
 import { NotificationBellIcon, PlusIcon } from 'components/shared/CustomIcon';
 import { Button } from 'components/shared/Button';
-import { Avatar } from 'components/shared/Avatar';
 import { formatAddress } from 'utils/format';
 import { ProjectSearchBar } from 'components/projects/ProjectSearchBar';
 
@@ -60,10 +59,9 @@ const ProjectSearch = () => {
               <NotificationBellIcon />
             </Button>
             {user?.name && (
-              <Avatar
-                size={44}
-                initials={formatAddress(user.name)}
-              />
+            <p className="text-sm tracking-[-0.006em] text-elements-high-em">
+            {formatAddress(user.name)}
+            </p>
             )}
           </div>
         </div>
