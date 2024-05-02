@@ -58,9 +58,8 @@ export const Login = ({ onDone }: Props) => {
         }
       } catch (err: any) {
         setError(err.message);
-        console.log(err.message, err.name, err.details);
-        setProvider(false);
         logError(err);
+        setProvider(false);
         return;
       }
     }
