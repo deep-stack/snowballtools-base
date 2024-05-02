@@ -9,31 +9,32 @@ import {
 } from '@snowballtools/material-tailwind-react-fork';
 
 import { OutletContextType } from '../../../../types/types';
+import { GearIcon } from '../../../../components/shared/CustomIcon/GearIcon';
 
 const tabsData = [
   {
     label: 'General',
-    icon: '^',
+    icon: <GearIcon />,
     value: 'general',
   },
   {
     label: 'Domains',
-    icon: '^',
+    icon: '',
     value: 'domains',
   },
   {
     label: 'Git',
-    icon: '^',
+    icon: '',
     value: 'git',
   },
   {
     label: 'Environment variables',
-    icon: '^',
+    icon: '',
     value: 'environment-variables',
   },
   {
     label: 'Members',
-    icon: '^',
+    icon: '',
     value: 'members',
   },
 ];
