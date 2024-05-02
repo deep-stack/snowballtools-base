@@ -165,7 +165,7 @@ const GeneralTabPanel = () => {
         <Typography variant="h6">Transfer project</Typography>
         <Typography variant="small">
           Transfer this app to your personal account or a team you are a member
-          of.
+          of.{' '}
           <Link to="" className="text-blue-500">
             Learn more
           </Link>
