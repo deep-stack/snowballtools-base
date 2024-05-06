@@ -137,6 +137,14 @@ export const Login = ({ onDone }: Props) => {
               disabled={!!loading}
               onClick={async () => {
                 setProvider('passkey');
+                await new Promise((resolve) => setTimeout(resolve, 800));
+                setProvider(false);
+                toast({
+                  id: 'coming-soon',
+                  title: 'Sign-in with Passkeys is coming soon!',
+                  variant: 'info',
+                  onDismiss() {},
+                });
               }}
             >
               Sign In with Passkey
