@@ -39,6 +39,12 @@ export class User {
   @CreateDateColumn()
     updatedAt!: Date;
 
+  @Column()
+    subOrgId!: string;
+
+  @Column()
+    turnkeyWalletId!: string;
+
   @OneToMany(() => ProjectMember, (projectMember) => projectMember.project, {
     cascade: ['soft-remove']
   })

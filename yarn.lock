@@ -4183,7 +4183,7 @@
   resolved "https://registry.yarnpkg.com/@turnkey/encoding/-/encoding-0.1.0.tgz#85461c3aa11c70882cc2b0853f5db40f576c3ac9"
   integrity sha512-aLmLrWtvV1k9UyGzuzMpBFdwleCH8VpzXIriusVMrFLiQp+4uHCS9cwrEG1glg3207ewWFDtvgj31qLoJS29pg==
 
-"@turnkey/http@2.10.0", "@turnkey/http@^2.6.2":
+"@turnkey/http@2.10.0", "@turnkey/http@^2.10.0", "@turnkey/http@^2.6.2":
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/@turnkey/http/-/http-2.10.0.tgz#9e8d0dc6279719e3efaf5ae1df7dc9fd5a111ecf"
   integrity sha512-5I2VwOzxYGxmSy8UOZn8rsV23gmK8v93KqNZ/mjf4GrFQ69q8LCaAFmrH1Zo+/J7eq0/GQdxNqBHfJKLp5iihw==
@@ -4193,10 +4193,41 @@
     "@turnkey/webauthn-stamper" "0.5.0"
     cross-fetch "^3.1.5"
 
-"@turnkey/iframe-stamper@^1.0.0":
+"@turnkey/iframe-stamper@1.2.0", "@turnkey/iframe-stamper@^1.0.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@turnkey/iframe-stamper/-/iframe-stamper-1.2.0.tgz#bba478e391a266833f1a5960b9f1df9de5934fb8"
   integrity sha512-OXbCVVzypa0AXa6dcNpfu8Q0xY/sq2nGXwhesrUQmE7V5I5nYYHZE3sQv54lErToX6H6YyDR9Z1DuPzEUkYTjw==
+
+"@turnkey/sdk-browser@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@turnkey/sdk-browser/-/sdk-browser-0.1.0.tgz#8bab3f0600644025b8935d8e6e8c0e193d3a763b"
+  integrity sha512-afgn/pP/HQ4fMoVk7q/vPbNCAQKlEuIREX++tdovl1Wr8IXGuzXDz8sXm4R1T6RU/gl+KzsE9B1EfKpr6JoriQ==
+  dependencies:
+    "@turnkey/api-key-stamper" "0.4.0"
+    "@turnkey/http" "2.10.0"
+    "@turnkey/iframe-stamper" "1.2.0"
+    "@turnkey/webauthn-stamper" "0.5.0"
+    buffer "^6.0.3"
+    cross-fetch "^3.1.5"
+    elliptic "^6.5.5"
+
+"@turnkey/sdk-react@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@turnkey/sdk-react/-/sdk-react-0.1.0.tgz#ec7016410db6c5fec5863f5d7844340b59cee133"
+  integrity sha512-a7CzXtQJJGlB5TrK9Cean/Ry4EmTkdqDns5UWk3Vg6DAoCaUmKFmNHqFA4bT+JDvbkXRbmhkmsjh/hRrh4IHCA==
+  dependencies:
+    "@turnkey/sdk-browser" "0.1.0"
+
+"@turnkey/sdk-server@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@turnkey/sdk-server/-/sdk-server-0.1.0.tgz#899d199e2382a2ea4a933d1f408d96bee83d18d1"
+  integrity sha512-INg+r1p955OsS33OkV+AEqkhIhP2QcB20bAhS+oVPskGjin93/02RvfniJvArU30arhYTKOgeHrUHWmI6lVuaw==
+  dependencies:
+    "@turnkey/api-key-stamper" "0.4.0"
+    "@turnkey/http" "2.10.0"
+    buffer "^6.0.3"
+    cross-fetch "^3.1.5"
+    elliptic "^6.5.5"
 
 "@turnkey/viem@^0.4.8":
   version "0.4.14"
@@ -4208,7 +4239,7 @@
     cross-fetch "^4.0.0"
     typescript "^5.1"
 
-"@turnkey/webauthn-stamper@0.5.0":
+"@turnkey/webauthn-stamper@0.5.0", "@turnkey/webauthn-stamper@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@turnkey/webauthn-stamper/-/webauthn-stamper-0.5.0.tgz#014b8c20b1732af49dacb04f396edf010d3b7f47"
   integrity sha512-iUbTUwD4f4ibdLy5PWWb7ITEz4S4VAP9/mNjFhoRY3cKVVTDfmykrVTKjPOIHWzDgAmLtgrLvySIIC9ZBVENBw==
@@ -7203,7 +7234,7 @@ elliptic@6.5.4:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
+elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4, elliptic@^6.5.5:
   version "6.5.5"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.5.tgz#c715e09f78b6923977610d4c2346d6ce22e6dded"
   integrity sha512-7EjbcmUm17NQFu4Pmgmq2olYMj8nwMnpcddByChSUjArp8F5DQWcIcpriwO4ZToLNAJig0yiyjswfyGNje/ixw==

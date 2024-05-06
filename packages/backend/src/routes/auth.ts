@@ -1,45 +1,50 @@
 import { Router } from 'express';
 import { SiweMessage } from 'siwe';
 import { Service } from '../service';
+import { authenticateUser, createUser } from '../turnkey-backend';
 
 const router = Router();
 
-router.post('/validate', async (req, res) => {
-  const { message, signature, action } = req.body;
-  const { success, data } = await new SiweMessage(message).verify({
-    signature,
-  });
-
-  if (!success) {
-    return res.send({ success });
-  }
-
+router.get('/registration/:email', async (req, res) => {
   const service: Service = req.app.get('service');
-  const user = await service.getUserByEthAddress(data.address);
-
-  if (action === 'signup') {
-    if (user) {
-      return res.send({ success: false, error: 'user_already_exists' });
-    }
-    const newUser = await service.loadOrCreateUser(data.address);
-    req.session.userId = newUser.id;
-  } else if (action === 'login') {
-    if (!user) {
-      return res.send({ success: false, error: 'user_not_found' });
-    }
-    req.session.userId = user.id;
+  const user = await service.getUserByEmail(req.params.email);
+  if (user) {
+    return res.send({ subOrganizationId: user?.subOrgId });
+  } else {
+    return res.sendStatus(204);
   }
+});
 
-  req.session.address = data.address;
+router.post('/register', async (req, res) => {
+  const { email, challenge, attestation } = req.body;
+  const user = await createUser(req.app.get('service'), {
+    challenge,
+    attestation,
+    userEmail: email,
+    userName: email.split('@')[0],
+  });
+  req.session.userId = user.id;
+  res.sendStatus(200);
+});
 
-  res.send({ success });
+router.post('/authenticate', async (req, res) => {
+  const { signedWhoamiRequest } = req.body;
+  const user = await authenticateUser(
+    req.app.get('service'),
+    signedWhoamiRequest,
+  );
+  if (user) {
+    req.session.userId = user.id;
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 router.get('/session', (req, res) => {
-  if (req.session.address) {
+  if (req.session.userId) {
     res.send({
       userId: req.session.userId,
-      address: req.session.address,
     });
   } else {
     res.status(401).send({ error: 'Unauthorized: No active session' });

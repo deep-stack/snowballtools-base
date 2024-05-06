@@ -24,7 +24,6 @@ const log = debug('snowball:server');
 declare module 'express-session' {
   interface SessionData {
     userId: string;
-    address: string;
   }
 }
 
@@ -54,14 +53,13 @@ export const createAndStartServer = async (
     context: async ({ req }) => {
       // https://www.apollographql.com/docs/apollo-server/v3/security/authentication#api-wide-authorization
 
-      const { address } = req.session;
+      const { userId } = req.session;
 
-      if (!address) {
+      if (!userId) {
         throw new AuthenticationError('Unauthorized: No active session');
       }
 
-      // Find/create user from ETH address in request session
-      const user = await service.loadOrCreateUser(address);
+      const user = await service.getUser(userId);
 
       return { user };
     },
