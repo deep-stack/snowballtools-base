@@ -5,4 +5,5 @@ yarn-error.log
 .yarnrc
 
 packages/backend/environments/local.toml
+packages/backend/dev/
 packages/frontend/dist/
