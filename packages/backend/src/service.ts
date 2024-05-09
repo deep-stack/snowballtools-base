@@ -202,6 +202,7 @@ export class Service {
       subOrgId: params.subOrgId,
       ethAddress: params.ethAddress,
       isVerified: true,
+      turnkeyWalletId: params.turnkeyWalletId,
     });
 
     await this.db.addUserOrganization({
