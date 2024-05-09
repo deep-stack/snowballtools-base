@@ -59,9 +59,9 @@ const ProjectSearch = () => {
               <NotificationBellIcon />
             </Button>
             {user?.name && (
-            <p className="text-sm tracking-[-0.006em] text-elements-high-em">
-            {formatAddress(user.name)}
-            </p>
+              <p className="text-sm tracking-[-0.006em] text-elements-high-em">
+                {formatAddress(user.name)}
+              </p>
             )}
           </div>
         </div>
