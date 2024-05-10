@@ -63,6 +63,10 @@ export * from './CheckRadioOutlineIcon';
 export * from './TrendingIcon';
 export * from './ChevronDoubleDownIcon';
 export * from './GearIcon';
+export * from './AppleIcon';
+export * from './CalendarDaysIcon';
+export * from './GoogleIcon';
+export * from './KeyIcon';
 
 // Templates
 export * from './templates';

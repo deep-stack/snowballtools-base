@@ -27,6 +27,7 @@ const meta: Meta<typeof Avatar> = {
     },
   },
 };
+
 export default meta;
 
 type Story = StoryObj<typeof Avatar>;
