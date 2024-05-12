@@ -5,19 +5,19 @@ import { useParams } from 'react-router-dom';
 import { Environment, EnvironmentVariable } from 'gql-client';
 
 import {
-  Typography,
   Collapse,
   Card,
-  Button,
-  Checkbox,
   Chip,
 } from '@snowballtools/material-tailwind-react-fork';
 
-import AddEnvironmentVariableRow from '../../../../../components/projects/project/settings/AddEnvironmentVariableRow';
-import DisplayEnvironmentVariables from '../../../../../components/projects/project/settings/DisplayEnvironmentVariables';
-import HorizontalLine from '../../../../../components/HorizontalLine';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { EnvironmentVariablesFormValues } from '../../../../../types/types';
+import { EnvironmentVariablesFormValues } from '../../../../../types';
+import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
+import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
+import HorizontalLine from 'components/HorizontalLine';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
+import { Checkbox } from 'components/shared/Checkbox';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -132,11 +132,13 @@ export const EnvironmentVariablesTabPanel = () => {
   );
 
   return (
-    <>
-      <Typography variant="h6">Environment variables</Typography>
-      <Typography variant="small" className="font-medium text-gray-800">
+    <div className="space-y-3 px-2">
+      <Heading className="text-sky-950 text-lg font-medium leading-normal">
+        Environment variables
+      </Heading>
+      <p className="text-slate-600 text-sm font-normal leading-tight">
         A new deployment is required for your changes to take effect.
-      </Typography>
+      </p>
       <div className="bg-gray-300 rounded-lg p-2">
         <div
           className="text-black"
@@ -160,7 +162,6 @@ export const EnvironmentVariablesTabPanel = () => {
               })}
               <div className="flex gap-1 p-2">
                 <Button
-                  variant="outlined"
                   size="sm"
                   onClick={() =>
                     append({
@@ -172,8 +173,8 @@ export const EnvironmentVariablesTabPanel = () => {
                   + Add variable
                 </Button>
                 {/* TODO: Implement import environment varible functionality */}
-                <Button variant="outlined" size="sm" disabled>
-                  ^ Import .env
+                <Button size="sm" disabled>
+                  Import .env
                 </Button>
               </div>
               {isFieldEmpty && (
@@ -202,7 +203,7 @@ export const EnvironmentVariablesTabPanel = () => {
                 />
               </div>
               <div className="p-2">
-                <Button size="lg" color="blue" type="submit">
+                <Button size="md" type="submit">
                   Save changes
                 </Button>
               </div>
@@ -235,6 +236,6 @@ export const EnvironmentVariablesTabPanel = () => {
           }}
         />
       </div>
-    </>
+    </div>
   );
 };
