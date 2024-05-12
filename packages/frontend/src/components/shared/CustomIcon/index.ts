@@ -67,6 +67,8 @@ export * from './AppleIcon';
 export * from './CalendarDaysIcon';
 export * from './GoogleIcon';
 export * from './KeyIcon';
+export * from './TrashIcon';
+export * from './CopyUnfilledIcon';
 
 // Templates
 export * from './templates';
