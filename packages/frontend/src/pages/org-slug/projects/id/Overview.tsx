@@ -4,10 +4,7 @@ import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
 import { useOctokit } from '../../../../context/OctokitContext';
-import {
-  GitCommitWithBranch,
-  OutletContextType,
-} from '../../../../types/types';
+import { GitCommitWithBranch, OutletContextType } from '../../../../types';
 import { useGQLClient } from '../../../../context/GQLClientContext';
 import { Button } from 'components/shared/Button';
 import { Heading } from 'components/shared/Heading';

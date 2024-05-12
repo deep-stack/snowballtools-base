@@ -7,7 +7,7 @@ import FilterForm, {
   FilterValue,
   StatusOptions,
 } from 'components/projects/project/deployments/FilterForm';
-import { OutletContextType } from '../../../../types/types';
+import { OutletContextType } from '../../../../types';
 import { useGQLClient } from 'context/GQLClientContext';
 import { Button } from 'components/shared/Button';
 import { RefreshIcon } from 'components/shared/CustomIcon';

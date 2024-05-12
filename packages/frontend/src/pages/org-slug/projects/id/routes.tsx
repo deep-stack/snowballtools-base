@@ -4,7 +4,7 @@ import SettingsTabPanel from './Settings';
 import GeneralTabPanel from './settings/General';
 import GitTabPanel from './settings/Git';
 import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariables';
-import MembersTabPanel from './settings/Members';
+import CollaboratorsTabPanel from './settings/Collaborators';
 import Domains from './settings/Domains';
 
 const Integrations = () => (
@@ -34,8 +34,8 @@ export const settingsTabRoutes = [
     element: <EnvironmentVariablesTabPanel />,
   },
   {
-    path: 'members',
-    element: <MembersTabPanel />,
+    path: 'collaborators',
+    element: <CollaboratorsTabPanel />,
   },
 ];
 

@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Permission, AddProjectMemberInput, ProjectMember } from 'gql-client';
 
-import MemberCard from '../../../../../components/projects/project/settings/MemberCard';
-import AddMemberDialog from '../../../../../components/projects/project/settings/AddMemberDialog';
+import MemberCard from 'components/projects/project/settings/MemberCard';
+import AddMemberDialog from 'components/projects/project/settings/AddMemberDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { OutletContextType } from '../../../../../types';
-import { useToast } from '../../../../../components/shared/Toast';
+import { useToast } from 'components/shared/Toast';
 import { Button } from 'components/shared/Button';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { Badge } from 'components/shared/Badge';
@@ -14,7 +14,7 @@ import { Heading } from 'components/shared/Heading';
 
 const FIRST_MEMBER_CARD = 0;
 
-const MembersTabPanel = () => {
+const CollaboratorsTabPanel = () => {
   const client = useGQLClient();
   const { toast } = useToast();
   const { project } = useOutletContext<OutletContextType>();
@@ -160,4 +160,4 @@ const MembersTabPanel = () => {
   );
 };
 
-export default MembersTabPanel;
+export default CollaboratorsTabPanel;

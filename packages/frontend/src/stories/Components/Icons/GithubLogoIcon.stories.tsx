@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { GitHubLogo } from 'components/shared/CustomIcon';
+import { GithubLogoIcon } from 'components/shared/CustomIcon';
 
-const meta: Meta<typeof GitHubLogo> = {
-  title: 'Icons/GitHubLogo',
-  component: GitHubLogo,
+const meta: Meta<typeof GithubLogoIcon> = {
+  title: 'Icons/GithubLogoIcon',
+  component: GithubLogoIcon,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -18,10 +18,10 @@ const meta: Meta<typeof GitHubLogo> = {
 
 export default meta;
 
-type Story = StoryObj<typeof GitHubLogo>;
+type Story = StoryObj<typeof GithubLogoIcon>;
 
 export const Default: Story = {
-  render: ({ size, name }) => <GitHubLogo size={size} name={name} />,
+  render: ({ size, name }) => <GithubLogoIcon size={size} name={name} />,
   args: {
     size: '24px',
     name: 'plus',
