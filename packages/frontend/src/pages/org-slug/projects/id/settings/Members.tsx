@@ -1,23 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { Permission, AddProjectMemberInput, ProjectMember } from 'gql-client';
-
-import {
-  Chip,
-  Button,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
 
 import MemberCard from '../../../../../components/projects/project/settings/MemberCard';
 import AddMemberDialog from '../../../../../components/projects/project/settings/AddMemberDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types/types';
+import { OutletContextType } from '../../../../../types';
+import { useToast } from '../../../../../components/shared/Toast';
+import { Button } from 'components/shared/Button';
+import { PlusIcon } from 'components/shared/CustomIcon';
+import { Badge } from 'components/shared/Badge';
+import { Heading } from 'components/shared/Heading';
 
 const FIRST_MEMBER_CARD = 0;
 
 const MembersTabPanel = () => {
   const client = useGQLClient();
+  const { toast } = useToast();
   const { project } = useOutletContext<OutletContextType>();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
@@ -36,9 +35,19 @@ const MembersTabPanel = () => {
 
       if (isProjectMemberAdded) {
         await fetchProjectMembers();
-        toast.success('Invitation sent');
+        toast({
+          id: 'member_added',
+          title: 'Member added to project',
+          variant: 'success',
+          onDismiss() {},
+        });
       } else {
-        toast.error('Invitation not sent');
+        toast({
+          id: 'member_not_added',
+          title: 'Invitation not sent',
+          variant: 'error',
+          onDismiss() {},
+        });
       }
     },
     [project],
@@ -50,9 +59,19 @@ const MembersTabPanel = () => {
 
     if (isMemberRemoved) {
       await fetchProjectMembers();
-      toast.success('Member removed from project');
+      toast({
+        id: 'member_removed',
+        title: 'Member removed from project',
+        variant: 'success',
+        onDismiss() {},
+      });
     } else {
-      toast.error('Not able to remove member');
+      toast({
+        id: 'member_not_removed',
+        title: 'Not able to remove member',
+        variant: 'error',
+        onDismiss() {},
+      });
     }
   };
 
@@ -63,9 +82,19 @@ const MembersTabPanel = () => {
 
       if (isProjectMemberUpdated) {
         await fetchProjectMembers();
-        toast.success('Project member permission updated');
+        toast({
+          id: 'member_permission_updated',
+          title: 'Project member permission updated',
+          variant: 'success',
+          onDismiss() {},
+        });
       } else {
-        toast.error('Project member permission not updated');
+        toast({
+          id: 'member_permission_not_updated',
+          title: 'Project member permission not updated',
+          variant: 'error',
+          onDismiss() {},
+        });
       }
     },
     [],
@@ -76,26 +105,24 @@ const MembersTabPanel = () => {
   }, [project.id, fetchProjectMembers]);
 
   return (
-    <div className="p-2 mb-20">
-      <div className="flex justify-between mb-2">
-        <div className="flex">
-          <Typography variant="h6">Members</Typography>
-          <div>
-            <Chip
-              className="normal-case ml-3 font-normal"
-              size="sm"
-              value={projectMembers.length + 1}
-            />
-          </div>
+    <div className="space-y-3 px-2">
+      <div className="flex justify-between">
+        <div className="flex space-x-2">
+          <Heading className="text-sky-950 text-lg font-medium leading-normal">
+            Collaborators
+          </Heading>
+          <Badge size="sm" variant="inset">
+            {projectMembers.length + 1}
+          </Badge>
         </div>
-        <div>
-          <Button
-            size="sm"
-            onClick={() => setAddMemberDialogOpen((preVal) => !preVal)}
-          >
-            + Add member
-          </Button>
-        </div>
+        <Button
+          size="md"
+          onClick={() => setAddMemberDialogOpen((preVal) => !preVal)}
+          leftIcon={<PlusIcon />}
+          variant="secondary"
+        >
+          Add member
+        </Button>
       </div>
       <MemberCard
         member={project.owner}
