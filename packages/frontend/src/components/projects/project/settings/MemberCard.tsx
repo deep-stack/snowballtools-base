@@ -5,12 +5,12 @@ import {
   Select,
   Option,
   Chip,
-  IconButton,
-  Tooltip,
 } from '@snowballtools/material-tailwind-react-fork';
 
 import { formatAddress } from 'utils/format';
 import { RemoveMemberDialog } from 'components/projects/Dialog/RemoveMemberDialog';
+import { Tooltip } from 'components/shared/Tooltip';
+import { Button } from 'components/shared/Button';
 
 const PERMISSION_OPTIONS = [
   {
@@ -125,15 +125,15 @@ const MemberCard = ({
               />
             </div>
             <div>
-              <IconButton
+              <Button
                 size="sm"
-                className="rounded-full"
+                iconOnly
                 onClick={() => {
                   setRemoveMemberDialogOpen((prevVal) => !prevVal);
                 }}
               >
                 D
-              </IconButton>
+              </Button>
             </div>
           </div>
         )}

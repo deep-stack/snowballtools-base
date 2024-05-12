@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { Project } from 'gql-client';
 
 import {
@@ -13,7 +12,9 @@ import {
   Input,
   Typography,
 } from '@snowballtools/material-tailwind-react-fork';
+
 import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useToast } from 'components/shared/Toast';
 
 interface DeleteProjectDialogProp {
   open: boolean;
@@ -26,6 +27,7 @@ const DeleteProjectDialog = ({
   handleOpen,
   project,
 }: DeleteProjectDialogProp) => {
+  const { toast, dismiss } = useToast();
   const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
@@ -46,7 +48,12 @@ const DeleteProjectDialog = ({
     if (deleteProject) {
       navigate(`/${orgSlug}`);
     } else {
-      toast.error('Project not deleted');
+      toast({
+        id: 'project_not_deleted',
+        title: 'Project not deleted',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
 
     handleOpen();

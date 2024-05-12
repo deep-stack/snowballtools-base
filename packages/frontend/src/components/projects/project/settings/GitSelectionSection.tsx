@@ -1,4 +1,4 @@
-import { GitSelect } from '../../../../types/types';
+import { GitSelect } from '../../../../types';
 
 const GitSelectionSection = ({
   gitSelectionHandler,

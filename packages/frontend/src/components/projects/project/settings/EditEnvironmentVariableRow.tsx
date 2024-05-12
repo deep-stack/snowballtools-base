@@ -5,12 +5,12 @@ import { EnvironmentVariable } from 'gql-client';
 
 import {
   IconButton,
-  Input,
   Typography,
 } from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteVariableDialog } from 'components/projects/Dialog/DeleteVariableDialog';
+import { Input } from 'components/shared/Input';
 
 const ShowPasswordIcon = ({
   handler,
@@ -96,7 +96,7 @@ const EditEnvironmentVariableRow = ({
           <Input
             disabled={!edit}
             type={showPassword ? 'text' : 'password'}
-            icon={
+            leftIcon={
               <ShowPasswordIcon
                 handler={() => {
                   setShowPassword((prevShowPassword) => !prevShowPassword);

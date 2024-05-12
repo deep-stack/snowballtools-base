@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { Button } from '@snowballtools/material-tailwind-react-fork';
-
 import { DeleteWebhookDialog } from 'components/projects/Dialog/DeleteWebhookDialog';
+import { Button } from 'components/shared/Button';
 
 interface WebhookCardProps {
   webhookUrl: string;
@@ -26,8 +25,8 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
           C
         </Button>
         <Button
-          color="red"
           size="sm"
+          variant="danger"
           onClick={() => {
             setDeleteDialogOpen(true);
           }}

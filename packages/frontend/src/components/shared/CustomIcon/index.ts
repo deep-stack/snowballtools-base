@@ -71,6 +71,8 @@ export * from './TrashIcon';
 export * from './CopyUnfilledIcon';
 export * from './SwitchIcon';
 export * from './CollaboratorsIcon';
+export * from './ChevronUpSmallIcon';
+export * from './ChevronDownSmallIcon';
 
 // Templates
 export * from './templates';

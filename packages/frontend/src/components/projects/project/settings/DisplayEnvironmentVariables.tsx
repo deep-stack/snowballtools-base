@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import {
-  Card,
-  Collapse,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
+import { Collapse } from '@snowballtools/material-tailwind-react-fork';
 
 import EditEnvironmentVariableRow from './EditEnvironmentVariableRow';
 import { Environment, EnvironmentVariable } from 'gql-client';
+import {
+  ChevronDownSmallIcon,
+  ChevronUpSmallIcon,
+} from 'components/shared/CustomIcon';
 
 interface DisplayEnvironmentVariablesProps {
   environment: Environment;
@@ -24,23 +24,19 @@ const DisplayEnvironmentVariables = ({
   return (
     <>
       <div
-        className="flex gap-4 p-2 "
+        className="flex gap-4 p-2"
         onClick={() => setOpenCollapse((cur) => !cur)}
       >
-        <div>^</div>
+        {openCollapse ? <ChevronUpSmallIcon /> : <ChevronDownSmallIcon />}
         <div className="grow capitalize">{environment}</div>
         <div>{variables.length} variables</div>
       </div>
       <Collapse open={openCollapse}>
         {variables.length === 0 ? (
-          <Card className="bg-gray-300 flex items-center p-4">
-            <Typography variant="small" className="text-black">
-              No environment variables added yet.
-            </Typography>
-            <Typography variant="small">
-              Once you add them, they’ll show up here.
-            </Typography>
-          </Card>
+          <div className="bg-slate-100 rounded-xl flex-col p-4">
+            No environment variables added yet. Once you add them, they'll show
+            up here.
+          </div>
         ) : (
           variables.map((variable: EnvironmentVariable) => {
             return (
