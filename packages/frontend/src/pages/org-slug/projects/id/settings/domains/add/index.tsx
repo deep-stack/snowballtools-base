@@ -5,7 +5,7 @@ import {
   IconButton,
 } from '@snowballtools/material-tailwind-react-fork';
 
-import Stepper from '../../../../../../../components/Stepper';
+import Stepper from 'components/Stepper';
 
 const AddDomain = () => {
   const { id, orgSlug } = useParams();

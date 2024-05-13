@@ -8,8 +8,9 @@ import { OutletContextType } from '../../../../../types';
 import { Button } from 'components/shared/Button';
 import { Input } from 'components/shared/Input';
 import { Switch } from 'components/shared/Switch';
-import { Heading } from 'components/shared/Heading';
 import { useToast } from 'components/shared/Toast';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
+import { ProjectSettingHeader } from 'components/projects/project/settings/ProjectSettingHeader';
 
 type UpdateProdBranchValues = {
   prodBranch: string;
@@ -134,12 +135,8 @@ const GitTabPanel = () => {
   };
 
   return (
-    <div className="flex-col justify-start items-start gap-6 inline-flex">
-      <div className="self-stretch space-y-3 px-2">
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Git repository
-        </Heading>
-
+    <ProjectSettingContainer headingText="Git repository">
+      <div className="self-stretch space-y-3">
         <div className="flex justify-between mt-4">
           <div>
             <p className="text-slate-600 text-sm font-normal leading-tight">
@@ -171,11 +168,9 @@ const GitTabPanel = () => {
 
       <form
         onSubmit={handleSubmitProdBranch(updateProdBranchHandler)}
-        className="space-y-3 px-2"
+        className="space-y-3"
       >
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Production branch
-        </Heading>
+        <ProjectSettingHeader headingText="Production branch" />
         <p className="text-slate-600 text-sm font-normal leading-tight">
           By default, each commit pushed to the{' '}
           <span className="font-bold">{project.prodBranch}</span> branch
@@ -193,11 +188,9 @@ const GitTabPanel = () => {
 
       <form
         onSubmit={handleSubmitWebhooks(updateWebhooksHandler)}
-        className="space-y-3 px-2"
+        className="space-y-3"
       >
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Deploy webhooks
-        </Heading>
+        <ProjectSettingHeader headingText="Deploy webhooks" />
         <p className="text-slate-600 text-sm font-normal leading-tight">
           {' '}
           Webhooks configured to trigger when there is a change in a
@@ -228,7 +221,7 @@ const GitTabPanel = () => {
           );
         })}
       </div>
-    </div>
+    </ProjectSettingContainer>
   );
 };
 

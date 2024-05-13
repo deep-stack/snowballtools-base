@@ -2,11 +2,11 @@ import toast from 'react-hot-toast';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { useGQLClient } from '../../../../../../../context/GQLClientContext';
-import { Heading } from 'components/shared/Heading';
 import { Table } from 'components/shared/Table';
 import { Button } from 'components/shared/Button';
 import { InlineNotification } from 'components/shared/InlineNotification';
 import { ArrowRightCircleIcon } from 'components/shared/CustomIcon';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const Config = () => {
   const { id, orgSlug } = useParams();
@@ -40,18 +40,13 @@ const Config = () => {
 
   // TODO: Figure out DNS Provider if possible and update appropriatly
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <div>
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Setup domain name
-        </Heading>
-        <p className="text-blue-gray-500">
-          Add the following records to your domain.&nbsp;
-          <a href="https://www.namecheap.com/" target="_blank" rel="noreferrer">
-            <span className="underline">Go to NameCheap</span>
-          </a>
-        </p>
-      </div>
+    <ProjectSettingContainer headingText="Setup domain name">
+      <p className="text-blue-gray-500">
+        Add the following records to your domain.&nbsp;
+        <a href="https://www.namecheap.com/" target="_blank" rel="noreferrer">
+          <span className="underline">Go to NameCheap</span>
+        </a>
+      </p>
 
       <Table>
         <Table.Header>
@@ -90,7 +85,7 @@ const Config = () => {
       >
         Finish
       </Button>
-    </div>
+    </ProjectSettingContainer>
   );
 };
 

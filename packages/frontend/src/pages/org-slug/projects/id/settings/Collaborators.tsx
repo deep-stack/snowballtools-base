@@ -6,11 +6,11 @@ import MemberCard from 'components/projects/project/settings/MemberCard';
 import AddMemberDialog from 'components/projects/project/settings/AddMemberDialog';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { OutletContextType } from '../../../../../types';
-import { useToast } from 'components/shared/Toast';
+import { useToast } from '../../../../../components/shared/Toast';
 import { Button } from 'components/shared/Button';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { Badge } from 'components/shared/Badge';
-import { Heading } from 'components/shared/Heading';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const FIRST_MEMBER_CARD = 0;
 
@@ -105,16 +105,14 @@ const CollaboratorsTabPanel = () => {
   }, [project.id, fetchProjectMembers]);
 
   return (
-    <div className="space-y-3 px-2">
-      <div className="flex justify-between">
-        <div className="flex space-x-2">
-          <Heading className="text-sky-950 text-lg font-medium leading-normal">
-            Collaborators
-          </Heading>
-          <Badge size="sm" variant="inset">
-            {projectMembers.length + 1}
-          </Badge>
-        </div>
+    <ProjectSettingContainer
+      headingText="Collaborators"
+      badge={
+        <Badge size="sm" variant="inset">
+          {projectMembers.length + 1}
+        </Badge>
+      }
+      button={
         <Button
           size="md"
           onClick={() => setAddMemberDialogOpen((preVal) => !preVal)}
@@ -123,7 +121,8 @@ const CollaboratorsTabPanel = () => {
         >
           Add member
         </Button>
-      </div>
+      }
+    >
       <MemberCard
         member={project.owner}
         isFirstCard={true}
@@ -156,7 +155,7 @@ const CollaboratorsTabPanel = () => {
         open={addmemberDialogOpen}
         handleAddMember={addMemberHandler}
       />
-    </div>
+    </ProjectSettingContainer>
   );
 };
 
