@@ -2,16 +2,12 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { AddProjectMemberInput, Permission } from 'gql-client';
 
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Input,
-  Typography,
-  Checkbox,
-} from '@snowballtools/material-tailwind-react-fork';
+import { Typography } from '@snowballtools/material-tailwind-react-fork';
+
+import { Button } from 'components/shared/Button';
+import { Modal } from 'components/shared/Modal';
+import { Input } from 'components/shared/Input';
+import { Checkbox } from 'components/shared/Checkbox';
 
 interface AddMemberDialogProp {
   open: boolean;
@@ -61,59 +57,47 @@ const AddMemberDialog = ({
   }, []);
 
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
-        <div>Add member</div>
-        <Button
-          variant="outlined"
-          onClick={handleOpen}
-          className="mr-1 rounded-3xl"
-        >
-          X
-        </Button>
-      </DialogHeader>
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <DialogBody className="flex flex-col gap-2 p-4">
-          <Typography variant="small">
-            We will send an invitation link to this email address.
-          </Typography>
-          <Typography variant="small">Email address</Typography>
-          <Input
-            type="email"
-            {...register('emailAddress', {
-              required: 'email field cannot be empty',
-            })}
-          />
-          <Typography variant="small">Permissions</Typography>
-          <Typography variant="small">
-            You can change this later if required.
-          </Typography>
-          <Checkbox
-            label={Permission.View}
-            {...register(`permissions.view`)}
-            color="blue"
-          />
-          <Checkbox
-            label={Permission.Edit}
-            {...register(`permissions.edit`)}
-            color="blue"
-          />
-        </DialogBody>
-        <DialogFooter className="flex justify-start">
-          <Button variant="outlined" onClick={handleOpen} className="mr-1">
-            Cancel
-          </Button>
-          <Button
-            variant="gradient"
-            color="blue"
-            type="submit"
-            disabled={!isValid}
-          >
-            Send invite
-          </Button>
-        </DialogFooter>
-      </form>
-    </Dialog>
+    <Modal open={open} onOpenChange={handleOpen}>
+      <Modal.Content>
+        <Modal.Header>Add member</Modal.Header>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <Modal.Body className="flex flex-col gap-2 p-4">
+            <Typography variant="small">
+              We will send an invitation link to this email address.
+            </Typography>
+            <Typography variant="small">Email address</Typography>
+            <Input
+              type="email"
+              {...register('emailAddress', {
+                required: 'email field cannot be empty',
+              })}
+            />
+            <Typography variant="small">Permissions</Typography>
+            <Typography variant="small">
+              You can change this later if required.
+            </Typography>
+            <Checkbox
+              label={Permission.View}
+              {...register(`permissions.view`)}
+              color="blue"
+            />
+            <Checkbox
+              label={Permission.Edit}
+              {...register(`permissions.edit`)}
+              color="blue"
+            />
+          </Modal.Body>
+          <Modal.Footer className="flex justify-start">
+            <Button onClick={handleOpen} variant="secondary">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!isValid}>
+              Send invite
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal.Content>
+    </Modal>
   );
 };
 

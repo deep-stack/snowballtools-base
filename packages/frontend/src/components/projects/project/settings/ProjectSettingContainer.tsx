@@ -18,7 +18,10 @@ const ProjectSettingContainer: React.FC<ProjectSettingContainerProps> = ({
   ...props
 }: ProjectSettingContainerProps) => {
   return (
-    <div className={'flex-col justify-start gap-8 space-y-3 px-2'} {...props}>
+    <div
+      className={'flex-col justify-start gap-8 space-y-3 px-2 pb-6'}
+      {...props}
+    >
       <ProjectSettingHeader
         headingText={headingText}
         button={button}

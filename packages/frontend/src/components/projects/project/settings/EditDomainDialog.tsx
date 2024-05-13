@@ -4,18 +4,15 @@ import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
 
 import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Input,
   Typography,
   Select,
   Option,
 } from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from '../../../../context/GQLClientContext';
+import { Modal } from 'components/shared/Modal';
+import { Button } from 'components/shared/Button';
+import { Input } from 'components/shared/Input';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
@@ -122,77 +119,67 @@ const EditDomainDialog = ({
   }, [domain]);
 
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader className="flex justify-between">
-        <div>Edit domain</div>
-        <Button
-          variant="outlined"
-          onClick={handleOpen}
-          className="mr-1 rounded-3xl"
-        >
-          X
-        </Button>
-      </DialogHeader>
-      <form onSubmit={handleSubmit(updateDomainHandler)}>
-        <DialogBody className="flex flex-col gap-2 p-4">
-          <Typography variant="small">Domain name</Typography>
-          <Input {...register('name')} />
-          <Typography variant="small">Redirect to</Typography>
-          <Controller
-            name="redirectedTo"
-            control={control}
-            render={({ field }) => (
-              <Select {...field} disabled={isDisableDropdown}>
-                {redirectOptions.map((option, key) => (
-                  <Option key={key} value={option}>
-                    ^ {option}
-                  </Option>
-                ))}
-              </Select>
+    <Modal open={open} onOpenChange={handleOpen}>
+      <Modal.Content>
+        <Modal.Header>Edit domain</Modal.Header>
+        <form onSubmit={handleSubmit(updateDomainHandler)}>
+          <Modal.Body className="flex flex-col gap-2">
+            <Typography variant="small">Domain name</Typography>
+            <Input {...register('name')} />
+            <Typography variant="small">Redirect to</Typography>
+            <Controller
+              name="redirectedTo"
+              control={control}
+              render={({ field }) => (
+                <Select {...field} disabled={isDisableDropdown}>
+                  {redirectOptions.map((option, key) => (
+                    <Option key={key} value={option}>
+                      ^ {option}
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            />
+            {isDisableDropdown && (
+              <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
+                <div>^</div>
+                <Typography variant="small">
+                  Domain “
+                  {domainRedirectedFrom ? domainRedirectedFrom.name : ''}”
+                  redirects to this domain so you can not redirect this doman
+                  further.
+                </Typography>
+              </div>
             )}
-          />
-          {isDisableDropdown && (
-            <div className="flex p-2 gap-2 text-black bg-gray-300 rounded-lg">
-              <div>^</div>
-              <Typography variant="small">
-                Domain “{domainRedirectedFrom ? domainRedirectedFrom.name : ''}”
-                redirects to this domain so you can not redirect this doman
-                further.
+            <Typography variant="small">Git branch</Typography>
+            <Input
+              {...register('branch', {
+                validate: (value) =>
+                  Boolean(branches.length) ? branches.includes(value) : true,
+              })}
+              disabled={
+                !Boolean(branches.length) ||
+                watch('redirectedTo') !== DEFAULT_REDIRECT_OPTIONS[0]
+              }
+            />
+            {!isValid && (
+              <Typography variant="small" className="text-red-500">
+                We couldn&apos;t find this branch in the connected Git
+                repository.
               </Typography>
-            </div>
-          )}
-          <Typography variant="small">Git branch</Typography>
-          <Input
-            {...register('branch', {
-              validate: (value) =>
-                Boolean(branches.length) ? branches.includes(value) : true,
-            })}
-            disabled={
-              !Boolean(branches.length) ||
-              watch('redirectedTo') !== DEFAULT_REDIRECT_OPTIONS[0]
-            }
-          />
-          {!isValid && (
-            <Typography variant="small" className="text-red-500">
-              We couldn&apos;t find this branch in the connected Git repository.
-            </Typography>
-          )}
-        </DialogBody>
-        <DialogFooter className="flex justify-start">
-          <Button variant="outlined" onClick={handleOpen} className="mr-1">
-            Cancel
-          </Button>
-          <Button
-            variant="gradient"
-            color="blue"
-            type="submit"
-            disabled={!isDirty}
-          >
-            Save changes
-          </Button>
-        </DialogFooter>
-      </form>
-    </Dialog>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={handleOpen} className="mr-1">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!isDirty}>
+              Save changes
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal.Content>
+    </Modal>
   );
 };
 
