@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 
 import { DeleteWebhookDialog } from 'components/projects/Dialog/DeleteWebhookDialog';
 import { Button } from 'components/shared/Button';
+import { useToast } from 'components/shared/Toast';
 
 interface WebhookCardProps {
   webhookUrl: string;
@@ -10,6 +10,8 @@ interface WebhookCardProps {
 }
 
 const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
+  const { toast, dismiss } = useToast();
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   return (
     <div className="flex justify-between w-full mb-3">
@@ -19,10 +21,15 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
           size="sm"
           onClick={() => {
             navigator.clipboard.writeText(webhookUrl);
-            toast.success('Copied to clipboard');
+            toast({
+              id: 'webhook_copied',
+              title: 'Webhook copied to clipboard',
+              variant: 'success',
+              onDismiss: dismiss,
+            });
           }}
         >
-          C
+          Copy
         </Button>
         <Button
           size="sm"
