@@ -1,12 +1,13 @@
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  Typography,
   Alert,
   Button,
 } from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from '../../../../../../../context/GQLClientContext';
+import { Heading } from 'components/shared/Heading';
+import { Table } from 'components/shared/Table';
 
 const Config = () => {
   const { id, orgSlug } = useParams();
@@ -38,37 +39,44 @@ const Config = () => {
     }
   };
 
+  // TODO: Figure out DNS Provider if possible and update appropriatly
   return (
     <div className="flex flex-col gap-6 w-full">
       <div>
-        <Typography variant="h5">Configure DNS</Typography>
-        <Typography variant="small">
+        <Heading className="text-sky-950 text-lg font-medium leading-normal">
+          Setup domain name
+        </Heading>
+        <p className="text-blue-gray-500">
           Add the following records to your domain.&nbsp;
           <a href="https://www.namecheap.com/" target="_blank" rel="noreferrer">
-            <span className="underline">Go to NameCheap</span> ^
+            <span className="underline">Go to NameCheap</span>
           </a>
-        </Typography>
+        </p>
       </div>
 
-      <table className="rounded-lg w-3/4 text-blue-gray-600">
-        <tbody>
-          <tr className="border-b-2 border-gray-300">
-            <th className="text-left p-2">Type</th>
-            <th className="text-left p-2">Name</th>
-            <th className="text-left p-2">Value</th>
-          </tr>
-          <tr className="border-b-2 border-gray-300">
-            <td className="text-left p-2">A</td>
-            <td className="text-left p-2">@</td>
-            <td className="text-left p-2">56.49.19.21</td>
-          </tr>
-          <tr>
-            <td className="text-left p-2">CNAME</td>
-            <td className="text-left p-2">www</td>
-            <td className="text-left p-2">cname.snowballtools.xyz</td>
-          </tr>
-        </tbody>
-      </table>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeaderCell>Type</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Host</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Value</Table.ColumnHeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          <Table.Row>
+            <Table.RowHeaderCell>A</Table.RowHeaderCell>
+            <Table.Cell>@</Table.Cell>
+            <Table.Cell>56.49.19.21</Table.Cell>
+          </Table.Row>
+
+          <Table.Row>
+            <Table.RowHeaderCell>CNAME</Table.RowHeaderCell>
+            <Table.Cell>www</Table.Cell>
+            <Table.Cell>cname.snowballtools.xyz</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
 
       <Alert color="blue">
         <i>^</i>It can take up to 48 hours for these updates to reflect
