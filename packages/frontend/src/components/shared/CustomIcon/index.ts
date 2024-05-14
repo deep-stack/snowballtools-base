@@ -32,7 +32,7 @@ export * from './BuildingIcon';
 export * from './CheckRadioIcon';
 export * from './ChevronDownIcon';
 export * from './BranchIcon';
-export * from './GitHubLogo';
+export * from './GitHubLogoIcon';
 export * from './ClockIcon';
 export * from './HorizontalDotIcon';
 export * from './WarningDiamondIcon';
@@ -69,6 +69,8 @@ export * from './GoogleIcon';
 export * from './KeyIcon';
 export * from './TrashIcon';
 export * from './CopyUnfilledIcon';
+export * from './SwitchIcon';
+export * from './CollaboratorsIcon';
 
 // Templates
 export * from './templates';

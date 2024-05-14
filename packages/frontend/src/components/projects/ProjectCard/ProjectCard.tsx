@@ -12,7 +12,7 @@ import { Button } from 'components/shared/Button';
 import {
   BranchIcon,
   ClockIcon,
-  GitHubLogo,
+  GithubLogoIcon,
   HorizontalDotIcon,
   WarningDiamondIcon,
 } from 'components/shared/CustomIcon';
@@ -118,7 +118,7 @@ export const ProjectCard = ({
         <div className={theme.deploymentText()}>
           {hasDeployment ? (
             <>
-              <GitHubLogo />
+              <GithubLogoIcon />
               <span>{relativeTimeMs(project.deployments[0].createdAt)} on</span>
               <BranchIcon />
               <span>{project.deployments[0].branch}</span>
