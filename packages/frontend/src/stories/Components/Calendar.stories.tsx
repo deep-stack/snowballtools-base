@@ -6,14 +6,37 @@ const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar',
   component: Calendar,
   tags: ['autodocs'],
-  args: {
-    wrapperProps: 'any' as unknown as any,
-    calendarWrapperProps: 'any' as unknown as any,
-    footerProps: 'any' as unknown as any,
-    actions: 'any' as unknown as any,
-    onSelect: () => {},
-    onCancel: () => {},
-    onReset: () => {},
+  argTypes: {
+    wrapperProps: {
+      control: 'object',
+    },
+    calendarWrapperProps: {
+      control: 'object',
+    },
+    footerProps: {
+      control: 'object',
+    },
+    actions: {
+      control: 'object',
+    },
+    onSelect: {
+      action: 'select',
+    },
+    onCancel: {
+      action: 'cancel',
+    },
+    onReset: {
+      action: 'reset',
+    },
+    selectRange: {
+      control: 'boolean',
+    },
+    activeStartDate: {
+      control: 'date',
+    },
+    value: {
+      control: 'date',
+    },
   },
 };
 
@@ -21,7 +44,9 @@ export default meta;
 
 type Story = StoryObj<typeof Calendar>;
 
-export const Default: Story = {
+export const Default: Story = {};
+
+export const ToShowCode: Story = {
   render: ({
     wrapperProps,
     calendarWrapperProps,
@@ -30,6 +55,10 @@ export const Default: Story = {
     onSelect,
     onCancel,
     onReset,
+    selectRange,
+    activeStartDate,
+    value,
+    ...arg
   }) => (
     <Calendar
       wrapperProps={wrapperProps}
@@ -39,6 +68,19 @@ export const Default: Story = {
       onSelect={onSelect}
       onCancel={onCancel}
       onReset={onReset}
+      selectRange={selectRange}
+      activeStartDate={activeStartDate}
+      value={value}
+      {...arg}
     />
   ),
+  args: {
+    actions: <div>Actions</div>,
+    onSelect: (value) => console.log(value),
+    onCancel: () => console.log('Cancel'),
+    onReset: () => console.log('Reset'),
+    selectRange: false,
+    activeStartDate: new Date(),
+    value: new Date(),
+  },
 };
