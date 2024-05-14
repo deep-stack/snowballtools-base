@@ -1,45 +1,60 @@
 import React from 'react';
+import { tableTheme } from './Table.theme';
 
-const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <thead className="text-left">{children}</thead>
-);
-const Body: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <tbody className="text-left">{children}</tbody>
-);
-const Row: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <tr className="text-left">{children}</tr>
-);
-const ColumnHeaderCell: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-    {children}
-  </th>
-);
-const RowHeaderCell: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <th
-    scope="row"
-    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-  >
-    {children}
-  </th>
-);
-const Cell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-    {children}
-  </td>
-);
+type TableComponentProps = {
+  children: React.ReactNode;
+  variant?: keyof typeof tableTheme;
+};
 
-const Table: React.FC<{ children: React.ReactNode }> & {
+const useTheme = (variant: 'primary' | 'secondary' = 'primary') =>
+  tableTheme[variant];
+
+const Table: React.FC<TableComponentProps> & {
   Header: typeof Header;
   Body: typeof Body;
   Row: typeof Row;
   ColumnHeaderCell: typeof ColumnHeaderCell;
   RowHeaderCell: typeof RowHeaderCell;
   Cell: typeof Cell;
-} = ({ children }) => <table className="min-w-full">{children}</table>;
+} = ({ children, variant = 'primary' }) => {
+  const theme = useTheme(variant);
+  return <table className={theme.base}>{children}</table>;
+};
+
+const Header: React.FC<TableComponentProps> = ({ children, variant }) => {
+  const theme = useTheme(variant);
+  return <thead className={theme.header}>{children}</thead>;
+};
+
+const Body: React.FC<TableComponentProps> = ({ children }) => {
+  return <tbody>{children}</tbody>;
+};
+
+const Row: React.FC<TableComponentProps> = ({ children, variant }) => {
+  const theme = useTheme(variant);
+  return <tr className={theme.row}>{children}</tr>;
+};
+
+const ColumnHeaderCell: React.FC<TableComponentProps> = ({
+  children,
+  variant,
+}) => {
+  const theme = useTheme(variant);
+  return <th className={theme.columnHeaderCell}>{children}</th>;
+};
+
+const RowHeaderCell: React.FC<TableComponentProps> = ({
+  children,
+  variant,
+}) => {
+  const theme = useTheme(variant);
+  return <th className={theme.rowHeaderCell}>{children}</th>;
+};
+
+const Cell: React.FC<TableComponentProps> = ({ children, variant }) => {
+  const theme = useTheme(variant);
+  return <td className={theme.cell}>{children}</td>;
+};
 
 Table.Header = Header;
 Table.Body = Body;
