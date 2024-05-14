@@ -115,13 +115,13 @@ const DomainCard = ({
                   setEditDialogOpen((preVal) => !preVal);
                 }}
               >
-                ^ Edit domain
+                Edit Domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
               >
-                ^ Delete domain
+                Delete domain
               </MenuItem>
             </MenuList>
           </Menu>
@@ -141,7 +141,7 @@ const DomainCard = ({
 
       <Typography variant="small">Production</Typography>
       {domain.status === DomainStatus.Pending && (
-        <Card className="bg-gray-200 p-4 text-sm">
+        <Card className="bg-slate-100 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
             <Typography variant="small">
               ^ Add these records to your domain and refresh to check
@@ -152,7 +152,6 @@ const DomainCard = ({
             </Typography>
           ) : (
             <div className="flex gap-2 text-red-500 mb-2">
-              <div>^</div>
               <div className="grow">
                 Failed to verify records. DNS propagation can take up to 48
                 hours. Please ensure you added the correct records and refresh.
