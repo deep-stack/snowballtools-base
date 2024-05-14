@@ -10,6 +10,8 @@ export default defineConfig({
       assets: '/src/assets',
       context: '/src/context',
       components: '/src/components',
+      pages: '/src/pages',
+      types: '/src/types',
     },
   },
   define: {
