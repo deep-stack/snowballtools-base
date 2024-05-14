@@ -1,7 +1,10 @@
 import { StoryObj, Meta } from '@storybook/react';
 
-import { Input } from 'components/shared/Input';
+import { Input, InputTheme } from 'components/shared/Input';
 import { PlusIcon } from 'components/shared/CustomIcon';
+
+const inputStates: InputTheme['state'][] = ['default', 'error'];
+const inputSizes: InputTheme['size'][] = ['sm', 'md'];
 
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
@@ -17,6 +20,24 @@ const meta: Meta<typeof Input> = {
     helperText: {
       control: 'text',
     },
+    state: {
+      control: 'select',
+      options: inputStates,
+    },
+    size: {
+      control: 'select',
+      options: inputSizes,
+    },
+    appearance: {
+      control: 'text',
+    },
+    placeholder: {
+      control: 'text',
+    },
+  },
+  args: {
+    state: 'default',
+    size: 'md',
   },
 };
 
@@ -25,20 +46,28 @@ export default meta;
 type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
-  render: ({ label, description, leftIcon, rightIcon, helperText }) => (
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
     <Input
       label={label}
       description={description}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       helperText={helperText}
+      {...arg}
     />
   ),
 };
 
 export const WithLeftIcon: Story = {
-  render: ({ label, description, leftIcon }) => (
-    <Input label={label} description={description} leftIcon={leftIcon} />
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
   ),
   args: {
     ...Default.args,
@@ -47,8 +76,15 @@ export const WithLeftIcon: Story = {
 };
 
 export const WithRightIcon: Story = {
-  render: ({ label, description, rightIcon }) => (
-    <Input label={label} description={description} rightIcon={rightIcon} />
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
   ),
   args: {
     ...Default.args,
@@ -57,12 +93,14 @@ export const WithRightIcon: Story = {
 };
 
 export const WithLeftAndRightIcon: Story = {
-  render: ({ label, description, leftIcon, rightIcon }) => (
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
     <Input
       label={label}
       description={description}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
     />
   ),
   args: {
@@ -73,8 +111,15 @@ export const WithLeftAndRightIcon: Story = {
 };
 
 export const WithDescription: Story = {
-  render: ({ label, description }) => (
-    <Input label={label} description={description} />
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
   ),
   args: {
     ...Default.args,
@@ -83,7 +128,16 @@ export const WithDescription: Story = {
 };
 
 export const WithHelperText: Story = {
-  render: ({ helperText }) => <Input helperText={helperText} />,
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
+  ),
   args: {
     ...Default.args,
     helperText: 'helper text',
@@ -91,7 +145,16 @@ export const WithHelperText: Story = {
 };
 
 export const WithLabel: Story = {
-  render: ({ label }) => <Input label={label} />,
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
+  ),
   args: {
     ...Default.args,
     label: 'label',
@@ -99,7 +162,16 @@ export const WithLabel: Story = {
 };
 
 export const WithPlaceholder: Story = {
-  render: ({ placeholder }) => <Input placeholder={placeholder} />,
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
+  ),
   args: {
     ...Default.args,
     placeholder: 'placeholder',
@@ -107,7 +179,16 @@ export const WithPlaceholder: Story = {
 };
 
 export const WithValue: Story = {
-  render: ({ value }) => <Input value={value} />,
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
+  ),
   args: {
     ...Default.args,
     value: 'Value',
@@ -115,7 +196,16 @@ export const WithValue: Story = {
 };
 
 export const WithDisabled: Story = {
-  render: ({ disabled }) => <Input disabled={disabled} />,
+  render: ({ label, description, leftIcon, rightIcon, helperText, ...arg }) => (
+    <Input
+      label={label}
+      description={description}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+      helperText={helperText}
+      {...arg}
+    />
+  ),
   args: {
     ...Default.args,
     disabled: true,
