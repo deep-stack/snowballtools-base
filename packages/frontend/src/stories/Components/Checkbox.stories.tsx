@@ -6,13 +6,25 @@ const meta: Meta<typeof Checkbox> = {
   title: 'Components/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
-  args: {
-    label: 'string',
-    description: 'string',
-    checked: 'CheckedState' as unknown as any,
-    defaultChecked: 'CheckedState' as unknown as any,
-    required: 'boolean' as unknown as any,
-    onCheckedChange: '(checked: CheckedState) => void' as unknown as any,
+  argTypes: {
+    label: {
+      control: 'text',
+    },
+    description: {
+      control: 'text',
+    },
+    checked: {
+      control: 'boolean',
+    },
+    defaultChecked: {
+      control: 'boolean',
+    },
+    required: {
+      control: 'boolean',
+    },
+    onCheckedChange: {
+      action: 'checkedChange',
+    },
   },
 };
 
@@ -28,6 +40,7 @@ export const Default: Story = {
     defaultChecked,
     required,
     onCheckedChange,
+    ...arg
   }) => (
     <Checkbox
       label={label}
@@ -36,6 +49,15 @@ export const Default: Story = {
       defaultChecked={defaultChecked}
       required={required}
       onCheckedChange={onCheckedChange}
+      {...arg}
     />
   ),
+  args: {
+    label: 'Label',
+    description: 'Description',
+    checked: false,
+    defaultChecked: false,
+    required: false,
+    onCheckedChange: (checked: boolean) => console.log(checked),
+  },
 };
