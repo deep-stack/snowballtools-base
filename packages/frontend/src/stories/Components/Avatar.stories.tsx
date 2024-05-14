@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Avatar, AvatarVariants } from 'components/shared/Avatar';
-import { avatars, avatarsFallback } from '../pages/components/renders/avatar';
+import { avatars, avatarsFallback } from 'pages/components/renders/avatar';
 
 const avatarSizes: AvatarVariants['size'][] = [18, 20, 24, 28, 32, 36, 40, 44];
 const avatarVariants: AvatarVariants['type'][] = ['gray', 'orange', 'blue'];
