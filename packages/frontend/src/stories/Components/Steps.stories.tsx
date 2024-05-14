@@ -1,6 +1,22 @@
 import { StoryObj, Meta } from '@storybook/react';
 
-import { Steps } from 'components/shared/Steps';
+import { Steps, StepsTheme, StepProps } from 'components/shared/Steps';
+
+const stepsOrientations: StepsTheme['orientation'][] = [
+  'horizontal',
+  'vertical',
+];
+const stepsOptions: Pick<StepProps, 'label'>[] = [
+  {
+    label: 'Create repository',
+  },
+  {
+    label: 'Deploy',
+  },
+  {
+    label: `What's next?`,
+  },
+];
 
 const meta: Meta<typeof Steps> = {
   title: 'Components/Steps',
@@ -9,7 +25,7 @@ const meta: Meta<typeof Steps> = {
   argTypes: {
     orientation: {
       control: 'radio',
-      options: ['horizontal', 'vertical'],
+      options: stepsOrientations,
     },
     currentIndex: {
       control: 'number',
@@ -25,50 +41,23 @@ export default meta;
 type Story = StoryObj<typeof Steps>;
 
 export const Default: Story = {
-  render: ({ orientation, currentIndex, steps }) => (
-    <Steps
-      currentIndex={currentIndex}
-      steps={steps}
-      orientation={orientation}
-    />
-  ),
   args: {
-    currentIndex: 0,
-    steps: [
-      {
-        label: 'Create repository',
-      },
-      {
-        label: 'Deploy',
-      },
-      {
-        label: `What's next?`,
-      },
-    ],
+    orientation: 'vertical',
+    currentIndex: 1,
+    steps: stepsOptions,
   },
 };
 
 export const Horizontal: Story = {
-  render: ({ orientation, currentIndex, steps }) => (
-    <Steps
-      currentIndex={currentIndex}
-      steps={steps}
-      orientation={orientation}
-    />
-  ),
   args: {
-    currentIndex: 0,
-    steps: [
-      {
-        label: 'Create repository',
-      },
-      {
-        label: 'Deploy',
-      },
-      {
-        label: `What's next?`,
-      },
-    ],
+    ...Default.args,
     orientation: 'horizontal',
+  },
+};
+
+export const Past: Story = {
+  args: {
+    ...Default.args,
+    currentIndex: 2,
   },
 };
