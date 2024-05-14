@@ -7,8 +7,9 @@ import DomainCard from 'components/projects/project/settings/DomainCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { OutletContextType } from '../../../../../types';
 import { useOctokit } from '../../../../../context/OctokitContext';
-import { Heading } from 'components/shared/Heading';
 import { Button } from 'components/shared/Button';
+import { PlusIcon } from 'components/shared/CustomIcon';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const Domains = () => {
   const client = useGQLClient();
@@ -57,16 +58,20 @@ const Domains = () => {
   }, []);
 
   return (
-    <>
-      <div className="space-y-3 px-2">
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Domains
-        </Heading>
-        <Button as="a" href="add">
+    <ProjectSettingContainer
+      headingText="Domains"
+      button={
+        <Button
+          as="a"
+          href="add"
+          variant="secondary"
+          leftIcon={<PlusIcon />}
+          size="md"
+        >
           Add domain
         </Button>
-      </div>
-
+      }
+    >
       {domains.map((domain) => {
         return (
           <DomainCard
@@ -80,7 +85,7 @@ const Domains = () => {
           />
         );
       })}
-    </>
+    </ProjectSettingContainer>
   );
 };
 

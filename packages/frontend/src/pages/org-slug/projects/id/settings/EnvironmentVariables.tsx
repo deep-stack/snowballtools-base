@@ -16,6 +16,7 @@ import { Button } from 'components/shared/Button';
 import { Checkbox } from 'components/shared/Checkbox';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { InlineNotification } from 'components/shared/InlineNotification';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -130,10 +131,7 @@ export const EnvironmentVariablesTabPanel = () => {
   );
 
   return (
-    <div className="space-y-3 px-2">
-      <Heading className="text-sky-950 text-lg font-medium leading-normal">
-        Environment variables
-      </Heading>
+    <ProjectSettingContainer headingText="Environment variables">
       <p className="text-slate-600 text-sm font-normal leading-tight">
         A new deployment is required for your changes to take effect.
       </p>
@@ -236,6 +234,6 @@ export const EnvironmentVariablesTabPanel = () => {
           }}
         />
       </div>
-    </div>
+    </ProjectSettingContainer>
   );
 };

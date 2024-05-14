@@ -12,6 +12,7 @@ import { Button } from 'components/shared/Button';
 import { Select, SelectOption } from 'components/shared/Select';
 import { TrashIcon, CopyUnfilledIcon } from 'components/shared/CustomIcon';
 import { useToast } from 'components/shared/Toast';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const GeneralTabPanel = () => {
   const client = useGQLClient();
@@ -109,7 +110,7 @@ const GeneralTabPanel = () => {
   }, [project]);
 
   return (
-    <div className="flex-col justify-start items-start gap-6 inline-flex">
+    <ProjectSettingContainer headingText="Project Info">
       <form
         onSubmit={handleSubmit(async ({ appName, description }) => {
           const { updateProject } = await client.updateProject(project.id, {
@@ -120,11 +121,8 @@ const GeneralTabPanel = () => {
             await onUpdate();
           }
         })}
-        className="self-stretch space-y-3 px-2"
+        className="self-stretch space-y-3"
       >
-        <Heading className="text-sky-950 text-lg font-medium leading-normal">
-          Project Info
-        </Heading>
         <Input
           // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
           label="App name"
@@ -221,7 +219,7 @@ const GeneralTabPanel = () => {
           project={project}
         />
       </div>
-    </div>
+    </ProjectSettingContainer>
   );
 };
 
