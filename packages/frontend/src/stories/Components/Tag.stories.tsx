@@ -1,7 +1,17 @@
 import { StoryObj, Meta } from '@storybook/react';
 
-import { Tag } from 'components/shared/Tag';
-import { CheckIcon, PlusIcon } from 'components/shared/CustomIcon';
+import { Tag, TagTheme } from 'components/shared/Tag';
+import { PlusIcon } from 'components/shared/CustomIcon';
+
+const tagTypes: TagTheme['type'][] = [
+  'attention',
+  'negative',
+  'positive',
+  'emphasized',
+  'neutral',
+];
+const tagStyles: TagTheme['style'][] = ['default', 'minimal'];
+const tagSizes: TagTheme['size'][] = ['xs', 'sm'];
 
 const meta: Meta<typeof Tag> = {
   title: 'Components/Tag',
@@ -12,7 +22,7 @@ const meta: Meta<typeof Tag> = {
   },
   argTypes: {
     children: {
-      control: 'text',
+      control: 'object',
     },
     leftIcon: {
       control: 'object',
@@ -22,15 +32,15 @@ const meta: Meta<typeof Tag> = {
     },
     type: {
       control: 'select',
-      options: ['attention', 'negative', 'positive', 'emphasized', 'neutral'],
+      options: tagTypes,
     },
     style: {
       control: 'select',
-      options: ['default', 'outlined'],
+      options: tagStyles,
     },
     size: {
       control: 'select',
-      options: ['xs', 'sm'],
+      options: tagSizes,
     },
   },
 };
@@ -40,18 +50,6 @@ export default meta;
 type Story = StoryObj<typeof Tag>;
 
 export const Default: Story = {
-  render: ({ children, leftIcon, rightIcon, type, style, size, ...arg }) => (
-    <Tag
-      leftIcon={leftIcon}
-      rightIcon={rightIcon}
-      style={style}
-      type={type}
-      size={size}
-      {...arg}
-    >
-      {children}
-    </Tag>
-  ),
   args: {
     children: 'Tag',
     style: 'default',
@@ -61,15 +59,13 @@ export const Default: Story = {
 };
 
 export const WithLeftIcon: Story = {
-  render: ({ ...arg }) => <Tag {...arg} />,
   args: {
     ...Default.args,
-    leftIcon: <CheckIcon />,
+    leftIcon: <PlusIcon />,
   },
 };
 
 export const WithRightIcon: Story = {
-  render: ({ ...arg }) => <Tag {...arg} />,
   args: {
     ...Default.args,
     rightIcon: <PlusIcon />,
