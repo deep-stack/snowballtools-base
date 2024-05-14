@@ -7,7 +7,29 @@ const meta: Meta<typeof Modal> = {
   component: Modal,
   title: 'Components/Modal',
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    children: {
+      control: 'object',
+    },
+    hasCloseButton: {
+      type: 'boolean',
+    },
+    hasOverlay: {
+      type: 'boolean',
+    },
+    preventClickOutsideToClose: {
+      type: 'boolean',
+    },
+    fullPage: {
+      type: 'boolean',
+    },
+  },
+  args: {
+    hasCloseButton: true,
+    hasOverlay: true,
+    preventClickOutsideToClose: false,
+    fullPage: false,
+  },
 };
 
 export default meta;
