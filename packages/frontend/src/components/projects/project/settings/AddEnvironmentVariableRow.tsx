@@ -1,12 +1,10 @@
 import { UseFormRegister } from 'react-hook-form';
 
-import {
-  Typography,
-  Input,
-  IconButton,
-} from '@snowballtools/material-tailwind-react-fork';
+import { Input } from 'components/shared/Input';
 
-import { EnvironmentVariablesFormValues } from '../../../../types/types';
+import { EnvironmentVariablesFormValues } from '../../../../types';
+import { Button } from 'components/shared/Button';
+import { TrashIcon } from 'components/shared/CustomIcon';
 
 interface AddEnvironmentVariableRowProps {
   onDelete: () => void;
@@ -24,29 +22,32 @@ const AddEnvironmentVariableRow = ({
   return (
     <div className="flex gap-1 p-2">
       <div>
-        <Typography variant="small">Key</Typography>
         <Input
+          label="key"
+          size="sm"
           {...register(`variables.${index}.key`, {
             required: 'Key field cannot be empty',
           })}
         />
       </div>
       <div>
-        <Typography variant="small">Value</Typography>
         <Input
+          size="sm"
+          label="value"
           {...register(`variables.${index}.value`, {
             required: 'Value field cannot be empty',
           })}
         />
       </div>
       <div className="self-end">
-        <IconButton
+        <Button
           size="sm"
+          iconOnly
           onClick={() => onDelete()}
           disabled={isDeleteDisabled}
         >
-          {'>'}
-        </IconButton>
+          <TrashIcon />
+        </Button>
       </div>
     </div>
   );
