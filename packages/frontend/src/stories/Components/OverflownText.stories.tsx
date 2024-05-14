@@ -13,6 +13,9 @@ const meta: Meta<typeof OverflownText> = {
     children: {
       control: 'text',
     },
+    tooltipProps: {
+      control: 'object',
+    },
   },
 };
 
@@ -21,8 +24,10 @@ export default meta;
 type Story = StoryObj<typeof OverflownText>;
 
 export const Default: Story = {
-  render: ({ children, content }) => (
-    <OverflownText content={content}>{children}</OverflownText>
+  render: ({ children, content, ...args }) => (
+    <OverflownText content={content} {...args}>
+      {children}
+    </OverflownText>
   ),
   args: {
     children:
