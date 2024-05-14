@@ -1,17 +1,14 @@
 import { RequestError } from 'octokit';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { Domain } from 'gql-client';
 
-import {
-  Button,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
-
-import DomainCard from '../../../../../components/projects/project/settings/DomainCard';
+import DomainCard from 'components/projects/project/settings/DomainCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types/types';
+import { OutletContextType } from '../../../../../types';
 import { useOctokit } from '../../../../../context/OctokitContext';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
 
 const Domains = () => {
   const client = useGQLClient();
@@ -61,13 +58,13 @@ const Domains = () => {
 
   return (
     <>
-      <div className="flex justify-between p-2">
-        <Typography variant="h3">Domain</Typography>
-        <Link to="add">
-          <Button color="blue" variant="outlined" className="rounded-full">
-            <i>^</i> Add domain
-          </Button>
-        </Link>
+      <div className="space-y-3 px-2">
+        <Heading className="text-sky-950 text-lg font-medium leading-normal">
+          Domains
+        </Heading>
+        <Button as="a" href="add">
+          Add domain
+        </Button>
       </div>
 
       {domains.map((domain) => {
