@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from 'components/shared/Button';
+import { Button, ButtonTheme } from 'components/shared/Button';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import {
   renderButtonIcons,
@@ -9,6 +9,19 @@ import {
   renderLinks,
 } from 'pages/components/renders/button';
 
+const buttonVariants: ButtonTheme['variant'][] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'ghost',
+  'danger',
+  'danger-ghost',
+  'link',
+  'link-emphasized',
+];
+const buttonSizes: ButtonTheme['size'][] = ['lg', 'md', 'sm', 'xs'];
+const buttonShapes: ButtonTheme['shape'][] = ['default', 'rounded'];
+
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
@@ -16,20 +29,11 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['lg', 'md', 'sm', 'xs'],
+      options: buttonSizes,
     },
     variant: {
       control: 'select',
-      options: [
-        'primary',
-        'secondary',
-        'tertiary',
-        'ghost',
-        'danger',
-        'danger-ghost',
-        'link',
-        'link-emphasized',
-      ],
+      options: buttonVariants,
     },
     fullWidth: {
       control: 'boolean',
@@ -39,7 +43,7 @@ const meta: Meta<typeof Button> = {
     },
     shape: {
       control: 'select',
-      options: ['default', 'rounded'],
+      options: buttonShapes,
     },
     children: {
       control: 'text',
