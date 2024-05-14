@@ -1,7 +1,7 @@
 import { StoryObj, Meta } from '@storybook/react';
-import { PlusIcon } from 'components/shared/CustomIcon';
 
 import { IconWithFrame } from 'components/shared/IconWithFrame';
+import { PlusIcon } from 'components/shared/CustomIcon';
 
 const meta: Meta<typeof IconWithFrame> = {
   title: 'Components/IconWithFrame',
@@ -12,7 +12,7 @@ const meta: Meta<typeof IconWithFrame> = {
       control: 'object',
     },
     hasHighlight: {
-      control: 'boolean',
+      type: 'boolean',
     },
   },
 };
