@@ -1,16 +1,19 @@
 import { StoryObj, Meta } from '@storybook/react';
+
+import {
+  InlineNotification,
+  InlineNotificationTheme,
+} from 'components/shared/InlineNotification';
 import { PlusIcon } from 'components/shared/CustomIcon';
 
-import { InlineNotification } from 'components/shared/InlineNotification';
-
-const inlineNotificationVariants = [
+const inlineNotificationVariants: InlineNotificationTheme['variant'][] = [
   'info',
   'danger',
   'warning',
   'success',
   'generic',
 ];
-const inlineNotificationSizes = ['md', 'sm'];
+const inlineNotificationSizes: InlineNotificationTheme['size'][] = ['sm', 'md'];
 
 const meta: Meta<typeof InlineNotification> = {
   title: 'Components/InlineNotification',
@@ -33,6 +36,9 @@ const meta: Meta<typeof InlineNotification> = {
     size: {
       control: 'select',
       options: inlineNotificationSizes,
+    },
+    hasDescription: {
+      control: 'boolean',
     },
   },
 };
