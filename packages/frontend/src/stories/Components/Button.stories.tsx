@@ -7,7 +7,7 @@ import {
   renderButtons,
   renderDisabledButtons,
   renderLinks,
-} from '../pages/components/renders/button';
+} from 'pages/components/renders/button';
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
@@ -100,7 +100,9 @@ export const ButtonAll: Story = {
   render: () => (
     <div className="flex gap-5 flex-col items-center">
       {/* Button */}
-      <h1 className="text-2xl font-bold items-center justify-between">Button</h1>
+      <h1 className="text-2xl font-bold items-center justify-between">
+        Button
+      </h1>
       <div className="flex flex-col gap-10">
         {renderButtons()}
         {renderButtonIcons()}
