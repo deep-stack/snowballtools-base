@@ -1,10 +1,9 @@
 import { UseFormRegister } from 'react-hook-form';
 
-import { Input } from 'components/shared/Input';
-
 import { EnvironmentVariablesFormValues } from '../../../../types';
 import { Button } from 'components/shared/Button';
 import { TrashIcon } from 'components/shared/CustomIcon';
+import { Input } from 'components/shared/Input';
 
 interface AddEnvironmentVariableRowProps {
   onDelete: () => void;
@@ -20,28 +19,24 @@ const AddEnvironmentVariableRow = ({
   isDeleteDisabled,
 }: AddEnvironmentVariableRowProps) => {
   return (
-    <div className="flex gap-1 p-2">
-      <div>
-        <Input
-          label="key"
-          size="sm"
-          {...register(`variables.${index}.key`, {
-            required: 'Key field cannot be empty',
-          })}
-        />
-      </div>
-      <div>
-        <Input
-          size="sm"
-          label="value"
-          {...register(`variables.${index}.value`, {
-            required: 'Value field cannot be empty',
-          })}
-        />
-      </div>
+    <div className="flex gap-1 py-4 self-stretch">
+      <Input
+        size="md"
+        {...register(`variables.${index}.key`, {
+          required: 'Key field cannot be empty',
+        })}
+        label={index === 0 ? 'Key' : undefined}
+      />
+      <Input
+        size="md"
+        label={index === 0 ? 'Value' : undefined}
+        {...register(`variables.${index}.value`, {
+          required: 'Value field cannot be empty',
+        })}
+      />
       <div className="self-end">
         <Button
-          size="sm"
+          size="md"
           iconOnly
           onClick={() => onDelete()}
           disabled={isDeleteDisabled}

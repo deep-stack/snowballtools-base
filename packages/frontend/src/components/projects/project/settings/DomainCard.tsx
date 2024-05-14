@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { Domain, DomainStatus, Project } from 'gql-client';
 
 import {
@@ -15,6 +14,7 @@ import {
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteDomainDialog } from 'components/projects/Dialog/DeleteDomainDialog';
+import { useToast } from 'components/shared/Toast';
 
 enum RefreshStatus {
   IDLE,
@@ -47,6 +47,7 @@ const DomainCard = ({
   project,
   onUpdate,
 }: DomainCardProps) => {
+  const { toast, dismiss } = useToast();
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -58,9 +59,19 @@ const DomainCard = ({
 
     if (deleteDomain) {
       onUpdate();
-      toast.success(`Domain ${domain.name} deleted successfully`);
+      toast({
+        id: 'domain_deleted_success',
+        title: 'Domain deleted',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error(`Error deleting domain ${domain.name}`);
+      toast({
+        id: 'domain_deleted_error',
+        title: `Error deleting domain ${domain.name}`,
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 

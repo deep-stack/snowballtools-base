@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { ChevronUpDown } from 'components/shared/CustomIcon/ChevronUpDown';
+import { ChevronUpDown } from 'components/shared/CustomIcon';
 
 const meta: Meta<typeof ChevronUpDown> = {
   title: 'Icons/ChevronUpDown',

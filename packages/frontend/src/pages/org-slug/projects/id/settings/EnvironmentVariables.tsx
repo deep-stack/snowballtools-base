@@ -4,20 +4,18 @@ import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import { Environment, EnvironmentVariable } from 'gql-client';
 
-import {
-  Collapse,
-  Card,
-  Chip,
-} from '@snowballtools/material-tailwind-react-fork';
+import { Collapse } from '@snowballtools/material-tailwind-react-fork';
 
-import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { EnvironmentVariablesFormValues } from '../../../../../types';
 import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
+import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { EnvironmentVariablesFormValues } from '../../../../../types';
 import HorizontalLine from 'components/HorizontalLine';
 import { Heading } from 'components/shared/Heading';
 import { Button } from 'components/shared/Button';
 import { Checkbox } from 'components/shared/Checkbox';
+import { PlusIcon } from 'components/shared/CustomIcon';
+import { InlineNotification } from 'components/shared/InlineNotification';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -139,15 +137,18 @@ export const EnvironmentVariablesTabPanel = () => {
       <p className="text-slate-600 text-sm font-normal leading-tight">
         A new deployment is required for your changes to take effect.
       </p>
-      <div className="bg-gray-300 rounded-lg p-2">
-        <div
-          className="text-black"
+      <div className="bg-slate-100 rounded-xl flex-col">
+        <Heading
           onClick={() => setCreateNewVariable((cur) => !cur)}
+          className="p-4"
         >
-          + Create new variable
-        </div>
+          <div className="flex gap-2 items-center">
+            <PlusIcon />
+            <span>Create new variable</span>
+          </div>
+        </Heading>
         <Collapse open={createNewVariable}>
-          <Card className="bg-white p-2">
+          <div className="p-4 bg-slate-100">
             <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
               {fields.map((field, index) => {
                 return (
@@ -162,7 +163,7 @@ export const EnvironmentVariablesTabPanel = () => {
               })}
               <div className="flex gap-1 p-2">
                 <Button
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     append({
                       key: '',
@@ -173,19 +174,18 @@ export const EnvironmentVariablesTabPanel = () => {
                   + Add variable
                 </Button>
                 {/* TODO: Implement import environment varible functionality */}
-                <Button size="sm" disabled>
+                <Button size="md" disabled>
                   Import .env
                 </Button>
               </div>
               {isFieldEmpty && (
-                <Chip
-                  value="^ Please ensure no fields are empty before saving."
-                  variant="outlined"
-                  color="red"
-                  size="sm"
+                <InlineNotification
+                  title="Please ensure no fields are empty before saving."
+                  variant="danger"
+                  size="md"
                 />
               )}
-              <div>
+              <div className="flex gap-2 p-2">
                 <Checkbox
                   label="Production"
                   {...register(`environment.production`)}
@@ -208,7 +208,7 @@ export const EnvironmentVariablesTabPanel = () => {
                 </Button>
               </div>
             </form>
-          </Card>
+          </div>
         </Collapse>
       </div>
       <div className="p-2">
