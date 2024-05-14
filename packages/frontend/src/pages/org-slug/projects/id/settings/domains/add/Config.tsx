@@ -1,13 +1,12 @@
 import toast from 'react-hot-toast';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import {
-  Alert,
-  Button,
-} from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from '../../../../../../../context/GQLClientContext';
 import { Heading } from 'components/shared/Heading';
 import { Table } from 'components/shared/Table';
+import { Button } from 'components/shared/Button';
+import { InlineNotification } from 'components/shared/InlineNotification';
+import { ArrowRightCircleIcon } from 'components/shared/CustomIcon';
 
 const Config = () => {
   const { id, orgSlug } = useParams();
@@ -78,12 +77,18 @@ const Config = () => {
         </Table.Body>
       </Table>
 
-      <Alert color="blue">
-        <i>^</i>It can take up to 48 hours for these updates to reflect
-        globally.
-      </Alert>
-      <Button className="w-fit" color="blue" onClick={handleSubmitDomain}>
-        Finish <i>{'>'}</i>
+      <InlineNotification
+        variant="info"
+        title={`It can take up to 48 hours for these updates to reflect
+        globally.`}
+      />
+      <Button
+        className="w-fit"
+        onClick={handleSubmitDomain}
+        variant="primary"
+        rightIcon={<ArrowRightCircleIcon />}
+      >
+        Finish
       </Button>
     </div>
   );

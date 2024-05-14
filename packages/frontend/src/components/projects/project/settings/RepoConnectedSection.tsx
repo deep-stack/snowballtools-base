@@ -1,12 +1,10 @@
 import { useState } from 'react';
 
-import {
-  Button,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
+import { Typography } from '@snowballtools/material-tailwind-react-fork';
 
-import { GitRepositoryDetails } from '../../../../types/types';
+import { GitRepositoryDetails } from '../../../../types';
 import { DisconnectRepositoryDialog } from 'components/projects/Dialog/DisconnectRepositoryDialog';
+import { Button } from 'components/shared/Button';
 
 const RepoConnectedSection = ({
   linkedRepo,
@@ -24,12 +22,8 @@ const RepoConnectedSection = ({
         <Typography variant="small">Connected just now</Typography>
       </div>
       <div>
-        <Button
-          onClick={() => setDisconnectRepoDialogOpen(true)}
-          variant="outlined"
-          size="sm"
-        >
-          ^ Disconnect
+        <Button onClick={() => setDisconnectRepoDialogOpen(true)} size="sm">
+          Disconnect
         </Button>
       </div>
       <DisconnectRepositoryDialog
