@@ -17,7 +17,10 @@ const meta: Meta<typeof Switch> = {
       control: 'object',
     },
     onCheckedChange: {
-      action: 'onCheckedChange',
+      action: 'checkedChange',
+    },
+    fullWidth: {
+      control: 'boolean',
     },
   },
 };
@@ -26,26 +29,65 @@ export default meta;
 
 type Story = StoryObj<typeof Switch>;
 
-export const Default: Story = {
-  render: ({ label, description, wrapperProps, onCheckedChange }) => (
-    <Switch
-      label={label}
-      description={description}
-      wrapperProps={wrapperProps}
-      checked={false}
-      onCheckedChange={onCheckedChange}
-    />
-  ),
-};
+export const Default: Story = {};
 
 export const Checked: Story = {
-  render: ({ label, description, wrapperProps, onCheckedChange }) => (
-    <Switch
-      label={label}
-      description={description}
-      wrapperProps={wrapperProps}
-      checked={true}
-      onCheckedChange={onCheckedChange}
-    />
-  ),
+  args: {
+    checked: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const WithLabel: Story = {
+  args: {
+    label: 'Label',
+  },
+};
+
+export const WithDescription: Story = {
+  args: {
+    description: 'Description',
+  },
+};
+
+export const WithWrapperProps: Story = {
+  args: {
+    wrapperProps: {
+      style: {
+        border: '1px solid red',
+      },
+    },
+  },
+};
+
+export const WithLabelAndDescription: Story = {
+  args: {
+    label: 'Label',
+    description: 'Description',
+  },
+};
+
+export const WithLabelAndDescriptionAndWrapperProps: Story = {
+  args: {
+    label: 'Label',
+    description: 'Description',
+    wrapperProps: {
+      style: {
+        border: '1px solid red',
+      },
+    },
+  },
+};
+
+export const FullWidthWithLabelAndDescription: Story = {
+  args: {
+    fullWidth: true,
+    label: 'Label',
+    description: 'Description',
+  },
 };
