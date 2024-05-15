@@ -32,7 +32,7 @@ export * from './BuildingIcon';
 export * from './CheckRadioIcon';
 export * from './ChevronDownIcon';
 export * from './BranchIcon';
-export * from './GitHubLogo';
+export * from './GitHubLogoIcon';
 export * from './ClockIcon';
 export * from './HorizontalDotIcon';
 export * from './WarningDiamondIcon';
@@ -62,6 +62,17 @@ export * from './WarningTriangleIcon';
 export * from './CheckRadioOutlineIcon';
 export * from './TrendingIcon';
 export * from './ChevronDoubleDownIcon';
+export * from './GearIcon';
+export * from './AppleIcon';
+export * from './CalendarDaysIcon';
+export * from './GoogleIcon';
+export * from './KeyIcon';
+export * from './TrashIcon';
+export * from './CopyUnfilledIcon';
+export * from './SwitchIcon';
+export * from './CollaboratorsIcon';
+export * from './ChevronUpSmallIcon';
+export * from './ChevronDownSmallIcon';
 
 // Templates
 export * from './templates';

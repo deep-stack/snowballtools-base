@@ -3,8 +3,6 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
 import { motion } from 'framer-motion';
 
-import { useDisconnect } from 'wagmi';
-
 import { useGQLClient } from 'context/GQLClientContext';
 import {
   GlobeIcon,
@@ -31,7 +29,6 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
-  const { disconnect } = useDisconnect();
   const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [user, setUser] = useState<User>();
@@ -90,10 +87,9 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       method: 'POST',
       credentials: 'include',
     });
-    disconnect();
     localStorage.clear();
     navigate('/login');
-  }, [disconnect, navigate]);
+  }, [navigate]);
 
   return (
     <motion.nav

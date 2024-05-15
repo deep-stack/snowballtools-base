@@ -1,54 +1,36 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { Organization } from 'gql-client';
-
-import {
-  Button,
-  Typography,
-  Input,
-  Option,
-} from '@snowballtools/material-tailwind-react-fork';
+import { useOutletContext } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import DeleteProjectDialog from 'components/projects/project/settings/DeleteProjectDialog';
 import { useGQLClient } from 'context/GQLClientContext';
-import AsyncSelect from 'components/shared/AsyncSelect';
-import { OutletContextType } from '../../../../../types/types';
+import { OutletContextType } from '../../../../../types';
 import { TransferProjectDialog } from 'components/projects/Dialog/TransferProjectDialog';
-
-const CopyIcon = ({ value }: { value: string }) => {
-  return (
-    <span
-      onClick={() => {
-        navigator.clipboard.writeText(value);
-        toast.success('Project ID copied');
-      }}
-      className="cursor-pointer"
-    >
-      ^
-    </span>
-  );
-};
+import { Input } from 'components/shared/Input';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
+import { Select, SelectOption } from 'components/shared/Select';
+import { TrashIcon, CopyUnfilledIcon } from 'components/shared/CustomIcon';
+import { useToast } from 'components/shared/Toast';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const GeneralTabPanel = () => {
   const client = useGQLClient();
+  const { toast } = useToast();
   const { project, onUpdate } = useOutletContext<OutletContextType>();
 
   const [transferOrganizations, setTransferOrganizations] = useState<
-    Organization[]
+    SelectOption[]
   >([]);
   const [selectedTransferOrganization, setSelectedTransferOrganization] =
-    useState('');
+    useState<SelectOption>();
 
-  const {
-    handleSubmit: handleTransfer,
-    control,
-    formState,
-    reset: transferFormReset,
-  } = useForm({
+  const { handleSubmit: handleTransfer, reset: transferFormReset } = useForm({
     defaultValues: {
-      orgId: '',
+      org: {
+        value: '',
+        label: '',
+      },
     },
   });
 
@@ -75,33 +57,47 @@ const GeneralTabPanel = () => {
     const orgsToTransfer = organizations.filter(
       (org) => org.id !== project.organization.id,
     );
-    setTransferOrganizations(orgsToTransfer);
+    const selectableOrgs: SelectOption[] = orgsToTransfer.map((org) => ({
+      value: org.id,
+      label: org.name,
+    }));
+
+    setTransferOrganizations(selectableOrgs);
   }, [project]);
 
   const handleTransferProject = useCallback(async () => {
     const { updateProject: isTransferred } = await client.updateProject(
       project.id,
       {
-        organizationId: selectedTransferOrganization,
+        organizationId: selectedTransferOrganization?.value,
       },
     );
     setOpenTransferDialog(!openTransferDialog);
 
     if (isTransferred) {
-      toast.success('Project transferred');
+      toast({
+        id: 'project_transferred',
+        title: 'Project transferred successfully',
+        variant: 'success',
+        onDismiss() {},
+      });
       await fetchUserOrganizations();
       await onUpdate();
       transferFormReset();
     } else {
-      toast.error('Project not transrfered');
+      toast({
+        id: 'project_transfer_failed',
+        title: 'Project transfer failed',
+        variant: 'error',
+        onDismiss() {},
+      });
     }
   }, [project, selectedTransferOrganization]);
 
   const selectedUserOrgName = useMemo(() => {
     return (
-      transferOrganizations.find(
-        (org) => org.id === selectedTransferOrganization,
-      )?.name || ''
+      transferOrganizations.find((org) => org === selectedTransferOrganization)
+        ?.label || ''
     );
   }, [transferOrganizations, selectedTransferOrganization]);
 
@@ -114,7 +110,7 @@ const GeneralTabPanel = () => {
   }, [project]);
 
   return (
-    <>
+    <ProjectSettingContainer headingText="Project Info">
       <form
         onSubmit={handleSubmit(async ({ appName, description }) => {
           const { updateProject } = await client.updateProject(project.id, {
@@ -125,110 +121,97 @@ const GeneralTabPanel = () => {
             await onUpdate();
           }
         })}
+        className="self-stretch space-y-3"
       >
-        <Typography variant="h6">Project info</Typography>
-        <Typography variant="small" className="font-medium text-gray-800">
-          App name
-        </Typography>
         <Input
-          variant="outlined"
           // TODO: Debug issue: https://github.com/creativetimofficial/material-tailwind/issues/427
-
+          label="App name"
           size="md"
           {...register('appName')}
         />
-        <Typography variant="small" className="font-medium text-gray-800">
-          Description (Optional)
-        </Typography>
-        <Input variant="outlined" size="md" {...register('description')} />
-        <Typography variant="small" className="font-medium text-gray-800">
-          Project ID
-        </Typography>
         <Input
-          variant="outlined"
-          value={project.id}
           size="md"
-          disabled
-          icon={<CopyIcon value={project.id} />}
+          label="Description (Optional)"
+          {...register('description')}
         />
+        <div
+          onClick={() => {
+            navigator.clipboard.writeText(project.id);
+            toast({
+              id: 'copied_project_id',
+              title: 'Project ID copied to clipboard',
+              variant: 'success',
+              onDismiss() {},
+            });
+          }}
+        >
+          <Input
+            value={project.id}
+            size="md"
+            disabled
+            label="Project ID"
+            rightIcon={<CopyUnfilledIcon />}
+          />
+        </div>
         <Button
           type="submit"
-          variant="gradient"
-          size="sm"
-          className="mt-1"
+          size="md"
           disabled={!updateProjectFormState.isDirty}
         >
           Save
         </Button>
       </form>
-      <div className="mb-1">
-        <Typography variant="h6">Transfer project</Typography>
-        <Typography variant="small">
+      <form
+        onSubmit={handleTransfer((org) => {
+          setSelectedTransferOrganization(org.org);
+          setOpenTransferDialog(!openTransferDialog);
+        })}
+        className="self-stretch space-y-3 px-2"
+      >
+        <Heading className="text-sky-950 text-lg font-medium leading-normal">
+          Transfer project
+        </Heading>
+        <p className="text-slate-600 text-sm font-normal leading-tight">
           Transfer this app to your personal account or a team you are a member
           of.
-          <Link to="" className="text-blue-500">
-            Learn more
-          </Link>
-        </Typography>
-        <form
-          onSubmit={handleTransfer(({ orgId }) => {
-            setSelectedTransferOrganization(orgId);
-            setOpenTransferDialog(!openTransferDialog);
-          })}
-        >
-          <Typography variant="small" className="font-medium text-gray-800">
-            Choose team
-          </Typography>
-          <Controller
-            name="orgId"
-            rules={{ required: 'This field is required' }}
-            control={control}
-            render={({ field }) => (
-              <AsyncSelect
-                {...field}
-                // TODO: Implement placeholder for select
-                label={!field.value ? 'Select an account / team' : ''}
-              >
-                {transferOrganizations.map((org, key) => (
-                  <Option key={key} value={org.id}>
-                    ^ {org.name}
-                  </Option>
-                ))}
-              </AsyncSelect>
-            )}
-          />
-          <Button
-            variant="gradient"
-            size="sm"
-            className="mt-1"
-            disabled={!formState.isValid}
-            type="submit"
-          >
-            Transfer
-          </Button>
-        </form>
-        <TransferProjectDialog
-          handleCancel={() => setOpenTransferDialog(!openTransferDialog)}
-          open={openTransferDialog}
-          handleConfirm={handleTransferProject}
-          projectName={project.name}
-          from={project.organization.name}
-          to={selectedUserOrgName}
+        </p>
+        <Select
+          disabled
+          size="md"
+          placeholder="Select an account / team"
+          options={transferOrganizations}
+          value={selectedTransferOrganization}
+          onChange={(value) =>
+            setSelectedTransferOrganization(value as SelectOption)
+          }
         />
-      </div>
-      <div className="mb-1">
-        <Typography variant="h6">Delete project</Typography>
-        <Typography variant="small">
+        <Button disabled type="submit" size="md">
+          Transfer
+        </Button>
+      </form>
+      <TransferProjectDialog
+        handleCancel={() => setOpenTransferDialog(!openTransferDialog)}
+        open={openTransferDialog}
+        handleConfirm={handleTransferProject}
+        projectName={project.name}
+        from={project.organization.name}
+        to={selectedUserOrgName}
+      />
+      <div className="self-stretch space-y-3 px-2">
+        <Heading className="text-sky-950 text-lg font-medium leading-normal">
+          Delete project
+        </Heading>
+        <p className="text-slate-600 text-sm font-normal leading-tight">
           The project will be permanently deleted, including its deployments and
           domains. This action is irreversible and can not be undone.
-        </Typography>
+        </p>
         <Button
-          variant="gradient"
-          size="sm"
-          color="red"
+          size="md"
+          variant="danger"
           onClick={handleDeleteProjectDialog}
+          leftIcon={<TrashIcon />}
         >
-          ^ Delete project
+          Delete project
         </Button>
         <DeleteProjectDialog
           handleOpen={handleDeleteProjectDialog}
@@ -236,7 +219,7 @@ const GeneralTabPanel = () => {
           project={project}
         />
       </div>
-    </>
+    </ProjectSettingContainer>
   );
 };
 

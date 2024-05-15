@@ -20,7 +20,7 @@ export const Done = ({ continueTo }: Props) => {
             You&apos;re in!
           </div>
           <div className="text-center text-slate-600 text-sm font-normal font-['Inter'] leading-tight">
-            It's time to get your next project rolling!
+            It's time to get your project rolling 😎
           </div>
         </div>
       </div>

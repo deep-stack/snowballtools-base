@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
 import { signInWithEthereum } from 'utils/siwe';
 import { useSnowball } from 'utils/use-snowball';
+import { logError } from 'utils/log-error';
 
 type Provider = 'google' | 'github' | 'apple' | 'email' | 'passkey';
 
@@ -52,11 +53,12 @@ export const Login = ({ onDone }: Props) => {
           setError(result.error);
           setProvider(false);
           wallet = undefined;
+          logError(new Error(result.error));
           return;
         }
       } catch (err: any) {
         setError(err.message);
-        console.log(err.message, err.name, err.details);
+        logError(err);
         setProvider(false);
         return;
       }

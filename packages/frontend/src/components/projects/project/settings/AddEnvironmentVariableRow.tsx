@@ -1,12 +1,9 @@
 import { UseFormRegister } from 'react-hook-form';
 
-import {
-  Typography,
-  Input,
-  IconButton,
-} from '@snowballtools/material-tailwind-react-fork';
-
-import { EnvironmentVariablesFormValues } from '../../../../types/types';
+import { EnvironmentVariablesFormValues } from '../../../../types';
+import { Button } from 'components/shared/Button';
+import { TrashIcon } from 'components/shared/CustomIcon';
+import { Input } from 'components/shared/Input';
 
 interface AddEnvironmentVariableRowProps {
   onDelete: () => void;
@@ -22,31 +19,30 @@ const AddEnvironmentVariableRow = ({
   isDeleteDisabled,
 }: AddEnvironmentVariableRowProps) => {
   return (
-    <div className="flex gap-1 p-2">
-      <div>
-        <Typography variant="small">Key</Typography>
-        <Input
-          {...register(`variables.${index}.key`, {
-            required: 'Key field cannot be empty',
-          })}
-        />
-      </div>
-      <div>
-        <Typography variant="small">Value</Typography>
-        <Input
-          {...register(`variables.${index}.value`, {
-            required: 'Value field cannot be empty',
-          })}
-        />
-      </div>
+    <div className="flex py-4 self-stretch">
+      <Input
+        size="md"
+        {...register(`variables.${index}.key`, {
+          required: 'Key field cannot be empty',
+        })}
+        label={index === 0 ? 'Key' : undefined}
+      />
+      <Input
+        size="md"
+        label={index === 0 ? 'Value' : undefined}
+        {...register(`variables.${index}.value`, {
+          required: 'Value field cannot be empty',
+        })}
+      />
       <div className="self-end">
-        <IconButton
-          size="sm"
-          onClick={() => onDelete()}
+        <Button
+          size="md"
+          iconOnly
+          onClick={onDelete}
           disabled={isDeleteDisabled}
         >
-          {'>'}
-        </IconButton>
+          <TrashIcon />
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
-export const GitHubLogo = (props: CustomIconProps) => {
+export const GithubLogoIcon = (props: CustomIconProps) => {
   return (
     <CustomIcon
       width="12"

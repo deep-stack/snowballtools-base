@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { Domain, DomainStatus, Project } from 'gql-client';
 
 import {
@@ -15,6 +14,7 @@ import {
 import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteDomainDialog } from 'components/projects/Dialog/DeleteDomainDialog';
+import { useToast } from 'components/shared/Toast';
 
 enum RefreshStatus {
   IDLE,
@@ -47,6 +47,7 @@ const DomainCard = ({
   project,
   onUpdate,
 }: DomainCardProps) => {
+  const { toast, dismiss } = useToast();
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -58,9 +59,19 @@ const DomainCard = ({
 
     if (deleteDomain) {
       onUpdate();
-      toast.success(`Domain ${domain.name} deleted successfully`);
+      toast({
+        id: 'domain_deleted_success',
+        title: 'Domain deleted',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error(`Error deleting domain ${domain.name}`);
+      toast({
+        id: 'domain_deleted_error',
+        title: `Error deleting domain ${domain.name}`,
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
@@ -104,13 +115,13 @@ const DomainCard = ({
                   setEditDialogOpen((preVal) => !preVal);
                 }}
               >
-                ^ Edit domain
+                Edit Domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
               >
-                ^ Delete domain
+                Delete domain
               </MenuItem>
             </MenuList>
           </Menu>
@@ -130,7 +141,7 @@ const DomainCard = ({
 
       <Typography variant="small">Production</Typography>
       {domain.status === DomainStatus.Pending && (
-        <Card className="bg-gray-200 p-4 text-sm">
+        <Card className="bg-slate-100 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
             <Typography variant="small">
               ^ Add these records to your domain and refresh to check
@@ -141,7 +152,6 @@ const DomainCard = ({
             </Typography>
           ) : (
             <div className="flex gap-2 text-red-500 mb-2">
-              <div>^</div>
               <div className="grow">
                 Failed to verify records. DNS propagation can take up to 48
                 hours. Please ensure you added the correct records and refresh.

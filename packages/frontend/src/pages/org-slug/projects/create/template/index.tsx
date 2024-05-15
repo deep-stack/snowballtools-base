@@ -64,9 +64,16 @@ const CreateRepo = () => {
           return;
         }
 
+        // Refetch to always get correct default branch
+        const templateRepo = await octokit.rest.repos.get({
+          owner: template.repoFullName.split('/')[0],
+          repo: template.repoFullName.split('/')[1],
+        });
+        const prodBranch = templateRepo.data.default_branch ?? 'main';
+
         const { addProject } = await client.addProject(orgSlug!, {
           name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
-          prodBranch: gitRepo.data.default_branch ?? 'main',
+          prodBranch,
           repository: gitRepo.data.full_name,
           // TODO: Set selected template
           template: 'webapp',
@@ -189,12 +196,8 @@ const CreateRepo = () => {
           <Controller
             name="isPrivate"
             control={control}
-            render={({ field: { value, onChange } }) => (
-              <Checkbox
-                label="Make this repo private"
-                checked={value}
-                onCheckedChange={onChange}
-              />
+            render={({}) => (
+              <Checkbox label="Make this repo private" disabled={true} />
             )}
           />
         </div>

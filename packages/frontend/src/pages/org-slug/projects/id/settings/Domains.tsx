@@ -1,17 +1,15 @@
 import { RequestError } from 'octokit';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { Domain } from 'gql-client';
 
-import {
-  Button,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
-
-import DomainCard from '../../../../../components/projects/project/settings/DomainCard';
+import DomainCard from 'components/projects/project/settings/DomainCard';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import { OutletContextType } from '../../../../../types/types';
+import { OutletContextType } from '../../../../../types';
 import { useOctokit } from '../../../../../context/OctokitContext';
+import { Button } from 'components/shared/Button';
+import { PlusIcon } from 'components/shared/CustomIcon';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 const Domains = () => {
   const client = useGQLClient();
@@ -60,16 +58,20 @@ const Domains = () => {
   }, []);
 
   return (
-    <>
-      <div className="flex justify-between p-2">
-        <Typography variant="h3">Domain</Typography>
-        <Link to="add">
-          <Button color="blue" variant="outlined" className="rounded-full">
-            <i>^</i> Add domain
-          </Button>
-        </Link>
-      </div>
-
+    <ProjectSettingContainer
+      headingText="Domains"
+      button={
+        <Button
+          as="a"
+          href="add"
+          variant="secondary"
+          leftIcon={<PlusIcon />}
+          size="md"
+        >
+          Add domain
+        </Button>
+      }
+    >
       {domains.map((domain) => {
         return (
           <DomainCard
@@ -83,7 +85,7 @@ const Domains = () => {
           />
         );
       })}
-    </>
+    </ProjectSettingContainer>
   );
 };
 

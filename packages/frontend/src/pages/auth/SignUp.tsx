@@ -9,13 +9,18 @@ import { DotBorder } from 'components/shared/DotBorder';
 import { WavyBorder } from 'components/shared/WavyBorder';
 import { useEffect, useState } from 'react';
 import { useSnowball } from 'utils/use-snowball';
-import { CreatePasskey } from './CreatePasskey';
 import { Input } from 'components/shared/Input';
 import { AppleIcon } from 'components/shared/CustomIcon/AppleIcon';
 import { Link } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
 import { signInWithEthereum } from 'utils/siwe';
+import { logError } from 'utils/log-error';
+import {
+  subOrganizationIdForEmail,
+  turnkeySignin,
+  turnkeySignup,
+} from 'utils/turnkey-frontend';
 
 type Provider = 'google' | 'github' | 'apple' | 'email';
 
@@ -46,11 +51,13 @@ export const SignUp = ({ onDone }: Props) => {
           setError({ type: 'provider', message: result.error });
           setProvider(false);
           wallet = undefined;
+          logError(new Error(result.error));
           return;
         }
       } catch (err: any) {
         setError({ type: 'provider', message: err.message });
         setProvider(false);
+        logError(err);
         return;
       }
     }
@@ -78,16 +85,29 @@ export const SignUp = ({ onDone }: Props) => {
     }
   }
 
+  async function authEmail() {
+    setProvider('email');
+    try {
+      const orgId = await subOrganizationIdForEmail(email);
+      console.log('orgId', orgId);
+      if (orgId) {
+        await turnkeySignin(orgId);
+        window.location.href = '/dashboard';
+      } else {
+        await turnkeySignup(email);
+        onDone();
+      }
+    } catch (err: any) {
+      setError({ type: 'email', message: err.message });
+    }
+  }
+
   useEffect(() => {
     handleSignupRedirect();
   }, []);
 
   const loading = provider;
   const emailValid = /.@./.test(email);
-
-  if (provider === 'email') {
-    return <CreatePasskey onDone={onDone} />;
-  }
 
   return (
     <div>
@@ -197,9 +217,15 @@ export const SignUp = ({ onDone }: Props) => {
             />
           </div>
           <Button
-            rightIcon={<ArrowRightCircleFilledIcon height="16" />}
+            rightIcon={
+              loading && loading === 'email' ? (
+                <LoaderIcon className="animate-spin" />
+              ) : (
+                <ArrowRightCircleFilledIcon height="16" />
+              )
+            }
             onClick={() => {
-              setProvider('email');
+              authEmail();
             }}
             variant={'secondary'}
             disabled={!email || !emailValid || !!loading}

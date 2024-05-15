@@ -1,5 +1,5 @@
 import withMT from '@snowballtools/material-tailwind-react-fork/utils/withMT';
-import colors from 'tailwindcss/colors'
+import colors from 'tailwindcss/colors';
 
 /** @type {import('tailwindcss').Config} */
 export default withMT({
@@ -14,7 +14,7 @@ export default withMT({
         xxs: '400px',
         xs: '480px',
       },
-        zIndex: {
+      zIndex: {
         tooltip: '52',
       },
       letterSpacing: {
@@ -181,8 +181,8 @@ export default withMT({
         toast: '9999',
       },
       animation: {
-        'spin': 'spin 3s linear infinite',
-      }
+        spin: 'spin 3s linear infinite',
+      },
     },
   },
   plugins: [],

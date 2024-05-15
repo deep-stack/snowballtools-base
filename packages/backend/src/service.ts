@@ -161,6 +161,22 @@ export class Service {
     });
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.db.getUser({
+      where: {
+        email
+      }
+    });
+  }
+
+  async getUserBySubOrgId(subOrgId: string): Promise<User | null> {
+    return await this.db.getUser({
+      where: {
+        subOrgId
+      }
+    });
+  }
+
   async getUserByEthAddress (ethAddress: string): Promise<User | null> {
     return await this.db.getUser({
       where: {
@@ -169,28 +185,31 @@ export class Service {
     });
   }
 
-  async loadOrCreateUser (ethAddress: string): Promise<User> {
-    // Get user by ETH address
-    let user = await this.getUserByEthAddress(ethAddress);
+  async createUser (params: {
+    name: string
+    email: string
+    subOrgId: string
+    ethAddress: string
+    turnkeyWalletId: string
+  }): Promise<User> {
+    const [org] = await this.db.getOrganizations({});
+    assert(org, 'No organizations exists in database');
 
-    if (!user) {
-      const [org] = await this.db.getOrganizations({});
-      assert(org, 'No organizations exists in database');
+    // Create user with new address
+    const user = await this.db.addUser({
+      email: params.email,
+      name: params.name,
+      subOrgId: params.subOrgId,
+      ethAddress: params.ethAddress,
+      isVerified: true,
+      turnkeyWalletId: params.turnkeyWalletId,
+    });
 
-      // Create user with new address
-      user = await this.db.addUser({
-        email: `${ethAddress}@example.com`,
-        name: ethAddress,
-        isVerified: true,
-        ethAddress
-      });
-
-      await this.db.addUserOrganization({
-        member: user,
-        organization: org,
-        role: Role.Owner
-      });
-    }
+    await this.db.addUserOrganization({
+      member: user,
+      organization: org,
+      role: Role.Owner
+    });
 
     return user;
   }

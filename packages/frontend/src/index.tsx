@@ -13,6 +13,8 @@ import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
 import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
+import { LogErrorBoundary } from 'utils/log-error';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -26,14 +28,16 @@ const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 const gqlClient = new GQLClient({ gqlEndpoint });
 
 root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <GQLClientProvider client={gqlClient}>
-        <App />
-        <Toaster />
-      </GQLClientProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+  <LogErrorBoundary>
+    <React.StrictMode>
+      <ThemeProvider>
+        <GQLClientProvider client={gqlClient}>
+          <App />
+          <Toaster />
+        </GQLClientProvider>
+      </ThemeProvider>
+    </React.StrictMode>
+  </LogErrorBoundary>,
 );
 
 // If you want to start measuring performance in your app, pass a function

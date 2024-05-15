@@ -92,3 +92,5 @@ export const tabsTheme = tv({
     fillWidth: false,
   },
 });
+
+export type TabsTheme = VariantProps<typeof tabsTheme>;
