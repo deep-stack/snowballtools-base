@@ -8,6 +8,7 @@ import { Button } from 'components/shared/Button';
 import { Permission, User } from 'gql-client';
 import { formatAddress } from 'utils/format';
 import { Tag } from 'components/shared/Tag';
+import { Input } from 'components/shared/Input';
 
 const PERMISSION_OPTIONS: SelectOption[] = [
   {
@@ -79,9 +80,8 @@ const MemberCard = ({
 
   return (
     <div
-      className={`flex p-1 ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
+      className={`flex p-1 items-center ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
     >
-      <div>^</div>
       <div className="basis-1/2">
         {member.name && (
           <Tooltip content={member.name}>
@@ -96,14 +96,19 @@ const MemberCard = ({
       </div>
       <div className="basis-1/2">
         {!isPending ? (
-          <Select
-            options={DROPDOWN_OPTIONS}
-            size="md"
-            label={isOwner ? 'Owner' : ''}
-            disabled={isOwner}
-            value={selectedPermission}
-            onChange={(value) => handlePermissionChange(value as SelectOption)}
-          />
+          isOwner ? (
+            <Input size="md" value="Owner" disabled />
+          ) : (
+            <Select
+              options={DROPDOWN_OPTIONS}
+              size="md"
+              placeholder="Select permission"
+              value={selectedPermission}
+              onChange={(value) =>
+                handlePermissionChange(value as SelectOption)
+              }
+            />
+          )
         ) : (
           <div className="flex justify-end gap-2">
             <div>
@@ -113,7 +118,7 @@ const MemberCard = ({
             </div>
             <div>
               <Button
-                size="sm"
+                size="md"
                 iconOnly
                 onClick={() => {
                   setRemoveMemberDialogOpen((prevVal) => !prevVal);
