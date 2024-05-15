@@ -22,7 +22,7 @@ const AddEnvironmentVariableRow = ({
     <div className="flex py-4 self-stretch">
       <Input
         size="md"
-        register={register(`variables.${index}.key`, {
+        {...register(`variables.${index}.key`, {
           required: 'Key field cannot be empty',
         })}
         label={index === 0 ? 'Key' : undefined}
@@ -30,7 +30,7 @@ const AddEnvironmentVariableRow = ({
       <Input
         size="md"
         label={index === 0 ? 'Value' : undefined}
-        register={register(`variables.${index}.value`, {
+        {...register(`variables.${index}.value`, {
           required: 'Value field cannot be empty',
         })}
       />
