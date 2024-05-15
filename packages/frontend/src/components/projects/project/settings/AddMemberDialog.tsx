@@ -87,7 +87,7 @@ const AddMemberDialog = ({
               color="blue"
             />
           </Modal.Body>
-          <Modal.Footer className="flex justify-start">
+          <Modal.Footer>
             <Button onClick={handleOpen} variant="secondary">
               Cancel
             </Button>
