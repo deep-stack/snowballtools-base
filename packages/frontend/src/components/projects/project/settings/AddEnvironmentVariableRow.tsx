@@ -19,7 +19,7 @@ const AddEnvironmentVariableRow = ({
   isDeleteDisabled,
 }: AddEnvironmentVariableRowProps) => {
   return (
-    <div className="flex gap-2 py-1 self-stretch">
+    <div className="flex gap-2 py-1 self-stretch items-end">
       <Input
         size="md"
         {...register(`variables.${index}.key`, {
