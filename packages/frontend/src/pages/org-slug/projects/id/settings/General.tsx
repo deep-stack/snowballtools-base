@@ -166,7 +166,7 @@ const GeneralTabPanel = () => {
           setSelectedTransferOrganization(org.org);
           setOpenTransferDialog(!openTransferDialog);
         })}
-        className="self-stretch space-y-3 px-2"
+        className="self-stretch space-y-3"
       >
         <Heading className="text-sky-950 text-lg font-medium leading-normal">
           Transfer project
@@ -197,7 +197,7 @@ const GeneralTabPanel = () => {
         from={project.organization.name}
         to={selectedUserOrgName}
       />
-      <div className="self-stretch space-y-3 px-2">
+      <div className="self-stretch space-y-3">
         <Heading className="text-sky-950 text-lg font-medium leading-normal">
           Delete project
         </Heading>
