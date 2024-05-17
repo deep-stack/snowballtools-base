@@ -29,10 +29,10 @@ const meta: Meta<typeof AddEnvironmentVariableRow> = {
       action: 'register',
     },
     index: {
-        type: 'number',
+      type: 'number',
     },
     isDeleteDisabled: {
-        type: 'boolean',
+      type: 'boolean',
     },
   },
   args: {
