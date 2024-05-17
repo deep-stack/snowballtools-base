@@ -32,7 +32,7 @@ record:
   version: '1.0.0'
   name: staging-snowballtools-base-frontend@$PACKAGE_VERSION
   application: crn://staging-snowballtools/applications/staging-snowballtools-base-frontend@$PACKAGE_VERSION
-  dns: dashboard.staging
+  dns: dashboard.staging.apps.snowballtools.com
   config:
     env:
       LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api.staging.apps.snowballtools.com
