@@ -1,0 +1,8 @@
+record:
+  type: ApplicationRecord
+  version: 0.0.1
+  repository_ref: 8488cfab8353321ed05c4234bf1b914c9ad3aa99
+  repository: ["https://git.vdb.to/cerc-io/snowballtools-base"]
+  app_type: webapp
+  name: staging-snowballtools-base-frontend
+  app_version: 0.0.0
