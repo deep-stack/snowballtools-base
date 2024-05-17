@@ -32,11 +32,11 @@ record:
   version: '1.0.0'
   name: staging-snowballtools-base-frontend@$PACKAGE_VERSION
   application: crn://staging-snowballtools/applications/staging-snowballtools-base-frontend@$PACKAGE_VERSION
-  dns: dashboard
+  dns: dashboard.staging
   config:
     env:
-      LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api.staging.snowballtools.com
-      LACONIC_HOSTED_CONFIG_app_github_clientid: b7c63b235ca1dd5639ab
+      LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api.staging.apps.snowballtools.com
+      LACONIC_HOSTED_CONFIG_app_github_clientid: Ov23liOaoahRTYd4nSCV
       LACONIC_HOSTED_CONFIG_app_github_templaterepo: snowball-tools-platform/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_app_github_pwa_templaterepo: snowball-tools-platform/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_app_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
