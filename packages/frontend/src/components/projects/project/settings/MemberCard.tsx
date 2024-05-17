@@ -80,7 +80,7 @@ const MemberCard = ({
 
   return (
     <div
-      className={`flex p-1 items-center ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
+      className={`flex py-1 items-center ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
     >
       <div className="basis-1/2">
         {member.name && (
