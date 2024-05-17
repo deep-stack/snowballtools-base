@@ -18,7 +18,7 @@ const meta: Meta<typeof DeleteProjectDialog> = {
         pathParams: { userId: 'me' },
       },
       routing: {
-        path: '/snowball-tools-1/projects/6bb3bec2-d71b-4fc0-9e32-4767f68668f4/settings/domains/add/config',
+        path: '/snowball-tools-1/projects/6bb3bec2-d71b-4fc0-9e32-4767f68668f4/settings',
       },
     }),
   },
