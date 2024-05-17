@@ -86,7 +86,7 @@ const EditEnvironmentVariableRow = ({
 
   return (
     <>
-      <div className="flex gap-1 p-2">
+      <div className="flex gap-1">
         <div>
           <Typography variant="small">Key</Typography>
           <Input disabled={!edit} {...register(`key`)} />
