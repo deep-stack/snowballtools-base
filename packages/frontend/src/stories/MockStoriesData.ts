@@ -5,6 +5,12 @@ import {
   Role,
   OrganizationMember,
   ProjectMember,
+  EnvironmentVariable,
+  Deployment,
+  DeploymentStatus,
+  DomainStatus,
+  Domain,
+  Environment,
 } from 'gql-client';
 
 export const user: User = {
@@ -17,7 +23,7 @@ export const user: User = {
   gitHubToken: 'GitHub Token',
 };
 
-const organizationMember: OrganizationMember = {
+export const organizationMember: OrganizationMember = {
   id: '1',
   member: user,
   role: Role.Owner,
@@ -35,7 +41,7 @@ export const organization: Organization = {
   projects: [],
 };
 
-const member: ProjectMember = {
+export const member: ProjectMember = {
   id: '1',
   member: user,
   permissions: [],
@@ -44,18 +50,61 @@ const member: ProjectMember = {
   updatedAt: '2021-08-01T00:00:00.000Z',
 };
 
+export const environmentVariable0: EnvironmentVariable = {
+  id: '1',
+  key: 'API_KEY',
+  value: '123456',
+  environment: Environment.Development,
+  createdAt: '2021-08-01T00:00:00.000Z',
+  updatedAt: '2021-08-01T00:00:00.000Z',
+};
+
+export const environmentVariable1: EnvironmentVariable = {
+  id: '2',
+  key: 'API_KEY_2',
+  value: '123456',
+  environment: Environment.Development,
+  createdAt: '2021-08-01T00:00:00.000Z',
+  updatedAt: '2021-08-01T00:00:00.000Z',
+};
+
+export const domain0: Domain = {
+  id: '1',
+  name: 'Domain',
+  createdAt: '2021-08-01T00:00:00.000Z',
+  updatedAt: '2021-08-01T00:00:00.000Z',
+  branch: 'Branch',
+  status: DomainStatus.Live,
+  redirectTo: null,
+};
+
+export const deployment0: Deployment = {
+  id: '1',
+  url: 'https://deployment.com',
+  status: DeploymentStatus.Ready,
+  createdAt: '2021-08-01T00:00:00.000Z',
+  updatedAt: '2021-08-01T00:00:00.000Z',
+  branch: 'Branch',
+  environment: Environment.Development,
+  isCurrent: true,
+  commitHash: 'Commit Hash',
+  domain: domain0,
+  commitMessage: 'Commit Message',
+  createdBy: user,
+};
+
 export const project: Project = {
   id: '1',
-  name: 'Project',
+  name: 'GithubUsername-ProjectName',
   owner: user,
-  deployments: [],
+  deployments: [deployment0],
   repository: 'Repository',
   prodBranch: 'Prod Branch',
   description: 'Description',
   createdAt: '2021-08-01T00:00:00.000Z',
   updatedAt: '2021-08-01T00:00:00.000Z',
   framework: 'NextJS',
-  environmentVariables: [],
+  environmentVariables: [environmentVariable0, environmentVariable1],
   organization: organization,
   template: 'Template',
   members: [member],
