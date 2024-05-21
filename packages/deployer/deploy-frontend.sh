@@ -35,12 +35,12 @@ record:
   dns: dashboard
   config:
     env:
-      LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
-      LACONIC_HOSTED_CONFIG_app_github_clientid: b7c63b235ca1dd5639ab
-      LACONIC_HOSTED_CONFIG_app_github_templaterepo: snowball-tools-platform/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_app_github_pwa_templaterepo: snowball-tools-platform/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_app_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
-      LACONIC_HOSTED_CONFIG_app_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
+      LACONIC_HOSTED_CONFIG_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
+      LACONIC_HOSTED_CONFIG_github_clientid: b7c63b235ca1dd5639ab
+      LACONIC_HOSTED_CONFIG_github_templaterepo: snowball-tools-platform/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools-platform/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
   meta:
     note: Added by Snowball @ $CURRENT_DATE_TIME
     repository: "$REPO_URL"
