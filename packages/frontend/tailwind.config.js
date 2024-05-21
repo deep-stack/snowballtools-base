@@ -14,9 +14,6 @@ export default withMT({
         xxs: '400px',
         xs: '480px',
       },
-      zIndex: {
-        tooltip: '52',
-      },
       letterSpacing: {
         tight: '-0.084px',
       },
@@ -178,6 +175,7 @@ export default withMT({
         4.5: '1.125rem',
       },
       zIndex: {
+        tooltip: '52',
         toast: '9999',
       },
       animation: {

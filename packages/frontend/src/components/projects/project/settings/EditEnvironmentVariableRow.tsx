@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { EnvironmentVariable } from 'gql-client';
-
-import {
-  IconButton,
-  Typography,
-} from '@snowballtools/material-tailwind-react-fork';
 
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteVariableDialog } from 'components/projects/Dialog/DeleteVariableDialog';
 import { Input } from 'components/shared/Input';
+import { Button } from 'components/shared/Button';
+import {
+  CheckRoundFilledIcon,
+  CrossIcon,
+  EditBigIcon,
+  HideEyeOffIcon,
+  ShowEyeIcon,
+  TrashIcon,
+} from 'components/shared/CustomIcon';
+import { EnvironmentVariable } from 'gql-client';
+import { useToast } from 'components/shared/Toast';
 
 const ShowPasswordIcon = ({
   handler,
@@ -26,19 +30,24 @@ const ShowPasswordIcon = ({
       }}
       className="cursor-pointer"
     >
-      {isVisible ? '-' : '+'}
+      {isVisible ? <ShowEyeIcon size={16} /> : <HideEyeOffIcon size={16} />}
     </span>
   );
 };
 
+export interface EditEnvironmentVariableRowProps {
+  variable: EnvironmentVariable;
+  onUpdate: () => Promise<void>;
+  isFirstVariable?: boolean;
+}
+
 const EditEnvironmentVariableRow = ({
   variable,
   onUpdate,
-}: {
-  variable: EnvironmentVariable;
-  onUpdate: () => Promise<void>;
-}) => {
+  isFirstVariable = false,
+}: EditEnvironmentVariableRowProps) => {
   const client = useGQLClient();
+  const { toast, dismiss } = useToast();
 
   const { handleSubmit, register, reset } = useForm({
     defaultValues: {
@@ -58,9 +67,19 @@ const EditEnvironmentVariableRow = ({
     if (isEnvironmentVariableRemoved) {
       await onUpdate();
       setDeleteDialogOpen((preVal) => !preVal);
-      toast.success('Variable deleted');
+      toast({
+        id: 'variable_deleted',
+        title: 'Variable deleted',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error('Variable not deleted');
+      toast({
+        id: 'variable_not_deleted',
+        title: 'Variable not deleted',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   }, [variable, onUpdate]);
 
@@ -71,10 +90,21 @@ const EditEnvironmentVariableRow = ({
 
       if (isEnvironmentVariableUpdated) {
         await onUpdate();
-        toast.success('Variable edited');
+        toast({
+          id: 'variable_updated',
+          title: 'Variable edited',
+          variant: 'success',
+          onDismiss: dismiss,
+        });
+
         setEdit((preVal) => !preVal);
       } else {
-        toast.error('Variable not edited');
+        toast({
+          id: 'variable_not_updated',
+          title: 'Variable not edited',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
     },
     [variable, onUpdate],
@@ -86,71 +116,55 @@ const EditEnvironmentVariableRow = ({
 
   return (
     <>
-      <div className="flex gap-1 p-2">
-        <div>
-          <Typography variant="small">Key</Typography>
-          <Input disabled={!edit} {...register(`key`)} />
-        </div>
-        <div>
-          <Typography variant="small">Value</Typography>
-          <Input
-            disabled={!edit}
-            type={showPassword ? 'text' : 'password'}
-            leftIcon={
-              <ShowPasswordIcon
-                handler={() => {
-                  setShowPassword((prevShowPassword) => !prevShowPassword);
-                }}
-                isVisible={showPassword}
-              />
+      <div className="flex gap-1 items-end">
+        <Input
+          disabled={!edit}
+          {...register(`key`)}
+          label={isFirstVariable ? 'Key' : undefined}
+        />
+        <Input
+          disabled={!edit}
+          type={showPassword || edit ? 'text' : 'password'}
+          label={isFirstVariable ? 'Value' : undefined}
+          rightIcon={
+            <ShowPasswordIcon
+              handler={() => {
+                setShowPassword((prevShowPassword) => !prevShowPassword);
+              }}
+              isVisible={showPassword || edit}
+            />
+          }
+          {...register(`value`)}
+        />
+        <Button
+          iconOnly
+          size="md"
+          onClick={() => {
+            edit
+              ? handleSubmit(updateEnvironmentVariableHandler)()
+              : setEdit((preVal) => !preVal);
+          }}
+        >
+          {edit ? (
+            <CheckRoundFilledIcon size={16} />
+          ) : (
+            <EditBigIcon size={16} />
+          )}
+        </Button>
+        <Button
+          iconOnly
+          size="md"
+          onClick={() => {
+            if (edit) {
+              reset();
+              setEdit((preVal) => !preVal);
+            } else {
+              setDeleteDialogOpen((preVal) => !preVal);
             }
-            {...register(`value`)}
-          />
-        </div>
-        {edit ? (
-          <>
-            <div className="self-end">
-              <IconButton
-                onClick={handleSubmit(updateEnvironmentVariableHandler)}
-                size="sm"
-              >
-                {'S'}
-              </IconButton>
-            </div>
-            <div className="self-end">
-              <IconButton
-                size="sm"
-                onClick={() => {
-                  reset();
-                  setEdit((preVal) => !preVal);
-                }}
-              >
-                {'C'}
-              </IconButton>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="self-end">
-              <IconButton
-                size="sm"
-                onClick={() => {
-                  setEdit((preVal) => !preVal);
-                }}
-              >
-                {'E'}
-              </IconButton>
-            </div>
-            <div className="self-end">
-              <IconButton
-                size="sm"
-                onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
-              >
-                {'D'}
-              </IconButton>
-            </div>
-          </>
-        )}
+          }}
+        >
+          {edit ? <CrossIcon size={16} /> : <TrashIcon size={16} />}
+        </Button>
       </div>
       <DeleteVariableDialog
         handleCancel={() => setDeleteDialogOpen((preVal) => !preVal)}

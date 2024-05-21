@@ -19,7 +19,7 @@ const AddEnvironmentVariableRow = ({
   isDeleteDisabled,
 }: AddEnvironmentVariableRowProps) => {
   return (
-    <div className="flex py-4 self-stretch">
+    <div className="flex gap-2 py-1 self-stretch items-end">
       <Input
         size="md"
         {...register(`variables.${index}.key`, {
@@ -34,16 +34,9 @@ const AddEnvironmentVariableRow = ({
           required: 'Value field cannot be empty',
         })}
       />
-      <div className="self-end">
-        <Button
-          size="md"
-          iconOnly
-          onClick={onDelete}
-          disabled={isDeleteDisabled}
-        >
-          <TrashIcon />
-        </Button>
-      </div>
+      <Button size="md" iconOnly onClick={onDelete} disabled={isDeleteDisabled}>
+        <TrashIcon />
+      </Button>
     </div>
   );
 };

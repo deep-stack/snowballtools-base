@@ -73,6 +73,9 @@ export * from './SwitchIcon';
 export * from './CollaboratorsIcon';
 export * from './ChevronUpSmallIcon';
 export * from './ChevronDownSmallIcon';
+export * from './EditBigIcon';
+export * from './ShowEyeIcon';
+export * from './HideEyeOffIcon';
 
 // Templates
 export * from './templates';

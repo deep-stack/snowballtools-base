@@ -30,7 +30,7 @@ abbr[title] {
   @apply !text-elements-disabled !bg-transparent;
 }
 
-.react-calendar__month-view__days__day--neighboringMonth {
+.react-calendar__month-view__days__day--neighboringMonth:focus-visible {
   @apply !text-elements-disabled !bg-transparent;
 }
 

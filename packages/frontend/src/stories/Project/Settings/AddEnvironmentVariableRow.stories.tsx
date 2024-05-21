@@ -21,10 +21,45 @@ const meta: Meta<typeof AddEnvironmentVariableRow> = {
       },
     }),
   },
-} as Meta<typeof AddEnvironmentVariableRow>;
+  argTypes: {
+    onDelete: {
+      action: 'delete',
+    },
+    register: {
+      action: 'register',
+    },
+    index: {
+      type: 'number',
+    },
+    isDeleteDisabled: {
+      type: 'boolean',
+    },
+  },
+  args: {
+    isDeleteDisabled: false,
+  },
+};
 
 export default meta;
 
 type Story = StoryObj<typeof AddEnvironmentVariableRow>;
 
 export const Default: Story = {};
+
+export const DisabledDelete: Story = {
+  args: {
+    isDeleteDisabled: true,
+  },
+};
+
+export const First: Story = {
+  args: {
+    index: 0,
+  },
+};
+
+export const Second: Story = {
+  args: {
+    index: 1,
+  },
+};
