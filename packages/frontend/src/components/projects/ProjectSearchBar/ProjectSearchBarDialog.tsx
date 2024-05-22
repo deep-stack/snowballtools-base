@@ -96,9 +96,9 @@ export const ProjectSearchBarDialog = ({
                         </p>
                       </div>
                       <ProjectSearchBarItem
-                        {...getItemProps({ item, index })}
                         key={item.id}
                         item={item}
+                        {...getItemProps({ item, index })}
                       />
                     </>
                   ))
