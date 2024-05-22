@@ -6,9 +6,9 @@ import { createServer } from 'http';
 import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
-  AuthenticationError
+  AuthenticationError,
 } from 'apollo-server-core';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 
 import { TypeSource } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
@@ -23,8 +23,7 @@ const log = debug('snowball:server');
 
 declare module 'express-session' {
   interface SessionData {
-    address: string;
-    chainId: number;
+    userId: string;
   }
 }
 
@@ -32,7 +31,7 @@ export const createAndStartServer = async (
   serverConfig: ServerConfig,
   typeDefs: TypeSource,
   resolvers: any,
-  service: Service
+  service: Service,
 ): Promise<ApolloServer> => {
   const { host, port, gqlPath = DEFAULT_GQL_PATH } = serverConfig;
   const { appOriginUrl, secret, domain, trustProxy } = serverConfig.session;
@@ -45,7 +44,7 @@ export const createAndStartServer = async (
   // Create the schema
   const schema = makeExecutableSchema({
     typeDefs,
-    resolvers
+    resolvers,
   });
 
   const server = new ApolloServer({
@@ -54,46 +53,31 @@ export const createAndStartServer = async (
     context: async ({ req }) => {
       // https://www.apollographql.com/docs/apollo-server/v3/security/authentication#api-wide-authorization
 
-      const { address } = req.session;
+      const { userId } = req.session;
 
-      if (!address) {
+      if (!userId) {
         throw new AuthenticationError('Unauthorized: No active session');
       }
 
-      // Find/create user from ETH address in request session
-      const user = await service.loadOrCreateUser(address);
+      const user = await service.getUser(userId);
 
       return { user };
     },
     plugins: [
       // Proper shutdown for the HTTP server
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginLandingPageLocalDefault({ embed: true })
-    ]
+      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    ],
   });
 
   await server.start();
 
-  app.use(cors({
-    origin: appOriginUrl,
-    credentials: true
-  }));
-
-  const sessionOptions: session.SessionOptions = {
-    secret: secret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: new URL(appOriginUrl).protocol === 'https:',
-      // TODO: Set cookie maxAge and handle cookie expiry in frontend
-      // maxAge: SESSION_COOKIE_MAX_AGE,
-      sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax'
-    }
-  };
-
-  if (domain) {
-    sessionOptions.cookie!.domain = domain;
-  }
+  app.use(
+    cors({
+      origin: appOriginUrl,
+      credentials: true,
+    }),
+  );
 
   if (trustProxy) {
     // trust first proxy
@@ -101,7 +85,14 @@ export const createAndStartServer = async (
   }
 
   app.use(
-    session(sessionOptions)
+    cookieSession({
+      secret: secret,
+      secure: new URL(appOriginUrl).protocol === 'https:',
+      // 23 hours (less than 24 hours to avoid sessionSigs expiration issues)
+      maxAge: 23 * 60 * 60 * 1000,
+      sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax',
+      domain: domain || undefined,
+    }),
   );
 
   server.applyMiddleware({
@@ -109,8 +100,8 @@ export const createAndStartServer = async (
     path: gqlPath,
     cors: {
       origin: [appOriginUrl],
-      credentials: true
-    }
+      credentials: true,
+    },
   });
 
   app.use(express.json());

@@ -2,7 +2,7 @@ import debug from 'debug';
 import { DataSource } from 'typeorm';
 import path from 'path';
 
-import { Registry } from '@cerc-io/laconic-sdk';
+import { Registry } from '@snowballtools/laconic-sdk';
 
 import { Config } from '../src/config';
 import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';

@@ -36,11 +36,11 @@ export const tagTheme = tv(
       size: {
         sm: {
           wrapper: ['px-2', 'py-2'],
-          icon: ['h-4', 'w-4'],
+          icon: [],
         },
         xs: {
           wrapper: ['px-2', 'py-1'],
-          icon: ['h-3', 'w-3'],
+          icon: [],
         },
       },
     },

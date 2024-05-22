@@ -1,35 +1,46 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 
-import { Tabs, TabsHeader, TabsBody, Tab } from '@material-tailwind/react';
-
 import { OutletContextType } from '../../../../types';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from 'components/shared/Tabs';
+import {
+  BranchStrokeIcon,
+  CollaboratorsIcon,
+  GearIcon,
+  GlobeIcon,
+  SwitchIcon,
+} from 'components/shared/CustomIcon';
 
 const tabsData = [
   {
     label: 'General',
-    icon: '^',
+    icon: <GearIcon />,
     value: 'general',
   },
   {
     label: 'Domains',
-    icon: '^',
+    icon: <GlobeIcon />,
     value: 'domains',
   },
   {
     label: 'Git',
-    icon: '^',
+    icon: <BranchStrokeIcon />,
     value: 'git',
   },
   {
     label: 'Environment variables',
-    icon: '^',
+    icon: <SwitchIcon />,
     value: 'environment-variables',
   },
   {
-    label: 'Members',
-    icon: '^',
-    value: 'members',
+    label: 'Collaborators',
+    icon: <CollaboratorsIcon />,
+    value: 'collaborators',
   },
 ];
 
@@ -52,33 +63,26 @@ const SettingsTabPanel = () => {
       <Tabs
         value={currentTab}
         orientation="vertical"
-        className="grid grid-cols-4"
+        className="grid grid-cols-5"
       >
-        <TabsHeader
-          className="bg-transparent col-span-1"
-          indicatorProps={{
-            className: 'bg-gray-900/10 shadow-none !text-gray-900',
-          }}
-          placeholder={''}
-        >
+        <TabsList className="col-span-1">
           {tabsData.map(({ label, value, icon }) => (
             <Link key={value} to={value === 'general' ? '' : value}>
-              <Tab
+              <TabsTrigger
                 value={value === 'general' ? '' : `/${value}`}
-                className="flex justify-start"
-                placeholder={''}
+                className="col-span-1"
               >
-                <div className="flex gap-2">
-                  <div>{icon}</div>
-                  <div>{label}</div>
+                <div className="items-center gap-2 inline-flex">
+                  <div className="items-center">{icon}</div>
+                  <div className="items-center">{label}</div>
                 </div>
-              </Tab>
+              </TabsTrigger>
             </Link>
           ))}
-        </TabsHeader>
-        <TabsBody className="col-span-2" placeholder={''}>
+        </TabsList>
+        <TabsContent value={currentTab ?? ''} className="col-span-3">
           <Outlet context={{ project, onUpdate }} />
-        </TabsBody>
+        </TabsContent>
       </Tabs>
     </>
   );

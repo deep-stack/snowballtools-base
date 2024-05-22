@@ -55,9 +55,9 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   }, [orgSlug, dismiss, isGitAuth, navigate, template, toast]);
 
   return (
-    <button
+    <div
       className={cn(
-        'flex items-center gap-3 px-3 py-3 bg-base-bg-alternate hover:bg-base-bg-emphasized rounded-2xl group relative',
+        'flex items-center gap-3 px-3 py-3 bg-base-bg-alternate hover:bg-base-bg-emphasized rounded-2xl group relative cursor-pointer',
         {
           'cursor-default': template?.isComingSoon,
         },
@@ -86,6 +86,6 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
           <ArrowRightCircleIcon />
         </Button>
       )}
-    </button>
+    </div>
   );
 };

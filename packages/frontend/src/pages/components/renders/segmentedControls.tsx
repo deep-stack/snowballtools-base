@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge } from 'components/shared/Badge';
 import { SegmentedControlsOption } from 'components/shared/SegmentedControls';
 

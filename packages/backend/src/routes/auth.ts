@@ -1,41 +1,104 @@
 import { Router } from 'express';
-import { SiweMessage, generateNonce } from 'siwe';
+import { SiweMessage } from 'siwe';
+import { Service } from '../service';
+import { authenticateUser, createUser } from '../turnkey-backend';
 
 const router = Router();
 
-router.get('/nonce', async (_, res) => {
-  res.send(generateNonce());
+//
+// Turnkey
+//
+router.get('/registration/:email', async (req, res) => {
+  const service: Service = req.app.get('service');
+  const user = await service.getUserByEmail(req.params.email);
+  if (user) {
+    return res.send({ subOrganizationId: user?.subOrgId });
+  } else {
+    return res.sendStatus(204);
+  }
 });
 
+router.post('/register', async (req, res) => {
+  const { email, challenge, attestation } = req.body;
+  const user = await createUser(req.app.get('service'), {
+    challenge,
+    attestation,
+    userEmail: email,
+    userName: email.split('@')[0],
+  });
+  req.session.userId = user.id;
+  res.sendStatus(200);
+});
+
+router.post('/authenticate', async (req, res) => {
+  const { signedWhoamiRequest } = req.body;
+  const user = await authenticateUser(
+    req.app.get('service'),
+    signedWhoamiRequest,
+  );
+  if (user) {
+    req.session.userId = user.id;
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
+});
+
+//
+// Lit
+//
+
 router.post('/validate', async (req, res) => {
-  const { message, signature } = req.body;
+  const { message, signature, action } = req.body;
   const { success, data } = await new SiweMessage(message).verify({
-    signature
+    signature,
   });
 
-  if (success) {
-    req.session.address = data.address;
-    req.session.chainId = data.chainId;
+  if (!success) {
+    return res.send({ success });
+  }
+  const service: Service = req.app.get('service');
+  const user = await service.getUserByEthAddress(data.address);
+
+  if (action === 'signup') {
+    if (user) {
+      return res.send({ success: false, error: 'user_already_exists' });
+    }
+    const newUser = await service.createUser({
+      ethAddress: data.address,
+      email: '',
+      name: '',
+      subOrgId: '',
+      turnkeyWalletId: '',
+    });
+    req.session.userId = newUser.id;
+  } else if (action === 'login') {
+    if (!user) {
+      return res.send({ success: false, error: 'user_not_found' });
+    }
+    req.session.userId = user.id;
   }
 
   res.send({ success });
 });
 
+//
+// General
+//
 router.get('/session', (req, res) => {
-  if (req.session.address && req.session.chainId) {
-    res.send({ address: req.session.address, chainId: req.session.chainId });
+  if (req.session.userId) {
+    res.send({
+      userId: req.session.userId,
+    });
   } else {
     res.status(401).send({ error: 'Unauthorized: No active session' });
   }
 });
 
 router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.send({ success: false });
-    }
-    res.send({ success: true });
-  });
+  // This is how you clear cookie-session
+  (req as any).session = null;
+  res.send({ success: true });
 });
 
 export default router;

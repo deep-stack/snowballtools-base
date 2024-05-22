@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   ReactNode,
@@ -8,8 +8,11 @@ import React, {
   useEffect,
 } from 'react';
 import { Octokit, RequestError } from 'octokit';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDebounceCallback } from 'usehooks-ts';
 
 import { useGQLClient } from './GQLClientContext';
+import { useToast } from 'components/shared/Toast';
 
 const UNAUTHORIZED_ERROR_CODE = 401;
 
@@ -26,17 +29,17 @@ const OctokitContext = createContext<ContextValue>({
 });
 
 export const OctokitProvider = ({ children }: { children: ReactNode }) => {
-  const [authToken, setAuthToken] = useState<string>('');
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
-
+  const navigate = useNavigate();
+  const { orgSlug } = useParams();
+  const { toast, dismiss } = useToast();
   const client = useGQLClient();
 
   const fetchUser = useCallback(async () => {
     const { user } = await client.getUser();
 
-    if (user.gitHubToken) {
-      setAuthToken(user.gitHubToken);
-    }
+    setAuthToken(user.gitHubToken);
   }, []);
 
   const updateAuth = useCallback(() => {
@@ -57,6 +60,23 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
   }, []);
 
+  const debouncedUnauthorizedGithubHandler = useDebounceCallback(
+    useCallback(
+      (error: RequestError) => {
+        toast({
+          id: 'unauthorized-github-token',
+          title: `GitHub authentication error: ${error.message}`,
+          variant: 'error',
+          onDismiss: dismiss,
+        });
+
+        navigate(`/${orgSlug}/projects/create`);
+      },
+      [toast, navigate, orgSlug],
+    ),
+    500,
+  );
+
   useEffect(() => {
     // TODO: Handle React component error
     const interceptor = async (error: RequestError | Error) => {
@@ -66,6 +86,8 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
       ) {
         await client.unauthenticateGithub();
         await fetchUser();
+
+        debouncedUnauthorizedGithubHandler(error);
       }
 
       throw error;
@@ -77,7 +99,7 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
       // Remove the interceptor when the component unmounts
       octokit.hook.remove('request', interceptor);
     };
-  }, [octokit, client]);
+  }, [octokit, client, debouncedUnauthorizedGithubHandler]);
 
   return (
     <OctokitContext.Provider value={{ octokit, updateAuth, isAuth }}>

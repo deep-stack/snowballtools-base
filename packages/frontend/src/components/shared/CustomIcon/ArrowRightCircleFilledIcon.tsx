@@ -1,14 +1,13 @@
-import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
 export const ArrowRightCircleFilledIcon = (props: CustomIconProps) => {
   return (
     <CustomIcon
-      {...props}
       fill="none"
       height="32"
       viewBox="0 0 32 32"
       width="32"
+      {...props}
     >
       <path
         clipRule="evenodd"

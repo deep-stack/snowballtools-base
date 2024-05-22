@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { Domain, DomainStatus, Project } from 'gql-client';
 
 import {
@@ -10,11 +9,12 @@ import {
   MenuList,
   MenuItem,
   Card,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
-import ConfirmDialog from '../../../shared/ConfirmDialog';
 import EditDomainDialog from './EditDomainDialog';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
+import { DeleteDomainDialog } from 'components/projects/Dialog/DeleteDomainDialog';
+import { useToast } from 'components/shared/Toast';
 
 enum RefreshStatus {
   IDLE,
@@ -47,6 +47,7 @@ const DomainCard = ({
   project,
   onUpdate,
 }: DomainCardProps) => {
+  const { toast, dismiss } = useToast();
   const [refreshStatus, SetRefreshStatus] = useState(RefreshStatus.IDLE);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -58,9 +59,19 @@ const DomainCard = ({
 
     if (deleteDomain) {
       onUpdate();
-      toast.success(`Domain ${domain.name} deleted successfully`);
+      toast({
+        id: 'domain_deleted_success',
+        title: 'Domain deleted',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error(`Error deleting domain ${domain.name}`);
+      toast({
+        id: 'domain_deleted_error',
+        title: `Error deleting domain ${domain.name}`,
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
@@ -68,7 +79,7 @@ const DomainCard = ({
     <>
       <div className="flex justify-between py-3">
         <div className="flex justify-start gap-1">
-          <Typography variant="h6" placeholder={''}>
+          <Typography variant="h6">
             <i>^</i> {domain.name}
           </Typography>
           <Chip
@@ -97,71 +108,50 @@ const DomainCard = ({
             <MenuHandler>
               <button className="border-2 rounded-full w-8 h-8">...</button>
             </MenuHandler>
-            <MenuList placeholder={''}>
+            <MenuList>
               <MenuItem
                 className="text-black"
                 onClick={() => {
                   setEditDialogOpen((preVal) => !preVal);
                 }}
-                placeholder={''}
               >
-                ^ Edit domain
+                Edit Domain
               </MenuItem>
               <MenuItem
                 className="text-red-500"
                 onClick={() => setDeleteDialogOpen((preVal) => !preVal)}
-                placeholder={''}
               >
-                ^ Delete domain
+                Delete domain
               </MenuItem>
             </MenuList>
           </Menu>
         </div>
 
-        <ConfirmDialog
-          dialogTitle="Delete domain?"
-          handleOpen={() => setDeleteDialogOpen((preVal) => !preVal)}
+        <DeleteDomainDialog
+          handleCancel={() => setDeleteDialogOpen((preVal) => !preVal)}
           open={deleteDialogOpen}
-          confirmButtonTitle="Yes, Delete domain"
           handleConfirm={() => {
             deleteDomain();
             setDeleteDialogOpen((preVal) => !preVal);
           }}
-          color="red"
-        >
-          <Typography variant="small" placeholder={''}>
-            Once deleted, the project{' '}
-            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {project.name}
-            </span>{' '}
-            will not be accessible from the domain{' '}
-            <span className="bg-blue-100 rounded-sm p-0.5 text-blue-700">
-              {domain.name}.
-            </span>
-          </Typography>
-        </ConfirmDialog>
+          projectName={project.name}
+          domainName={domain.name}
+        />
       </div>
 
-      <Typography variant="small" placeholder={''}>
-        Production
-      </Typography>
+      <Typography variant="small">Production</Typography>
       {domain.status === DomainStatus.Pending && (
-        <Card className="bg-gray-200 p-4 text-sm" placeholder={''}>
+        <Card className="bg-slate-100 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
-            <Typography variant="small" placeholder={''}>
+            <Typography variant="small">
               ^ Add these records to your domain and refresh to check
             </Typography>
           ) : refreshStatus === RefreshStatus.CHECKING ? (
-            <Typography
-              variant="small"
-              className="text-blue-500"
-              placeholder={''}
-            >
+            <Typography variant="small" className="text-blue-500">
               ^ Checking records for {domain.name}
             </Typography>
           ) : (
             <div className="flex gap-2 text-red-500 mb-2">
-              <div>^</div>
               <div className="grow">
                 Failed to verify records. DNS propagation can take up to 48
                 hours. Please ensure you added the correct records and refresh.

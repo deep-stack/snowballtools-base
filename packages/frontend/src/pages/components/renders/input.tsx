@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from 'components/shared/Input';
 import { SearchIcon, CrossIcon } from 'components/shared/CustomIcon';
 

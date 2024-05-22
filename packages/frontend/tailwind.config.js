@@ -1,16 +1,18 @@
-import withMT from '@material-tailwind/react/utils/withMT';
+import withMT from '@snowballtools/material-tailwind-react-fork/utils/withMT';
+import colors from 'tailwindcss/colors';
 
 /** @type {import('tailwindcss').Config} */
 export default withMT({
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
-    '../../node_modules/@material-tailwind/react/components/**/*.{js,ts,jsx,tsx}',
-    '../../node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
+    '../../node_modules/@snowballtools/material-tailwind-react-fork/components/**/*.{js,ts,jsx,tsx}',
+    '../../node_modules/@snowballtools/material-tailwind-react-fork/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
-      zIndex: {
-        tooltip: '52',
+      screens: {
+        xxs: '400px',
+        xs: '480px',
       },
       letterSpacing: {
         tight: '-0.084px',
@@ -25,6 +27,8 @@ export default withMT({
         '3xs': '0.5rem',
       },
       colors: {
+        sky: colors.sky, // TODO: WHy is this necessary? We're already using tailwind v3
+        slate: colors.slate, // TODO: WHy is this necessary? We're already using tailwind v3
         emerald: {
           100: '#d1fae5',
           200: '#a9f1d0',
@@ -87,6 +91,7 @@ export default withMT({
           900: '#0a3a5c',
         },
         base: {
+          canvas: '#ECF6FE',
           bg: '#ffffff',
           'bg-alternate': '#f8fafc',
           'bg-emphasized': '#f1f5f9',
@@ -170,7 +175,11 @@ export default withMT({
         4.5: '1.125rem',
       },
       zIndex: {
+        tooltip: '52',
         toast: '9999',
+      },
+      animation: {
+        spin: 'spin 3s linear infinite',
       },
     },
   },

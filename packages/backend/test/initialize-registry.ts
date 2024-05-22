@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-import { Registry } from '@cerc-io/laconic-sdk';
+import { Registry } from '@snowballtools/laconic-sdk';
 
 import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 import { Config } from '../src/config';

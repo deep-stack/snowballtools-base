@@ -1,12 +1,8 @@
-import React, {
-  type ReactNode,
-  type ComponentPropsWithoutRef,
-  useMemo,
-} from 'react';
+import { type ReactNode, type ComponentPropsWithoutRef, useMemo } from 'react';
 import { tagTheme, type TagTheme } from './Tag.theme';
 import { cloneIcon } from 'utils/cloneIcon';
 
-type TagProps = ComponentPropsWithoutRef<'div'> &
+export type TagProps = ComponentPropsWithoutRef<'div'> &
   TagTheme & {
     /**
      * The optional left icon element for a component.

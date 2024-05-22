@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PencilIcon } from 'components/shared/CustomIcon';
 import { SelectOption, Select } from 'components/shared/Select';
 

@@ -1,3 +1,4 @@
+@import 'layouts/global.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,15 +9,14 @@
     font-style: normal;
     font-weight: 100;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Thin.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Thin.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 100;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-ThinItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-ThinItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -24,7 +24,7 @@
     font-style: normal;
     font-weight: 200;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-ExtraLight.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-ExtraLight.woff2')
       format('woff2');
   }
   @font-face {
@@ -32,7 +32,7 @@
     font-style: italic;
     font-weight: 200;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-ExtraLightItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-ExtraLightItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -40,15 +40,14 @@
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Light.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Light.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 300;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-LightItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-LightItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -56,31 +55,28 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Regular.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Regular.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 400;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Italic.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Italic.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Medium.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Medium.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 500;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-MediumItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-MediumItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -88,15 +84,14 @@
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-SemiBold.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-SemiBold.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 600;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-SemiBoldItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-SemiBoldItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -104,15 +99,14 @@
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Bold.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Bold.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 700;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-BoldItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-BoldItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -120,15 +114,14 @@
     font-style: normal;
     font-weight: 800;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-ExtraBold.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-ExtraBold.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 800;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-ExtraBoldItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-ExtraBoldItalic.woff2')
       format('woff2');
   }
   @font-face {
@@ -136,15 +129,14 @@
     font-style: normal;
     font-weight: 900;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-Black.woff2')
-      format('woff2');
+    src: url('/fonts/InterDisplay/InterDisplay-Black.woff2') format('woff2');
   }
   @font-face {
     font-family: 'Inter Display';
     font-style: italic;
     font-weight: 900;
     font-display: swap;
-    src: url('../public/fonts/InterDisplay/InterDisplay-BlackItalic.woff2')
+    src: url('/fonts/InterDisplay/InterDisplay-BlackItalic.woff2')
       format('woff2');
   }
 }
@@ -152,5 +144,45 @@
 @layer utilities {
   .focus-ring {
     @apply focus-visible:ring-[3px] focus-visible:ring-snowball-200 focus-visible:ring-offset-1 focus-visible:ring-offset-snowball-500 focus-visible:outline-none;
+  }
+
+  @keyframes dialog-overlay-show {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dialog-overlay-hide {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes dialog-content-show {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes dialog-content-hide {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+    }
   }
 }

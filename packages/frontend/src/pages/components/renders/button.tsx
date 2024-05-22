@@ -1,6 +1,5 @@
 import { Button, ButtonTheme } from 'components/shared/Button';
 import { PlusIcon } from 'components/shared/CustomIcon';
-import React from 'react';
 
 const buttonVariants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
 const buttonSizes = ['lg', 'md', 'sm', 'xs'] as const;

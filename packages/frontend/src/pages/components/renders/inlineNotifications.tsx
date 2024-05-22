@@ -1,6 +1,5 @@
 import { InlineNotification } from 'components/shared/InlineNotification';
 import { InlineNotificationTheme } from 'components/shared/InlineNotification/InlineNotification.theme';
-import React from 'react';
 
 const inlineNotificationVariants = [
   'info',

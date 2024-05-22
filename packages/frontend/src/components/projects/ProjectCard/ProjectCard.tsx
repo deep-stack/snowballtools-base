@@ -1,29 +1,26 @@
-import React, {
-  ComponentPropsWithoutRef,
-  MouseEvent,
-  useCallback,
-} from 'react';
-import { ProjectCardTheme, projectCardTheme } from './ProjectCard.theme';
-import { Project } from 'gql-client';
-import { Button } from 'components/shared/Button';
-import { WavyBorder } from 'components/shared/WavyBorder';
-import {
-  BranchIcon,
-  ClockIcon,
-  GitHubLogo,
-  HorizontalDotIcon,
-  WarningDiamondIcon,
-} from 'components/shared/CustomIcon';
-import { relativeTimeMs } from 'utils/time';
-import { useNavigate } from 'react-router-dom';
-import { Avatar } from 'components/shared/Avatar';
-import { getInitials } from 'utils/geInitials';
 import {
   Menu,
   MenuHandler,
   MenuItem,
   MenuList,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
+import { ComponentPropsWithoutRef, MouseEvent, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Project } from 'gql-client';
+import { Avatar } from 'components/shared/Avatar';
+import { Button } from 'components/shared/Button';
+import {
+  BranchIcon,
+  ClockIcon,
+  GithubLogoIcon,
+  HorizontalDotIcon,
+  WarningDiamondIcon,
+} from 'components/shared/CustomIcon';
+import { Tooltip } from 'components/shared/Tooltip';
+import { WavyBorder } from 'components/shared/WavyBorder';
+import { relativeTimeMs } from 'utils/time';
+import { getInitials } from 'utils/geInitials';
+import { ProjectCardTheme, projectCardTheme } from './ProjectCard.theme';
 
 export interface ProjectCardProps
   extends ComponentPropsWithoutRef<'div'>,
@@ -72,7 +69,9 @@ export const ProjectCard = ({
         />
         {/* Title and website */}
         <div className={theme.content()}>
-          <p className={theme.title()}>{project.name}</p>
+          <Tooltip content={project.name}>
+            <p className={theme.title()}>{project.name}</p>
+          </Tooltip>
           <p className={theme.description()}>
             {project.deployments[0]?.domain?.name ?? 'No domain'}
           </p>
@@ -92,11 +91,9 @@ export const ProjectCard = ({
                 <HorizontalDotIcon />
               </Button>
             </MenuHandler>
-            <MenuList placeholder={''}>
-              <MenuItem placeholder={''}>Project settings</MenuItem>
-              <MenuItem className="text-red-500" placeholder={''}>
-                Delete project
-              </MenuItem>
+            <MenuList>
+              <MenuItem>Project settings</MenuItem>
+              <MenuItem className="text-red-500">Delete project</MenuItem>
             </MenuList>
           </Menu>
         </div>
@@ -121,7 +118,7 @@ export const ProjectCard = ({
         <div className={theme.deploymentText()}>
           {hasDeployment ? (
             <>
-              <GitHubLogo />
+              <GithubLogoIcon />
               <span>{relativeTimeMs(project.deployments[0].createdAt)} on</span>
               <BranchIcon />
               <span>{project.deployments[0].branch}</span>

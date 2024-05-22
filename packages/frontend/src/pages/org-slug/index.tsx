@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
@@ -26,7 +26,7 @@ const Projects = () => {
   }, [orgSlug]);
 
   return (
-    <section className="px-6 py-6 flex flex-col gap-6">
+    <section className="px-4 md:px-6 py-6 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center">
         <div className="grow">
@@ -44,7 +44,7 @@ const Projects = () => {
         </Link>
       </div>
       {/* List of projects */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-flow-row grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-4">
         {projects.length > 0 &&
           projects.map((project, key) => {
             return <ProjectCard project={project} key={key} />;

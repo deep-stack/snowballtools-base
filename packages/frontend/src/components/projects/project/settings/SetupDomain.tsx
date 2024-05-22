@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import {
-  Radio,
-  Typography,
-  Button,
-  Input,
-  Alert,
-} from '@material-tailwind/react';
+import { Heading } from 'components/shared/Heading';
+import { InlineNotification } from 'components/shared/InlineNotification';
+import { Input } from 'components/shared/Input';
+import { Button } from 'components/shared/Button';
+import { Radio } from 'components/shared/Radio';
+
+interface SetupDomainFormValues {
+  domainName: string;
+  isWWW: string;
+}
 
 const SetupDomain = () => {
   const {
@@ -17,32 +20,38 @@ const SetupDomain = () => {
     formState: { isValid },
     watch,
     setValue,
-  } = useForm({
+  } = useForm<SetupDomainFormValues>({
     defaultValues: {
       domainName: '',
       isWWW: 'false',
     },
+    mode: 'onChange',
   });
 
-  const [domainStr, setDomainStr] = useState('');
+  const [domainStr, setDomainStr] = useState<string>('');
   const navigate = useNavigate();
+  const isWWWRadioOptions = [
+    { label: domainStr, value: 'false' },
+    { label: `www.${domainStr}`, value: 'true' },
+  ];
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'domainName' && value.domainName) {
         const domainArr = value.domainName.split('www.');
-        setDomainStr(domainArr.length > 1 ? domainArr[1] : domainArr[0]);
+        const cleanedDomain =
+          domainArr.length > 1 ? domainArr[1] : domainArr[0];
+        setDomainStr(cleanedDomain);
 
-        if (value.domainName.startsWith('www.')) {
-          setValue('isWWW', 'true');
-        } else {
-          setValue('isWWW', 'false');
-        }
+        setValue(
+          'isWWW',
+          value.domainName.startsWith('www.') ? 'true' : 'false',
+        );
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, [watch, setValue]);
 
   return (
     <form
@@ -54,68 +63,49 @@ const SetupDomain = () => {
       className="flex flex-col gap-6 w-full"
     >
       <div>
-        <Typography variant="h5" placeholder={''}>
+        <Heading className="text-sky-950 text-lg font-medium leading-normal">
           Setup domain name
-        </Typography>
-        <Typography variant="small" placeholder={''}>
+        </Heading>
+        <p className="text-slate-500 text-sm font-normal leading-tight">
           Add your domain and setup redirects
-        </Typography>
+        </p>
       </div>
 
-      <div className="w-auto">
-        <Typography variant="small" placeholder={''}>
-          Domain name
-        </Typography>
-        <Input
-          type="text"
-          variant="outlined"
-          size="lg"
-          crossOrigin={undefined}
-          className="w-full"
-          {...register('domainName', {
-            required: true,
-          })}
-        />
-      </div>
+      <Input
+        size="md"
+        placeholder="example.com"
+        {...register('domainName', {
+          required: true,
+        })}
+        label="Domain name"
+      />
 
       {isValid && (
-        <div>
-          <Typography placeholder={''}>Primary domain</Typography>
-          <div className="flex flex-col gap-3">
-            <Radio
-              label={domainStr}
-              crossOrigin={undefined}
-              {...register('isWWW')}
-              value="false"
-              type="radio"
-            />
-            <Radio
-              label={`www.${domainStr}`}
-              crossOrigin={undefined}
-              {...register('isWWW')}
-              value="true"
-              type="radio"
-            />
-          </div>
-          <Alert color="blue">
-            <i>^</i> For simplicity, we’ll redirect the{' '}
-            {watch('isWWW') === 'true'
-              ? `non-www variant to www.${domainStr}`
-              : `www variant to ${domainStr}`}
-            . Redirect preferences can be changed later
-          </Alert>
+        <div className="self-stretch flex flex-col gap-4">
+          <Heading className="text-sky-950 text-lg font-medium leading-normal">
+            Primary domain
+          </Heading>
+          <Radio
+            options={isWWWRadioOptions}
+            onValueChange={(value) => setValue('isWWW', value)}
+            value={watch('isWWW')}
+          />
+          <InlineNotification
+            variant="info"
+            title={`For simplicity, we'll redirect the ${
+              watch('isWWW') === 'true'
+                ? `non-www variant to www.${domainStr}`
+                : `www variant to ${domainStr}`
+            }. Redirect preferences can be changed later`}
+          />
         </div>
       )}
 
-      <Button
-        disabled={!isValid}
-        className="w-fit"
-        color={isValid ? 'blue' : 'gray'}
-        type="submit"
-        placeholder={''}
-      >
-        <i>^</i> Next
-      </Button>
+      <div className="self-stretch">
+        <Button disabled={!isValid} type="submit">
+          Next
+        </Button>
+      </div>
     </form>
   );
 };

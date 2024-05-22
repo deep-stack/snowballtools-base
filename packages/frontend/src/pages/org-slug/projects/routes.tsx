@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Id from './Id';
 import AddDomain from './id/settings/domains/add';
 import { createProjectRoutes } from './create/routes';

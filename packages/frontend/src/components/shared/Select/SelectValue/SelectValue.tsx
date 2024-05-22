@@ -1,4 +1,4 @@
-import React, { forwardRef, ComponentPropsWithoutRef } from 'react';
+import { forwardRef, ComponentPropsWithoutRef } from 'react';
 import {
   Overwrite,
   UseMultipleSelectionGetSelectedItemReturnValue,

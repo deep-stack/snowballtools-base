@@ -1,23 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import { Environment, EnvironmentVariable } from 'gql-client';
 
-import {
-  Typography,
-  Collapse,
-  Card,
-  Button,
-  Checkbox,
-  Chip,
-} from '@material-tailwind/react';
+import { Collapse } from '@snowballtools/material-tailwind-react-fork';
 
-import AddEnvironmentVariableRow from '../../../../../components/projects/project/settings/AddEnvironmentVariableRow';
-import DisplayEnvironmentVariables from '../../../../../components/projects/project/settings/DisplayEnvironmentVariables';
-import HorizontalLine from '../../../../../components/HorizontalLine';
+import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
+import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { EnvironmentVariablesFormValues } from '../../../../../types';
+import HorizontalLine from 'components/HorizontalLine';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
+import { Checkbox } from 'components/shared/Checkbox';
+import { PlusIcon } from 'components/shared/CustomIcon';
+import { InlineNotification } from 'components/shared/InlineNotification';
+import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -132,26 +131,22 @@ export const EnvironmentVariablesTabPanel = () => {
   );
 
   return (
-    <>
-      <Typography variant="h6" placeholder={''}>
-        Environment variables
-      </Typography>
-      <Typography
-        variant="small"
-        className="font-medium text-gray-800"
-        placeholder={''}
-      >
+    <ProjectSettingContainer headingText="Environment variables">
+      <p className="text-slate-600 text-sm font-normal leading-tight">
         A new deployment is required for your changes to take effect.
-      </Typography>
-      <div className="bg-gray-300 rounded-lg p-2">
-        <div
-          className="text-black"
+      </p>
+      <div className="bg-slate-100 rounded-xl flex-col">
+        <Heading
           onClick={() => setCreateNewVariable((cur) => !cur)}
+          className="p-4"
         >
-          + Create new variable
-        </div>
+          <div className="flex gap-2 items-center">
+            <PlusIcon />
+            <span>Create new variable</span>
+          </div>
+        </Heading>
         <Collapse open={createNewVariable}>
-          <Card className="bg-white p-2" placeholder={''}>
+          <div className="p-4 bg-slate-100">
             <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
               {fields.map((field, index) => {
                 return (
@@ -166,58 +161,52 @@ export const EnvironmentVariablesTabPanel = () => {
               })}
               <div className="flex gap-1 p-2">
                 <Button
-                  variant="outlined"
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     append({
                       key: '',
                       value: '',
                     })
                   }
-                  placeholder={''}
                 >
                   + Add variable
                 </Button>
                 {/* TODO: Implement import environment varible functionality */}
-                <Button variant="outlined" size="sm" disabled placeholder={''}>
-                  ^ Import .env
+                <Button size="md" disabled>
+                  Import .env
                 </Button>
               </div>
               {isFieldEmpty && (
-                <Chip
-                  value="^ Please ensure no fields are empty before saving."
-                  variant="outlined"
-                  color="red"
-                  size="sm"
+                <InlineNotification
+                  title="Please ensure no fields are empty before saving."
+                  variant="danger"
+                  size="md"
                 />
               )}
-              <div>
+              <div className="flex gap-2 p-2">
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Production"
                   {...register(`environment.production`)}
                   color="blue"
                 />
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Preview"
                   {...register(`environment.preview`)}
                   color="blue"
                 />
                 <Checkbox
-                  crossOrigin={undefined}
                   label="Development"
                   {...register(`environment.development`)}
                   color="blue"
                 />
               </div>
               <div className="p-2">
-                <Button size="lg" color="blue" type="submit" placeholder={''}>
+                <Button size="md" type="submit">
                   Save changes
                 </Button>
               </div>
             </form>
-          </Card>
+          </div>
         </Collapse>
       </div>
       <div className="p-2">
@@ -245,6 +234,6 @@ export const EnvironmentVariablesTabPanel = () => {
           }}
         />
       </div>
-    </>
+    </ProjectSettingContainer>
   );
 };

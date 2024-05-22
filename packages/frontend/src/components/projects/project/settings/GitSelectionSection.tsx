@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { GitSelect } from '../../../../types';
 
 const GitSelectionSection = ({

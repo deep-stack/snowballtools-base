@@ -1,5 +1,4 @@
-import React from 'react';
-import { StepperNav } from 'vertical-stepper-nav';
+import { StepperNav } from './VerticalStepper';
 
 const COLOR_COMPLETED = '#059669';
 const COLOR_ACTIVE = '#CFE6FC';

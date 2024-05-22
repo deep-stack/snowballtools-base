@@ -1,4 +1,3 @@
-import React from 'react';
 import * as CheckboxRadix from '@radix-ui/react-checkbox';
 import { type CheckboxProps as CheckboxRadixProps } from '@radix-ui/react-checkbox';
 

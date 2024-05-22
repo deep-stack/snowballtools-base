@@ -71,6 +71,7 @@ export const tabsTheme = tv({
       'gap-5',
       'border-b',
       'border-transparent',
+      'overflow-auto',
       // Horizontal – default
       'data-[orientation=horizontal]:border-border-interactive/10',
       // Vertical
@@ -91,3 +92,5 @@ export const tabsTheme = tv({
     fillWidth: false,
   },
 });
+
+export type TabsTheme = VariantProps<typeof tabsTheme>;

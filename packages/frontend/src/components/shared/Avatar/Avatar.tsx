@@ -1,4 +1,3 @@
-import React from 'react';
 import { type ComponentPropsWithoutRef, type ComponentProps } from 'react';
 import { avatarTheme, type AvatarVariants } from './Avatar.theme';
 import * as PrimitiveAvatar from '@radix-ui/react-avatar';

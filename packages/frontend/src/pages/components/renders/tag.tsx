@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tag } from 'components/shared/Tag';
 import { PlusIcon } from 'components/shared/CustomIcon';
 

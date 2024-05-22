@@ -1,20 +1,19 @@
-import React from 'react';
 import { CustomIcon, CustomIconProps } from './CustomIcon';
 
 export const SearchIcon = (props: CustomIconProps) => {
   return (
     <CustomIcon
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
       fill="none"
       {...props}
     >
       <path
-        d="M20 20L16.05 16.05M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C14.866 4 18 7.13401 18 11Z"
+        d="M15.375 15.375L12.225 12.225M13.875 8.25C13.875 11.3566 11.3566 13.875 8.25 13.875C5.1434 13.875 2.625 11.3566 2.625 8.25C2.625 5.1434 5.1434 2.625 8.25 2.625C11.3566 2.625 13.875 5.1434 13.875 8.25Z"
         stroke="currentColor"
-        strokeWidth="2"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </CustomIcon>
   );

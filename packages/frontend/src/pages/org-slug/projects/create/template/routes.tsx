@@ -1,5 +1,3 @@
-import React from 'react';
-
 import CreateRepo from './index';
 import Deploy from './Deploy';
 

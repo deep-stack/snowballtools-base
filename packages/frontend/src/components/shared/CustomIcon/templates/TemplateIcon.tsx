@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { CustomIconProps } from '../CustomIcon';
 import { ReactNativeIcon } from './ReactNativeIcon';
 import { cloneIcon } from 'utils/cloneIcon';

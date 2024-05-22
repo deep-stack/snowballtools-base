@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Badge } from 'components/shared/Badge';
 import { BadgeTheme } from 'components/shared/Badge/Badge.theme';
 

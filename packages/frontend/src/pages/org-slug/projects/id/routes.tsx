@@ -1,23 +1,11 @@
-import React from 'react';
-
 import OverviewTabPanel from './Overview';
 import DeploymentsTabPanel from './Deployments';
 import SettingsTabPanel from './Settings';
 import GeneralTabPanel from './settings/General';
 import GitTabPanel from './settings/Git';
 import { EnvironmentVariablesTabPanel } from './settings/EnvironmentVariables';
-import MembersTabPanel from './settings/Members';
+import CollaboratorsTabPanel from './settings/Collaborators';
 import Domains from './settings/Domains';
-
-const Database = () => (
-  <div>
-    Content of database tab
-    <p className="block">
-      It is a long established fact that a reader will be distracted by the
-      readable content of a page when looking at its layout.
-    </p>
-  </div>
-);
 
 const Integrations = () => (
   <div>
@@ -46,8 +34,8 @@ export const settingsTabRoutes = [
     element: <EnvironmentVariablesTabPanel />,
   },
   {
-    path: 'members',
-    element: <MembersTabPanel />,
+    path: 'collaborators',
+    element: <CollaboratorsTabPanel />,
   },
 ];
 
@@ -59,10 +47,6 @@ export const projectTabRoutes = [
   {
     path: 'deployments',
     element: <DeploymentsTabPanel />,
-  },
-  {
-    path: 'database',
-    element: <Database />,
   },
   {
     path: 'integrations',

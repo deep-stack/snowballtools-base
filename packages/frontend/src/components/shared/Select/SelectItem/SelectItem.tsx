@@ -1,4 +1,4 @@
-import React, { forwardRef, ComponentPropsWithoutRef, useMemo } from 'react';
+import { forwardRef, ComponentPropsWithoutRef, useMemo } from 'react';
 import { Overwrite, UseComboboxGetItemPropsReturnValue } from 'downshift';
 import { SelectOption, SelectOrientation } from 'components/shared/Select';
 import { selectItemTheme, SelectItemTheme } from './SelectItem.theme';
@@ -62,11 +62,13 @@ const SelectItem = forwardRef<HTMLLIElement, SelectItemProps>(
           <p className={theme.label()} data-disabled={disabled}>
             {label}
           </p>
-          {orientation === 'horizontal' && <span className={theme.dot()} />}
           {description && (
-            <p className={theme.description()} data-disabled={disabled}>
-              {description}
-            </p>
+            <>
+              {orientation === 'horizontal' && <span className={theme.dot()} />}
+              <p className={theme.description()} data-disabled={disabled}>
+                {description}
+              </p>
+            </>
           )}
         </div>
         {renderRightIcon}

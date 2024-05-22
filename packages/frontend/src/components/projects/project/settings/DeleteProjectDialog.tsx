@@ -1,19 +1,13 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { Project } from 'gql-client';
 
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Input,
-  Typography,
-} from '@material-tailwind/react';
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
+import { useToast } from 'components/shared/Toast';
+import { Modal } from 'components/shared/Modal';
+import { Button } from 'components/shared/Button';
+import { Input } from 'components/shared/Input';
+import { Project } from 'gql-client';
 
 interface DeleteProjectDialogProp {
   open: boolean;
@@ -26,6 +20,7 @@ const DeleteProjectDialog = ({
   handleOpen,
   project,
 }: DeleteProjectDialogProp) => {
+  const { toast, dismiss } = useToast();
   const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
@@ -46,66 +41,48 @@ const DeleteProjectDialog = ({
     if (deleteProject) {
       navigate(`/${orgSlug}`);
     } else {
-      toast.error('Project not deleted');
+      toast({
+        id: 'project_not_deleted',
+        title: 'Project not deleted',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
 
     handleOpen();
   }, [client, project, handleOpen]);
 
   return (
-    <Dialog open={open} handler={handleOpen} placeholder={''}>
-      <DialogHeader className="flex justify-between" placeholder={''}>
-        <div>Delete project?</div>
-        <Button
-          variant="outlined"
-          onClick={handleOpen}
-          className="mr-1 rounded-3xl"
-          placeholder={''}
-        >
-          X
-        </Button>
-      </DialogHeader>
-      <form onSubmit={handleSubmit(deleteProjectHandler)}>
-        <DialogBody className="flex flex-col gap-2" placeholder={''}>
-          <Typography variant="paragraph" placeholder={''}>
-            Deleting your project is irreversible. Enter your project’s
-            name&nbsp;
-            <span className="bg-blue-100 text-blue-700">({project.name})</span>
-            &nbsp;below to confirm you want to permanently delete it:
-          </Typography>
-          <Input
-            id="input"
-            crossOrigin={undefined}
-            {...register('projectName', {
-              required: 'Project name is required',
-              validate: (value) => value === project.name,
-            })}
-          />
-          <Typography variant="small" color="red" placeholder={''}>
-            ^ Deleting your project is irreversible.
-          </Typography>
-        </DialogBody>
-        <DialogFooter className="flex justify-start" placeholder={''}>
-          <Button
-            variant="outlined"
-            onClick={handleOpen}
-            className="mr-1"
-            placeholder={''}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="gradient"
-            color="red"
-            type="submit"
-            disabled={!isValid}
-            placeholder={''}
-          >
-            Yes, Delete project
-          </Button>
-        </DialogFooter>
-      </form>
-    </Dialog>
+    <Modal open={open} onOpenChange={handleOpen}>
+      <Modal.Content>
+        <Modal.Header>Delete project?</Modal.Header>
+        <form onSubmit={handleSubmit(deleteProjectHandler)}>
+          <Modal.Body>
+            <Input
+              label={
+                "Deleting your project is irreversible. Enter your project's name " +
+                project.name +
+                ' below to confirm you want to permanently delete it:'
+              }
+              id="input"
+              {...register('projectName', {
+                required: 'Project name is required',
+                validate: (value) => value === project.name,
+              })}
+              helperText="Deleting your project is irreversible."
+            />
+          </Modal.Body>
+          <Modal.Footer className="flex justify-start">
+            <Button onClick={handleOpen} variant="tertiary">
+              Cancel
+            </Button>
+            <Button variant="danger" type="submit" disabled={!isValid}>
+              Yes, delete project
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal.Content>
+    </Modal>
   );
 };
 

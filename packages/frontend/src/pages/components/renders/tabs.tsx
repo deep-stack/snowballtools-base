@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tabs } from 'components/shared/Tabs';
 import { Badge } from 'components/shared/Badge';
 import { GlobeIcon } from 'components/shared/CustomIcon';

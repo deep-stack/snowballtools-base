@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import {
   DayPicker,
@@ -12,7 +12,7 @@ import {
   Popover,
   PopoverContent,
   PopoverHandler,
-} from '@material-tailwind/react';
+} from '@snowballtools/material-tailwind-react-fork';
 
 import HorizontalLine from './HorizontalLine';
 
@@ -120,14 +120,11 @@ const DatePicker = ({
       handler={(value) => setIsOpen(value)}
     >
       <PopoverHandler>
-        <Input
-          onChange={() => null}
-          value={inputValue}
-          crossOrigin={undefined}
-        />
+        <Input onChange={() => null} value={inputValue} />
       </PopoverHandler>
       {/* TODO: Figure out what placeholder is for */}
-      <PopoverContent placeholder={''}>
+      {/* @ts-ignore */}
+      <PopoverContent>
         {mode === 'single' && (
           <DayPicker
             mode="single"
@@ -152,7 +149,6 @@ const DatePicker = ({
                 className="rounded-full mr-2"
                 variant="outlined"
                 onClick={() => setIsOpen(false)}
-                placeholder={''}
               >
                 Cancel
               </Button>
@@ -162,7 +158,6 @@ const DatePicker = ({
                 className="rounded-full"
                 color="gray"
                 onClick={() => handleRangeSelect()}
-                placeholder={''}
               >
                 Select
               </Button>

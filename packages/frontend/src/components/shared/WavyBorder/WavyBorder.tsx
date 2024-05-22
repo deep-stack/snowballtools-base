@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, useMemo } from 'react';
+import { ComponentPropsWithoutRef, useMemo } from 'react';
 import { cn } from 'utils/classnames';
 
 type WaveBorderVariant = 'stroke' | 'stroke-and-fill';

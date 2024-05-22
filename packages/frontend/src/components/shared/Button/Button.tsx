@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback } from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 import { buttonTheme } from './Button.theme';

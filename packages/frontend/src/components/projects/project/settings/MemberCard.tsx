@@ -1,19 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
+
+import { RemoveMemberDialog } from 'components/projects/Dialog/RemoveMemberDialog';
+import { Select, SelectOption } from 'components/shared/Select';
+import { LoaderIcon } from 'components/shared/CustomIcon';
+import { Tooltip } from 'components/shared/Tooltip';
+import { Button } from 'components/shared/Button';
 import { Permission, User } from 'gql-client';
+import { formatAddress } from 'utils/format';
+import { Tag } from 'components/shared/Tag';
+import { Input } from 'components/shared/Input';
 
-import {
-  Select,
-  Typography,
-  Option,
-  Chip,
-  IconButton,
-  Tooltip,
-} from '@material-tailwind/react';
-
-import ConfirmDialog from '../../../shared/ConfirmDialog';
-import { formatAddress } from '../../../../utils/format';
-
-const PERMISSION_OPTIONS = [
+const PERMISSION_OPTIONS: SelectOption[] = [
   {
     label: 'View only',
     value: 'View',
@@ -24,7 +21,7 @@ const PERMISSION_OPTIONS = [
   },
 ];
 
-const DROPDOWN_OPTIONS = [
+const DROPDOWN_OPTIONS: SelectOption[] = [
   ...PERMISSION_OPTIONS,
   { label: 'Remove member', value: 'remove' },
 ];
@@ -51,16 +48,21 @@ const MemberCard = ({
   onUpdateProjectMember,
 }: MemberCardProps) => {
   const [ethAddress, emailDomain] = member.email.split('@');
-  const [selectedPermission, setSelectedPermission] = useState(
-    permissions.join('+'),
+  const [selectedPermission, setSelectedPermission] = useState<SelectOption>(
+    PERMISSION_OPTIONS.map((value) => {
+      permissions.join('+') === value.value;
+    }).pop() ?? {
+      label: 'View only',
+      value: 'View',
+    },
   );
   const [removeMemberDialogOpen, setRemoveMemberDialogOpen] = useState(false);
 
   const handlePermissionChange = useCallback(
-    async (value: string) => {
+    async (value: SelectOption) => {
       setSelectedPermission(value);
 
-      if (value === 'remove') {
+      if (value.value === 'remove') {
         setRemoveMemberDialogOpen((prevVal) => !prevVal);
         // To display updated label in next render
         setTimeout(() => {
@@ -68,7 +70,7 @@ const MemberCard = ({
         });
       } else {
         if (onUpdateProjectMember) {
-          const permissions = value.split('+') as Permission[];
+          const permissions = value.value.split('+') as Permission[];
           await onUpdateProjectMember({ permissions });
         }
       }
@@ -78,9 +80,8 @@ const MemberCard = ({
 
   return (
     <div
-      className={`flex p-1 ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
+      className={`flex py-1 items-center ${!isFirstCard && 'mt-1 border-t border-gray-300'}`}
     >
-      <div>^</div>
       <div className="basis-1/2">
         {member.name && (
           <Tooltip content={member.name}>
@@ -95,71 +96,53 @@ const MemberCard = ({
       </div>
       <div className="basis-1/2">
         {!isPending ? (
-          <Select
-            size="lg"
-            label={isOwner ? 'Owner' : ''}
-            disabled={isOwner}
-            value={selectedPermission}
-            onChange={(value) => handlePermissionChange(value!)}
-            selected={(_, index) => (
-              <span>{DROPDOWN_OPTIONS[index!]?.label}</span>
-            )}
-            placeholder={''}
-          >
-            {DROPDOWN_OPTIONS.map((permission, key) => (
-              <Option key={key} value={permission.value}>
-                ^ {permission.label}
-                {permission.value === selectedPermission && (
-                  <p className="float-right">^</p>
-                )}
-              </Option>
-            ))}
-          </Select>
+          isOwner ? (
+            <Input size="md" value="Owner" disabled />
+          ) : (
+            <Select
+              options={DROPDOWN_OPTIONS}
+              size="md"
+              placeholder="Select permission"
+              value={selectedPermission}
+              onChange={(value) =>
+                handlePermissionChange(value as SelectOption)
+              }
+            />
+          )
         ) : (
           <div className="flex justify-end gap-2">
             <div>
-              <Chip
-                value="Pending"
-                variant="outlined"
-                color="orange"
-                size="sm"
-                icon={'^'}
-              />
+              <Tag type="positive" size="sm" leftIcon={<LoaderIcon />}>
+                Pending
+              </Tag>
             </div>
             <div>
-              <IconButton
-                size="sm"
-                className="rounded-full"
+              <Button
+                size="md"
+                iconOnly
                 onClick={() => {
                   setRemoveMemberDialogOpen((prevVal) => !prevVal);
                 }}
-                placeholder={''}
               >
                 D
-              </IconButton>
+              </Button>
             </div>
           </div>
         )}
       </div>
-      <ConfirmDialog
-        dialogTitle="Remove member?"
-        handleOpen={() => setRemoveMemberDialogOpen((preVal) => !preVal)}
+      <RemoveMemberDialog
+        handleCancel={() => setRemoveMemberDialogOpen((preVal) => !preVal)}
         open={removeMemberDialogOpen}
-        confirmButtonTitle="Yes, Remove member"
         handleConfirm={() => {
           setRemoveMemberDialogOpen((preVal) => !preVal);
           if (onRemoveProjectMember) {
             onRemoveProjectMember();
           }
         }}
-        color="red"
-      >
-        <Typography variant="small" placeholder={''}>
-          Once removed, {formatAddress(member.name ?? '')} (
-          {formatAddress(ethAddress)}@{emailDomain}) will not be able to access
-          this project.
-        </Typography>
-      </ConfirmDialog>
+        memberName={member.name ?? ''}
+        ethAddress={ethAddress}
+        emailDomain={emailDomain}
+      />
     </div>
   );
 };

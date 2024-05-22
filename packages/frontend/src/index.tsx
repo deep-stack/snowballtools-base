@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import assert from 'assert';
 import { GQLClient } from 'gql-client';
 
-import { ThemeProvider } from '@material-tailwind/react';
+import { ThemeProvider } from '@snowballtools/material-tailwind-react-fork';
 
 import './index.css';
 import '@fontsource/inter';
@@ -13,30 +13,31 @@ import reportWebVitals from './reportWebVitals';
 import { GQLClientProvider } from './context/GQLClientContext';
 import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
-import Web3ModalProvider from './context/Web3ModalProvider';
+import { LogErrorBoundary } from 'utils/log-error';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
 assert(
-  process.env.REACT_APP_SERVER_URL,
+  import.meta.env.VITE_SERVER_URL,
   'REACT_APP_SERVER_URL is not set in env',
 );
-const gqlEndpoint = `${process.env.REACT_APP_SERVER_URL}/${SERVER_GQL_PATH}`;
+const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 
 root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <GQLClientProvider client={gqlClient}>
-        <Web3ModalProvider>
+  <LogErrorBoundary>
+    <React.StrictMode>
+      <ThemeProvider>
+        <GQLClientProvider client={gqlClient}>
           <App />
-        </Web3ModalProvider>
-        <Toaster />
-      </GQLClientProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+          <Toaster />
+        </GQLClientProvider>
+      </ThemeProvider>
+    </React.StrictMode>
+  </LogErrorBoundary>,
 );
 
 // If you want to start measuring performance in your app, pass a function

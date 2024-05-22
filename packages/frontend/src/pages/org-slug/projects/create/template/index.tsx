@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import { RequestError } from 'octokit';
 import assert from 'assert';
-
-import { Button, Option, Typography } from '@material-tailwind/react';
+import { useMediaQuery } from 'usehooks-ts';
+import { RequestError } from 'octokit';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
 import { useGQLClient } from '../../../../../context/GQLClientContext';
-import AsyncSelect from '../../../../../components/shared/AsyncSelect';
-import { Template } from '../../../../../types';
+import { Template } from '../../../../../types/types';
+import { Heading } from 'components/shared/Heading';
+import { Input } from 'components/shared/Input';
+import { Select, SelectOption } from 'components/shared/Select';
+import { ArrowRightCircleFilledIcon } from 'components/shared/CustomIcon';
+import { Checkbox } from 'components/shared/Checkbox';
+import { Button } from 'components/shared/Button';
 import { useToast } from 'components/shared/Toast';
 
 const REPO_EXIST_ERROR = 'Could not clone: Name already exists on this account';
@@ -22,12 +26,15 @@ type SubmitRepoValues = {
 };
 
 const CreateRepo = () => {
-  const { octokit } = useOctokit();
+  const { octokit, isAuth } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
   const client = useGQLClient();
-  const { toast, dismiss } = useToast();
 
   const { orgSlug } = useParams();
+  const { toast, dismiss } = useToast();
+
+  const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
+  const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
   const navigate = useNavigate();
 
@@ -57,9 +64,16 @@ const CreateRepo = () => {
           return;
         }
 
+        // Refetch to always get correct default branch
+        const templateRepo = await octokit.rest.repos.get({
+          owner: template.repoFullName.split('/')[0],
+          repo: template.repoFullName.split('/')[1],
+        });
+        const prodBranch = templateRepo.data.default_branch ?? 'main';
+
         const { addProject } = await client.addProject(orgSlug!, {
           name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
-          prodBranch: gitRepo.data.default_branch ?? 'main',
+          prodBranch,
           repository: gitRepo.data.full_name,
           // TODO: Set selected template
           template: 'webapp',
@@ -83,7 +97,7 @@ const CreateRepo = () => {
           return;
         }
 
-        console.error(err);
+        console.error((err as Error).message);
         toast({
           id: 'error-deploying-project',
           title: 'Error deploying project',
@@ -97,20 +111,28 @@ const CreateRepo = () => {
 
   useEffect(() => {
     const fetchUserAndOrgs = async () => {
-      const user = await octokit?.rest.users.getAuthenticated();
-      const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
+      try {
+        const user = await octokit?.rest.users.getAuthenticated();
+        const orgs = await octokit?.rest.orgs.listForAuthenticatedUser();
 
-      if (user && orgs) {
-        const orgsLoginArr = orgs.data.map((org) => org.login);
+        if (user && orgs) {
+          const orgsLoginArr = orgs.data.map((org) => org.login);
 
-        setGitAccounts([user.data.login, ...orgsLoginArr]);
+          setGitAccounts([user.data.login, ...orgsLoginArr]);
+        }
+      } catch (error) {
+        // Error handled by octokit error hook interceptor in Octokit context
+        console.error(error);
+        return;
       }
     };
 
-    fetchUserAndOrgs();
-  }, [octokit]);
+    if (isAuth) {
+      fetchUserAndOrgs();
+    }
+  }, [octokit, isAuth]);
 
-  const { register, handleSubmit, control, reset } = useForm<SubmitRepoValues>({
+  const { handleSubmit, control, reset } = useForm<SubmitRepoValues>({
     defaultValues: {
       framework: 'React',
       repoName: '',
@@ -127,86 +149,68 @@ const CreateRepo = () => {
 
   return (
     <form onSubmit={handleSubmit(submitRepoHandler)}>
-      <div className="mb-2">
-        <Typography variant="h6" placeholder={''}>
-          Create a repository
-        </Typography>
-        <Typography color="gray" placeholder={''}>
-          The project will be cloned into this repository
-        </Typography>
-      </div>
-      <div className="mb-2">
-        <h5>Framework</h5>
-        <div className="flex items-center gap-2">
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              value="React"
-              className="h-5 w-5 text-indigo-600 rounded"
-            />
-            <span className="ml-2">^React</span>
-          </label>
-          <label className="inline-flex items-center w-1/2 border rounded-lg p-2">
-            <input
-              type="radio"
-              {...register('framework')}
-              className="h-5 w-5 text-indigo-600 rounded"
-              value="Next"
-            />
-            <span className="ml-2">^Next</span>
-          </label>
-        </div>
-      </div>
-      <div className="mb-2">
-        <h5>Git account</h5>
+      <div className="flex flex-col gap-4 lg:gap-7 w-full">
         <div>
+          <Heading as="h3" className="text-lg font-medium">
+            Create a repository
+          </Heading>
+          <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+            The project will be cloned into this repository
+          </Heading>
+        </div>
+
+        <div className="flex flex-col justify-start gap-3">
+          <span className="text-sm text-elements-high-em">Git account</span>
+          {gitAccounts.length > 0 ? (
+            <Controller
+              name="account"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  value={{ value } as SelectOption}
+                  onChange={(value) => onChange((value as SelectOption).value)}
+                  options={
+                    gitAccounts.map((account) => ({
+                      value: account,
+                      label: account,
+                    })) ?? []
+                  }
+                />
+              )}
+            />
+          ) : (
+            <Select options={[]} disabled />
+          )}
+        </div>
+        <div className="flex flex-col justify-start gap-3">
+          <span className="text-sm text-elements-high-em">Name the repo</span>
           <Controller
-            name="account"
+            name="repoName"
             control={control}
-            render={({ field }) => (
-              <AsyncSelect {...field}>
-                {gitAccounts.map((account, key) => (
-                  <Option key={key} value={account}>
-                    ^ {account}
-                  </Option>
-                ))}
-              </AsyncSelect>
+            render={({ field: { value, onChange } }) => (
+              <Input value={value} onChange={onChange} />
             )}
           />
         </div>
-      </div>
-      <div className="mb-2">
-        <h5>Name the repo</h5>
         <div>
-          <input
-            type="text"
-            className="border border-gray-300 rounded p-2 w-full focus:border-blue-300 focus:outline-none focus:shadow-outline-blue"
-            placeholder=""
-            {...register('repoName')}
+          <Controller
+            name="isPrivate"
+            control={control}
+            render={({}) => (
+              <Checkbox label="Make this repo private" disabled={true} />
+            )}
           />
         </div>
-      </div>
-      <div className="mb-2">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            className="h-5 w-5 text-indigo-600 rounded"
-            {...register('isPrivate')}
-          />
-          <span className="ml-2">Make this repo private</span>
-        </label>
-      </div>
-      <div className="mb-2">
-        <Button
-          className="bg-blue-500 rounded-xl p-2"
-          type="submit"
-          disabled={!Boolean(template.repoFullName) || isLoading}
-          loading={isLoading}
-          placeholder={''}
-        >
-          Deploy ^
-        </Button>
+        <div>
+          <Button
+            {...buttonSize}
+            type="submit"
+            disabled={!Boolean(template.repoFullName) || isLoading}
+            rightIcon={<ArrowRightCircleFilledIcon />}
+          >
+            Deploy
+          </Button>
+        </div>
       </div>
     </form>
   );

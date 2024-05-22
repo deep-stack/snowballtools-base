@@ -1,0 +1,4 @@
+record:
+  deployment: <APPLICATION_DEPLOYMENT_RECORD_ID>
+  type: ApplicationDeploymentRemovalRequest
+  version: 1.0.0

@@ -2,21 +2,22 @@ import React from 'react';
 import OauthPopup from 'react-oauth-popup';
 
 import { useGQLClient } from '../../../context/GQLClientContext';
-import { Button } from 'components/shared/Button';
+import { Button } from '../../shared/Button';
 import {
   GitIcon,
   EllipsesIcon,
   SnowballIcon,
   GithubIcon,
   GitTeaIcon,
-} from 'components/shared/CustomIcon';
-import { useToast } from 'components/shared/Toast';
-import { IconWithFrame } from 'components/shared/IconWithFrame';
-import { Heading } from 'components/shared/Heading';
+} from '../../shared/CustomIcon';
+import { useToast } from '../../shared/Toast';
+import { IconWithFrame } from '../../shared/IconWithFrame';
+import { Heading } from '../../shared/Heading';
+import { MockConnectGitCard } from './MockConnectGitCard';
 
 const SCOPES = 'repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
-  process.env.REACT_APP_GITHUB_CLIENT_ID
+  import.meta.env.VITE_GITHUB_CLIENT_ID
 }&scope=${encodeURIComponent(SCOPES)}`;
 
 interface ConnectAccountInterface {
@@ -93,6 +94,7 @@ const ConnectAccount: React.FC<ConnectAccountInterface> = ({
       </div>
 
       {/* TODO: Add ConnectAccountTabPanel */}
+      <MockConnectGitCard />
       {/* <div className="rounded-l shadow p-2 flex-col justify-start items-start gap-2 inline-flex">
         <ConnectAccountTabPanel />
       </div> */}

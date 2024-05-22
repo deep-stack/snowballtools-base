@@ -15,7 +15,8 @@ const SearchBar: React.ForwardRefRenderFunction<
         value={value}
         type="search"
         placeholder={placeholder}
-        appearance={'borderless'}
+        appearance="borderless"
+        className="w-full lg:w-[459px]"
         {...props}
       />
     </div>

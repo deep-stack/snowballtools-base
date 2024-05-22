@@ -2,7 +2,7 @@ import { VariantProps, tv } from 'tailwind-variants';
 
 export const selectTheme = tv({
   slots: {
-    container: ['flex', 'flex-col', 'relative', 'gap-2'],
+    container: ['flex', 'flex-col', 'relative', 'gap-2', 'w-full'],
     label: ['text-sm', 'text-elements-high-em'],
     description: ['text-xs', 'text-elements-low-em'],
     inputWrapper: [
@@ -85,7 +85,7 @@ export const selectTheme = tv({
     size: {
       md: {
         container: ['min-h-11'],
-        inputWrapper: ['min-h-11', 'text-sm', 'pl-4', 'pr-4', 'py-1'],
+        inputWrapper: ['min-h-11', 'text-sm', 'pl-4', 'pr-4'],
         icon: ['h-[18px]', 'w-[18px]'],
         helperText: 'text-sm',
         helperIcon: ['h-5', 'w-5'],
@@ -93,7 +93,7 @@ export const selectTheme = tv({
       },
       sm: {
         container: ['min-h-8'],
-        inputWrapper: ['min-h-8', 'text-xs', 'pl-3', 'pr-3', 'py-0.5'],
+        inputWrapper: ['min-h-8', 'text-xs', 'pl-3', 'pr-3'],
         icon: ['h-4', 'w-4'],
         helperText: 'text-xs',
         helperIcon: ['h-4', 'w-4'],

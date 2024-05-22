@@ -13,7 +13,7 @@ PACKAGE_VERSION=$(jq -r '.version' ../frontend/package.json)
 CURRENT_DATE_TIME=$(date -u)
 
 CONFIG_FILE=config.yml
-REGISTRY_BOND_ID="8fcf44b2f326b4b63ac57547777f1c78b7d494e5966e508f09001af53cb440ac"
+REGISTRY_BOND_ID="99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32"
 
 # Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
 

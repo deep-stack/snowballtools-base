@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { DateRange } from 'react-day-picker';
+import { useEffect, useState } from 'react';
 
-import { IconButton, Option, Select } from '@material-tailwind/react';
-
-import SearchBar from '../../../SearchBar';
-import DatePicker from '../../../DatePicker';
+import { Input } from 'components/shared/Input';
+import {
+  CheckRadioOutlineIcon,
+  CrossCircleIcon,
+  LoaderIcon,
+  SearchIcon,
+  TrendingIcon,
+  WarningTriangleIcon,
+} from 'components/shared/CustomIcon';
+import { DatePicker } from 'components/shared/DatePicker';
+import { Select, SelectOption } from 'components/shared/Select';
+import { Value } from 'types/vendor';
 
 export enum StatusOptions {
   ALL_STATUS = 'All status',
@@ -15,8 +22,8 @@ export enum StatusOptions {
 
 export interface FilterValue {
   searchedBranch: string;
-  status: StatusOptions;
-  updateAtRange?: DateRange;
+  status: StatusOptions | string;
+  updateAtRange?: Value;
 }
 
 interface FilterFormProps {
@@ -27,7 +34,7 @@ interface FilterFormProps {
 const FilterForm = ({ value, onChange }: FilterFormProps) => {
   const [searchedBranch, setSearchedBranch] = useState(value.searchedBranch);
   const [selectedStatus, setSelectedStatus] = useState(value.status);
-  const [dateRange, setDateRange] = useState<DateRange>();
+  const [dateRange, setDateRange] = useState<Value>();
 
   useEffect(() => {
     onChange({
@@ -43,46 +50,68 @@ const FilterForm = ({ value, onChange }: FilterFormProps) => {
     setDateRange(value.updateAtRange);
   }, [value]);
 
+  const getOptionIcon = (status: StatusOptions) => {
+    switch (status) {
+      case StatusOptions.BUILDING:
+        return <LoaderIcon />;
+      case StatusOptions.READY:
+        return <CheckRadioOutlineIcon />;
+      case StatusOptions.ERROR:
+        return <WarningTriangleIcon />;
+      case StatusOptions.ALL_STATUS:
+      default:
+        return <TrendingIcon />;
+    }
+  };
+
+  const statusOptions = Object.values(StatusOptions).map((status) => ({
+    label: status,
+    value: status,
+    leftIcon: getOptionIcon(status),
+  }));
+
+  const handleReset = () => {
+    setSearchedBranch('');
+  };
+
   return (
-    <div className="grid items-center grid-cols-8 gap-2 text-sm text-gray-600">
-      <div className="col-span-4">
-        <SearchBar
+    <div className="xl:grid xl:grid-cols-8 flex flex-col xl:gap-3 gap-3">
+      <div className="col-span-4 flex items-center">
+        <Input
           placeholder="Search branches"
+          leftIcon={<SearchIcon />}
+          rightIcon={
+            searchedBranch && <CrossCircleIcon onClick={handleReset} />
+          }
           value={searchedBranch}
-          onChange={(event) => setSearchedBranch(event.target.value)}
+          onChange={(e) => setSearchedBranch(e.target.value)}
         />
       </div>
-      <div className="col-span-2">
-        <DatePicker mode="range" selected={dateRange} onSelect={setDateRange} />
+      <div className="col-span-2 flex items-center">
+        <DatePicker
+          className="w-full"
+          selectRange
+          value={dateRange}
+          onChange={setDateRange}
+          onReset={() => setDateRange(undefined)}
+        />
       </div>
-      <div className="col-span-2 relative">
+      <div className="col-span-2 flex items-center">
         <Select
-          value={selectedStatus}
-          onChange={(value) => setSelectedStatus(value as StatusOptions)}
+          leftIcon={getOptionIcon(selectedStatus as StatusOptions)}
+          options={statusOptions}
+          clearable
           placeholder="All status"
-        >
-          {Object.values(StatusOptions).map((status) => (
-            <Option
-              className={status === StatusOptions.ALL_STATUS ? 'hidden' : ''}
-              key={status}
-              value={status}
-            >
-              ^ {status}
-            </Option>
-          ))}
-        </Select>
-        {selectedStatus !== StatusOptions.ALL_STATUS && (
-          <div className="absolute end-1 inset-y-0 my-auto h-8">
-            <IconButton
-              onClick={() => setSelectedStatus(StatusOptions.ALL_STATUS)}
-              className="rounded-full"
-              size="sm"
-              placeholder={''}
-            >
-              X
-            </IconButton>
-          </div>
-        )}
+          value={
+            selectedStatus
+              ? { label: selectedStatus, value: selectedStatus }
+              : undefined
+          }
+          onChange={(item) =>
+            setSelectedStatus((item as SelectOption).value as StatusOptions)
+          }
+          onClear={() => setSelectedStatus('')}
+        />
       </div>
     </div>
   );

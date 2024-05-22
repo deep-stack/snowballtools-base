@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 import { headingTheme, type HeadingVariants } from './Heading.theme';
 import { PolymorphicProps } from 'types/common';
