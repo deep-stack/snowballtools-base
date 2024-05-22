@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { AddProjectMemberInput, Permission } from 'gql-client';
 
 import { Typography } from '@snowballtools/material-tailwind-react-fork';
 
 import { Button } from 'components/shared/Button';
 import { Modal } from 'components/shared/Modal';
 import { Input } from 'components/shared/Input';
-import { Checkbox } from 'components/shared/Checkbox';
+import { Select, SelectOption } from 'components/shared/Select';
+import { AddProjectMemberInput, Permission } from 'gql-client';
 
 interface AddMemberDialogProp {
   open: boolean;
@@ -17,11 +17,21 @@ interface AddMemberDialogProp {
 
 interface formData {
   emailAddress: string;
-  permissions: {
-    view: boolean;
-    edit: boolean;
-  };
+  canEdit: boolean;
 }
+
+const permissionViewOptions: SelectOption = {
+  value: Permission.View,
+  label: Permission.View,
+};
+const permissionEditOptions: SelectOption = {
+  value: Permission.Edit,
+  label: Permission.Edit,
+};
+const permissionsDropdownOptions: SelectOption[] = [
+  permissionViewOptions,
+  permissionEditOptions,
+];
 
 const AddMemberDialog = ({
   open,
@@ -29,6 +39,8 @@ const AddMemberDialog = ({
   handleAddMember,
 }: AddMemberDialogProp) => {
   const {
+    watch,
+    setValue,
     handleSubmit,
     register,
     reset,
@@ -36,10 +48,7 @@ const AddMemberDialog = ({
   } = useForm({
     defaultValues: {
       emailAddress: '',
-      permissions: {
-        view: true,
-        edit: false,
-      },
+      canEdit: false,
     },
   });
 
@@ -47,11 +56,7 @@ const AddMemberDialog = ({
     reset();
     handleOpen();
 
-    const permissions = Object.entries(data.permissions)
-      .filter(([, value]) => value)
-      .map(
-        ([key]) => key.charAt(0).toUpperCase() + key.slice(1),
-      ) as Permission[];
+    const permissions = [data.canEdit ? Permission.Edit : Permission.View];
 
     await handleAddMember({ email: data.emailAddress, permissions });
   }, []);
@@ -72,19 +77,19 @@ const AddMemberDialog = ({
                 required: 'email field cannot be empty',
               })}
             />
-            <Typography variant="small">Permissions</Typography>
-            <Typography variant="small">
-              You can change this later if required.
-            </Typography>
-            <Checkbox
-              label={Permission.View}
-              {...register(`permissions.view`)}
-              color="blue"
-            />
-            <Checkbox
-              label={Permission.Edit}
-              {...register(`permissions.edit`)}
-              color="blue"
+            <Select
+              label="Permissions"
+              description="You can change this later if required."
+              options={permissionsDropdownOptions}
+              value={
+                watch('canEdit') ? permissionEditOptions : permissionViewOptions
+              }
+              onChange={(value) =>
+                setValue(
+                  'canEdit',
+                  (value as SelectOption)!.value === Permission.Edit,
+                )
+              }
             />
           </Modal.Body>
           <Modal.Footer>

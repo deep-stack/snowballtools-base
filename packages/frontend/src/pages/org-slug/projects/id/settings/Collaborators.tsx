@@ -16,7 +16,7 @@ const FIRST_MEMBER_CARD = 0;
 
 const CollaboratorsTabPanel = () => {
   const client = useGQLClient();
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
   const { project } = useOutletContext<OutletContextType>();
 
   const [addmemberDialogOpen, setAddMemberDialogOpen] = useState(false);
@@ -39,14 +39,14 @@ const CollaboratorsTabPanel = () => {
           id: 'member_added',
           title: 'Member added to project',
           variant: 'success',
-          onDismiss() {},
+          onDismiss: dismiss,
         });
       } else {
         toast({
           id: 'member_not_added',
           title: 'Invitation not sent',
           variant: 'error',
-          onDismiss() {},
+          onDismiss: dismiss,
         });
       }
     },
@@ -63,14 +63,14 @@ const CollaboratorsTabPanel = () => {
         id: 'member_removed',
         title: 'Member removed from project',
         variant: 'success',
-        onDismiss() {},
+        onDismiss: dismiss,
       });
     } else {
       toast({
         id: 'member_not_removed',
         title: 'Not able to remove member',
         variant: 'error',
-        onDismiss() {},
+        onDismiss: dismiss,
       });
     }
   };
@@ -86,14 +86,14 @@ const CollaboratorsTabPanel = () => {
           id: 'member_permission_updated',
           title: 'Project member permission updated',
           variant: 'success',
-          onDismiss() {},
+          onDismiss: dismiss,
         });
       } else {
         toast({
           id: 'member_permission_not_updated',
           title: 'Project member permission not updated',
           variant: 'error',
-          onDismiss() {},
+          onDismiss: dismiss,
         });
       }
     },
