@@ -15,7 +15,8 @@ declare enum Environment {
 declare enum DeploymentStatus {
     Building = "Building",
     Ready = "Ready",
-    Error = "Error"
+    Error = "Error",
+    Deleting = "Deleting"
 }
 declare enum DomainStatus {
     Live = "Live",
@@ -223,6 +224,9 @@ type RedeployToProdResponse = {
 type RollbackDeploymentResponse = {
     rollbackDeployment: boolean;
 };
+type DeleteDeploymentResponse = {
+    deleteDeployment: boolean;
+};
 type AddDomainInput = {
     name: string;
 };
@@ -270,10 +274,11 @@ declare class GQLClient {
     deleteProject(projectId: string): Promise<DeleteProjectResponse>;
     deleteDomain(domainId: string): Promise<DeleteDomainResponse>;
     rollbackDeployment(projectId: string, deploymentId: string): Promise<RollbackDeploymentResponse>;
+    deleteDeployment(deploymentId: string): Promise<DeleteDeploymentResponse>;
     addDomain(projectId: string, data: AddDomainInput): Promise<AddDomainResponse>;
     getDomains(projectId: string, filter?: FilterDomainInput): Promise<GetDomainsResponse>;
     authenticateGitHub(code: string): Promise<AuthenticateGitHubResponse>;
     unauthenticateGithub(): Promise<UnauthenticateGitHubResponse>;
 }
 
-export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type AuthenticateGitHubResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };
+export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type AuthenticateGitHubResponse, type DeleteDeploymentResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };

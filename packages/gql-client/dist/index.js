@@ -334,6 +334,11 @@ mutation ($projectId: String! ,$deploymentId: String!) {
   rollbackDeployment(projectId: $projectId, deploymentId: $deploymentId)
 }
 `;
+var deleteDeployment = import_client2.gql`
+mutation ($deploymentId: String!) {
+  deleteDeployment(deploymentId: $deploymentId)
+}
+`;
 var addDomain = import_client2.gql`
 mutation ($projectId: String!, $data: AddDomainInput!) {
   addDomain(projectId: $projectId, data: $data)
@@ -614,6 +619,17 @@ var GQLClient = class {
       return data;
     });
   }
+  deleteDeployment(deploymentId) {
+    return __async(this, null, function* () {
+      const { data } = yield this.client.mutate({
+        mutation: deleteDeployment,
+        variables: {
+          deploymentId
+        }
+      });
+      return data;
+    });
+  }
   addDomain(projectId, data) {
     return __async(this, null, function* () {
       const result = yield this.client.mutate({
@@ -681,6 +697,7 @@ var DeploymentStatus = /* @__PURE__ */ ((DeploymentStatus2) => {
   DeploymentStatus2["Building"] = "Building";
   DeploymentStatus2["Ready"] = "Ready";
   DeploymentStatus2["Error"] = "Error";
+  DeploymentStatus2["Deleting"] = "Deleting";
   return DeploymentStatus2;
 })(DeploymentStatus || {});
 var DomainStatus = /* @__PURE__ */ ((DomainStatus2) => {
