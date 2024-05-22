@@ -4,7 +4,6 @@ import {
   useMemo,
   ComponentPropsWithoutRef,
 } from 'react';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 import { WarningIcon } from 'components/shared/CustomIcon';
 import { cloneIcon } from 'utils/cloneIcon';
@@ -12,7 +11,7 @@ import { cn } from 'utils/classnames';
 
 import { InputTheme, inputTheme } from './Input.theme';
 
-export interface InputProps<T extends FieldValues = FieldValues>
+export interface InputProps
   extends InputTheme,
     Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
   label?: string;
@@ -20,9 +19,6 @@ export interface InputProps<T extends FieldValues = FieldValues>
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   helperText?: string;
-
-  // react-hook-form optional register
-  register?: ReturnType<UseFormRegister<T>>;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -34,7 +30,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       rightIcon,
       helperText,
-      register,
       size,
       state,
       appearance,
@@ -107,12 +102,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className={containerCls({ class: className })}>
           {leftIcon && renderLeftIcon}
           <input
-            {...(register ? register : {})}
             className={cn(inputCls(), {
               'pl-10': leftIcon,
             })}
-            {...props}
             ref={ref}
+            {...props}
           />
           {rightIcon && renderRightIcon}
         </div>

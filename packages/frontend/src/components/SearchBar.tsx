@@ -6,7 +6,7 @@ import { Input, InputProps } from './shared/Input';
 const SearchBar: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps & RefAttributes<HTMLInputElement>
-> = ({ value, onChange, placeholder = 'Search', ...props }) => {
+> = ({ value, onChange, placeholder = 'Search', ...props }, ref) => {
   return (
     <div className="relative flex w-full">
       <Input
@@ -18,6 +18,7 @@ const SearchBar: React.ForwardRefRenderFunction<
         appearance="borderless"
         className="w-full lg:w-[459px]"
         {...props}
+        ref={ref}
       />
     </div>
   );
