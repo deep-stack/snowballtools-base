@@ -103,10 +103,12 @@ export const UserSelect = ({ options, value }: UserSelectProps) => {
     <div className={theme.container()}>
       {/* Input */}
       <div
-        {...getToggleButtonProps({
-          ref: inputWrapperRef,
-          suppressRefError: true,
-        })}
+        {...getToggleButtonProps(
+          {
+            ref: inputWrapperRef,
+          },
+          { suppressRefError: true },
+        )}
         onClick={() => !dropdownOpen && openMenu()}
         className="cursor-pointer relative py-2 pl-2 pr-4 flex min-w-[200px] w-full items-center justify-between rounded-xl bg-surface-card shadow-sm"
       >
