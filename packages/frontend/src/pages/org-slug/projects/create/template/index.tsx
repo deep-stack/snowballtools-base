@@ -99,8 +99,8 @@ const CreateRepo = () => {
 
         console.error((err as Error).message);
         toast({
-          id: 'failed-to-create-project',
-          title: 'Failed to create project',
+          id: 'error-deploying-project',
+          title: 'Error deploying project',
           variant: 'error',
           onDismiss: dismiss,
         });
