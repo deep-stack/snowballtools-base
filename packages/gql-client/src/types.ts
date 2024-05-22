@@ -21,6 +21,7 @@ export enum DeploymentStatus {
   Building = 'Building',
   Ready = 'Ready',
   Error = 'Error',
+  Deleting = 'Deleting'
 }
 
 export enum DomainStatus {
@@ -267,6 +268,10 @@ export type RedeployToProdResponse = {
 
 export type RollbackDeploymentResponse = {
   rollbackDeployment: boolean
+}
+
+export type DeleteDeploymentResponse = {
+  deleteDeployment: boolean
 }
 
 export type AddDomainInput = {

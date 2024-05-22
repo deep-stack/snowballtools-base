@@ -53,6 +53,16 @@ export const ProjectCard = ({
     navigate(`projects/${project.id}`);
   }, [project.id, navigate]);
 
+  const navigateToSettingsOnClick = useCallback(
+    (
+      e: React.MouseEvent<HTMLLIElement> | React.MouseEvent<HTMLButtonElement>,
+    ) => {
+      e.stopPropagation();
+      navigate(`projects/${project.id}/settings`);
+    },
+    [project.id, navigate],
+  );
+
   return (
     <div
       {...props}
@@ -92,8 +102,15 @@ export const ProjectCard = ({
               </Button>
             </MenuHandler>
             <MenuList>
-              <MenuItem>Project settings</MenuItem>
-              <MenuItem className="text-red-500">Delete project</MenuItem>
+              <MenuItem onClick={navigateToSettingsOnClick}>
+                Project settings
+              </MenuItem>
+              <MenuItem
+                className="text-red-500"
+                onClick={navigateToSettingsOnClick}
+              >
+                Delete project
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>

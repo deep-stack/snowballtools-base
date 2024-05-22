@@ -99,25 +99,13 @@ Let us assume the following domains for backend and frontend
         - Get the private key and set `registryConfig.privateKey` in backend [config file](packages/backend/environments/local.toml)
       
           ```bash
-          laconic-so --stack fixturenet-laconic-loaded deploy exec laconicd "laconicd keys export mykey --unarmored-hex --unsafe"
+          laconic-so deployment --dir laconic-loaded-deployment exec laconicd "laconicd keys export mykey --unarmored-hex --unsafe"
           # WARNING: The private key will be exported as an unarmored hexadecimal string. USE AT YOUR OWN RISK. Continue? [y/N]: y
           # 754cca7b4b729a99d156913aea95366411d072856666e95ba09ef6c664357d81
           ```
-      
-        - Get the REST and GQL endpoint ports of Laconicd and replace the ports for `registryConfig.restEndpoint` and `registryConfig.gqlEndpoint` in backend [config file](packages/backend/environments/local.toml)
-      
-          ```bash
-          # For registryConfig.restEndpoint
-          laconic-so --stack fixturenet-laconic-loaded deploy port laconicd 1317
-          # 0.0.0.0:32777
-      
-          # For registryConfig.gqlEndpoint
-          laconic-so --stack fixturenet-laconic-loaded deploy port laconicd 9473
-          # 0.0.0.0:32771
-          ```
-      
+
         - Set authority in `registryConfig.authority` in backend [config file](packages/backend/environments/local.toml)
-      
+
         - Run the script to create bond, reserve the authority and set authority bond
       
           ```bash
@@ -157,14 +145,14 @@ Let us assume the following domains for backend and frontend
     - Copy the GitHub OAuth app client ID from previous steps and set it in frontend [.env](packages/frontend/.env) file
 
       ```env
-      REACT_APP_GITHUB_CLIENT_ID = <CLIENT_ID>
+      VITE_GITHUB_CLIENT_ID = <CLIENT_ID>
       ```
     
-    - Set `REACT_APP_GITHUB_PWA_TEMPLATE_REPO` and `REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
+    - Set `VITE_GITHUB_PWA_TEMPLATE_REPO` and `VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO` in [.env](packages/frontend/.env) file
     
       ```env
-      REACT_APP_GITHUB_PWA_TEMPLATE_REPO = 'cerc-io/test-progressive-web-app'   # Set actual owner/name of the template repo that will be used for creating new repo
-      REACT_APP_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = 'cerc-io/image-upload-pwa-example'  # Set actual owner/name of the template repo that will be used for creating new repo
+      VITE_GITHUB_PWA_TEMPLATE_REPO = 'cerc-io/test-progressive-web-app'   # Set actual owner/name of the template repo that will be used for creating new repo
+      VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = 'cerc-io/image-upload-pwa-example'  # Set actual owner/name of the template repo that will be used for creating new repo
       ```
 
     - Production
@@ -172,17 +160,17 @@ Let us assume the following domains for backend and frontend
       - Set the following values in [.env](packages/frontend/.env) file
       
         ```env
-        REACT_APP_SERVER_URL = 'https://api.snowballtools.com'   # Backend server endpoint
+        VITE_SERVER_URL = 'https://api.snowballtools.com'   # Backend server endpoint
         ```
       
       - Sign in to [wallet connect](https://cloud.walletconnect.com/sign-in) to create a project ID
         - Create a project and add information to use wallet connect SDK
           - Add project name and select project type as `App`
           - Set project home page URL to `https://dashboard.snowballtools.com`
-        - On creation of project, use the `Project ID` and set it in `REACT_APP_WALLET_CONNECT_ID` in [.env](packages/frontend/.env) file
+        - On creation of project, use the `Project ID` and set it in `VITE_WALLET_CONNECT_ID` in [.env](packages/frontend/.env) file
       
         ```env
-        REACT_APP_WALLET_CONNECT_ID = <PROJECT_ID>
+        VITE_WALLET_CONNECT_ID = <PROJECT_ID>
         ```
       
       - Build the React application
@@ -202,17 +190,17 @@ Let us assume the following domains for backend and frontend
       - Copy the graphQL endpoint from terminal and add the endpoint in the [.env](packages/frontend/.env) file present in `packages/frontend`
       
         ```env
-        REACT_APP_SERVER_URL = 'http://localhost:8000'
+        VITE_SERVER_URL = 'http://localhost:8000'
         ```
       
       - Sign in to [wallet connect](https://cloud.walletconnect.com/sign-in) to create a project ID.
         - Create a project and add information to use wallet connect SDK
           - Add project name and select project type as `App`
           - Project home page URL is not required to be set
-        - On creation of project, use the `Project ID` and set it in `REACT_APP_WALLET_CONNECT_ID` in [.env](packages/frontend/.env) file
+        - On creation of project, use the `Project ID` and set it in `VITE_WALLET_CONNECT_ID` in [.env](packages/frontend/.env) file
       
         ```env
-        REACT_APP_WALLET_CONNECT_ID = <Project_ID>
+        VITE_WALLET_CONNECT_ID = <Project_ID>
         ```
       
       - The React application will be running in `http://localhost:3000/`

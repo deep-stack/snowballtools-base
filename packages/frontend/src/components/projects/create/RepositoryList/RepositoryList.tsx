@@ -155,13 +155,13 @@ export const RepositoryList = () => {
       {Boolean(repositoryDetails.length) ? (
         <div className="flex flex-col gap-2">
           {repositoryDetails.map((repo, index) => (
-            <>
-              <ProjectRepoCard repository={repo} key={index} />
+            <div key={index}>
+              <ProjectRepoCard repository={repo} />
               {/* Horizontal line */}
               {index !== repositoryDetails.length - 1 && (
                 <div className="border-b border-border-separator/[0.06] w-full" />
               )}
-            </>
+            </div>
           ))}
         </div>
       ) : (

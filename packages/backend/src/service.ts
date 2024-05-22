@@ -15,12 +15,15 @@ import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
-import { AppDeploymentRecord, GitPushEventPayload, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, GitPushEventPayload, PackageJSON } from './types';
 import { Role } from './entity/UserOrganization';
 
 const log = debug('snowball:service');
 
 const GITHUB_UNIQUE_WEBHOOK_ERROR = 'Hook already exists on this repository';
+
+// Define a constant for an hour in milliseconds
+const HOUR = 1000 * 60 * 60;
 
 interface Config {
   gitHubConfig: GitHubConfig;
@@ -49,6 +52,8 @@ export class Service {
   init (): void {
     // Start check for ApplicationDeploymentRecords asynchronously
     this.checkDeployRecordsAndUpdate();
+    // Start check for ApplicationDeploymentRemovalRecords asynchronously
+    this.checkDeploymentRemovalRecordsAndUpdate();
   }
 
   /**
@@ -60,14 +65,13 @@ export class Service {
 
   /**
    * Checks for ApplicationDeploymentRecord and update corresponding deployments
-   * Continues check in loop after a delay of DEPLOY_RECORD_CHECK_DELAY_MS
+   * Continues check in loop after a delay of registryConfig.fetchDeploymentRecordDelay
    */
   async checkDeployRecordsAndUpdate (): Promise<void> {
     // Fetch deployments in building state
     const deployments = await this.db.getDeployments({
       where: {
         status: DeploymentStatus.Building
-        // TODO: Fetch and check records for recent deployments
       }
     });
 
@@ -75,6 +79,28 @@ export class Service {
       log(
         `Found ${deployments.length} deployments in ${DeploymentStatus.Building} state`
       );
+
+      // Calculate a timestamp for one hour ago
+      const anHourAgo = Date.now() - HOUR;
+
+      // Filter out deployments started more than an hour ago and mark them as Error
+      const oldDeploymentsToUpdate = deployments.filter(
+        deployment => (Number(deployment.updatedAt) < anHourAgo)
+      )
+        .map((deployment) => {
+          return this.db.updateDeploymentById(deployment.id, {
+            status: DeploymentStatus.Error,
+            isCurrent: false
+          });
+        });
+
+      // If there are old deployments to update, log and perform the updates
+      if (oldDeploymentsToUpdate.length > 0) {
+        log(
+          `Cleaning up ${oldDeploymentsToUpdate.length} deployments stuck in ${DeploymentStatus.Building} state for over an hour`
+        );
+        await Promise.all(oldDeploymentsToUpdate);
+      }
 
       // Fetch ApplicationDeploymentRecord for deployments
       const records = await this.registry.getDeploymentRecords(deployments);
@@ -88,6 +114,38 @@ export class Service {
 
     this.deployRecordCheckTimeout = setTimeout(() => {
       this.checkDeployRecordsAndUpdate();
+    }, this.config.registryConfig.fetchDeploymentRecordDelay);
+  }
+
+  /**
+   * Checks for ApplicationDeploymentRemovalRecord and remove corresponding deployments
+   * Continues check in loop after a delay of registryConfig.fetchDeploymentRecordDelay
+   */
+  async checkDeploymentRemovalRecordsAndUpdate (): Promise<void> {
+    // Fetch deployments in deleting state
+    const deployments = await this.db.getDeployments({
+      where: {
+        status: DeploymentStatus.Deleting
+      }
+    });
+
+    if (deployments.length) {
+      log(
+        `Found ${deployments.length} deployments in ${DeploymentStatus.Deleting} state`
+      );
+
+      // Fetch ApplicationDeploymentRemovalRecords for deployments
+      const records = await this.registry.getDeploymentRemovalRecords(deployments);
+      log(`Found ${records.length} ApplicationDeploymentRemovalRecords`);
+
+      // Update deployments for which ApplicationDeploymentRemovalRecords were returned
+      if (records.length) {
+        await this.deleteDeploymentsWithRecordData(records, deployments);
+      }
+    }
+
+    this.deployRecordCheckTimeout = setTimeout(() => {
+      this.checkDeploymentRemovalRecordsAndUpdate();
     }, this.config.registryConfig.fetchDeploymentRecordDelay);
   }
 
@@ -148,6 +206,45 @@ export class Service {
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`
       );
+    });
+
+    await Promise.all(deploymentUpdatePromises);
+  }
+
+  /**
+   * Delete deployments with ApplicationDeploymentRemovalRecord data
+   */
+  async deleteDeploymentsWithRecordData (
+    records: AppDeploymentRemovalRecord[],
+    deployments: Deployment[],
+  ): Promise<void> {
+    const removedApplicationDeploymentRecordIds = records.map(record => record.attributes.deployment);
+    
+    // Get removed deployments for ApplicationDeploymentRecords
+    const removedDeployments = deployments.filter(deployment => removedApplicationDeploymentRecordIds.includes(deployment.applicationDeploymentRecordId!))
+
+    const recordToDeploymentsMap = removedDeployments.reduce(
+      (acc: { [key: string]: Deployment }, deployment) => {
+        acc[deployment.applicationDeploymentRecordId!] = deployment;
+        return acc;
+      },
+      {}
+    );
+
+    // Update deployment data for ApplicationDeploymentRecords and delete
+    const deploymentUpdatePromises = records.map(async (record) => {
+      const deployment = recordToDeploymentsMap[record.attributes.deployment];
+
+      await this.db.updateDeploymentById(deployment.id, {
+        applicationDeploymentRemovalRecordId: record.id,
+        applicationDeploymentRemovalRecordData: record.attributes,
+      });
+
+      log(
+        `Updated deployment ${deployment.id} with ApplicationDeploymentRemovalRecord ${record.id}`
+      );
+
+      await this.db.deleteDeploymentById(deployment.id)
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -479,17 +576,10 @@ export class Service {
       return acc;
     }, {} as { [key: string]: string });
 
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
-      {
-        deployment: newDeployment,
-        appName: repo,
-        repository: repoUrl,
-        environmentVariables: environmentVariablesObj,
-        dns: `${newDeployment.project.name}-${newDeployment.id}`
-      });
-
     // To set project DNS
     if (data.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
       await this.registry.createApplicationDeploymentRequest(
         {
           deployment: newDeployment,
@@ -499,6 +589,15 @@ export class Service {
           dns: `${newDeployment.project.name}`
         });
     }
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } = await this.registry.createApplicationDeploymentRequest(
+      {
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`
+      });
 
     await this.db.updateDeploymentById(newDeployment.id, { applicationDeploymentRequestId, applicationDeploymentRequestData });
 
@@ -715,6 +814,51 @@ export class Service {
     );
 
     return newCurrentDeploymentUpdate && oldCurrentDeploymentUpdate;
+  }
+
+  async deleteDeployment (deploymentId: string): Promise<boolean> {
+    const deployment = await this.db.getDeployment({
+      where: {
+        id: deploymentId
+      },
+      relations: {
+        project: true
+      }
+    });
+
+    if (deployment && deployment.applicationDeploymentRecordId) {
+      // If deployment is current, remove deployment for project subdomain as well
+      if (deployment.isCurrent) {
+        const currentDeploymentURL = `https://${deployment.project.subDomain}`;
+        
+        const deploymentRecords = await this.registry.getDeploymentRecordsByFilter({
+          application: deployment.applicationRecordId,
+          url: currentDeploymentURL
+        })
+
+        if (!deploymentRecords.length) {
+          log(`No ApplicationDeploymentRecord found for URL ${currentDeploymentURL} and ApplicationDeploymentRecord id ${deployment.applicationDeploymentRecordId}`);
+          return false;
+        }
+
+        await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId: deploymentRecords[0].id });
+      }
+
+      const result = await this.registry.createApplicationDeploymentRemovalRequest({ deploymentId: deployment.applicationDeploymentRecordId });
+
+      await this.db.updateDeploymentById(
+        deployment.id,
+        {
+          status: DeploymentStatus.Deleting,
+          applicationDeploymentRemovalRequestId: result.applicationDeploymentRemovalRequestId,
+          applicationDeploymentRemovalRequestData: result.applicationDeploymentRemovalRequestData
+        }
+      );
+
+      return (result !== undefined || result !== null);
+    }
+
+    return false;
   }
 
   async addDomain (

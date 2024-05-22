@@ -255,6 +255,20 @@ export const createResolvers = async (service: Service): Promise<any> => {
         }
       },
 
+      deleteDeployment: async (
+        _: any,
+        {
+          deploymentId
+        }: { deploymentId: string; }
+      ) => {
+        try {
+          return await service.deleteDeployment(deploymentId);
+        } catch (err) {
+          log(err);
+          return false;
+        }
+      },
+
       addDomain: async (
         _: any,
         { projectId, data }: { projectId: string; data: { name: string } }

@@ -19,6 +19,7 @@ enum DeploymentStatus {
   Building
   Ready
   Error
+  Deleting
 }
 
 enum DomainStatus {
@@ -209,6 +210,7 @@ type Mutation {
   deleteProject(projectId: String!): Boolean!
   deleteDomain(domainId: String!): Boolean!
   rollbackDeployment(projectId: String!, deploymentId: String!): Boolean!
+  deleteDeployment(deploymentId: String!): Boolean!
   addDomain(projectId: String!, data: AddDomainInput!): Boolean!
   updateDomain(domainId: String!, data: UpdateDomainInput!): Boolean!
   authenticateGitHub(code: String!): AuthResult!

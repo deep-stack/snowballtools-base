@@ -43,6 +43,7 @@
     "lint": "tsc --noEmit",
     "test:registry:init": "DEBUG=snowball:* ts-node ./test/initialize-registry.ts",
     "test:registry:publish-deploy-records": "DEBUG=snowball:* ts-node ./test/publish-deploy-records.ts",
+    "test:registry:publish-deployment-removal-records": "DEBUG=snowball:* ts-node ./test/publish-deployment-removal-records.ts",
     "test:db:load:fixtures": "DEBUG=snowball:* ts-node ./test/initialize-db.ts",
     "test:db:delete": "DEBUG=snowball:* ts-node ./test/delete-db.ts"
   },

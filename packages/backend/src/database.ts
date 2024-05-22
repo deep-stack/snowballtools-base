@@ -436,6 +436,19 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
+  async deleteDeploymentById (deploymentId: string): Promise<boolean> {
+    const deploymentRepository = this.dataSource.getRepository(Deployment);
+    const deployment = await deploymentRepository.findOneOrFail({
+      where: {
+        id: deploymentId
+      }
+    });
+
+    const deleteResult = await deploymentRepository.softRemove(deployment);
+
+    return Boolean(deleteResult);
+  }
+
   async addProject (user: User, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 

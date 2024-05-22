@@ -7,7 +7,7 @@ import { Registry } from '@snowballtools/laconic-sdk';
 import { Config } from '../src/config';
 import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 import { getConfig } from '../src/utils';
-import { Deployment, DeploymentStatus } from '../src/entity/Deployment';
+import { Deployment, DeploymentStatus, Environment } from '../src/entity/Deployment';
 
 const log = debug('snowball:publish-deploy-records');
 
@@ -40,7 +40,7 @@ async function main () {
   });
 
   for await (const deployment of deployments) {
-    const url = `${deployment.project.name}-${deployment.id}.${misc.projectDomain}`;
+    const url = `https://${deployment.project.name}-${deployment.id}.${misc.projectDomain}`;
 
     const applicationDeploymentRecord = {
       type: 'ApplicationDeploymentRecord',
@@ -70,6 +70,21 @@ async function main () {
       '',
       registryConfig.fee
     );
+
+    // Remove deployment for project subdomain if deployment is for production environment
+    if (deployment.environment === Environment.Production) {
+      applicationDeploymentRecord.url = `https://${deployment.project.subDomain}`
+
+      await registry.setRecord(
+        {
+          privateKey: registryConfig.privateKey,
+          record: applicationDeploymentRecord,
+          bondId: registryConfig.bondId
+        },
+        '',
+        registryConfig.fee
+      );
+    }
 
     log('Application deployment record data:', applicationDeploymentRecord);
     log(`Application deployment record published: ${result.data.id}`);

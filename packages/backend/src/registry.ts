@@ -9,16 +9,19 @@ import { RegistryConfig } from './config';
 import {
   ApplicationRecord,
   Deployment,
-  ApplicationDeploymentRequest
+  ApplicationDeploymentRequest,
+  ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, PackageJSON } from './types';
 import { sleep } from './utils';
 
 const log = debug('snowball:registry');
 
 const APP_RECORD_TYPE = 'ApplicationRecord';
 const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
+const APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE = 'ApplicationDeploymentRemovalRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
+const APP_DEPLOYMENT_REMOVAL_RECORD_TYPE = 'ApplicationDeploymentRemovalRecord';
 const SLEEP_DURATION = 1000;
 
 // TODO: Move registry code to laconic-sdk/watcher-ts
@@ -227,6 +230,74 @@ export class Registry {
           record.attributes.url.includes(deployment.id)
       )
     );
+  }
+
+  /**
+   * Fetch ApplicationDeploymentRecords by filter
+   */
+  async getDeploymentRecordsByFilter (filter: { [key: string]: any }): Promise<AppDeploymentRecord[]> {
+    return this.registry.queryRecords(
+      {
+        type: APP_DEPLOYMENT_RECORD_TYPE,
+        ...filter
+      },
+      true
+    );
+  }
+
+  /**
+   * Fetch ApplicationDeploymentRemovalRecords for deployments
+   */
+  async getDeploymentRemovalRecords (
+    deployments: Deployment[]
+  ): Promise<AppDeploymentRemovalRecord[]> {
+    // Fetch ApplicationDeploymentRemovalRecords for corresponding ApplicationDeploymentRecord set in deployments
+    const records = await this.registry.queryRecords(
+      {
+        type: APP_DEPLOYMENT_REMOVAL_RECORD_TYPE
+      },
+      true
+    );
+
+    // Filter records with ApplicationDeploymentRecord and ApplicationDeploymentRemovalRequest IDs
+    return records.filter((record: AppDeploymentRemovalRecord) =>
+      deployments.some(
+        (deployment) =>
+          deployment.applicationDeploymentRemovalRequestId === record.attributes.request &&
+          deployment.applicationDeploymentRecordId === record.attributes.deployment
+      )
+    );
+  }
+
+  async createApplicationDeploymentRemovalRequest (data: {
+    deploymentId: string;
+  }): Promise<{
+    applicationDeploymentRemovalRequestId: string;
+    applicationDeploymentRemovalRequestData: ApplicationDeploymentRemovalRequest;
+  }> {
+    const applicationDeploymentRemovalRequest = {
+      type: APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE,
+      version: '1.0.0',
+      deployment: data.deploymentId
+    };
+
+    const result = await this.registry.setRecord(
+      {
+        privateKey: this.registryConfig.privateKey,
+        record: applicationDeploymentRemovalRequest,
+        bondId: this.registryConfig.bondId
+      },
+      '',
+      this.registryConfig.fee
+    );
+
+    log(`Application deployment removal request record published: ${result.data.id}`);
+    log('Application deployment removal request data:', applicationDeploymentRemovalRequest);
+
+    return {
+      applicationDeploymentRemovalRequestId: result.data.id,
+      applicationDeploymentRemovalRequestData: applicationDeploymentRemovalRequest
+    };
   }
 
   getCrn (appName: string): string {
