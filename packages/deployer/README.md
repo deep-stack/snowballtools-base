@@ -9,9 +9,18 @@
   ```
 
 - Run script to deploy app
-  ```
-  ./deploy-frontend.sh
-  ```
+
+  - To deploy frontend app to `dashboard.staging.apps.snowballtools.com`
+
+    ```
+    ./deploy-frontend.staging.sh
+    ```
+  
+  - To deploy frontend app to `dashboard.apps.snowballtools.com`
+
+    ```
+    ./deploy-frontend.sh
+    ```
 
 - Commit the updated [ApplicationRecord](records/application-record.yml) and [ApplicationDeploymentRequest](records/application-deployment-request.yml) files to the repository
 
