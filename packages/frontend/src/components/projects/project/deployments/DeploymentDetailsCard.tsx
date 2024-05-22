@@ -49,7 +49,10 @@ const DeploymentDetailsCard = ({
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
   const getIconByDeploymentStatus = (status: DeploymentStatus) => {
-    if (status === DeploymentStatus.Building || status === DeploymentStatus.Deleting) {
+    if (
+      status === DeploymentStatus.Building ||
+      status === DeploymentStatus.Deleting
+    ) {
       return <LoadingIcon className="animate-spin" />;
     }
     if (status === DeploymentStatus.Ready) {

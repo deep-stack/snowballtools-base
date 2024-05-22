@@ -19,10 +19,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-assert(
-  import.meta.env.VITE_SERVER_URL,
-  'VITE_SERVER_URL is not set in env',
-);
+assert(import.meta.env.VITE_SERVER_URL, 'VITE_SERVER_URL is not set in env');
 const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
