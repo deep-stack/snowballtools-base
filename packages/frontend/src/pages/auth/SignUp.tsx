@@ -1,26 +1,20 @@
 import { Button } from 'components/shared/Button';
-import {
-  ArrowRightCircleFilledIcon,
-  GithubIcon,
-  LoaderIcon,
-} from 'components/shared/CustomIcon';
+import { GithubIcon, LoaderIcon } from 'components/shared/CustomIcon';
 import { GoogleIcon } from 'components/shared/CustomIcon/GoogleIcon';
-import { DotBorder } from 'components/shared/DotBorder';
 import { WavyBorder } from 'components/shared/WavyBorder';
 import { useEffect, useState } from 'react';
 import { useSnowball } from 'utils/use-snowball';
-import { Input } from 'components/shared/Input';
 import { AppleIcon } from 'components/shared/CustomIcon/AppleIcon';
 import { Link } from 'react-router-dom';
 import { useToast } from 'components/shared/Toast';
 import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
 import { signInWithEthereum } from 'utils/siwe';
 import { logError } from 'utils/log-error';
-import {
-  subOrganizationIdForEmail,
-  turnkeySignin,
-  turnkeySignup,
-} from 'utils/turnkey-frontend';
+// import {
+//   subOrganizationIdForEmail,
+//   turnkeySignin,
+//   turnkeySignup,
+// } from 'utils/turnkey-frontend';
 
 type Provider = 'google' | 'github' | 'apple' | 'email';
 
@@ -31,7 +25,7 @@ type Props = {
 };
 
 export const SignUp = ({ onDone }: Props) => {
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   const [error, setError] = useState<Err | null>();
   const [provider, setProvider] = useState<Provider | false>(false);
 
@@ -85,29 +79,29 @@ export const SignUp = ({ onDone }: Props) => {
     }
   }
 
-  async function authEmail() {
-    setProvider('email');
-    try {
-      const orgId = await subOrganizationIdForEmail(email);
-      console.log('orgId', orgId);
-      if (orgId) {
-        await turnkeySignin(orgId);
-        window.location.href = '/dashboard';
-      } else {
-        await turnkeySignup(email);
-        onDone();
-      }
-    } catch (err: any) {
-      setError({ type: 'email', message: err.message });
-    }
-  }
+  // async function authEmail() {
+  //   setProvider('email');
+  //   try {
+  //     const orgId = await subOrganizationIdForEmail(email);
+  //     console.log('orgId', orgId);
+  //     if (orgId) {
+  //       await turnkeySignin(orgId);
+  //       window.location.href = '/dashboard';
+  //     } else {
+  //       await turnkeySignup(email);
+  //       onDone();
+  //     }
+  //   } catch (err: any) {
+  //     setError({ type: 'email', message: err.message });
+  //   }
+  // }
 
   useEffect(() => {
     handleSignupRedirect();
   }, []);
 
   const loading = provider;
-  const emailValid = /.@./.test(email);
+  // const emailValid = /.@./.test(email);
 
   return (
     <div>
@@ -197,16 +191,16 @@ export const SignUp = ({ onDone }: Props) => {
           </div>
         )}
 
-        <div className="self-stretch justify-start items-center gap-8 inline-flex">
+        {/* <div className="self-stretch justify-start items-center gap-8 inline-flex">
           <DotBorder className="flex-1" />
           <div className="text-center text-slate-400 text-xs font-normal font-['JetBrains Mono'] leading-none">
             OR
           </div>
           <DotBorder className="flex-1" />
-        </div>
+        </div> */}
 
         <div className="self-stretch flex-col gap-8 flex">
-          <div className="flex-col justify-start items-start gap-2 inline-flex">
+          {/* <div className="flex-col justify-start items-start gap-2 inline-flex">
             <div className="text-sky-950 text-sm font-normal font-['Inter'] leading-tight">
               Email
             </div>
@@ -215,8 +209,8 @@ export const SignUp = ({ onDone }: Props) => {
               onChange={(e) => setEmail(e.target.value)}
               disabled={!!loading}
             />
-          </div>
-          <Button
+          </div> */}
+          {/* <Button
             rightIcon={
               loading && loading === 'email' ? (
                 <LoaderIcon className="animate-spin" />
@@ -231,7 +225,7 @@ export const SignUp = ({ onDone }: Props) => {
             disabled={!email || !emailValid || !!loading}
           >
             Continue with Email
-          </Button>
+          </Button> */}
           <div className="flex flex-col gap-3">
             {error && error.type === 'email' && (
               <div className="justify-center items-center gap-2 inline-flex">
