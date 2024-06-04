@@ -47,7 +47,9 @@ export const Login = ({ onDone }: Props) => {
       console.log('Handling google redirect back');
       try {
         await google.handleOAuthRedirectBack();
+        // @ts-ignore
         wallet = await google.getEthersWallet();
+        // @ts-ignore
         const result = await signInWithEthereum(1, 'login', wallet);
         if (result.error) {
           setError(result.error);

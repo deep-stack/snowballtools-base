@@ -15,6 +15,9 @@ import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
 import { LogErrorBoundary } from 'utils/log-error';
 
+// @ts-ignore
+console.log(`v-${__VERSION__}`);
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );

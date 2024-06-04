@@ -39,7 +39,9 @@ export const SignUp = ({ onDone }: Props) => {
       setProvider('google');
       try {
         await google.handleOAuthRedirectBack();
+        // @ts-ignore
         wallet = await google.getEthersWallet();
+        // @ts-ignore
         const result = await signInWithEthereum(1, 'signup', wallet);
         if (result.error) {
           setError({ type: 'provider', message: result.error });
