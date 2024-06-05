@@ -20,7 +20,10 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/client.ts
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache
+} from "@apollo/client";
 
 // src/queries.ts
 import { gql } from "@apollo/client";

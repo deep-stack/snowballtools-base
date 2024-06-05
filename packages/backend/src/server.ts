@@ -17,6 +17,7 @@ import { ServerConfig } from './config';
 import { DEFAULT_GQL_PATH } from './constants';
 import githubRouter from './routes/github';
 import authRouter from './routes/auth';
+import stagingRouter from './routes/staging';
 import { Service } from './service';
 
 const log = debug('snowball:server');
@@ -109,6 +110,7 @@ export const createAndStartServer = async (
   app.set('service', service);
   app.use('/auth', authRouter);
   app.use('/api/github', githubRouter);
+  app.use('/staging', stagingRouter);
 
   httpServer.listen(port, host, () => {
     log(`Server is listening on ${host}:${port}${server.graphqlPath}`);
