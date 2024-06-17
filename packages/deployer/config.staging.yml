@@ -5,5 +5,5 @@ services:
     userKey: 87d00f66a73e2ca428adeb49ba9164d0ad9a87edc60e33d46ad3031b9c5701fe
     bondId: 098c906850b87412f02200e41f449bc79e055eab77acfef32c0b22443bb46661
     chainId: laconic_9000-1
-    gas: 550000
+    gas: 1200000
     fees: 200000aphoton
