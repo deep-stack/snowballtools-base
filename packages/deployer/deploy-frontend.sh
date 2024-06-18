@@ -64,7 +64,13 @@ echo "Files generated successfully."
 RECORD_FILE=records/application-record.yml
 
 # Publish ApplicationRecord
-RECORD_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
+publish_response=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE)
+rc=$?
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to publish record"
+  exit $rc
+fi
+RECORD_ID=$(echo $publish_response | jq -r '.id')
 echo "ApplicationRecord published"
 echo $RECORD_ID
 
@@ -73,15 +79,36 @@ REGISTRY_APP_CRN="crn://snowballtools/applications/snowballtools-base-frontend"
 
 sleep 2
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${PACKAGE_VERSION}" "$RECORD_ID"
+rc=$?
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to set name: $REGISTRY_APP_CRN@${PACKAGE_VERSION}"
+  exit $rc
+fi
 sleep 2
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${LATEST_HASH}" "$RECORD_ID"
+rc=$?
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to set hash"
+  exit $rc
+fi
 sleep 2
 # Set name if latest release
 yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN" "$RECORD_ID"
+rc=$?
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to set release"
+  exit $rc
+fi
 echo "$REGISTRY_APP_CRN set for ApplicationRecord"
 
 # Check if record found for REGISTRY_APP_CRN
-APP_RECORD=$(yarn --silent laconic -c $CONFIG_FILE cns name resolve "$REGISTRY_APP_CRN" | jq '.[0]')
+query_response=$(yarn --silent laconic -c $CONFIG_FILE cns name resolve "$REGISTRY_APP_CRN")
+rc=$?
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to query name"
+  exit $rc
+fi
+APP_RECORD=$(echo $query_response | jq '.[0]')
 if [ -z "$APP_RECORD" ] || [ "null" == "$APP_RECORD" ]; then
   echo "No record found for $REGISTRY_APP_CRN."
   exit 1
@@ -90,6 +117,11 @@ fi
 RECORD_FILE=records/application-deployment-request.yml
 
 sleep 2
-DEPLOYMENT_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
+deployment_response=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE)
+if [ $rc -ne 0 ]; then
+  echo "FATAL: Failed to query deployment request"
+  exit $rc
+fi
+DEPLOYMENT_REQUEST_ID=$(echo $deployment_response | jq -r '.id')
 echo "ApplicationDeploymentRequest published"
 echo $DEPLOYMENT_REQUEST_ID
