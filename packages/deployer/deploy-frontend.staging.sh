@@ -44,7 +44,7 @@ record:
       LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
       LACONIC_HOSTED_CONFIG_aplchemy_api_key: THvPart_gqI5x02RNYSBntlmwA66I_qc
       LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073
-      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: localhost
+      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.staging.apps.snowballtools.com
       LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com/
       LACONIC_HOSTED_CONFIG_turnkey_organization_id: 5049ae99-5bca-40b3-8317-504384d4e591
   meta:
