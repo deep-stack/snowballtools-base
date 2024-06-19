@@ -19,6 +19,7 @@ router.get('/registration/:email', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
+  console.log('Register', req.body);
   const { email, challenge, attestation } = req.body;
   const user = await createUser(req.app.get('service'), {
     challenge,
@@ -31,6 +32,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/authenticate', async (req, res) => {
+  console.log('Authenticate', req.body);
   const { signedWhoamiRequest } = req.body;
   const user = await authenticateUser(
     req.app.get('service'),
