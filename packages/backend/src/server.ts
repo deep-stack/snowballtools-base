@@ -112,6 +112,11 @@ export const createAndStartServer = async (
   app.use('/api/github', githubRouter);
   app.use('/staging', stagingRouter);
 
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
+
   httpServer.listen(port, host, () => {
     log(`Server is listening on ${host}:${port}${server.graphqlPath}`);
   });
