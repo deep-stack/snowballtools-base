@@ -114,7 +114,7 @@ export const createAndStartServer = async (
 
   app.use((err: any, req: any, res: any, next: any) => {
     console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: err.message });
   });
 
   httpServer.listen(port, host, () => {
