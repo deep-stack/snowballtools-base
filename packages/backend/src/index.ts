@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import 'reflect-metadata';
 import debug from 'debug';
 import fs from 'fs';
