@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { Deployment, Domain, Environment, Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
 import {
@@ -22,6 +21,7 @@ import AssignDomainDialog from './AssignDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import { cn } from 'utils/classnames';
 import { ChangeStateToProductionDialog } from 'components/projects/Dialog/ChangeStateToProductionDialog';
+import { useToast } from 'components/shared/Toast';
 
 interface DeploymentMenuProps extends ComponentPropsWithRef<'div'> {
   deployment: Deployment;
@@ -41,6 +41,7 @@ export const DeploymentMenu = ({
   ...props
 }: DeploymentMenuProps) => {
   const client = useGQLClient();
+  const { toast, dismiss } = useToast();
 
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
@@ -51,9 +52,19 @@ export const DeploymentMenu = ({
     const isUpdated = await client.updateDeploymentToProd(deployment.id);
     if (isUpdated) {
       await onUpdate();
-      toast.success('Deployment changed to production');
+      toast({
+        id: 'deployment_changed_to_production',
+        title: 'Deployment changed to production',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error('Unable to change deployment to production');
+      toast({
+        id: 'deployment_not_changed_to_production',
+        title: 'Error changing deployment to production',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
@@ -61,9 +72,19 @@ export const DeploymentMenu = ({
     const isRedeployed = await client.redeployToProd(deployment.id);
     if (isRedeployed) {
       await onUpdate();
-      toast.success('Redeployed to production');
+      toast({
+        id: 'redeployed_to_production',
+        title: 'Redeployed to production',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error('Unable to redeploy to production');
+      toast({
+        id: 'redeployed_to_production_failed',
+        title: 'Error redeploying to production',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
@@ -73,10 +94,20 @@ export const DeploymentMenu = ({
       deployment.id,
     );
     if (isRollbacked) {
-      await onUpdate();
-      toast.success('Deployment rolled back');
+      await onUpdate();      
+      toast({
+        id: 'deployment_rolled_back',
+        title: 'Deployment rolled back',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error('Unable to rollback deployment');
+      toast({
+        id: 'deployment_rollback_failed',
+        title: 'Error rolling back deployment',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
@@ -84,9 +115,19 @@ export const DeploymentMenu = ({
     const isDeleted = await client.deleteDeployment(deployment.id);
     if (isDeleted) {
       await onUpdate();
-      toast.success('Deleted deployment');
+      toast({
+        id: 'deployment_deleted',
+        title: 'Deployment deleted',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
     } else {
-      toast.error('Unable to delete deployment');
+      toast({
+        id: 'deployment_not_deleted',
+        title: 'Error deleting deployment',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
