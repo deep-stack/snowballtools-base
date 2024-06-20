@@ -1,4 +1,12 @@
-import { useState } from 'react';
+import { useState, ComponentPropsWithRef } from 'react';
+
+import {
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
+} from '@snowballtools/material-tailwind-react-fork';
+
 import { Deployment, Domain, Environment, Project } from 'gql-client';
 import { Button } from 'components/shared/Button';
 import {
@@ -10,13 +18,6 @@ import {
   UndoIcon,
   CrossCircleIcon,
 } from 'components/shared/CustomIcon';
-import {
-  Menu,
-  MenuHandler,
-  MenuItem,
-  MenuList,
-} from '@snowballtools/material-tailwind-react-fork';
-import { ComponentPropsWithRef } from 'react';
 import AssignDomainDialog from './AssignDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import { cn } from 'utils/classnames';
@@ -94,7 +95,7 @@ export const DeploymentMenu = ({
       deployment.id,
     );
     if (isRollbacked) {
-      await onUpdate();      
+      await onUpdate();
       toast({
         id: 'deployment_rolled_back',
         title: 'Deployment rolled back',
