@@ -3,12 +3,16 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ChevronUpSmallIcon } from 'components/shared/CustomIcon';
 
 const meta: Meta<typeof ChevronUpSmallIcon> = {
-  title: 'Components/ChevronUpSmallIcon',
+  title: 'Icons/ChevronUpSmallIcon',
   component: ChevronUpSmallIcon,
   tags: ['autodocs'],
-  args: {
-    size: 'string | number' as unknown as any,
-    name: 'string',
+  argTypes: {
+    size: {
+      control: 'text',
+    },
+    name: {
+      control: 'text',
+    },
   },
 };
 

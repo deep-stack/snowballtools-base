@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { CollaboratorsIcon } from 'components/shared/CustomIcon';
 
 const meta: Meta<typeof CollaboratorsIcon> = {
-  title: 'Components/CollaboratorsIcon',
+  title: 'Icons/CollaboratorsIcon',
   component: CollaboratorsIcon,
   tags: ['autodocs'],
   argTypes: {

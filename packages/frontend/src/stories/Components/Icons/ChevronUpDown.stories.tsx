@@ -6,9 +6,13 @@ const meta: Meta<typeof ChevronUpDown> = {
   title: 'Icons/ChevronUpDown',
   component: ChevronUpDown,
   tags: ['autodocs'],
-  args: {
-    size: 'string | number' as unknown as any,
-    name: 'string',
+  argTypes: {
+    size: {
+      control: 'text',
+    },
+    name: {
+      control: 'text',
+    },
   },
 };
 
