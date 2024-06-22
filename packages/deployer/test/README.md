@@ -2,7 +2,7 @@
 
 Check if the live web app deployer is in a working state
 
-- Web app repo used: https://github.com/snowball-tools-platform/test-progressive-web-app (main branch)
+- Web app repo used: <https://github.com/snowball-tools/test-progressive-web-app> (main branch)
 - Config used: [../config.yml](../config.yml)
 - The script [test-webapp-deployment-undeployment.sh](./test-webapp-deployment-undeployment.sh) performs the following:
   - Create / update [`ApplicationRecord`](./records/application-record.yml) and [`ApplicationDeploymentRequest`](./records/application-deployment-request.yml) records with latest meta data from the repo

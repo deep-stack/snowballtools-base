@@ -26,7 +26,7 @@ if [ -z "$NEW_APPLICATION_VERSION" ] || [ "1" == "$NEW_APPLICATION_VERSION" ]; t
 fi
 
 # Generate application-deployment-request.yml
-cat > ./staging-records/application-deployment-request.yml <<EOF
+cat >./staging-records/application-deployment-request.yml <<EOF
 record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
@@ -36,10 +36,10 @@ record:
   config:
     env:
       LACONIC_HOSTED_CONFIG_server_url: https://snowballtools-base-api.staging.apps.snowballtools.com
-      LACONIC_HOSTED_CONFIG_github_clientid: 905c09553f527d2cdff5
+      LACONIC_HOSTED_CONFIG_github_clientid: Ov23liOaoahRTYd4nSCV
       LACONIC_HOSTED_CONFIG_github_templaterepo: snowball-tools/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/image-upload-pwa-example
-      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
       LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
       LACONIC_HOSTED_CONFIG_aplchemy_api_key: THvPart_gqI5x02RNYSBntlmwA66I_qc
@@ -54,7 +54,7 @@ record:
 EOF
 
 # Generate application-record.yml with incremented version
-cat > ./staging-records/application-record.yml <<EOF
+cat >./staging-records/application-record.yml <<EOF
 record:
   type: ApplicationRecord
   version: $NEW_APPLICATION_VERSION

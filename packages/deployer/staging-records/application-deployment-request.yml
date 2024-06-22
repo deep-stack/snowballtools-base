@@ -7,18 +7,18 @@ record:
   config:
     env:
       LACONIC_HOSTED_CONFIG_server_url: https://snowballtools-base-api.staging.apps.snowballtools.com
-      LACONIC_HOSTED_CONFIG_github_clientid: 905c09553f527d2cdff5
+      LACONIC_HOSTED_CONFIG_github_clientid: Ov23liOaoahRTYd4nSCV
       LACONIC_HOSTED_CONFIG_github_templaterepo: snowball-tools/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/image-upload-pwa-example
-      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools-platform/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
       LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
       LACONIC_HOSTED_CONFIG_aplchemy_api_key: THvPart_gqI5x02RNYSBntlmwA66I_qc
       LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073
-      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: localhost
-      LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com/
+      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.staging.apps.snowballtools.com
+      LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com
       LACONIC_HOSTED_CONFIG_turnkey_organization_id: 5049ae99-5bca-40b3-8317-504384d4e591
   meta:
-    note: Added by Snowball @ Tuesday 21 May 2024 06:17:23 AM UTC
+    note: Added by Snowball @ Sat Jun 22 02:49:45 UTC 2024
     repository: "https://git.vdb.to/cerc-io/snowballtools-base"
-    repository_ref: 8488cfab8353321ed05c4234bf1b914c9ad3aa99
+    repository_ref: 61e3e88a6c9d57e95441059369ee5a46f5c07601

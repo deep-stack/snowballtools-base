@@ -1,6 +1,6 @@
 record:
   type: ApplicationDeploymentRequest
-  version: '1.0.0'
+  version: "1.0.0"
   name: deployment-test-app@0.1.24
   application: crn://snowballtools/applications/deployment-test-app@0.1.24
   dns: deployment-ci-test
@@ -11,5 +11,5 @@ record:
       CERC_WEBAPP_DEBUG: 0
   meta:
     note: Deployment test @ Thu 11 Apr 2024 07:29:19 AM UTC
-    repository: "https://github.com/snowball-tools-platform/test-progressive-web-app"
+    repository: "https://github.com/snowball-tools/test-progressive-web-app"
     repository_ref: 05819619487a0d2dbc5453b6d1ccff3044c0dd26

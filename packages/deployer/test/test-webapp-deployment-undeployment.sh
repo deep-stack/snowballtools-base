@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Repository URL
-REPO_URL="https://github.com/snowball-tools-platform/test-progressive-web-app"
+REPO_URL="https://github.com/snowball-tools/test-progressive-web-app"
 
 # Get the latest commit hash from the repository
 LATEST_HASH=$(git ls-remote $REPO_URL HEAD | awk '{print $1}')
@@ -32,7 +32,7 @@ fi
 # Generate application-record.yml with incremented version
 RECORD_FILE=packages/deployer/test/records/application-record.yml
 
-cat > $RECORD_FILE <<EOF
+cat >$RECORD_FILE <<EOF
 record:
   type: ApplicationRecord
   version: $NEW_APPLICATION_VERSION
@@ -46,7 +46,7 @@ EOF
 # Generate application-deployment-request.yml
 REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-request.yml
 
-cat > $REQUEST_RECORD_FILE <<EOF
+cat >$REQUEST_RECORD_FILE <<EOF
 record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
@@ -115,7 +115,7 @@ while true; do
     else
       echo "ApplicationDeploymentRecord not found, retrying in $RETRY_INTERVAL sec..."
       sleep $RETRY_INTERVAL
-      retry_count=$((retry_count+1))
+      retry_count=$((retry_count + 1))
     fi
   else
     echo "ApplicationDeploymentRecord found"
@@ -154,7 +154,7 @@ while true; do
     else
       echo "Deployment URL $fetched_url is not active, received code $url_response, retrying in $retry_interval sec..."
       sleep $retry_interval
-      retry_count=$((retry_count+1))
+      retry_count=$((retry_count + 1))
     fi
   fi
 done
@@ -162,7 +162,7 @@ done
 # Generate application-deployment-removal-request.yml
 REMOVAL_REQUEST_RECORD_FILE=packages/deployer/test/records/application-deployment-removal-request.yml
 
-cat > $REMOVAL_REQUEST_RECORD_FILE <<EOF
+cat >$REMOVAL_REQUEST_RECORD_FILE <<EOF
 record:
   deployment: $DEPLOYMENT_RECORD_ID
   type: ApplicationDeploymentRemovalRequest
@@ -190,7 +190,7 @@ while true; do
     else
       echo "ApplicationDeploymentRemovalRecord not found, retrying in $RETRY_INTERVAL sec..."
       sleep $RETRY_INTERVAL
-      retry_count=$((retry_count+1))
+      retry_count=$((retry_count + 1))
     fi
   else
     echo "ApplicationDeploymentRemovalRecord found"
@@ -217,7 +217,7 @@ while true; do
     else
       echo "Deployment URL $fetched_url is still active, received code $url_response, retrying in $retry_interval sec..."
       sleep $retry_interval
-      retry_count=$((retry_count+1))
+      retry_count=$((retry_count + 1))
     fi
   fi
 done
