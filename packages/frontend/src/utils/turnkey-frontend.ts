@@ -1,10 +1,7 @@
 import { TurnkeyClient, getWebAuthnAttestation } from '@turnkey/http';
 import { WebauthnStamper } from '@turnkey/webauthn-stamper';
 
-const baseUrl = import.meta.env.VITE_SERVER_URL;
-
-const PASSKEY_WALLET_RPID = import.meta.env.VITE_PASSKEY_WALLET_RPID!;
-const TURNKEY_BASE_URL = import.meta.env.VITE_TURNKEY_API_BASE_URL!;
+import { baseUrl, PASSKEY_WALLET_RPID, TURNKEY_BASE_URL } from './constants';
 
 // All algorithms can be found here: https://www.iana.org/assignments/cose/cose.xhtml#algorithms
 // We only support ES256, which is listed here

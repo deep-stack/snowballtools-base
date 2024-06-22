@@ -1,21 +1,21 @@
+import React from 'react';
 import Bugsnag from '@bugsnag/js';
 import BugsnagPluginReact from '@bugsnag/plugin-react';
 import BugsnagPerformance from '@bugsnag/browser-performance';
-import React from 'react';
 
-const bugsnagApiKey = import.meta.env.VITE_BUGSNAG_API_KEY;
+import { VITE_BUGSNAG_API_KEY } from './constants';
 
-if (bugsnagApiKey) {
+if (VITE_BUGSNAG_API_KEY) {
   Bugsnag.start({
-    apiKey: bugsnagApiKey,
+    apiKey: VITE_BUGSNAG_API_KEY,
     plugins: [new BugsnagPluginReact()],
   });
-  BugsnagPerformance.start({ apiKey: bugsnagApiKey });
+  BugsnagPerformance.start({ apiKey: VITE_BUGSNAG_API_KEY });
 }
 
-export const errorLoggingEnabled = !!bugsnagApiKey;
+export const errorLoggingEnabled = !!VITE_BUGSNAG_API_KEY;
 
-export const LogErrorBoundary = bugsnagApiKey
+export const LogErrorBoundary = VITE_BUGSNAG_API_KEY
   ? Bugsnag.getPlugin('react')!.createErrorBoundary(React)
   : ({ children }: any) => children;
 
@@ -28,7 +28,7 @@ export function logError(error: Error) {
   }
   console.error(...errors);
 
-  if (import.meta.env.VITE_BUGSNAG_API_KEY) {
+  if (VITE_BUGSNAG_API_KEY) {
     Bugsnag.notify(error);
   }
 }

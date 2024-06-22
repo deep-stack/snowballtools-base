@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import { VITE_WALLET_CONNECT_ID } from 'utils/constants';
+
 const queryClient = new QueryClient();
 
-if (!import.meta.env.VITE_WALLET_CONNECT_ID) {
+if (!VITE_WALLET_CONNECT_ID) {
   throw new Error('Error: REACT_APP_WALLET_CONNECT_ID env config is not set');
 }
 

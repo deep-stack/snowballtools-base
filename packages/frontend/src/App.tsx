@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Projects from './pages/org-slug';
@@ -10,8 +11,8 @@ import ProjectSearchLayout from './layouts/ProjectSearch';
 import Index from './pages';
 import AuthPage from './pages/AuthPage';
 import { DashboardLayout } from './pages/org-slug/layout';
-import { useEffect } from 'react';
 import Web3Provider from 'context/Web3Provider';
+import { baseUrl } from 'utils/constants';
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,7 @@ function App() {
   // Hacky way of checking session
   // TODO: Handle redirect backs
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}/auth/session`, {
+    fetch(`${baseUrl}/auth/session`, {
       credentials: 'include',
     }).then((res) => {
       if (res.status !== 200) {

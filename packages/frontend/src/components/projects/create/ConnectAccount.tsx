@@ -14,11 +14,10 @@ import { useToast } from '../../shared/Toast';
 import { IconWithFrame } from '../../shared/IconWithFrame';
 import { Heading } from '../../shared/Heading';
 import { MockConnectGitCard } from './MockConnectGitCard';
+import { VITE_GITHUB_CLIENT_ID } from 'utils/constants';
 
 const SCOPES = 'repo user';
-const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${
-  import.meta.env.VITE_GITHUB_CLIENT_ID
-}&scope=${encodeURIComponent(SCOPES)}`;
+const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${VITE_GITHUB_CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}`;
 
 interface ConnectAccountInterface {
   onAuth: (token: string) => void;

@@ -2,6 +2,8 @@ import { SiweMessage } from 'siwe';
 import { PKPEthersWallet } from '@lit-protocol/pkp-ethers';
 import { v4 as uuid } from 'uuid';
 
+import { baseUrl } from './constants';
+
 const domain = window.location.host;
 const origin = window.location.origin;
 
@@ -17,7 +19,7 @@ export async function signInWithEthereum(
   );
   const signature = await wallet.signMessage(message);
 
-  const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/validate`, {
+  const res = await fetch(`${baseUrl}/auth/validate`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

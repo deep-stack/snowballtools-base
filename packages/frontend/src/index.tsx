@@ -14,6 +14,7 @@ import { GQLClientProvider } from './context/GQLClientContext';
 import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
 import { LogErrorBoundary } from 'utils/log-error';
+import { baseUrl } from 'utils/constants';
 
 // @ts-ignore
 console.log(`v-${__VERSION__}`);
@@ -22,8 +23,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-assert(import.meta.env.VITE_SERVER_URL, 'VITE_SERVER_URL is not set in env');
-const gqlEndpoint = `${import.meta.env.VITE_SERVER_URL}/${SERVER_GQL_PATH}`;
+assert(baseUrl, 'VITE_SERVER_URL is not set in env');
+const gqlEndpoint = `${baseUrl}/${SERVER_GQL_PATH}`;
 
 const gqlClient = new GQLClient({ gqlEndpoint });
 

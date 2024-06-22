@@ -1,16 +1,21 @@
+import {
+  VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO,
+  VITE_GITHUB_PWA_TEMPLATE_REPO,
+} from 'utils/constants';
+
 export default [
   {
     id: '1',
     name: 'Progressive Web App (PWA)',
     icon: 'pwa',
-    repoFullName: `${import.meta.env.VITE_GITHUB_PWA_TEMPLATE_REPO}`,
+    repoFullName: `${VITE_GITHUB_PWA_TEMPLATE_REPO}`,
     isComingSoon: false,
   },
   {
     id: '2',
     name: 'Image Upload PWA',
     icon: 'pwa',
-    repoFullName: `${import.meta.env.VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO}`,
+    repoFullName: `${VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO}`,
     isComingSoon: false,
   },
   {

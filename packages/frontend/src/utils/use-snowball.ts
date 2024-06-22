@@ -5,16 +5,17 @@ import {
   LitGoogleAuth,
   LitPasskeyAuth,
 } from '@snowballtools/auth-lit';
+import { VITE_LIT_RELAY_API_KEY } from './constants';
 
 export const snowball = Snowball.withAuth({
   google: LitGoogleAuth.configure({
-    litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
+    litRelayApiKey: VITE_LIT_RELAY_API_KEY!,
   }),
   // apple: LitAppleAuth.configure({
-  //   litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
+  //   litRelayApiKey: VITE_LIT_RELAY_API_KEY!,
   // }),
   passkey: LitPasskeyAuth.configure({
-    litRelayApiKey: import.meta.env.VITE_LIT_RELAY_API_KEY!,
+    litRelayApiKey: VITE_LIT_RELAY_API_KEY!,
   }),
 }).create({
   initialChain: SnowballChain.sepolia,
