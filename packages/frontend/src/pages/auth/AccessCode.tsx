@@ -6,7 +6,7 @@ import {
   LoaderIcon,
 } from 'components/shared/CustomIcon';
 import { WavyBorder } from 'components/shared/WavyBorder';
-import { Input } from 'components/shared/Input';
+import { VerifyCodeInput } from 'components/shared/VerifyCodeInput';
 import { verifyAccessCode } from 'utils/accessCode';
 
 type AccessMethod = 'accesscode' | 'passkey';
@@ -20,7 +20,7 @@ type AccessCodeProps = {
 export const AccessCode: React.FC<AccessCodeProps> = ({
   onCorrectAccessCode,
 }) => {
-  const [accessCode, setAccessCode] = useState('');
+  const [accessCode, setAccessCode] = useState('     ');
   const [error, setError] = useState<Err | null>();
   const [accessMethod, setAccessMethod] = useState<AccessMethod | false>(false);
 
@@ -28,6 +28,9 @@ export const AccessCode: React.FC<AccessCodeProps> = ({
     setAccessMethod('accesscode');
     try {
       const isValidAccessCode = await verifyAccessCode(accessCode);
+
+      // add a pause for ux
+      await new Promise((resolve) => setTimeout(resolve, 250));
       if (isValidAccessCode) {
         localStorage.setItem('accessCode', accessCode);
         onCorrectAccessCode();
@@ -43,7 +46,7 @@ export const AccessCode: React.FC<AccessCodeProps> = ({
   }
 
   const loading = accessMethod;
-  const isValidAccessCodeLength = accessCode.length === 6;
+  const isValidAccessCodeLength = accessCode.trim().length === 5;
 
   return (
     <div>
@@ -56,10 +59,11 @@ export const AccessCode: React.FC<AccessCodeProps> = ({
       <div className="self-stretch p-4 xs:p-6 flex-col justify-center items-center gap-8 flex">
         <div className="self-stretch flex-col gap-8 flex">
           <div className="flex-col justify-start items-start gap-2 inline-flex">
-            <Input
-              value={accessCode}
-              onChange={(e) => setAccessCode(e.target.value)}
-              disabled={!!loading}
+            <VerifyCodeInput
+              loading={!!loading}
+              code={accessCode}
+              setCode={setAccessCode}
+              submitCode={validateAccessCode}
             />
           </div>
           <Button
@@ -70,9 +74,7 @@ export const AccessCode: React.FC<AccessCodeProps> = ({
                 <ArrowRightCircleFilledIcon height="16" />
               )
             }
-            onClick={() => {
-              validateAccessCode();
-            }}
+            onClick={validateAccessCode}
             variant={'secondary'}
             disabled={!accessCode || !isValidAccessCodeLength || !!loading}
           >
@@ -82,7 +84,10 @@ export const AccessCode: React.FC<AccessCodeProps> = ({
             <div className="flex flex-col gap-3">
               <div className="justify-center items-center gap-2 inline-flex">
                 <div className="text-red-500 text-sm">
-                  Error: {error.message}
+                  Error: {error.message}.{' '}
+                  <a href="/signup" className="underline">
+                    Try again?
+                  </a>
                 </div>
               </div>
             </div>

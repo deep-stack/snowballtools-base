@@ -5,10 +5,13 @@ import { authenticateUser, createUser } from '../turnkey-backend';
 
 const router = Router();
 
+//
+// Access Code
+//
 router.post('/accesscode', async (req, res) => {
   console.log('Access Code', req.body);
   const { accesscode } = req.body;
-  if (accesscode === '444444') {
+  if (accesscode === '44444') {
     return res.send({ isValid: true });
   } else {
     return res.sendStatus(204);
