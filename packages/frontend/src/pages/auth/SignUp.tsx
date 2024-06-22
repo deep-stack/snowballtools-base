@@ -21,6 +21,7 @@ import {
   turnkeySignin,
   turnkeySignup,
 } from 'utils/turnkey-frontend';
+import { verifyAccessCode } from 'utils/accessCode';
 
 type Provider = 'google' | 'github' | 'apple' | 'email';
 
@@ -110,6 +111,29 @@ export const SignUp = ({ onDone }: Props) => {
 
   const loading = provider;
   const emailValid = /.@./.test(email);
+
+  useEffect(() => {
+    const validateAccessCode = async () => {
+      const accessCode = localStorage.getItem('accessCode');
+      if (!accessCode) {
+        redirectToSignup();
+        return;
+      }
+
+      try {
+        await verifyAccessCode(accessCode);
+      } catch (err: any) {
+        redirectToSignup();
+      }
+    };
+
+    const redirectToSignup = () => {
+      localStorage.removeItem('accessCode');
+      window.location.href = '/signup';
+    };
+
+    validateAccessCode();
+  }, []);
 
   return (
     <div>

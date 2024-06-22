@@ -1,14 +1,15 @@
+import React, { useEffect, useState } from 'react';
+
 import { snowball } from 'utils/use-snowball';
 import { Login } from './Login';
-import { SignUp } from './SignUp';
-import { useEffect, useState } from 'react';
 import { Done } from './Done';
+import { AccessSignUp } from './AccessSignUp';
 
 type Screen = 'login' | 'signup' | 'success';
 
 const DASHBOARD_URL = '/';
 
-export const SnowballAuth = () => {
+export const SnowballAuth: React.FC = () => {
   const path = window.location.pathname;
   const [screen, setScreen] = useState<Screen>(
     path === '/login' ? 'login' : 'signup',
@@ -30,7 +31,7 @@ export const SnowballAuth = () => {
 
   if (screen === 'signup') {
     return (
-      <SignUp
+      <AccessSignUp
         onDone={() => {
           setScreen('success');
         }}
