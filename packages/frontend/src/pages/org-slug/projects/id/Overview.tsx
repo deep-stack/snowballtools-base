@@ -131,9 +131,12 @@ const OverviewTabPanel = () => {
             <Heading className="text-lg leading-6 font-medium truncate">
               {project.name}
             </Heading>
-            <p className="text-sm text-elements-low-em tracking-tight truncate">
+            <a
+              href={`https://${project.subDomain}`}
+              className="text-sm text-elements-low-em tracking-tight truncate"
+            >
               {project.subDomain}
-            </p>
+            </a>
           </div>
         </div>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
