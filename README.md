@@ -15,7 +15,7 @@ yarn
 ### Build backend
 
 ```zsh
-yarn build --ignore-frontend
+yarn build --ignore frontend
 ```
 
 ### Environment variables, running the development server, and deployment
