@@ -100,22 +100,24 @@ export const ProjectSearchBarDialog = ({
                 },
               )}
             >
-              {items.length > 0
-                ? items.map((item, index) => (
-                    <>
-                      <div className="px-2 py-2">
-                        <p className="text-elements-mid-em text-xs font-medium">
-                          Suggestions
-                        </p>
-                      </div>
-                      <ProjectSearchBarItem
-                        key={item.id}
-                        item={item}
-                        {...getItemProps({ item, index })}
-                      />
-                    </>
-                  ))
-                : inputValue && <ProjectSearchBarEmpty />}
+              {items.length > 0 ? (
+                <>
+                  <div className="px-2 py-2">
+                    <p className="text-elements-mid-em text-xs font-medium">
+                      Suggestions
+                    </p>
+                  </div>
+                  {items.map((item, index) => (
+                    <ProjectSearchBarItem
+                      key={item.id}
+                      item={item}
+                      {...getItemProps({ item, index })}
+                    />
+                  ))}
+                </>
+              ) : (
+                inputValue && <ProjectSearchBarEmpty />
+              )}
             </div>
           </div>
         </Dialog.Content>
