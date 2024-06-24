@@ -3,7 +3,7 @@
   port = 8000
   gqlPath = "/graphql"
   [server.session]
-    secret = "p4yfpkqnddkui2iw7t6hbhwq74lbqs7bhobvmfhrowoi"
+    secret = ""
     appOriginUrl = "http://localhost:3000"
     trustProxy = false
     domain = "localhost"
@@ -16,6 +16,16 @@
   [gitHub.oAuth]
     clientId = ""
     clientSecret = ""
+
+[google]
+  clientId = ""
+  clientSecret = ""
+
+[turnkey]
+  apiBaseUrl = "https://api.turnkey.com"
+  apiPrivateKey = ""
+  apiPublicKey = ""
+  defaultOrganizationId = ""
 
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
