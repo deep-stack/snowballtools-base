@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
-import { Environment, EnvironmentVariable } from 'gql-client';
 
 import { Collapse } from '@snowballtools/material-tailwind-react-fork';
 
 import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
-import { useGQLClient } from '../../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import { EnvironmentVariablesFormValues } from '../../../../../types';
 import HorizontalLine from 'components/HorizontalLine';
 import { Heading } from 'components/shared/Heading';
@@ -17,10 +15,13 @@ import { Checkbox } from 'components/shared/Checkbox';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { InlineNotification } from 'components/shared/InlineNotification';
 import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
+import { useToast } from 'components/shared/Toast';
+import { Environment, EnvironmentVariable } from 'gql-client';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
   const client = useGQLClient();
+  const { toast, dismiss } = useToast();
 
   const [environmentVariables, setEnvironmentVariables] = useState<
     EnvironmentVariable[]
@@ -118,13 +119,25 @@ export const EnvironmentVariablesTabPanel = () => {
 
         fetchEnvironmentVariables(id);
 
-        toast.success(
-          createFormData.variables.length > 1
-            ? `${createFormData.variables.length} variables added`
-            : `Variable added`,
-        );
+        toast({
+          id:
+            createFormData.variables.length > 1
+              ? 'env_variable_added'
+              : 'env_variables_added',
+          title:
+            createFormData.variables.length > 1
+              ? `${createFormData.variables.length} variables added`
+              : `Variable added`,
+          variant: 'success',
+          onDismiss: dismiss,
+        });
       } else {
-        toast.error('Environment variables not added');
+        toast({
+          id: 'env_variables_not_added',
+          title: 'Environment variables not added',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
     },
     [id, client],

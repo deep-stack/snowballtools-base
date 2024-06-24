@@ -1,12 +1,12 @@
-import toast from 'react-hot-toast';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { useGQLClient } from '../../../../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import { Table } from 'components/shared/Table';
 import { Button } from 'components/shared/Button';
 import { InlineNotification } from 'components/shared/InlineNotification';
 import { ArrowRightCircleIcon } from 'components/shared/CustomIcon';
 import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
+import { useToast } from 'components/shared/Toast';
 
 const Config = () => {
   const { id, orgSlug } = useParams();
@@ -14,15 +14,26 @@ const Config = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const primaryDomainName = searchParams.get('name');
+  const { toast, dismiss } = useToast();
 
   const handleSubmitDomain = async () => {
     if (primaryDomainName === null) {
-      toast.error('Cannot resolve domain name');
+      toast({
+        id: 'unresolvable_domain_name',
+        title: 'Cannot resolve domain name',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
       return;
     }
 
     if (id === undefined) {
-      toast.error('Cannot find project');
+      toast({
+        id: 'domain_cannot_find_project',
+        title: 'Cannot find project',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
       return;
     }
 
@@ -31,10 +42,20 @@ const Config = () => {
     });
 
     if (isAdded) {
-      toast.success('Domain added successfully');
+      toast({
+        id: 'domain_added_successfully',
+        title: 'Domain added successfully',
+        variant: 'success',
+        onDismiss: dismiss,
+      });
       navigate(`/${orgSlug}/projects/${id}/settings/domains`);
     } else {
-      toast.error('Error adding domain');
+      toast({
+        id: 'generic_error_adding_domain',
+        title: 'Error adding domaint',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
     }
   };
 
