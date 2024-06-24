@@ -41,7 +41,7 @@ export interface AppDeploymentRecordAttributes {
 export interface AppDeploymentRemovalRecordAttributes {
   deployment: string;
   request: string;
-  type: "ApplicationDeploymentRemovalRecord";
+  type: 'ApplicationDeploymentRemovalRecord';
   version: string;
 }
 
@@ -60,4 +60,12 @@ export interface AppDeploymentRecord extends RegistryRecord {
 
 export interface AppDeploymentRemovalRecord extends RegistryRecord {
   attributes: AppDeploymentRemovalRecordAttributes;
+}
+
+export interface AddProjectFromTemplateInput {
+  templateOwner: string;
+  templateRepo: string;
+  owner: string;
+  name: string;
+  isPrivate: boolean;
 }

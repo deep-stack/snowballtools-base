@@ -130,6 +130,14 @@ input AddEnvironmentVariableInput {
   value: String!
 }
 
+input AddProjectFromTemplateInput {
+  templateOwner: String!
+  templateRepo: String!
+  owner: String!
+  name: String!
+  isPrivate: Boolean!
+}
+
 input AddProjectInput {
   name: String!
   repository: String!
@@ -204,6 +212,10 @@ type Mutation {
   ): Boolean!
   removeEnvironmentVariable(environmentVariableId: String!): Boolean!
   updateDeploymentToProd(deploymentId: String!): Boolean!
+  addProjectFromTemplate(
+    organizationSlug: String!
+    data: AddProjectFromTemplateInput
+  ): Project!
   addProject(organizationSlug: String!, data: AddProjectInput): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!

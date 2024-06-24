@@ -267,93 +267,112 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
 // src/mutations.ts
 var import_client2 = require("@apollo/client");
 var removeProjectMember = import_client2.gql`
-mutation ($projectMemberId: String!) {
-  removeProjectMember(projectMemberId: $projectMemberId)
-}
+  mutation ($projectMemberId: String!) {
+    removeProjectMember(projectMemberId: $projectMemberId)
+  }
 `;
 var updateProjectMember = import_client2.gql`
-mutation ($projectMemberId: String!, $data: UpdateProjectMemberInput) {
-  updateProjectMember(projectMemberId: $projectMemberId, data: $data)
-}
+  mutation ($projectMemberId: String!, $data: UpdateProjectMemberInput) {
+    updateProjectMember(projectMemberId: $projectMemberId, data: $data)
+  }
 `;
 var addProjectMember = import_client2.gql`
-mutation ($projectId: String!, $data: AddProjectMemberInput) {
-  addProjectMember(projectId: $projectId, data: $data)
-}
+  mutation ($projectId: String!, $data: AddProjectMemberInput) {
+    addProjectMember(projectId: $projectId, data: $data)
+  }
 `;
 var addEnvironmentVariables = import_client2.gql`
-mutation ($projectId: String!, $data: [AddEnvironmentVariableInput!]) {
-  addEnvironmentVariables(projectId: $projectId, data: $data)
-}
+  mutation ($projectId: String!, $data: [AddEnvironmentVariableInput!]) {
+    addEnvironmentVariables(projectId: $projectId, data: $data)
+  }
 `;
 var updateEnvironmentVariable = import_client2.gql`
-mutation ($environmentVariableId: String!, $data: UpdateEnvironmentVariableInput!) {
-  updateEnvironmentVariable(environmentVariableId: $environmentVariableId, data: $data)
-}
+  mutation (
+    $environmentVariableId: String!
+    $data: UpdateEnvironmentVariableInput!
+  ) {
+    updateEnvironmentVariable(
+      environmentVariableId: $environmentVariableId
+      data: $data
+    )
+  }
 `;
 var removeEnvironmentVariable = import_client2.gql`
-mutation ($environmentVariableId: String!) {
-  removeEnvironmentVariable(environmentVariableId: $environmentVariableId)
-}
+  mutation ($environmentVariableId: String!) {
+    removeEnvironmentVariable(environmentVariableId: $environmentVariableId)
+  }
 `;
 var updateDeploymentToProd = import_client2.gql`
-mutation ($deploymentId: String!) {
-  updateDeploymentToProd(deploymentId: $deploymentId)
-}
+  mutation ($deploymentId: String!) {
+    updateDeploymentToProd(deploymentId: $deploymentId)
+  }
+`;
+var addProjectFromTemplate = import_client2.gql`
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput) {
+    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data) {
+      id
+    }
+  }
 `;
 var addProject = import_client2.gql`
-mutation ($organizationSlug: String!, $data: AddProjectInput) {
-  addProject(organizationSlug: $organizationSlug, data: $data) {
-    id
+  mutation ($organizationSlug: String!, $data: AddProjectInput) {
+    addProject(organizationSlug: $organizationSlug, data: $data) {
+      id
+    }
   }
-}`;
+`;
 var updateProjectMutation = import_client2.gql`
-mutation ($projectId: String!, $data: UpdateProjectInput) {
-  updateProject(projectId: $projectId, data: $data)
-}`;
+  mutation ($projectId: String!, $data: UpdateProjectInput) {
+    updateProject(projectId: $projectId, data: $data)
+  }
+`;
 var updateDomainMutation = import_client2.gql`
-mutation ($domainId: String!, $data: UpdateDomainInput!) {
-  updateDomain(domainId: $domainId, data: $data)
-}`;
+  mutation ($domainId: String!, $data: UpdateDomainInput!) {
+    updateDomain(domainId: $domainId, data: $data)
+  }
+`;
 var redeployToProd = import_client2.gql`
-mutation ($deploymentId: String!) {
-  redeployToProd(deploymentId: $deploymentId)
-}
+  mutation ($deploymentId: String!) {
+    redeployToProd(deploymentId: $deploymentId)
+  }
 `;
 var deleteProject = import_client2.gql`
-mutation ($projectId: String!) {
-  deleteProject(projectId: $projectId)
-}
+  mutation ($projectId: String!) {
+    deleteProject(projectId: $projectId)
+  }
 `;
 var deleteDomain = import_client2.gql`
-mutation ($domainId: String!) {
-  deleteDomain(domainId: $domainId)
-}`;
+  mutation ($domainId: String!) {
+    deleteDomain(domainId: $domainId)
+  }
+`;
 var rollbackDeployment = import_client2.gql`
-mutation ($projectId: String! ,$deploymentId: String!) {
-  rollbackDeployment(projectId: $projectId, deploymentId: $deploymentId)
-}
+  mutation ($projectId: String!, $deploymentId: String!) {
+    rollbackDeployment(projectId: $projectId, deploymentId: $deploymentId)
+  }
 `;
 var deleteDeployment = import_client2.gql`
-mutation ($deploymentId: String!) {
-  deleteDeployment(deploymentId: $deploymentId)
-}
+  mutation ($deploymentId: String!) {
+    deleteDeployment(deploymentId: $deploymentId)
+  }
 `;
 var addDomain = import_client2.gql`
-mutation ($projectId: String!, $data: AddDomainInput!) {
-  addDomain(projectId: $projectId, data: $data)
-}
+  mutation ($projectId: String!, $data: AddDomainInput!) {
+    addDomain(projectId: $projectId, data: $data)
+  }
 `;
 var authenticateGitHub = import_client2.gql`
-mutation ($code: String!) {
-  authenticateGitHub(code: $code) {
-    token
+  mutation ($code: String!) {
+    authenticateGitHub(code: $code) {
+      token
+    }
   }
-}`;
+`;
 var unauthenticateGitHub = import_client2.gql`
-mutation {
-  unauthenticateGitHub
-}`;
+  mutation {
+    unauthenticateGitHub
+  }
+`;
 
 // src/client.ts
 var defaultOptions = {
@@ -536,6 +555,18 @@ var GQLClient = class {
         }
       });
       return data;
+    });
+  }
+  addProjectFromTemplate(organizationSlug, data) {
+    return __async(this, null, function* () {
+      const result = yield this.client.mutate({
+        mutation: addProjectFromTemplate,
+        variables: {
+          organizationSlug,
+          data
+        }
+      });
+      return result.data;
     });
   }
   addProject(organizationSlug, data) {

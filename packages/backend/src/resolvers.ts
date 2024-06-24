@@ -6,6 +6,7 @@ import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
+import { AddProjectFromTemplateInput } from './types';
 
 const log = debug('snowball:resolver');
 
@@ -194,6 +195,26 @@ export const createResolvers = async (service: Service): Promise<any> => {
         } catch (err) {
           log(err);
           return false;
+        }
+      },
+
+      addProjectFromTemplate: async (
+        _: any,
+        {
+          organizationSlug,
+          data,
+        }: { organizationSlug: string; data: AddProjectFromTemplateInput },
+        context: any,
+      ) => {
+        try {
+          return await service.addProjectFromTemplate(
+            context.user,
+            organizationSlug,
+            data,
+          );
+        } catch (err) {
+          log(err);
+          throw err;
         }
       },
 

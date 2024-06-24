@@ -1,298 +1,311 @@
+import { addProjectFromTemplate } from "./mutations";
 // Note: equivalent to types present in GQL schema
 
 export enum Role {
-  Owner = 'Owner',
-  Maintainer = 'Maintainer',
-  Reader = 'Reader',
+  Owner = "Owner",
+  Maintainer = "Maintainer",
+  Reader = "Reader",
 }
 
 export enum Permission {
-  View = 'View',
-  Edit = 'Edit',
+  View = "View",
+  Edit = "Edit",
 }
 
 export enum Environment {
-  Production = 'Production',
-  Preview = 'Preview',
-  Development = 'Development',
+  Production = "Production",
+  Preview = "Preview",
+  Development = "Development",
 }
 
 export enum DeploymentStatus {
-  Building = 'Building',
-  Ready = 'Ready',
-  Error = 'Error',
-  Deleting = 'Deleting'
+  Building = "Building",
+  Ready = "Ready",
+  Error = "Error",
+  Deleting = "Deleting",
 }
 
 export enum DomainStatus {
-  Live = 'Live',
-  Pending = 'Pending',
+  Live = "Live",
+  Pending = "Pending",
 }
 
 export type EnvironmentVariable = {
-  id: string
-  environment: Environment
-  key: string
-  value: string
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  environment: Environment;
+  key: string;
+  value: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type Domain = {
-  id: string
-  branch: string
-  name: string
-  status: DomainStatus
-  redirectTo: Domain | null
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  branch: string;
+  name: string;
+  status: DomainStatus;
+  redirectTo: Domain | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type User = {
-  id: string
-  name: string | null
-  email: string
-  isVerified: boolean
-  createdAt: string
-  updatedAt: string
-  gitHubToken: string | null
-}
+  id: string;
+  name: string | null;
+  email: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  gitHubToken: string | null;
+};
 
 export type Deployment = {
-  id: string
-  domain: Domain
-  branch: string
-  commitHash: string
-  commitMessage: string
-  url?: string
-  environment: Environment
-  isCurrent: boolean
-  status: DeploymentStatus
-  createdBy: User
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  domain: Domain;
+  branch: string;
+  commitHash: string;
+  commitMessage: string;
+  url?: string;
+  environment: Environment;
+  isCurrent: boolean;
+  status: DeploymentStatus;
+  createdBy: User;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type OrganizationMember = {
-  id: string
-  member: User
-  role: Role
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  member: User;
+  role: Role;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type ProjectMember = {
-  id: string
-  member: User
-  permissions: Permission[]
-  isPending: boolean
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  member: User;
+  permissions: Permission[];
+  isPending: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type OrganizationProject = {
-  id: string
-  owner: User
-  deployments: Deployment[]
-  name: string
-  repository: string
-  prodBranch: string
-  description: string
-  template: string
-  framework: string
-  webhooks: string[]
-  members: ProjectMember[]
-  environmentVariables: EnvironmentVariable[]
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  owner: User;
+  deployments: Deployment[];
+  name: string;
+  repository: string;
+  prodBranch: string;
+  description: string;
+  template: string;
+  framework: string;
+  webhooks: string[];
+  members: ProjectMember[];
+  environmentVariables: EnvironmentVariable[];
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type Organization = {
-  id: string
-  name: string
-  slug: string
-  projects: OrganizationProject[]
-  createdAt: string
-  updatedAt: string
-  members: OrganizationMember[]
-}
+  id: string;
+  name: string;
+  slug: string;
+  projects: OrganizationProject[];
+  createdAt: string;
+  updatedAt: string;
+  members: OrganizationMember[];
+};
 
 export type Project = {
-  id: string
-  owner: User
-  deployments: Deployment[]
-  name: string
-  repository: string
-  prodBranch: string
-  description: string
-  template: string
-  framework: string
-  webhooks: string[]
-  members: ProjectMember[]
-  environmentVariables: EnvironmentVariable[]
-  createdAt: string
-  updatedAt: string
-  organization: Organization
-  icon: string
-  subDomain: string
-}
+  id: string;
+  owner: User;
+  deployments: Deployment[];
+  name: string;
+  repository: string;
+  prodBranch: string;
+  description: string;
+  template: string;
+  framework: string;
+  webhooks: string[];
+  members: ProjectMember[];
+  environmentVariables: EnvironmentVariable[];
+  createdAt: string;
+  updatedAt: string;
+  organization: Organization;
+  icon: string;
+  subDomain: string;
+};
 
 export type GetProjectMembersResponse = {
-  projectMembers: ProjectMember[]
-}
+  projectMembers: ProjectMember[];
+};
 
 export type AddProjectMemberResponse = {
-  addProjectMember: boolean
-}
+  addProjectMember: boolean;
+};
 
 export type RemoveProjectMemberResponse = {
   removeProjectMember: boolean;
-}
+};
 
 export type UpdateProjectMemberResponse = {
   updateProjectMember: boolean;
-}
+};
 
 export type GetDeploymentsResponse = {
-  deployments: Deployment[]
-}
+  deployments: Deployment[];
+};
 
 export type GetEnvironmentVariablesResponse = {
-  environmentVariables: EnvironmentVariable[]
-}
+  environmentVariables: EnvironmentVariable[];
+};
 
 export type GetOrganizationsResponse = {
-  organizations: Organization[]
-}
+  organizations: Organization[];
+};
 
 export type GetUserResponse = {
-  user: User
-}
+  user: User;
+};
 
 export type GetProjectResponse = {
-  project: Project | null
-}
+  project: Project | null;
+};
 
 export type GetProjectsInOrganizationResponse = {
-  projectsInOrganization: Project[]
-}
+  projectsInOrganization: Project[];
+};
 
 export type GetDomainsResponse = {
-  domains: Domain[]
-}
+  domains: Domain[];
+};
 
 export type SearchProjectsResponse = {
-  searchProjects: Project[]
-}
+  searchProjects: Project[];
+};
 
 export type AddEnvironmentVariablesResponse = {
   addEnvironmentVariables: boolean;
-}
+};
 
 export type AddEnvironmentVariableInput = {
   environments: string[];
   key: string;
   value: string;
-}
+};
 
 export type UpdateEnvironmentVariableInput = {
   key: string;
   value: string;
-}
+};
 
 export type UpdateProjectMemberInput = {
   permissions: Permission[];
-}
+};
 
 export type AddProjectMemberInput = {
   email: string;
-  permissions: Permission[]
-}
+  permissions: Permission[];
+};
 
 export type UpdateEnvironmentVariableResponse = {
   updateEnvironmentVariable: boolean;
-}
+};
 
 export type RemoveEnvironmentVariableResponse = {
   removeEnvironmentVariable: boolean;
-}
+};
 
 export type UpdateDeploymentToProdResponse = {
   updateDeploymentToProd: boolean;
-}
+};
+
+export type AddProjectFromTemplateResponse = {
+  addProjectFromTemplate: Project;
+};
 
 export type AddProjectResponse = {
-  addProject: Project
-}
+  addProject: Project;
+};
 
 export type UpdateProjectResponse = {
   updateProject: boolean;
-}
+};
 
 export type UpdateDomainResponse = {
   updateDomain: boolean;
-}
+};
 
 export type DeleteProjectResponse = {
   deleteProject: boolean;
-}
+};
 
 export type DeleteDomainResponse = {
   deleteDomain: boolean;
-}
+};
+
+export type AddProjectFromTemplateInput = {
+  templateOwner: string;
+  templateRepo: string;
+  owner: string;
+  name: string;
+  isPrivate: boolean;
+};
 
 export type AddProjectInput = {
   name: string;
   repository: string;
   prodBranch: string;
   template?: string;
-}
+};
 
 export type UpdateProjectInput = {
-  name?: string
-  description?: string
-  prodBranch?: string
-  webhooks?: string[]
-  organizationId?: string
-}
+  name?: string;
+  description?: string;
+  prodBranch?: string;
+  webhooks?: string[];
+  organizationId?: string;
+};
 
 export type UpdateDomainInput = {
   name?: string;
   branch?: string;
   redirectToId?: string | null;
-}
+};
 
 export type RedeployToProdResponse = {
-  redeployToProd: boolean
-}
+  redeployToProd: boolean;
+};
 
 export type RollbackDeploymentResponse = {
-  rollbackDeployment: boolean
-}
+  rollbackDeployment: boolean;
+};
 
 export type DeleteDeploymentResponse = {
-  deleteDeployment: boolean
-}
+  deleteDeployment: boolean;
+};
 
 export type AddDomainInput = {
-  name: string
-}
+  name: string;
+};
 
 export type FilterDomainInput = {
-  branch?: string
-  status?: DomainStatus
-}
+  branch?: string;
+  status?: DomainStatus;
+};
 
 export type AddDomainResponse = {
-  addDomain: true
-}
+  addDomain: true;
+};
 
 export type AuthenticateGitHubResponse = {
   authenticateGitHub: {
-    token: string
-  }
-}
+    token: string;
+  };
+};
 
 export type UnauthenticateGitHubResponse = {
-  unauthenticateGitHub: boolean
-}
+  unauthenticateGitHub: boolean;
+};

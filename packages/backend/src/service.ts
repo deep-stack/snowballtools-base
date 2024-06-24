@@ -16,6 +16,7 @@ import { User } from './entity/User';
 import { Registry } from './registry';
 import { GitHubConfig, RegistryConfig } from './config';
 import {
+  AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
   GitPushEventPayload,
@@ -643,6 +644,53 @@ export class Service {
     return newDeployment;
   }
 
+  async addProjectFromTemplate(
+    user: User,
+    organizationSlug: string,
+    data: AddProjectFromTemplateInput,
+  ): Promise<Project | undefined> {
+    try {
+      const octokit = await this.getOctokit(user.id);
+
+      const gitRepo = await octokit?.rest.repos.createUsingTemplate({
+        template_owner: data.templateOwner,
+        template_repo: data.templateRepo,
+        owner: data.owner,
+        name: data.name,
+        include_all_branches: false,
+        private: data.isPrivate,
+      });
+
+      if (!gitRepo) {
+        throw new Error('Failed to create repository from template');
+      }
+
+      const createdTemplateRepo = await octokit.rest.repos.get({
+        owner: data.owner,
+        repo: data.name,
+      });
+
+      const prodBranch = createdTemplateRepo.data.default_branch ?? 'main';
+
+      const project = await this.addProject(user, organizationSlug, {
+        name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
+        prodBranch,
+        repository: gitRepo.data.full_name,
+        // TODO: Set selected template
+        template: 'webapp',
+      });
+
+      if (!project || !project.id) {
+        throw new Error('Failed to create project from template');
+      }
+
+      return project;
+    } catch (error) {
+      console.error('Error creating project from template:', error);
+      throw error;
+    }
+  }
+
   async addProject(
     user: User,
     organizationSlug: string,
@@ -672,7 +720,7 @@ export class Service {
     });
 
     // Create deployment with prod branch and latest commit
-    await this.createDeployment(user.id, octokit, {
+    const deployment = await this.createDeployment(user.id, octokit, {
       project,
       branch: project.prodBranch,
       environment: Environment.Production,
@@ -682,6 +730,8 @@ export class Service {
     });
 
     await this.createRepoHook(octokit, project);
+
+    console.log('projectid is', project.id);
 
     return project;
   }

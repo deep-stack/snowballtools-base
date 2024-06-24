@@ -50,36 +50,22 @@ const CreateRepo = () => {
         assert(template.repoFullName, 'Template URL not provided');
         const [owner, repo] = template.repoFullName.split('/');
 
-        // TODO: Handle this functionality in backend
-        const gitRepo = await octokit?.rest.repos.createUsingTemplate({
-          template_owner: owner,
-          template_repo: repo,
-          owner: data.account,
-          name: data.repoName,
-          include_all_branches: false,
-          private: data.isPrivate,
-        });
+        setIsLoading(true);
 
-        if (!gitRepo) {
-          return;
-        }
+        const { addProjectFromTemplate } = await client.addProjectFromTemplate(
+          orgSlug!,
+          {
+            templateOwner: owner,
+            templateRepo: repo,
+            owner: data.account,
+            name: data.repoName,
+            isPrivate: false,
+          },
+        );
 
-        // Refetch to always get correct default branch
-        const templateRepo = await octokit.rest.repos.get({
-          owner: template.repoFullName.split('/')[0],
-          repo: template.repoFullName.split('/')[1],
-        });
-        const prodBranch = templateRepo.data.default_branch ?? 'main';
-
-        const { addProject } = await client.addProject(orgSlug!, {
-          name: `${gitRepo.data.owner!.login}-${gitRepo.data.name}`,
-          prodBranch,
-          repository: gitRepo.data.full_name,
-          // TODO: Set selected template
-          template: 'webapp',
-        });
-
-        navigate(`deploy?projectId=${addProject.id}&templateId=${template.id}`);
+        navigate(
+          `deploy?projectId=${addProjectFromTemplate.id}&templateId=${template.id}`,
+        );
       } catch (err) {
         setIsLoading(false);
 

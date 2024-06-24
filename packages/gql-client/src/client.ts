@@ -228,6 +228,21 @@ export class GQLClient {
     return data;
   }
 
+  async addProjectFromTemplate(
+    organizationSlug: string,
+    data: types.AddProjectFromTemplateInput
+  ): Promise<types.AddProjectFromTemplateResponse> {
+    const result = await this.client.mutate({
+      mutation: mutations.addProjectFromTemplate,
+      variables: {
+        organizationSlug,
+        data,
+      },
+    });
+
+    return result.data;
+  }
+
   async addProject(
     organizationSlug: string,
     data: types.AddProjectInput
