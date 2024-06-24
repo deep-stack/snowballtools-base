@@ -11,7 +11,10 @@ import { Template } from '../../../../../types/types';
 import { Heading } from 'components/shared/Heading';
 import { Input } from 'components/shared/Input';
 import { Select, SelectOption } from 'components/shared/Select';
-import { ArrowRightCircleFilledIcon } from 'components/shared/CustomIcon';
+import {
+  ArrowRightCircleFilledIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
 import { Checkbox } from 'components/shared/Checkbox';
 import { Button } from 'components/shared/Button';
 import { useToast } from 'components/shared/Toast';
@@ -192,7 +195,13 @@ const CreateRepo = () => {
             {...buttonSize}
             type="submit"
             disabled={!Boolean(template.repoFullName) || isLoading}
-            rightIcon={<ArrowRightCircleFilledIcon />}
+            rightIcon={
+              isLoading ? (
+                <LoadingIcon className="animate-spin" />
+              ) : (
+                <ArrowRightCircleFilledIcon />
+              )
+            }
           >
             Deploy
           </Button>
