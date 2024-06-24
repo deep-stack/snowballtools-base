@@ -5,7 +5,7 @@ import { CrossIcon, SearchIcon } from 'components/shared/CustomIcon';
 import { Input } from 'components/shared/Input';
 import { useGQLClient } from 'context/GQLClientContext';
 import { Project } from 'gql-client';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 import { ProjectSearchBarItem } from './ProjectSearchBarItem';
 import { ProjectSearchBarEmpty } from './ProjectSearchBarEmpty';
 import { useNavigate } from 'react-router-dom';
@@ -27,25 +27,30 @@ export const ProjectSearchBarDialog = ({
   const client = useGQLClient();
   const navigate = useNavigate();
 
-  const { getInputProps, getItemProps, inputValue, setInputValue } =
-    useCombobox({
-      items,
-      itemToString(item) {
-        return item ? item.name : '';
-      },
-      selectedItem,
-      onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
-        if (newSelectedItem) {
-          setSelectedItem(newSelectedItem);
-          onClickItem?.(newSelectedItem);
-          navigate(
-            `/${newSelectedItem.organization.slug}/projects/${newSelectedItem.id}`,
-          );
-        }
-      },
-    });
+  const {
+    getInputProps,
+    getItemProps,
+    getMenuProps,
+    inputValue,
+    setInputValue,
+  } = useCombobox({
+    items,
+    itemToString(item) {
+      return item ? item.name : '';
+    },
+    selectedItem,
+    onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
+      if (newSelectedItem) {
+        setSelectedItem(newSelectedItem);
+        onClickItem?.(newSelectedItem);
+        navigate(
+          `/${newSelectedItem.organization.slug}/projects/${newSelectedItem.id}`,
+        );
+      }
+    },
+  });
 
-  const debouncedInputValue = useDebounce<string>(inputValue, 300);
+  const [debouncedInputValue, _] = useDebounceValue<string>(inputValue, 300);
 
   const fetchProjects = useCallback(
     async (inputValue: string) => {
@@ -86,7 +91,7 @@ export const ProjectSearchBarDialog = ({
               </Button>
             </div>
             {/* Content */}
-            <div className="flex flex-col gap-1 px-2 py-2">
+            <div className="flex flex-col gap-1 px-2 py-2" {...getMenuProps()}>
               {items.length > 0
                 ? items.map((item, index) => (
                     <>

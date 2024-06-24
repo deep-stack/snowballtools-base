@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useCombobox } from 'downshift';
 import { Project } from 'gql-client';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import SearchBar from 'components/SearchBar';
 import { useGQLClient } from 'context/GQLClientContext';
@@ -42,7 +42,7 @@ export const ProjectSearchBar = ({ onChange }: ProjectSearchBarProps) => {
     },
   });
 
-  const debouncedInputValue = useDebounce<string>(inputValue, 300);
+  const [debouncedInputValue, _] = useDebounceValue<string>(inputValue, 300);
 
   const fetchProjects = useCallback(
     async (inputValue: string) => {
