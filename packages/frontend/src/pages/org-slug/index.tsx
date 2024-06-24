@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Project } from 'gql-client';
-import { Button } from 'components/shared/Button';
 
-import { PlusIcon } from 'components/shared/CustomIcon';
 import { ProjectCard } from 'components/projects/ProjectCard';
-import { Heading } from 'components/shared/Heading';
-import { Badge } from 'components/shared/Badge';
+import { Heading, Badge, Button } from 'components/shared';
+import { PlusIcon } from 'components/shared/CustomIcon';
 import { useGQLClient } from 'context/GQLClientContext';
+import { Project } from 'gql-client';
 
 const Projects = () => {
   const client = useGQLClient();

@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Domain, DomainStatus } from 'gql-client';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { RequestError } from 'octokit';
 
-import { useOctokit } from '../../../../context/OctokitContext';
+import { useOctokit } from 'context/OctokitContext';
 import { GitCommitWithBranch, OutletContextType } from '../../../../types';
-import { useGQLClient } from '../../../../context/GQLClientContext';
-import { Button } from 'components/shared/Button';
-import { Heading } from 'components/shared/Heading';
-import { Avatar } from 'components/shared/Avatar';
+import { useGQLClient } from 'context/GQLClientContext';
+import { Button, Heading, Avatar, Tag } from 'components/shared';
 import { getInitials } from 'utils/geInitials';
 import {
   BranchStrokeIcon,
@@ -18,12 +15,12 @@ import {
   GithubStrokeIcon,
   GlobeIcon,
   LinkIcon,
+  CalendarDaysIcon,
 } from 'components/shared/CustomIcon';
-import { Tag } from 'components/shared/Tag';
 import { Activity } from 'components/projects/project/overview/Activity';
 import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
-import { CalendarDaysIcon } from 'components/shared/CustomIcon/CalendarDaysIcon';
 import { relativeTimeMs } from 'utils/time';
+import { Domain, DomainStatus } from 'gql-client';
 
 const COMMITS_PER_PAGE = 4;
 
