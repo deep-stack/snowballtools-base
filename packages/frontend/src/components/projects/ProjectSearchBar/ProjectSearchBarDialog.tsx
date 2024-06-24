@@ -80,7 +80,7 @@ export const ProjectSearchBarDialog = ({
           <div className="h-full flex flex-col fixed top-0 inset-0">
             <div className="py-2.5 px-4 flex items-center justify-between border-b border-border-separator/[0.06]">
               <Input
-                {...getInputProps()}
+                {...getInputProps({}, { suppressRefError: true })}
                 leftIcon={<SearchIcon />}
                 placeholder="Search"
                 appearance="borderless"
@@ -91,7 +91,15 @@ export const ProjectSearchBarDialog = ({
               </Button>
             </div>
             {/* Content */}
-            <div className="flex flex-col gap-1 px-2 py-2" {...getMenuProps()}>
+            <div
+              className="flex flex-col gap-1 px-2 py-2"
+              {...getMenuProps(
+                {},
+                {
+                  suppressRefError: true,
+                },
+              )}
+            >
               {items.length > 0
                 ? items.map((item, index) => (
                     <>

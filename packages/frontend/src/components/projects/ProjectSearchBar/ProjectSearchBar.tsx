@@ -62,7 +62,7 @@ export const ProjectSearchBar = ({ onChange }: ProjectSearchBarProps) => {
     <div className="relative w-full lg:w-fit">
       <SearchBar {...getInputProps()} />
       <div
-        {...getMenuProps()}
+        {...getMenuProps({}, { suppressRefError: true })}
         className={cn(
           'flex flex-col shadow-dropdown rounded-xl bg-surface-card absolute w-[459px] max-h-52 overflow-y-auto px-2 py-2 gap-1 z-50',
           { hidden: !inputValue || !isOpen },
