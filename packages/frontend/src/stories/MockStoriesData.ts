@@ -11,6 +11,7 @@ import {
   DomainStatus,
   Domain,
   Environment,
+  Permission,
 } from 'gql-client';
 
 export const user: User = {
@@ -44,7 +45,7 @@ export const organization: Organization = {
 export const member: ProjectMember = {
   id: '1',
   member: user,
-  permissions: [],
+  permissions: [Permission.Edit],
   isPending: false,
   createdAt: '2021-08-01T00:00:00.000Z',
   updatedAt: '2021-08-01T00:00:00.000Z',
@@ -70,12 +71,22 @@ export const environmentVariable1: EnvironmentVariable = {
 
 export const domain0: Domain = {
   id: '1',
-  name: 'Domain',
+  name: 'domain.com',
   createdAt: '2021-08-01T00:00:00.000Z',
   updatedAt: '2021-08-01T00:00:00.000Z',
   branch: 'Branch',
   status: DomainStatus.Live,
   redirectTo: null,
+};
+
+export const domain1: Domain = {
+  id: '2',
+  name: 'www.domain.com',
+  createdAt: '2021-08-01T00:00:00.000Z',
+  updatedAt: '2021-08-01T00:00:00.000Z',
+  branch: 'Branch',
+  status: DomainStatus.Live,
+  redirectTo: domain0,
 };
 
 export const deployment0: Deployment = {

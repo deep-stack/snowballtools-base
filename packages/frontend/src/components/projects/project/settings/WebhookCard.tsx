@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { DeleteWebhookDialog } from 'components/projects/Dialog/DeleteWebhookDialog';
 import { Button } from 'components/shared/Button';
 import { useToast } from 'components/shared/Toast';
+import { Input } from 'components/shared/Input';
+import { CopyIcon, TrashIcon } from 'components/shared/CustomIcon';
 
 interface WebhookCardProps {
   webhookUrl: string;
@@ -14,11 +16,12 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   return (
-    <div className="flex justify-between w-full mb-3">
-      {webhookUrl}
+    <div className="flex justify-between w-full mb-3 gap-3">
+      <Input value={webhookUrl} disabled />
       <div className="flex gap-3">
         <Button
-          size="sm"
+          iconOnly
+          size="md"
           onClick={() => {
             navigator.clipboard.writeText(webhookUrl);
             toast({
@@ -29,16 +32,17 @@ const WebhookCard = ({ webhookUrl, onDelete }: WebhookCardProps) => {
             });
           }}
         >
-          Copy
+          <CopyIcon />
         </Button>
         <Button
-          size="sm"
+          iconOnly
+          size="md"
           variant="danger"
           onClick={() => {
             setDeleteDialogOpen(true);
           }}
         >
-          X
+          <TrashIcon />
         </Button>
       </div>
       <DeleteWebhookDialog

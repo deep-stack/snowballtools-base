@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm, SubmitHandler } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import { Domain } from 'gql-client';
 
 import {
@@ -9,10 +8,11 @@ import {
   Option,
 } from '@snowballtools/material-tailwind-react-fork';
 
-import { useGQLClient } from '../../../../context/GQLClientContext';
+import { useGQLClient } from 'context/GQLClientContext';
 import { Modal } from 'components/shared/Modal';
 import { Button } from 'components/shared/Button';
 import { Input } from 'components/shared/Input';
+import { useToast } from 'components/shared/Toast';
 
 const DEFAULT_REDIRECT_OPTIONS = ['none'];
 
@@ -40,6 +40,7 @@ const EditDomainDialog = ({
   onUpdate,
 }: EditDomainDialogProp) => {
   const client = useGQLClient();
+  const { toast, dismiss } = useToast();
 
   const getRedirectUrl = (domain: Domain) => {
     const redirectDomain = domain.redirectTo;
@@ -99,10 +100,20 @@ const EditDomainDialog = ({
 
       if (updateDomain) {
         await onUpdate();
-        toast.success(`Domain ${domain.name} has been updated`);
+        toast({
+          id: 'domain_id_updated',
+          title: `Domain ${domain.name} has been updated`,
+          variant: 'success',
+          onDismiss: dismiss,
+        });
       } else {
         reset();
-        toast.error(`Error updating domain ${domain.name}`);
+        toast({
+          id: 'domain_id_error_update',
+          title: `Error updating domain ${domain.name}`,
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
 
       handleOpen();

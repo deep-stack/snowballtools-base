@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Domain, DomainStatus, Project } from 'gql-client';
 
 import {
-  Chip,
   Typography,
   Menu,
   MenuHandler,
@@ -15,6 +14,15 @@ import EditDomainDialog from './EditDomainDialog';
 import { useGQLClient } from 'context/GQLClientContext';
 import { DeleteDomainDialog } from 'components/projects/Dialog/DeleteDomainDialog';
 import { useToast } from 'components/shared/Toast';
+import { Tag } from 'components/shared/Tag';
+import {
+  CheckIcon,
+  CrossIcon,
+  GearIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
+import { Heading } from 'components/shared/Heading';
+import { Button } from 'components/shared/Button';
 
 enum RefreshStatus {
   IDLE,
@@ -79,22 +87,29 @@ const DomainCard = ({
     <>
       <div className="flex justify-between py-3">
         <div className="flex justify-start gap-1">
-          <Typography variant="h6">
-            <i>^</i> {domain.name}
-          </Typography>
-          <Chip
-            className="w-fit capitalize"
-            value={domain.status}
-            color={domain.status === DomainStatus.Live ? 'green' : 'orange'}
-            variant="ghost"
-            icon={<i>^</i>}
-          />
+          <Heading as="h6" className="flex-col">
+            {domain.name}{' '}
+            <Tag
+              type={
+                domain.status === DomainStatus.Live ? 'positive' : 'negative'
+              }
+              leftIcon={
+                domain.status === DomainStatus.Live ? (
+                  <CheckIcon />
+                ) : (
+                  <CrossIcon />
+                )
+              }
+            >
+              {domain.status}
+            </Tag>
+          </Heading>
         </div>
 
         <div className="flex justify-start gap-1">
           <i
             id="refresh"
-            className="cursor-pointer w-8 h-8"
+            className="cursor-pointer"
             onClick={() => {
               SetRefreshStatus(RefreshStatus.CHECKING);
               setTimeout(() => {
@@ -102,11 +117,17 @@ const DomainCard = ({
               }, CHECK_FAIL_TIMEOUT);
             }}
           >
-            {refreshStatus === RefreshStatus.CHECKING ? 'L' : 'R'}
+            {refreshStatus === RefreshStatus.CHECKING ? (
+              <LoadingIcon className="animate-spin" />
+            ) : (
+              'L'
+            )}
           </i>
           <Menu placement="bottom-end">
             <MenuHandler>
-              <button className="border-2 rounded-full w-8 h-8">...</button>
+              <Button iconOnly>
+                <GearIcon />
+              </Button>
             </MenuHandler>
             <MenuList>
               <MenuItem
@@ -143,13 +164,13 @@ const DomainCard = ({
       {domain.status === DomainStatus.Pending && (
         <Card className="bg-slate-100 p-4 text-sm">
           {refreshStatus === RefreshStatus.IDLE ? (
-            <Typography variant="small">
+            <Heading>
               ^ Add these records to your domain and refresh to check
-            </Typography>
+            </Heading>
           ) : refreshStatus === RefreshStatus.CHECKING ? (
-            <Typography variant="small" className="text-blue-500">
+            <Heading className="text-blue-500">
               ^ Checking records for {domain.name}
-            </Typography>
+            </Heading>
           ) : (
             <div className="flex gap-2 text-red-500 mb-2">
               <div className="grow">
