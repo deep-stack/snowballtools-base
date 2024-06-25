@@ -16,8 +16,7 @@ import { Toaster } from 'components/shared/Toast';
 import { LogErrorBoundary } from 'utils/log-error';
 import { baseUrl } from 'utils/constants';
 
-// @ts-ignore
-console.log(`v-${__VERSION__}`);
+console.log(`v-0.0.9`);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
