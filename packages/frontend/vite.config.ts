@@ -13,13 +13,12 @@ export default defineConfig({
       context: '/src/context',
       components: '/src/components',
       pages: '/src/pages',
-      types: '/src/types',
     },
   },
   define: {
     'process.env': {},
-    __VERSION__: JSON.stringify(
-      (await promisify(exec)('git rev-parse --short HEAD')).stdout.trim(),
-    ),
+    // __VERSION__: JSON.stringify(
+    //   (await promisify(exec)('git rev-parse --short HEAD')).stdout.trim(),
+    // ),
   },
 });
