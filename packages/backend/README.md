@@ -44,7 +44,7 @@ yarn start
 
 ## Deployment
 
-Clone the deployer repository:
+Clone the [deployer repository](https://git.vdb.to/cerc-io/snowballtools-base-api-deployments):
 
 ```zsh
 git clone git@git.vdb.to:cerc-io/snowballtools-base-api-deployments.git
