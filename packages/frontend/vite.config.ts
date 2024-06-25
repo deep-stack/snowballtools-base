@@ -17,8 +17,8 @@ export default defineConfig({
   },
   define: {
     'process.env': {},
-    // __VERSION__: JSON.stringify(
-    //   (await promisify(exec)('git rev-parse --short HEAD')).stdout.trim(),
-    // ),
+    __VERSION__: JSON.stringify(
+      (await promisify(exec)('git rev-parse --short HEAD')).stdout.trim(),
+    ),
   },
 });
