@@ -46,8 +46,6 @@ yarn dev
 
 From the root of the project,
 
-- check if the [gittea repository mirror](https://git.vdb.to/cerc-io/snowballtools-base) is up to date
-
 ### Staging
 
 ```zsh
