@@ -140,7 +140,7 @@ fetched_url=$(echo $deployment_records_response | jq -r '.[0].attributes.url')
 
 retry_count=0
 max_retries=10
-retry_interval=5
+retry_interval=10
 while true; do
   url_response=$(curl -s -o /dev/null -I -w "%{http_code}" $fetched_url)
   if [ "$url_response" = "200" ]; then
