@@ -2,8 +2,7 @@ import debug from 'debug';
 import { DataSource } from 'typeorm';
 import path from 'path';
 
-import { Registry } from '@cerc-io/registry-sdk';
-import { Util } from '@cerc-io/registry-sdk/src/util';
+import { Registry, Util } from '@cerc-io/registry-sdk';
 
 import { getConfig } from '../src/utils';
 import { Deployment, DeploymentStatus, Environment } from '../src/entity/Deployment';

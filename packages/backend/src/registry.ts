@@ -3,8 +3,7 @@ import assert from 'assert';
 import { inc as semverInc } from 'semver';
 import { DateTime } from 'luxon';
 
-import { Registry as LaconicRegistry } from '@cerc-io/registry-sdk';
-import { Util } from '@cerc-io/registry-sdk/src/util';
+import { Registry as LaconicRegistry, Util } from '@cerc-io/registry-sdk';
 
 import { RegistryConfig } from './config';
 import {

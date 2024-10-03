@@ -1,7 +1,6 @@
 import debug from 'debug';
 
-import { Registry } from '@cerc-io/registry-sdk';
-import { Util } from '@cerc-io/registry-sdk/src/util';
+import { Registry, Util } from '@cerc-io/registry-sdk';
 
 import { getConfig } from '../src/utils';
 
