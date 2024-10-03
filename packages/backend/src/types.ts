@@ -69,3 +69,13 @@ export interface AddProjectFromTemplateInput {
   name: string;
   isPrivate: boolean;
 }
+
+export interface AuctionData {
+  commitFee: string,
+  commitsDuration: string,
+  revealFee: string,
+  revealsDuration: string,
+  denom: string,
+  maxPrice: string,
+  numProviders: number,
+}

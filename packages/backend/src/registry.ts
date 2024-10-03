@@ -10,14 +10,16 @@ import {
   ApplicationRecord,
   Deployment,
   ApplicationDeploymentRequest,
-  ApplicationDeploymentRemovalRequest
+  ApplicationDeploymentRemovalRequest,
+  ApplicationDeploymentAuction
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
 import { sleep } from './utils';
 
 const log = debug('snowball:registry');
 
 const APP_RECORD_TYPE = 'ApplicationRecord';
+const APP_DEPLOYMENT_AUCTION_RECORD_TYPE = 'ApplicationDeploymentAuction';
 const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
 const APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE = 'ApplicationDeploymentRemovalRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
@@ -148,10 +150,94 @@ export class Registry {
     };
   }
 
+  async createApplicationDeploymentAuction (data: {
+    deployment: Deployment,
+    appName: string,
+  },
+    auctionData: AuctionData,
+): Promise<{
+    applicationDeploymentAuctionId: string;
+    applicationDeploymentAuctionData: ApplicationDeploymentAuction;
+    deployerLrns: string[];
+  }> {
+    const lrn = this.getLrn(data.appName);
+    const records = await this.registry.resolveNames([lrn]);
+    const applicationRecord = records[0];
+
+    if (!applicationRecord) {
+      throw new Error(`No record found for ${lrn}`);
+    }
+
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+
+    // TODO: Take auction params from user
+    const auctionResult = await this.registry.createProviderAuction(
+      {
+        commitFee: auctionData.commitFee,
+        commitsDuration: auctionData.commitsDuration,
+        revealFee: auctionData.revealFee,
+        revealsDuration: auctionData.revealsDuration,
+        denom: auctionData.denom,
+        maxPrice: auctionData.maxPrice,
+        numProviders: auctionData.numProviders,
+      },
+      this.registryConfig.privateKey,
+      fee
+    )
+
+    if (!auctionResult.auction) {
+      throw new Error('Error creating auction');
+    }
+
+    // Create record of type applicationDeploymentAuction and publish
+    const applicationDeploymentAuction = {
+      application: `${lrn}@${applicationRecord.attributes.app_version}`,
+      auction: auctionResult.auction.id,
+      type: APP_DEPLOYMENT_AUCTION_RECORD_TYPE,
+    };
+
+    await sleep(SLEEP_DURATION);
+
+    const result = await this.registry.setRecord(
+      {
+        privateKey: this.registryConfig.privateKey,
+        record: applicationDeploymentAuction,
+        bondId: this.registryConfig.bondId
+      },
+      this.registryConfig.privateKey,
+      fee
+    );
+    log(`Application deployment auction record published: ${result.id}`);
+    log('Application deployment auction data:', applicationDeploymentAuction);
+
+    let deployerLrns = [];
+    const { winnerAddresses } = auctionResult.auction;
+
+    for (const auctionWinner of winnerAddresses) {
+      const deployerRecord = await this.registry.queryRecords(
+        {
+          paymentAddress: auctionWinner,
+        },
+        true
+      );
+
+      const lrn = deployerRecord.names.length > 0 ? deployerRecord.names[0] : null;
+      deployerLrns.push(lrn);
+    }
+
+    return {
+      applicationDeploymentAuctionId: auctionResult.auction.id,
+      applicationDeploymentAuctionData: applicationDeploymentAuction,
+      deployerLrns
+    };
+  }
+
   async createApplicationDeploymentRequest (data: {
     deployment: Deployment,
     appName: string,
     repository: string,
+    auctionId?: string,
+    lrn?: string,
     environmentVariables: { [key: string]: string },
     dns: string,
   }): Promise<{
@@ -175,8 +261,6 @@ export class Registry {
       dns: data.dns,
 
       // TODO: Not set in test-progressive-web-app CI
-      // deployment: '$CERC_REGISTRY_DEPLOYMENT_LRN',
-
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({
         env: data.environmentVariables
@@ -187,7 +271,9 @@ export class Registry {
         )}`,
         repository: data.repository,
         repository_ref: data.deployment.commitHash
-      })
+      }),
+      ...(data.lrn && { deployer: data.lrn }),
+      ...(data.auctionId && { auction: data.auctionId }),
     };
 
     await sleep(SLEEP_DURATION);
