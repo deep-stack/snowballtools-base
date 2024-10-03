@@ -3,8 +3,9 @@ import { DataSource } from 'typeorm';
 import path from 'path';
 
 import { Registry } from '@cerc-io/registry-sdk';
+import { Util } from '@cerc-io/registry-sdk/src/util';
 
-import { getConfig, parseGasAndFees } from '../src/utils';
+import { getConfig } from '../src/utils';
 import { Deployment, DeploymentStatus, Environment } from '../src/entity/Deployment';
 
 const log = debug('snowball:publish-deploy-records');
@@ -59,7 +60,7 @@ async function main() {
       url
     };
 
-    const fee = parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
+    const fee = Util.parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
 
     const result = await registry.setRecord(
       {

@@ -1,8 +1,9 @@
 import debug from 'debug';
 
 import { Registry } from '@cerc-io/registry-sdk';
+import { Util } from '@cerc-io/registry-sdk/src/util';
 
-import { getConfig, parseGasAndFees } from '../src/utils';
+import { getConfig } from '../src/utils';
 
 const log = debug('snowball:initialize-registry');
 
@@ -20,7 +21,7 @@ async function main () {
   const bondId = await registry.getNextBondId(registryConfig.privateKey);
   log('bondId:', bondId);
 
-  const fee = parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
+  const fee = Util.parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
 
   await registry.createBond(
     { denom: DENOM, amount: BOND_AMOUNT },

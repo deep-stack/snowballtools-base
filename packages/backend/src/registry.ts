@@ -4,6 +4,7 @@ import { inc as semverInc } from 'semver';
 import { DateTime } from 'luxon';
 
 import { Registry as LaconicRegistry } from '@cerc-io/registry-sdk';
+import { Util } from '@cerc-io/registry-sdk/src/util';
 
 import { RegistryConfig } from './config';
 import {
@@ -13,7 +14,7 @@ import {
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, PackageJSON } from './types';
-import { parseGasAndFees, sleep } from './utils';
+import { sleep } from './utils';
 
 const log = debug('snowball:registry');
 
@@ -100,7 +101,7 @@ export class Registry {
       ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
-    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {
@@ -192,7 +193,7 @@ export class Registry {
 
     await sleep(SLEEP_DURATION);
 
-    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {
@@ -286,7 +287,7 @@ export class Registry {
       deployment: data.deploymentId
     };
 
-    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {
