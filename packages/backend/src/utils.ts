@@ -5,8 +5,6 @@ import toml from 'toml';
 import debug from 'debug';
 import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
 
-import { parseCoins, StdFee } from '@cosmjs/stargate';
-
 import { Config } from './config';
 import { DEFAULT_CONFIG_FILE_PATH } from './constants';
 
