@@ -17,7 +17,7 @@
     ```bash
     ./deploy-frontend.staging.sh
     ```
-  
+
   - To deploy frontend app to `dashboard.apps.snowballtools.com`
 
     ```bash
@@ -51,14 +51,14 @@
 
     ```bash
     # Account balance
-    yarn laconic cns account get
+    yarn laconic registry account get
 
     # Bond balance
-    yarn laconic cns bond get --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32
+    yarn laconic registry bond get --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32
     ```
 
   - Command to refill bond
 
     ```bash
-    yarn laconic cns bond refill --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32 --type aphoton --quantity 10000000
+    yarn laconic registry bond refill --id 99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32 --type alnt --quantity 10000000
     ```

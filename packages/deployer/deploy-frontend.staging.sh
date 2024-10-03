@@ -18,7 +18,7 @@ REGISTRY_BOND_ID="098c906850b87412f02200e41f449bc79e055eab77acfef32c0b22443bb466
 # Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
 
 # Get latest version from registry and increment application-record version
-NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationRecord --all --name "staging-snowballtools-base-frontend" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "staging-snowballtools-base-frontend" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
 
 if [ -z "$NEW_APPLICATION_VERSION" ] || [ "1" == "$NEW_APPLICATION_VERSION" ]; then
   # Set application-record version if no previous records were found
@@ -31,7 +31,7 @@ record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
   name: staging-snowballtools-base-frontend@$PACKAGE_VERSION
-  application: crn://staging-snowballtools/applications/staging-snowballtools-base-frontend@$PACKAGE_VERSION
+  application: lrn://staging-snowballtools/applications/staging-snowballtools-base-frontend@$PACKAGE_VERSION
   dns: dashboard.staging.apps.snowballtools.com
   config:
     env:
@@ -70,7 +70,7 @@ echo "Files generated successfully."
 RECORD_FILE=staging-records/application-record.yml
 
 # Publish ApplicationRecord
-publish_response=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE)
+publish_response=$(yarn --silent laconic -c $CONFIG_FILE registry record publish --filename $RECORD_FILE)
 rc=$?
 if [ $rc -ne 0 ]; then
   echo "FATAL: Failed to publish record"
@@ -81,17 +81,17 @@ echo "ApplicationRecord published"
 echo $RECORD_ID
 
 # Set name to record
-REGISTRY_APP_CRN="crn://staging-snowballtools/applications/staging-snowballtools-base-frontend"
+REGISTRY_APP_LRN="lrn://staging-snowballtools/applications/staging-snowballtools-base-frontend"
 
 sleep 2
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${PACKAGE_VERSION}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN@${PACKAGE_VERSION}" "$RECORD_ID"
 rc=$?
 if [ $rc -ne 0 ]; then
-  echo "FATAL: Failed to set name: $REGISTRY_APP_CRN@${PACKAGE_VERSION}"
+  echo "FATAL: Failed to set name: $REGISTRY_APP_LRN@${PACKAGE_VERSION}"
   exit $rc
 fi
 sleep 2
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${LATEST_HASH}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN@${LATEST_HASH}" "$RECORD_ID"
 rc=$?
 if [ $rc -ne 0 ]; then
   echo "FATAL: Failed to set hash"
@@ -99,16 +99,16 @@ if [ $rc -ne 0 ]; then
 fi
 sleep 2
 # Set name if latest release
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN" "$RECORD_ID"
 rc=$?
 if [ $rc -ne 0 ]; then
   echo "FATAL: Failed to set release"
   exit $rc
 fi
-echo "$REGISTRY_APP_CRN set for ApplicationRecord"
+echo "$REGISTRY_APP_LRN set for ApplicationRecord"
 
-# Check if record found for REGISTRY_APP_CRN
-query_response=$(yarn --silent laconic -c $CONFIG_FILE cns name resolve "$REGISTRY_APP_CRN")
+# Check if record found for REGISTRY_APP_LRN
+query_response=$(yarn --silent laconic -c $CONFIG_FILE registry name resolve "$REGISTRY_APP_LRN")
 rc=$?
 if [ $rc -ne 0 ]; then
   echo "FATAL: Failed to query name"
@@ -116,14 +116,14 @@ if [ $rc -ne 0 ]; then
 fi
 APP_RECORD=$(echo $query_response | jq '.[0]')
 if [ -z "$APP_RECORD" ] || [ "null" == "$APP_RECORD" ]; then
-  echo "No record found for $REGISTRY_APP_CRN."
+  echo "No record found for $REGISTRY_APP_LRN."
   exit 1
 fi
 
 RECORD_FILE=staging-records/application-deployment-request.yml
 
 sleep 2
-deployment_response=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE)
+deployment_response=$(yarn --silent laconic -c $CONFIG_FILE registry record publish --filename $RECORD_FILE)
 if [ $rc -ne 0 ]; then
   echo "FATAL: Failed to query deployment request"
   exit $rc

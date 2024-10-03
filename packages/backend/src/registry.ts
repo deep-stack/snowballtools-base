@@ -3,7 +3,7 @@ import assert from 'assert';
 import { inc as semverInc } from 'semver';
 import { DateTime } from 'luxon';
 
-import { Registry as LaconicRegistry } from '@snowballtools/laconic-sdk';
+import { Registry as LaconicRegistry } from '@cerc-io/registry-sdk';
 
 import { RegistryConfig } from './config';
 import {
@@ -13,7 +13,7 @@ import {
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, PackageJSON } from './types';
-import { sleep } from './utils';
+import { parseGasAndFees, sleep } from './utils';
 
 const log = debug('snowball:registry');
 
@@ -24,7 +24,7 @@ const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
 const APP_DEPLOYMENT_REMOVAL_RECORD_TYPE = 'ApplicationDeploymentRemovalRecord';
 const SLEEP_DURATION = 1000;
 
-// TODO: Move registry code to laconic-sdk/watcher-ts
+// TODO: Move registry code to registry-sdk/watcher-ts
 export class Registry {
   private registry: LaconicRegistry;
   private registryConfig: RegistryConfig;
@@ -34,7 +34,7 @@ export class Registry {
     this.registry = new LaconicRegistry(
       registryConfig.gqlEndpoint,
       registryConfig.restEndpoint,
-      registryConfig.chainId
+      { chainId: registryConfig.chainId }
     );
   }
 
@@ -54,7 +54,7 @@ export class Registry {
     applicationRecordId: string;
     applicationRecordData: ApplicationRecord;
   }> {
-    // Use laconic-sdk to publish record
+    // Use registry-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records
     const records = await this.registry.queryRecords(
@@ -100,48 +100,50 @@ export class Registry {
       ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+
     const result = await this.registry.setRecord(
       {
         privateKey: this.registryConfig.privateKey,
         record: applicationRecord,
         bondId: this.registryConfig.bondId
       },
-      '',
-      this.registryConfig.fee
+      this.registryConfig.privateKey,
+      fee
     );
 
     log('Application record data:', applicationRecord);
 
-    // TODO: Discuss computation of CRN
-    const crn = this.getCrn(appName);
-    log(`Setting name: ${crn} for record ID: ${result.data.id}`);
+    // TODO: Discuss computation of LRN
+    const lrn = this.getLrn(appName);
+    log(`Setting name: ${lrn} for record ID: ${result.id}`);
 
     await sleep(SLEEP_DURATION);
     await this.registry.setName(
-      { cid: result.data.id, crn },
+      { cid: result.id, lrn },
       this.registryConfig.privateKey,
-      this.registryConfig.fee
+      fee
     );
 
     await sleep(SLEEP_DURATION);
     await this.registry.setName(
-      { cid: result.data.id, crn: `${crn}@${applicationRecord.app_version}` },
+      { cid: result.id, lrn: `${lrn}@${applicationRecord.app_version}` },
       this.registryConfig.privateKey,
-      this.registryConfig.fee
+      fee
     );
 
     await sleep(SLEEP_DURATION);
     await this.registry.setName(
       {
-        cid: result.data.id,
-        crn: `${crn}@${applicationRecord.repository_ref}`
+        cid: result.id,
+        lrn: `${lrn}@${applicationRecord.repository_ref}`
       },
       this.registryConfig.privateKey,
-      this.registryConfig.fee
+      fee
     );
 
     return {
-      applicationRecordId: result.data.id,
+      applicationRecordId: result.id,
       applicationRecordData: applicationRecord
     };
   }
@@ -156,12 +158,12 @@ export class Registry {
     applicationDeploymentRequestId: string;
     applicationDeploymentRequestData: ApplicationDeploymentRequest;
   }> {
-    const crn = this.getCrn(data.appName);
-    const records = await this.registry.resolveNames([crn]);
+    const lrn = this.getLrn(data.appName);
+    const records = await this.registry.resolveNames([lrn]);
     const applicationRecord = records[0];
 
     if (!applicationRecord) {
-      throw new Error(`No record found for ${crn}`);
+      throw new Error(`No record found for ${lrn}`);
     }
 
     // Create record of type ApplicationDeploymentRequest and publish
@@ -169,11 +171,11 @@ export class Registry {
       type: APP_DEPLOYMENT_REQUEST_TYPE,
       version: '1.0.0',
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
-      application: `${crn}@${applicationRecord.attributes.app_version}`,
+      application: `${lrn}@${applicationRecord.attributes.app_version}`,
       dns: data.dns,
 
       // TODO: Not set in test-progressive-web-app CI
-      // deployment: '$CERC_REGISTRY_DEPLOYMENT_CRN',
+      // deployment: '$CERC_REGISTRY_DEPLOYMENT_LRN',
 
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({
@@ -189,20 +191,23 @@ export class Registry {
     };
 
     await sleep(SLEEP_DURATION);
+
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+
     const result = await this.registry.setRecord(
       {
         privateKey: this.registryConfig.privateKey,
         record: applicationDeploymentRequest,
         bondId: this.registryConfig.bondId
       },
-      '',
-      this.registryConfig.fee
+      this.registryConfig.privateKey,
+      fee
     );
-    log(`Application deployment request record published: ${result.data.id}`);
+    log(`Application deployment request record published: ${result.id}`);
     log('Application deployment request data:', applicationDeploymentRequest);
 
     return {
-      applicationDeploymentRequestId: result.data.id,
+      applicationDeploymentRequestId: result.id,
       applicationDeploymentRequestData: applicationDeploymentRequest
     };
   }
@@ -281,27 +286,29 @@ export class Registry {
       deployment: data.deploymentId
     };
 
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+
     const result = await this.registry.setRecord(
       {
         privateKey: this.registryConfig.privateKey,
         record: applicationDeploymentRemovalRequest,
         bondId: this.registryConfig.bondId
       },
-      '',
-      this.registryConfig.fee
+      this.registryConfig.privateKey,
+      fee
     );
 
-    log(`Application deployment removal request record published: ${result.data.id}`);
+    log(`Application deployment removal request record published: ${result.id}`);
     log('Application deployment removal request data:', applicationDeploymentRemovalRequest);
 
     return {
-      applicationDeploymentRemovalRequestId: result.data.id,
+      applicationDeploymentRemovalRequestId: result.id,
       applicationDeploymentRemovalRequestData: applicationDeploymentRemovalRequest
     };
   }
 
-  getCrn (appName: string): string {
+  getLrn(appName: string): string {
     assert(this.registryConfig.authority, "Authority doesn't exist");
-    return `crn://${this.registryConfig.authority}/applications/${appName}`;
+    return `lrn://${this.registryConfig.authority}/applications/${appName}`;
   }
 }

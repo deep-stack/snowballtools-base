@@ -16,8 +16,6 @@ import {
   getEntities,
   loadAndSaveData
 } from '../src/utils';
-import { Config } from '../src/config';
-import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
 
 const log = debug('snowball:initialize-database');
 
@@ -156,7 +154,7 @@ const generateTestData = async (dataSource: DataSource) => {
 };
 
 const main = async () => {
-  const config = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const config = await getConfig();
   const isDbPresent = await checkFileExists(config.database.dbPath);
 
   if (!isDbPresent) {

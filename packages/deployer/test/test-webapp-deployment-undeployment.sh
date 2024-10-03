@@ -22,7 +22,7 @@ REGISTRY_BOND_ID="99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be
 APP_NAME=deployment-test-app
 
 # Get latest version from registry and increment application-record version
-NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationRecord --all --name "$APP_NAME" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "$APP_NAME" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
 
 if [ -z "$NEW_APPLICATION_VERSION" ] || [ "1" == "$NEW_APPLICATION_VERSION" ]; then
   # Set application-record version if no previous records were found
@@ -51,7 +51,7 @@ record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
   name: $APP_NAME@$PACKAGE_VERSION
-  application: crn://snowballtools/applications/$APP_NAME@$PACKAGE_VERSION
+  application: lrn://snowballtools/applications/$APP_NAME@$PACKAGE_VERSION
   dns: deployment-ci-test
   config:
     env:
@@ -67,31 +67,31 @@ EOF
 echo "Record files generated successfully."
 
 # Publish ApplicationRecord
-RECORD_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $RECORD_FILE | jq -r '.id')
+RECORD_ID=$(yarn --silent laconic -c $CONFIG_FILE registry record publish --filename $RECORD_FILE | jq -r '.id')
 echo "ApplicationRecord published"
 echo $RECORD_ID
 
 # Set name to record
-REGISTRY_APP_CRN="crn://snowballtools/applications/$APP_NAME"
+REGISTRY_APP_LRN="lrn://snowballtools/applications/$APP_NAME"
 
 sleep 2
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${PACKAGE_VERSION}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN@${PACKAGE_VERSION}" "$RECORD_ID"
 sleep 2
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN@${LATEST_HASH}" "$RECORD_ID"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN@${LATEST_HASH}" "$RECORD_ID"
 sleep 2
 # Set name if latest release
-yarn --silent laconic -c $CONFIG_FILE cns name set "$REGISTRY_APP_CRN" "$RECORD_ID"
-echo "$REGISTRY_APP_CRN set for ApplicationRecord"
+yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN" "$RECORD_ID"
+echo "$REGISTRY_APP_LRN set for ApplicationRecord"
 
-# Check if record exists for REGISTRY_APP_CRN
-APP_RECORD=$(yarn --silent laconic -c $CONFIG_FILE cns name resolve "$REGISTRY_APP_CRN" | jq '.[0]')
+# Check if record exists for REGISTRY_APP_LRN
+APP_RECORD=$(yarn --silent laconic -c $CONFIG_FILE registry name resolve "$REGISTRY_APP_LRN" | jq '.[0]')
 if [ -z "$APP_RECORD" ] || [ "null" == "$APP_RECORD" ]; then
-  echo "No record found for $REGISTRY_APP_CRN."
+  echo "No record found for $REGISTRY_APP_LRN."
   exit 1
 fi
 
 sleep 2
-DEPLOYMENT_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $REQUEST_RECORD_FILE | jq -r '.id')
+DEPLOYMENT_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE registry record publish --filename $REQUEST_RECORD_FILE | jq -r '.id')
 echo "ApplicationDeploymentRequest published"
 echo $DEPLOYMENT_REQUEST_ID
 
@@ -102,7 +102,7 @@ MAX_RETRIES=20
 # Check that a ApplicationDeploymentRecord is published
 retry_count=0
 while true; do
-  deployment_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRecord --all --name "$APP_NAME" request $DEPLOYMENT_REQUEST_ID)
+  deployment_records_response=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationDeploymentRecord --all --name "$APP_NAME" request $DEPLOYMENT_REQUEST_ID)
   len_deployment_records=$(echo $deployment_records_response | jq 'length')
 
   # Check if number of records returned is 0
@@ -170,14 +170,14 @@ record:
 EOF
 
 sleep 2
-REMOVAL_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE cns record publish --filename $REMOVAL_REQUEST_RECORD_FILE | jq -r '.id')
+REMOVAL_REQUEST_ID=$(yarn --silent laconic -c $CONFIG_FILE registry record publish --filename $REMOVAL_REQUEST_RECORD_FILE | jq -r '.id')
 echo "ApplicationDeploymentRemovalRequest published"
 echo $REMOVAL_REQUEST_ID
 
 # Check that an ApplicationDeploymentRemovalRecord is published
 retry_count=0
 while true; do
-  removal_records_response=$(yarn --silent laconic -c $CONFIG_FILE cns record list --type ApplicationDeploymentRemovalRecord --all request $REMOVAL_REQUEST_ID)
+  removal_records_response=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationDeploymentRemovalRecord --all request $REMOVAL_REQUEST_ID)
   len_removal_records=$(echo $removal_records_response | jq 'length')
 
   # Check if number of records returned is 0
