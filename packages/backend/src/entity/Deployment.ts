@@ -28,6 +28,12 @@ export enum DeploymentStatus {
   Deleting = 'Deleting',
 }
 
+export interface ApplicationDeploymentAuction {
+  application: string;
+  auction: string;
+  type: string;
+}
+
 export interface ApplicationDeploymentRequest {
   type: string;
   version: string;
@@ -112,13 +118,13 @@ export class Deployment {
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRecordData!: AppDeploymentRecordAttributes | null;
-  
+
   @Column('varchar', { nullable: true })
     applicationDeploymentRemovalRequestId!: string | null;
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRemovalRequestData!: ApplicationDeploymentRemovalRequest | null;
-  
+
   @Column('varchar', { nullable: true })
     applicationDeploymentRemovalRecordId!: string | null;
 
@@ -147,7 +153,7 @@ export class Deployment {
 
   @UpdateDateColumn()
     updatedAt!: Date;
-  
+
   @DeleteDateColumn()
     deletedAt!: Date | null;
 }

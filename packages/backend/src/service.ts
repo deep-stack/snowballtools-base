@@ -19,6 +19,7 @@ import {
   AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
+  AuctionData,
   GitPushEventPayload,
   PackageJSON,
 } from './types';
@@ -644,10 +645,145 @@ export class Service {
     return newDeployment;
   }
 
+  async createDeploymentFromAuction(
+    userId: string,
+    octokit: Octokit,
+    data: DeepPartial<Deployment>,
+    auctionData: AuctionData
+  ): Promise<Deployment> {
+    assert(data.project?.repository, 'Project repository not found');
+    log(
+      `Creating deployment in project ${data.project.name} from branch ${data.branch}`,
+    );
+    const [owner, repo] = data.project.repository.split('/');
+
+    const { data: packageJSONData } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: 'package.json',
+      ref: data.commitHash,
+    });
+
+    if (!packageJSONData) {
+      throw new Error('Package.json file not found');
+    }
+
+    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
+    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
+
+    assert(packageJSON.name, "name field doesn't exist in package.json");
+
+    const repoUrl = (
+      await octokit.rest.repos.get({
+        owner,
+        repo,
+      })
+    ).data.html_url;
+
+    // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
+    const { applicationRecordId, applicationRecordData } =
+      await this.registry.createApplicationRecord({
+        appName: repo,
+        packageJSON,
+        appType: data.project!.template!,
+        commitHash: data.commitHash!,
+        repoUrl,
+      });
+
+    // Update previous deployment with prod branch domain
+    // TODO: Fix unique constraint error for domain
+    if (data.domain) {
+      await this.db.updateDeployment(
+        {
+          domainId: data.domain.id,
+        },
+        {
+          domain: null,
+        },
+      );
+    }
+
+    const newDeployment = await this.db.addDeployment({
+      project: data.project,
+      branch: data.branch,
+      commitHash: data.commitHash,
+      commitMessage: data.commitMessage,
+      environment: data.environment,
+      status: DeploymentStatus.Building,
+      applicationRecordId,
+      applicationRecordData,
+      domain: data.domain,
+      createdBy: Object.assign(new User(), {
+        id: userId,
+      }),
+    });
+
+    log(
+      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
+    );
+
+    const deploymentAuctionData = await this.registry.createApplicationDeploymentAuction({
+      deployment: newDeployment,
+      appName: repo
+    }, auctionData
+    );
+
+    const deploymentAuctionId = deploymentAuctionData.applicationDeploymentAuctionId;
+
+    const environmentVariables =
+      await this.db.getEnvironmentVariablesByProjectId(data.project.id!, {
+        environment: Environment.Production,
+      });
+
+    const environmentVariablesObj = environmentVariables.reduce(
+      (acc, env) => {
+        acc[env.key] = env.value;
+
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
+
+    // To set project DNS
+    if (data.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
+      await this.registry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}`,
+      });
+    }
+
+    for (const deployer in deploymentAuctionData.deployerLrns) {
+      const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
+        // Create requests for all the deployers
+        await this.registry.createApplicationDeploymentRequest({
+          deployment: newDeployment,
+          appName: repo,
+          repository: repoUrl,
+          auctionId: deploymentAuctionId,
+          lrn: deployer,
+          environmentVariables: environmentVariablesObj,
+          dns: `${newDeployment.project.name}-${newDeployment.id}`,
+        });
+
+      await this.db.updateDeploymentById(newDeployment.id, {
+        applicationDeploymentRequestId,
+        applicationDeploymentRequestData,
+      });
+    }
+
+    return newDeployment;
+  }
+
   async addProjectFromTemplate(
     user: User,
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
+    auctionData?: AuctionData
   ): Promise<Project | undefined> {
     try {
       const octokit = await this.getOctokit(user.id);
@@ -678,7 +814,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      });
+      }, auctionData);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -695,6 +831,7 @@ export class Service {
     user: User,
     organizationSlug: string,
     data: DeepPartial<Project>,
+    auctiondata?: AuctionData
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -720,14 +857,18 @@ export class Service {
     });
 
     // Create deployment with prod branch and latest commit
-    const deployment = await this.createDeployment(user.id, octokit, {
+    const deploymentData = {
       project,
       branch: project.prodBranch,
       environment: Environment.Production,
       domain: null,
       commitHash: latestCommit.sha,
       commitMessage: latestCommit.commit.message,
-    });
+    };
+
+    const deployment = auctiondata
+      ? await this.createDeploymentFromAuction(user.id, octokit, deploymentData, auctiondata)
+      : await this.createDeployment(user.id, octokit, deploymentData);
 
     await this.createRepoHook(octokit, project);
 
