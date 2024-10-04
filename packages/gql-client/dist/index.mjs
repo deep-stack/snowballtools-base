@@ -287,14 +287,14 @@ var updateDeploymentToProd = gql2`
   }
 `;
 var addProjectFromTemplate = gql2`
-  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: string, $auctionData: Auctiondata) {
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionData: AuctionData) {
     addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }
   }
 `;
 var addProject = gql2`
-  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: string, $auctionData: Auctiondata) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: String, $auctionData: AuctionData) {
     addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }

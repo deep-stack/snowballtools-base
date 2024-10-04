@@ -222,13 +222,13 @@ type Mutation {
   addProjectFromTemplate(
     organizationSlug: String!
     data: AddProjectFromTemplateInput
-    lrn: [String]
+    lrn: String
     auctionData: AuctionData
   ): Project!
   addProject(
     organizationSlug: String!
     data: AddProjectInput
-    lrn: [String]
+    lrn: String
     auctionData: AuctionData
   ): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!

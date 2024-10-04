@@ -49,7 +49,7 @@ export const updateDeploymentToProd = gql`
 `;
 
 export const addProjectFromTemplate = gql`
-  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: string, $auctionData: Auctiondata) {
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionData: AuctionData) {
     addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }
@@ -57,7 +57,7 @@ export const addProjectFromTemplate = gql`
 `;
 
 export const addProject = gql`
-  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: string, $auctionData: Auctiondata) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: String, $auctionData: AuctionData) {
     addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }

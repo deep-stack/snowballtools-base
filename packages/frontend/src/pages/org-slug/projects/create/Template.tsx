@@ -31,6 +31,11 @@ const CreateWithTemplate = () => {
     },
     {
       step: 2,
+      route: `/${orgSlug}/projects/create/template/configure`,
+      label: 'Configure',
+    },
+    {
+      step: 3,
       route: `/${orgSlug}/projects/create/template/deploy`,
       label: 'Deploy',
     },

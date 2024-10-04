@@ -644,6 +644,14 @@ export class Service {
       applicationDeploymentRequestData,
     });
 
+    // Save deployer lrn only if present
+    let updateData: Partial<Project> = {};
+    if (lrn) {
+      updateData.deployerLrn = [lrn];
+    }
+
+    await this.db.updateProjectById(data.project.id!, updateData);
+
     return newDeployment;
   }
 
