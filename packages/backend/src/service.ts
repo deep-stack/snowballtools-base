@@ -657,62 +657,11 @@ export class Service {
 
   async createDeploymentFromAuction(
     userId: string,
-    octokit: Octokit,
+    auctionId: string,
+    // take project data
     data: DeepPartial<Deployment>,
-    auctionData: AuctionData
-  ): Promise<Deployment> {
-    assert(data.project?.repository, 'Project repository not found');
-    log(
-      `Creating deployment in project ${data.project.name} from branch ${data.branch}`,
-    );
-    const [owner, repo] = data.project.repository.split('/');
-
-    const { data: packageJSONData } = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-      ref: data.commitHash,
-    });
-
-    if (!packageJSONData) {
-      throw new Error('Package.json file not found');
-    }
-
-    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
-
-    assert(packageJSON.name, "name field doesn't exist in package.json");
-
-    const repoUrl = (
-      await octokit.rest.repos.get({
-        owner,
-        repo,
-      })
-    ).data.html_url;
-
-    // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
-    const { applicationRecordId, applicationRecordData } =
-      await this.registry.createApplicationRecord({
-        appName: repo,
-        packageJSON,
-        appType: data.project!.template!,
-        commitHash: data.commitHash!,
-        repoUrl,
-      });
-
-    // Update previous deployment with prod branch domain
-    // TODO: Fix unique constraint error for domain
-    if (data.domain) {
-      await this.db.updateDeployment(
-        {
-          domainId: data.domain.id,
-        },
-        {
-          domain: null,
-        },
-      );
-    }
-
+  ) {
+    // TODO: If data.domain is present then call createDeployment (don't need auction)
     const newDeployment = await this.db.addDeployment({
       project: data.project,
       branch: data.branch,
@@ -720,8 +669,6 @@ export class Service {
       commitMessage: data.commitMessage,
       environment: data.environment,
       status: DeploymentStatus.Building,
-      applicationRecordId,
-      applicationRecordData,
       domain: data.domain,
       createdBy: Object.assign(new User(), {
         id: userId,
@@ -729,19 +676,11 @@ export class Service {
     });
 
     log(
-      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
+      `Created deployment ${newDeployment.id}`,
     );
-
-    const deploymentAuctionData = await this.registry.createApplicationDeploymentAuction({
-      deployment: newDeployment,
-      appName: repo
-    }, auctionData
-    );
-
-    const deploymentAuctionId = deploymentAuctionData.applicationDeploymentAuctionId;
 
     const environmentVariables =
-      await this.db.getEnvironmentVariablesByProjectId(data.project.id!, {
+      await this.db.getEnvironmentVariablesByProjectId(data.project!.id!, {
         environment: Environment.Production,
       });
 
@@ -760,21 +699,23 @@ export class Service {
       // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
       await this.registry.createApplicationDeploymentRequest({
         deployment: newDeployment,
-        appName: repo,
-        repository: repoUrl,
+        appName: data.project!.name!,
+        repository: data.url!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
       });
     }
 
-    for (const deployer in deploymentAuctionData.deployerLrns) {
+    const deployerLrns = await this.registry.getAuctionWinners(auctionId);
+
+    for (const deployer in deployerLrns) {
       const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
         // Create requests for all the deployers
         await this.registry.createApplicationDeploymentRequest({
           deployment: newDeployment,
-          appName: repo,
-          repository: repoUrl,
-          auctionId: deploymentAuctionId,
+          appName: data.project!.name!,
+          repository: data.url!,
+          auctionId,
           lrn: deployer,
           environmentVariables: environmentVariablesObj,
           dns: `${newDeployment.project.name}-${newDeployment.id}`,
@@ -843,7 +784,7 @@ export class Service {
     organizationSlug: string,
     data: DeepPartial<Project>,
     lrn?: string,
-    auctiondata?: AuctionData
+    auctionData?: AuctionData
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -878,8 +819,8 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    const deployment = auctiondata
-      ? await this.createDeploymentFromAuction(user.id, octokit, deploymentData, auctiondata)
+    const deployment = auctionData
+      ? await this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData)
       : await this.createDeployment(user.id, octokit, deploymentData, lrn);
 
     await this.createRepoHook(octokit, project);

@@ -2,6 +2,8 @@ import debug from 'debug';
 import assert from 'assert';
 import { inc as semverInc } from 'semver';
 import { DateTime } from 'luxon';
+import { DeepPartial } from 'typeorm';
+import { Octokit } from 'octokit';
 
 import { Registry as LaconicRegistry, parseGasAndFees } from '@cerc-io/registry-sdk';
 
@@ -151,17 +153,56 @@ export class Registry {
     };
   }
 
-  async createApplicationDeploymentAuction (data: {
-    deployment: Deployment,
+  async createApplicationDeploymentAuction (
     appName: string,
-  },
+    octokit: Octokit,
     auctionData: AuctionData,
-): Promise<{
+    data: DeepPartial<Deployment>,
+  ): Promise<{
     applicationDeploymentAuctionId: string;
-    applicationDeploymentAuctionData: ApplicationDeploymentAuction;
-    deployerLrns: string[];
   }> {
-    const lrn = this.getLrn(data.appName);
+    // TODO: If data.domain is present then call createDeployment (don't need auction)
+    assert(data.project?.repository, 'Project repository not found');
+    const [owner, repo] = data.project.repository.split('/');
+
+    const { data: packageJSONData } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: 'package.json',
+      ref: data.commitHash,
+    });
+
+    if (!packageJSONData) {
+      throw new Error('Package.json file not found');
+    }
+
+    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
+    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
+
+    assert(packageJSON.name, "name field doesn't exist in package.json");
+
+    const repoUrl = (
+      await octokit.rest.repos.get({
+        owner,
+        repo,
+      })
+    ).data.html_url;
+
+    // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
+    const { applicationRecordId, applicationRecordData } =
+      await this.createApplicationRecord({
+        appName: repo,
+        packageJSON,
+        appType: data.project!.template!,
+        commitHash: data.commitHash!,
+        repoUrl,
+      });
+
+    log(
+      `Published application record ${applicationRecordId}`,
+    );
+
+    const lrn = this.getLrn(appName);
     const records = await this.registry.resolveNames([lrn]);
     const applicationRecord = records[0];
 
@@ -198,8 +239,6 @@ export class Registry {
       type: APP_DEPLOYMENT_AUCTION_RECORD_TYPE,
     };
 
-    await sleep(SLEEP_DURATION);
-
     const result = await this.registry.setRecord(
       {
         privateKey: this.registryConfig.privateKey,
@@ -212,25 +251,8 @@ export class Registry {
     log(`Application deployment auction record published: ${result.id}`);
     log('Application deployment auction data:', applicationDeploymentAuction);
 
-    let deployerLrns = [];
-    const { winnerAddresses } = auctionResult.auction;
-
-    for (const auctionWinner of winnerAddresses) {
-      const deployerRecord = await this.registry.queryRecords(
-        {
-          paymentAddress: auctionWinner,
-        },
-        true
-      );
-
-      const lrn = deployerRecord.names.length > 0 ? deployerRecord.names[0] : null;
-      deployerLrns.push(lrn);
-    }
-
     return {
       applicationDeploymentAuctionId: auctionResult.auction.id,
-      applicationDeploymentAuctionData: applicationDeploymentAuction,
-      deployerLrns
     };
   }
 
@@ -298,6 +320,30 @@ export class Registry {
       applicationDeploymentRequestId: result.id,
       applicationDeploymentRequestData: applicationDeploymentRequest
     };
+  }
+
+  async getAuctionWinners(
+    auctionId: string
+  ): Promise<string[]> {
+    const records = await this.registry.getAuctionsByIds([auctionId]);
+    const auctionResult = records[0];
+
+        let deployerLrns = [];
+    const { winnerAddresses } = auctionResult.auction;
+
+    for (const auctionWinner of winnerAddresses) {
+      const deployerRecord = await this.registry.queryRecords(
+        {
+          paymentAddress: auctionWinner,
+        },
+        true
+      );
+
+      const lrn = deployerRecord.names.length > 0 ? deployerRecord.names[0] : null;
+      deployerLrns.push(lrn);
+    }
+
+    return deployerLrns;
   }
 
   /**
