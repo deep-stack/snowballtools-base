@@ -67,6 +67,7 @@ type Project {
   description: String
   deployerLrn: [String]
   auctionId: String
+  auctionStatus: String
   template: String
   framework: String
   webhooks: [String!]
