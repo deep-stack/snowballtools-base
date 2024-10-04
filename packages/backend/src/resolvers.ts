@@ -6,7 +6,7 @@ import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
-import { AddProjectFromTemplateInput } from './types';
+import { AddProjectFromTemplateInput, AuctionData } from './types';
 
 const log = debug('snowball:resolver');
 
@@ -203,7 +203,9 @@ export const createResolvers = async (service: Service): Promise<any> => {
         {
           organizationSlug,
           data,
-        }: { organizationSlug: string; data: AddProjectFromTemplateInput },
+          lrn,
+          auctionData
+        }: { organizationSlug: string; data: AddProjectFromTemplateInput; lrn: string; auctionData: AuctionData },
         context: any,
       ) => {
         try {
@@ -211,6 +213,8 @@ export const createResolvers = async (service: Service): Promise<any> => {
             context.user,
             organizationSlug,
             data,
+            lrn,
+            auctionData
           );
         } catch (err) {
           log(err);
@@ -223,11 +227,13 @@ export const createResolvers = async (service: Service): Promise<any> => {
         {
           organizationSlug,
           data,
-        }: { organizationSlug: string; data: DeepPartial<Project> },
+          lrn,
+          auctionData
+        }: { organizationSlug: string; data: DeepPartial<Project>; lrn: string; auctionData: AuctionData },
         context: any,
       ) => {
         try {
-          return await service.addProject(context.user, organizationSlug, data);
+          return await service.addProject(context.user, organizationSlug, data, lrn, auctionData);
         } catch (err) {
           log(err);
           throw err;
