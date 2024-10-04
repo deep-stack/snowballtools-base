@@ -76,6 +76,8 @@ query ($projectId: String!) {
     template
     updatedAt
     prodBranch
+    auctionId
+    deployerLrn
     framework
     repository
     webhooks
@@ -123,6 +125,8 @@ query ($organizationSlug: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrn
     prodBranch
     webhooks
     repository
@@ -230,6 +234,8 @@ query ($searchText: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrn
     prodBranch
     webhooks
     updatedAt
@@ -308,15 +314,15 @@ var updateDeploymentToProd = import_client2.gql`
   }
 `;
 var addProjectFromTemplate = import_client2.gql`
-  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput) {
-    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data) {
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: string, $auctionData: Auctiondata) {
+    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }
   }
 `;
 var addProject = import_client2.gql`
-  mutation ($organizationSlug: String!, $data: AddProjectInput) {
-    addProject(organizationSlug: $organizationSlug, data: $data) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: string, $auctionData: Auctiondata) {
+    addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }
   }
@@ -557,25 +563,29 @@ var GQLClient = class {
       return data;
     });
   }
-  addProjectFromTemplate(organizationSlug, data) {
+  addProjectFromTemplate(organizationSlug, data, lrn, auctionData) {
     return __async(this, null, function* () {
       const result = yield this.client.mutate({
         mutation: addProjectFromTemplate,
         variables: {
           organizationSlug,
-          data
+          data,
+          lrn,
+          auctionData
         }
       });
       return result.data;
     });
   }
-  addProject(organizationSlug, data) {
+  addProject(organizationSlug, data, lrn, auctionData) {
     return __async(this, null, function* () {
       const result = yield this.client.mutate({
         mutation: addProject,
         variables: {
           organizationSlug,
-          data
+          data,
+          lrn,
+          auctionData
         }
       });
       return result.data;

@@ -23,6 +23,8 @@ query ($projectId: String!) {
     template
     updatedAt
     prodBranch
+    auctionId
+    deployerLrn
     framework
     repository
     webhooks
@@ -71,6 +73,8 @@ query ($organizationSlug: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrn
     prodBranch
     webhooks
     repository
@@ -183,6 +187,8 @@ query ($searchText: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrn
     prodBranch
     webhooks
     updatedAt

@@ -47,7 +47,7 @@ export class Project {
     description!: string;
 
   @Column('varchar', { nullable: true })
-    applicationDeploymentAuctionId?: string | null;
+    auctionId?: string | null;
 
   @Column('varchar', { nullable: true })
     deployerLrn?: string[] | null;

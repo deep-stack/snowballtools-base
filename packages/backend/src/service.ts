@@ -785,6 +785,7 @@ export class Service {
     user: User,
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
+    lrn?: string,
     auctionData?: AuctionData
   ): Promise<Project | undefined> {
     try {
@@ -816,7 +817,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      }, '', auctionData);
+      }, lrn, auctionData);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');

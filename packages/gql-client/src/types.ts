@@ -309,3 +309,8 @@ export type AuthenticateGitHubResponse = {
 export type UnauthenticateGitHubResponse = {
   unauthenticateGitHub: boolean;
 };
+
+export type AuctionData = {
+  maxPrice: string;
+  numProviders: number;
+};

@@ -230,13 +230,17 @@ export class GQLClient {
 
   async addProjectFromTemplate(
     organizationSlug: string,
-    data: types.AddProjectFromTemplateInput
+    data: types.AddProjectFromTemplateInput,
+    lrn?: string,
+    auctionData?: types.AuctionData,
   ): Promise<types.AddProjectFromTemplateResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProjectFromTemplate,
       variables: {
         organizationSlug,
         data,
+        lrn,
+        auctionData
       },
     });
 
@@ -245,13 +249,17 @@ export class GQLClient {
 
   async addProject(
     organizationSlug: string,
-    data: types.AddProjectInput
+    data: types.AddProjectInput,
+    lrn?: string,
+    auctionData?: types.AuctionData,
   ): Promise<types.AddProjectResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProject,
       variables: {
         organizationSlug,
         data,
+        lrn,
+        auctionData
       },
     });
 
