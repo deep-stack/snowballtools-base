@@ -14,7 +14,6 @@ import {
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
 import { getConfig, sleep } from './utils';
-import { ApplicationDeploymentAuction } from './entity/Project';
 
 const log = debug('snowball:registry');
 
@@ -33,9 +32,11 @@ export class Registry {
 
   constructor (registryConfig: RegistryConfig) {
     this.registryConfig = registryConfig;
+    // const gasPrice = Util.getGasPrice(registryConfig.fee.gasPrice);
     this.registry = new LaconicRegistry(
       registryConfig.gqlEndpoint,
       registryConfig.restEndpoint,
+      // Pass gasPrice
       { chainId: registryConfig.chainId }
     );
   }
