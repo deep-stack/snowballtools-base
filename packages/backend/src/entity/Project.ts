@@ -15,6 +15,12 @@ import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 import { Deployment } from './Deployment';
 
+export interface ApplicationDeploymentAuction {
+  application: string;
+  auction: string;
+  type: string;
+}
+
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -45,6 +51,15 @@ export class Project {
 
   @Column('text', { default: '' })
     description!: string;
+
+  @Column('varchar', { nullable: true })
+    applicationDeploymentAuctionId?: string | null;
+
+  @Column('simple-json', { nullable: true })
+    applicationDeploymentAuctionData?: ApplicationDeploymentAuction | null;
+
+  @Column('varchar', { nullable: true })
+    deployerLrn?: string[] | null;
 
   // TODO: Compute template & framework in import repository
   @Column('varchar', { nullable: true })

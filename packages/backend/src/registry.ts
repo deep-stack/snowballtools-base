@@ -10,11 +10,11 @@ import {
   ApplicationRecord,
   Deployment,
   ApplicationDeploymentRequest,
-  ApplicationDeploymentRemovalRequest,
-  ApplicationDeploymentAuction
+  ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
-import { sleep } from './utils';
+import { getConfig, sleep } from './utils';
+import { ApplicationDeploymentAuction } from './entity/Project';
 
 const log = debug('snowball:registry');
 
@@ -168,16 +168,17 @@ export class Registry {
       throw new Error(`No record found for ${lrn}`);
     }
 
+    const config = await getConfig();
+    const auctionConfig = config.auction;
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
-    // TODO: Take auction params from user
     const auctionResult = await this.registry.createProviderAuction(
       {
-        commitFee: auctionData.commitFee,
-        commitsDuration: auctionData.commitsDuration,
-        revealFee: auctionData.revealFee,
-        revealsDuration: auctionData.revealsDuration,
-        denom: auctionData.denom,
+        commitFee: auctionConfig.commitFee,
+        commitsDuration: auctionConfig.commitsDuration,
+        revealFee: auctionConfig.revealFee,
+        revealsDuration: auctionConfig.revealsDuration,
+        denom: auctionConfig.denom,
         maxPrice: auctionData.maxPrice,
         numProviders: auctionData.numProviders,
       },

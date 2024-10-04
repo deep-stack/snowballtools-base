@@ -42,6 +42,14 @@ export interface RegistryConfig {
   };
 }
 
+export interface AuctionConfig {
+  commitFee: string;
+  commitsDuration: string;
+  revealFee: string;
+  revealsDuration: string;
+  denom: string;
+}
+
 export interface MiscConfig {
   projectDomain: string;
 }
@@ -51,6 +59,7 @@ export interface Config {
   database: DatabaseConfig;
   gitHub: GitHubConfig;
   registryConfig: RegistryConfig;
+  auction: AuctionConfig;
   misc: MiscConfig;
   turnkey: {
     apiBaseUrl: string;

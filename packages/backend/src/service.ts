@@ -529,6 +529,7 @@ export class Service {
     userId: string,
     octokit: Octokit,
     data: DeepPartial<Deployment>,
+    lrn?: string
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
@@ -633,6 +634,7 @@ export class Service {
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
+        lrn,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -814,7 +816,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      }, auctionData);
+      }, '', auctionData);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -831,6 +833,7 @@ export class Service {
     user: User,
     organizationSlug: string,
     data: DeepPartial<Project>,
+    lrn?: string,
     auctiondata?: AuctionData
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
@@ -868,7 +871,7 @@ export class Service {
 
     const deployment = auctiondata
       ? await this.createDeploymentFromAuction(user.id, octokit, deploymentData, auctiondata)
-      : await this.createDeployment(user.id, octokit, deploymentData);
+      : await this.createDeployment(user.id, octokit, deploymentData, lrn);
 
     await this.createRepoHook(octokit, project);
 

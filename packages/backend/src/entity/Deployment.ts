@@ -28,17 +28,13 @@ export enum DeploymentStatus {
   Deleting = 'Deleting',
 }
 
-export interface ApplicationDeploymentAuction {
-  application: string;
-  auction: string;
-  type: string;
-}
-
 export interface ApplicationDeploymentRequest {
   type: string;
   version: string;
   name: string;
   application: string;
+  lrn?: string;
+  auction?: string;
   config: string;
   meta: string;
 }
