@@ -71,11 +71,6 @@ export interface AddProjectFromTemplateInput {
 }
 
 export interface AuctionData {
-  commitFee: string,
-  commitsDuration: string,
-  revealFee: string,
-  revealsDuration: string,
-  denom: string,
   maxPrice: string,
   numProviders: number,
 }
