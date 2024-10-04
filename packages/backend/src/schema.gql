@@ -65,6 +65,8 @@ type Project {
   repository: String!
   prodBranch: String!
   description: String
+  lrn: string[]
+  auctionId: string
   template: String
   framework: String
   webhooks: [String!]
@@ -182,6 +184,11 @@ input FilterDomainsInput {
   status: DomainStatus
 }
 
+input AuctionData {
+  maxPrice: string,
+  numProviders: number,
+}
+
 type Query {
   user: User!
   organizations: [Organization!]
@@ -215,8 +222,15 @@ type Mutation {
   addProjectFromTemplate(
     organizationSlug: String!
     data: AddProjectFromTemplateInput
+    lrn: string
+    auctionData: AuctionData
   ): Project!
-  addProject(organizationSlug: String!, data: AddProjectInput): Project!
+  addProject(
+    organizationSlug: String!,
+    data: AddProjectInput,
+    lrn: string,
+    auctionData: AuctionData
+  ): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
