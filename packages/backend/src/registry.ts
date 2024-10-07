@@ -256,6 +256,8 @@ export class Registry {
       this.registryConfig.privateKey,
       fee
     );
+
+    log(`Application deployment auction created: ${auctionResult.auction.id}`);
     log(`Application deployment auction record published: ${result.id}`);
     log('Application deployment auction data:', applicationDeploymentAuction);
 
@@ -337,18 +339,22 @@ export class Registry {
     const auctionResult = records[0];
 
     let deployerLrns = [];
-    const { winnerAddresses } = auctionResult.auction;
+    const { winnerAddresses } = auctionResult;
 
     for (const auctionWinner of winnerAddresses) {
-      const deployerRecord = await this.registry.queryRecords(
+      const deployerRecords = await this.registry.queryRecords(
         {
           paymentAddress: auctionWinner,
         },
         true
       );
 
-      const lrn = deployerRecord.names.length > 0 ? deployerRecord.names[0] : null;
-      deployerLrns.push(lrn);
+      for (const record of deployerRecords) {
+        if (record.names && record.names.length > 0) {
+          deployerLrns.push(record.names[0]);
+          break;
+        }
+      }
     }
 
     return deployerLrns;
@@ -449,14 +455,18 @@ export class Registry {
     };
   }
 
-  async getCompletedAuctionIds(auctionIds: string[] | null | undefined): Promise<string[]> {
-    if(auctionIds === null || auctionIds === undefined) {
-      return [];
+  async getCompletedAuctionIds(auctionIds: (string | null | undefined)[]): Promise<string[] | null> {
+    const validAuctionIds = auctionIds.filter((id): id is string => id !== null && id !== undefined);
+
+    if (!validAuctionIds.length) {
+      return null;
     }
-    const auctions = await this.registry.getAuctionsByIds(auctionIds);
+
+    const auctions = await this.registry.getAuctionsByIds(validAuctionIds);
+
     const completedAuctions = auctions
-    .filter((auction: Auction) => auction.status === 'completed')
-    .map((auction: Auction) => auction.id);
+      .filter((auction: Auction) => auction.status === 'completed')
+      .map((auction: Auction) => auction.id);
 
     return completedAuctions;
   }

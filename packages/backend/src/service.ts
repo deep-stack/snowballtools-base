@@ -61,6 +61,8 @@ export class Service {
     this.checkDeployRecordsAndUpdate();
     // Start check for ApplicationDeploymentRemovalRecords asynchronously
     this.checkDeploymentRemovalRecordsAndUpdate();
+    // Start check for Deployment Auctions asynchronously
+    this.checkAuctionStatus();
   }
 
   /**
@@ -267,26 +269,26 @@ export class Service {
    * Checks for auction status for all ongoing auctions
    * Calls the createDeploymentFromAuction method for deployments with completed auctions
    */
-  async checkAuctionStatus(
-  ): Promise<void> {
-    // Deployment should be in building state and should not have domain.
+  async checkAuctionStatus(): Promise<void> {
     const projects = await this.db.getProjects({
       where: {
-        deployerLrn: IsNull()
+        deployments: {
+          applicationDeploymentRequestId: IsNull()
+        }
       },
     });
 
-    const auctionIds = projects
-      .map(project => project.auctionId) as string[];
-    // Get all the auctions for those ids with auction status completed
+    const auctionIds = projects.map((project) => project.auctionId);
     const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
-    // If the deplyer lrn array is empty then call createDeploymentFromAuction
-    const auctionProjects = projects.filter(project =>
-      completedAuctionIds.includes(project.auctionId!)
-    );
 
-    for (const project of auctionProjects) {
-      await this.createDeploymentFromAuction(project);
+    if (completedAuctionIds) {
+      const auctionProjects = projects.filter((project) =>
+        completedAuctionIds.includes(project.auctionId!)
+      );
+
+      for (const project of auctionProjects) {
+        await this.createDeploymentFromAuction(project);
+      }
     }
 
     this.deployRecordCheckTimeout = setTimeout(() => {
@@ -692,8 +694,7 @@ export class Service {
     await this.db.updateProjectById(project.id!, {
       deployerLrn: deployerLrns
     })
-
-    const octokit = await this.getOctokit(project.owner!.id!);
+    const octokit = await this.getOctokit(project.ownerId!);
     const [owner, repo] = project.repository!.split('/');
 
     const repoUrl = (
@@ -739,7 +740,7 @@ export class Service {
         applicationRecordData,
         domain: deploymentData.domain,
         createdBy: Object.assign(new User(), {
-          id: project.owner!.id!,
+          id: project.ownerId!,
         }),
       });
 
@@ -767,7 +768,7 @@ export class Service {
         // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
         await this.registry.createApplicationDeploymentRequest({
           deployment: newDeployment,
-          appName: project.name!,
+          appName: repo,
           repository: repoUrl,
           environmentVariables: environmentVariablesObj,
           dns: `${newDeployment.project.name}`,
@@ -778,7 +779,7 @@ export class Service {
         // Create requests for all the deployers
         await this.registry.createApplicationDeploymentRequest({
           deployment: newDeployment,
-          appName: project.name!,
+          appName: repo,
           repository: repoUrl,
           auctionId: project.auctionId!,
           lrn: deployer,
@@ -882,10 +883,12 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    await (auctionData
-      ? this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData)
-      : this.createDeployment(user.id, octokit, deploymentData, lrn)
-    );
+    if (auctionData) {
+      const { applicationDeploymentAuctionId } = await this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData);
+      await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
+    } else {
+      await this.createDeployment(user.id, octokit, deploymentData, lrn);
+    }
 
     await this.createRepoHook(octokit, project);
 
