@@ -6,6 +6,7 @@ import { DeepPartial } from 'typeorm';
 import { Octokit } from 'octokit';
 
 import { Registry as LaconicRegistry, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 import { RegistryConfig } from './config';
 import {
@@ -328,7 +329,7 @@ export class Registry {
     const records = await this.registry.getAuctionsByIds([auctionId]);
     const auctionResult = records[0];
 
-        let deployerLrns = [];
+    let deployerLrns = [];
     const { winnerAddresses } = auctionResult.auction;
 
     for (const auctionWinner of winnerAddresses) {
@@ -439,6 +440,18 @@ export class Registry {
       applicationDeploymentRemovalRequestId: result.id,
       applicationDeploymentRemovalRequestData: applicationDeploymentRemovalRequest
     };
+  }
+
+  async getCompletedAuctionIds(auctionIds: string[] | null | undefined): Promise<string[]> {
+    if(auctionIds === null || auctionIds === undefined) {
+      return [];
+    }
+    const auctions = await this.registry.getAuctionsByIds(auctionIds);
+    const completedAuctions = auctions
+    .filter((auction: Auction) => auction.status === 'completed')
+    .map((auction: Auction) => auction.id);
+
+    return completedAuctions;
   }
 
   getLrn(appName: string): string {
