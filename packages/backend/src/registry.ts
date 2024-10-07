@@ -126,14 +126,20 @@ export class Registry {
 
     await sleep(SLEEP_DURATION);
     await this.registry.setName(
-      { cid: result.id, lrn },
+      {
+        cid: result.id,
+        lrn
+      },
       this.registryConfig.privateKey,
       fee
     );
 
     await sleep(SLEEP_DURATION);
     await this.registry.setName(
-      { cid: result.id, lrn: `${lrn}@${applicationRecord.app_version}` },
+      {
+        cid: result.id,
+        lrn: `${lrn}@${applicationRecord.app_version}`
+      },
       this.registryConfig.privateKey,
       fee
     );
@@ -162,7 +168,6 @@ export class Registry {
   ): Promise<{
     applicationDeploymentAuctionId: string;
   }> {
-    // TODO: If data.domain is present then call createDeployment (don't need auction)
     assert(data.project?.repository, 'Project repository not found');
     const [owner, repo] = data.project.repository.split('/');
 
@@ -190,7 +195,7 @@ export class Registry {
     ).data.html_url;
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
-    const { applicationRecordId, applicationRecordData } =
+    const { applicationRecordId } =
       await this.createApplicationRecord({
         appName: repo,
         packageJSON,
@@ -235,7 +240,7 @@ export class Registry {
 
     // Create record of type applicationDeploymentAuction and publish
     const applicationDeploymentAuction = {
-      application: `${lrn}@${applicationRecord.attributes.app_version}`,
+      application: lrn,
       auction: auctionResult.auction.id,
       type: APP_DEPLOYMENT_AUCTION_RECORD_TYPE,
     };
@@ -452,6 +457,11 @@ export class Registry {
     .map((auction: Auction) => auction.id);
 
     return completedAuctions;
+  }
+
+  async getRecordsByName(name: string): Promise<any> {
+
+    return this.registry.resolveNames([name]);
   }
 
   getLrn(appName: string): string {

@@ -270,35 +270,28 @@ export class Service {
   async checkAuctionStatus(
   ): Promise<void> {
     // Deployment should be in building state and should not have domain.
-    const deployments = await this.db.getDeployments({
+    const projects = await this.db.getProjects({
       where: {
-        status: DeploymentStatus.Building,
-        domain: IsNull()
+        deployerLrn: IsNull()
       },
     });
 
-    // Check the auctionId for those deployments with auctions
-    const auctionIds = deployments
-    .filter(deployment => deployment.project && deployment.project.auctionId)
-    .map(deployment => deployment.project!.auctionId) as string[];
+    const auctionIds = projects
+      .map(project => project.auctionId) as string[];
     // Get all the auctions for those ids with auction status completed
     const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
     // If the deplyer lrn array is empty then call createDeploymentFromAuction
-    const auctionDeployments = deployments.filter(deployment =>
-      completedAuctionIds.includes(deployment.project!.auctionId!) &&
-      deployment.project!.deployerLrn?.length === 0
+    const auctionProjects = projects.filter(project =>
+      completedAuctionIds.includes(project.auctionId!)
     );
 
-    for (const auctionDeployment of auctionDeployments) {
-      await this.createDeploymentFromAuction(
-        'user id',
-        auctionDeployment.project!.auctionId!,
-        auctionDeployment
-      );
+    for (const project of auctionProjects) {
+      await this.createDeploymentFromAuction(project);
     }
+
     this.deployRecordCheckTimeout = setTimeout(() => {
       this.checkAuctionStatus();
-    }, this.config.registryConfig.fetchDeploymentRecordDelay);
+    }, this.config.registryConfig.checkAuctionStatusDelay);
   }
 
   async getUser(userId: string): Promise<User | null> {
@@ -691,67 +684,103 @@ export class Service {
   }
 
   async createDeploymentFromAuction(
-    userId: string,
-    auctionId: string,
-    // take project data
-    // project: DeepPartial<Project>,
-    data: DeepPartial<Deployment>,
+    project: DeepPartial<Project>,
   ) {
-    // TODO: If data.domain is present then call createDeployment (don't need auction)
-    const newDeployment = await this.db.addDeployment({
-      project: data.project,
-      branch: data.branch,
-      commitHash: data.commitHash,
-      commitMessage: data.commitMessage,
-      environment: data.environment,
-      status: DeploymentStatus.Building,
-      domain: data.domain,
-      createdBy: Object.assign(new User(), {
-        id: userId,
-      }),
+    const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
+
+    // Update project with deployer LRNs
+    await this.db.updateProjectById(project.id!, {
+      deployerLrn: deployerLrns
+    })
+
+    const octokit = await this.getOctokit(project.owner!.id!);
+    const [owner, repo] = project.repository!.split('/');
+
+    const repoUrl = (
+      await octokit.rest.repos.get({
+        owner,
+        repo,
+      })
+    ).data.html_url;
+
+    const {
+      data: [latestCommit],
+    } = await octokit.rest.repos.listCommits({
+      owner,
+      repo,
+      sha: project.prodBranch,
+      per_page: 1,
     });
 
-    log(
-      `Created deployment ${newDeployment.id}`,
-    );
-
-    const environmentVariables =
-      await this.db.getEnvironmentVariablesByProjectId(data.project!.id!, {
-        environment: Environment.Production,
-      });
-
-    const environmentVariablesObj = environmentVariables.reduce(
-      (acc, env) => {
-        acc[env.key] = env.value;
-
-        return acc;
-      },
-      {} as { [key: string]: string },
-    );
-
-    // To set project DNS
-    if (data.environment === Environment.Production) {
-      // On deleting deployment later, project DNS deployment is also deleted
-      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
-      await this.registry.createApplicationDeploymentRequest({
-        deployment: newDeployment,
-        appName: data.project!.name!,
-        repository: data.url!,
-        environmentVariables: environmentVariablesObj,
-        dns: `${newDeployment.project.name}`,
-      });
-    }
-
-    const deployerLrns = await this.registry.getAuctionWinners(auctionId);
+    const lrn = this.registry.getLrn(repo);
+    const [record] = await this.registry.getRecordsByName(lrn);
+    const applicationRecordId = record.id;
+    const applicationRecordData = record.attributes;
 
     for (const deployer in deployerLrns) {
+      // Create deployment with prod branch and latest commit
+      const deploymentData = {
+        project,
+        branch: project.prodBranch,
+        environment: Environment.Production,
+        domain: null,
+        commitHash: latestCommit.sha,
+        commitMessage: latestCommit.commit.message,
+      };
+
+      const newDeployment = await this.db.addDeployment({
+        project: project,
+        branch: deploymentData.branch,
+        commitHash: deploymentData.commitHash,
+        commitMessage: deploymentData.commitMessage,
+        environment: deploymentData.environment,
+        status: DeploymentStatus.Building,
+        applicationRecordId,
+        applicationRecordData,
+        domain: deploymentData.domain,
+        createdBy: Object.assign(new User(), {
+          id: project.owner!.id!,
+        }),
+      });
+
+      log(
+        `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
+      );
+
+      const environmentVariables =
+        await this.db.getEnvironmentVariablesByProjectId(project!.id!, {
+          environment: Environment.Production,
+        });
+
+      const environmentVariablesObj = environmentVariables.reduce(
+        (acc, env) => {
+          acc[env.key] = env.value;
+
+          return acc;
+        },
+        {} as { [key: string]: string },
+      );
+
+      // To set project DNS
+      if (deploymentData.environment === Environment.Production) {
+        // On deleting deployment later, project DNS deployment is also deleted
+        // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
+        await this.registry.createApplicationDeploymentRequest({
+          deployment: newDeployment,
+          appName: project.name!,
+          repository: repoUrl,
+          environmentVariables: environmentVariablesObj,
+          dns: `${newDeployment.project.name}`,
+        });
+      }
+
       const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
         // Create requests for all the deployers
         await this.registry.createApplicationDeploymentRequest({
           deployment: newDeployment,
-          appName: data.project!.name!,
-          repository: data.url!,
-          auctionId,
+          appName: project.name!,
+          repository: repoUrl,
+          auctionId: project.auctionId!,
           lrn: deployer,
           environmentVariables: environmentVariablesObj,
           dns: `${newDeployment.project.name}-${newDeployment.id}`,
@@ -762,12 +791,6 @@ export class Service {
         applicationDeploymentRequestData,
       });
     }
-
-    // update project with deployerlrns
-
-    await this.db.updateProjectById(data.project?.id!, {
-      deployerLrn: deployerLrns
-    })
   }
 
   async addProjectFromTemplate(
@@ -859,9 +882,10 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    const deployment = auctionData
-      ? await this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData)
-      : await this.createDeployment(user.id, octokit, deploymentData, lrn);
+    await (auctionData
+      ? this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData)
+      : this.createDeployment(user.id, octokit, deploymentData, lrn)
+    );
 
     await this.createRepoHook(octokit, project);
 
