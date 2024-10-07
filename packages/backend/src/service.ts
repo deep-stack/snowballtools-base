@@ -718,7 +718,7 @@ export class Service {
     const applicationRecordId = record.id;
     const applicationRecordData = record.attributes;
 
-    for (const deployer in deployerLrns) {
+    for (const deployer of deployerLrns) {
       // Create deployment with prod branch and latest commit
       const deploymentData = {
         project,
