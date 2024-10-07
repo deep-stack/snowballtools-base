@@ -29,8 +29,8 @@
 
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
-  restEndpoint = "http://localhost:1317"
-  gqlEndpoint = "http://localhost:9473/api"
+  checkAuctionStatusDelay = 5000
+  restEndpoint = "http://dss-daemon.test1.wireitin.com:26657"
   chainId = "laconic_9000-1"
   privateKey = ""
   bondId = ""
@@ -41,11 +41,11 @@
     gasPrice = "1"
 
 [auction]
-  commitFee = 1000
-  commitsDuration = 60s
-  revealFee = 1000
-  revealsDuration = 60s
-  denom = alnt
+  commitFee = "1000"
+  commitsDuration = "60s"
+  revealFee = "1000"
+  revealsDuration = "60s"
+  denom = "alnt"
 
 [misc]
   projectDomain = "apps.snowballtools.com"

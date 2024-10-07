@@ -50,9 +50,6 @@ export class Project {
     auctionId?: string | null;
 
   @Column('varchar', { nullable: true })
-    auctionStatus?: string | null;
-
-  @Column('varchar', { nullable: true })
     deployerLrn?: string[] | null;
 
   // TODO: Compute template & framework in import repository

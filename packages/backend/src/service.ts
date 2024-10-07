@@ -1,6 +1,6 @@
 import assert from 'assert';
 import debug from 'debug';
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, IsNull } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
 
 import { OAuthApp } from '@octokit/oauth-app';
@@ -261,6 +261,44 @@ export class Service {
     });
 
     await Promise.all(deploymentUpdatePromises);
+  }
+
+  /**
+   * Checks for auction status for all ongoing auctions
+   * Calls the createDeploymentFromAuction method for deployments with completed auctions
+   */
+  async checkAuctionStatus(
+  ): Promise<void> {
+    // Deployment should be in building state and should not have domain.
+    const deployments = await this.db.getDeployments({
+      where: {
+        status: DeploymentStatus.Building,
+        domain: IsNull()
+      },
+    });
+
+    // Check the auctionId for those deployments with auctions
+    const auctionIds = deployments
+    .filter(deployment => deployment.project && deployment.project.auctionId)
+    .map(deployment => deployment.project!.auctionId) as string[];
+    // Get all the auctions for those ids with auction status completed
+    const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
+    // If the deplyer lrn array is empty then call createDeploymentFromAuction
+    const auctionDeployments = deployments.filter(deployment =>
+      completedAuctionIds.includes(deployment.project!.auctionId!) &&
+      deployment.project!.deployerLrn?.length === 0
+    );
+
+    for (const auctionDeployment of auctionDeployments) {
+      await this.createDeploymentFromAuction(
+        'user id',
+        auctionDeployment.project!.auctionId!,
+        auctionDeployment
+      );
+    }
+    this.deployRecordCheckTimeout = setTimeout(() => {
+      this.checkAuctionStatus();
+    }, this.config.registryConfig.fetchDeploymentRecordDelay);
   }
 
   async getUser(userId: string): Promise<User | null> {
@@ -645,12 +683,9 @@ export class Service {
     });
 
     // Save deployer lrn only if present
-    let updateData: Partial<Project> = {};
     if (lrn) {
-      updateData.deployerLrn = [lrn];
+      newDeployment.project.deployerLrn = [lrn];
     }
-
-    await this.db.updateProjectById(data.project.id!, updateData);
 
     return newDeployment;
   }
@@ -659,6 +694,7 @@ export class Service {
     userId: string,
     auctionId: string,
     // take project data
+    // project: DeepPartial<Project>,
     data: DeepPartial<Deployment>,
   ) {
     // TODO: If data.domain is present then call createDeployment (don't need auction)
@@ -727,7 +763,11 @@ export class Service {
       });
     }
 
-    return newDeployment;
+    // update project with deployerlrns
+
+    await this.db.updateProjectById(data.project?.id!, {
+      deployerLrn: deployerLrns
+    })
   }
 
   async addProjectFromTemplate(

@@ -34,6 +34,7 @@ export interface RegistryConfig {
   privateKey: string;
   bondId: string;
   fetchDeploymentRecordDelay: number;
+  checkAuctionStatusDelay: number;
   authority: string;
   fee: {
     gas: string;
