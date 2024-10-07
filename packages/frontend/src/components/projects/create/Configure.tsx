@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { AuctionData } from 'gql-client';
 
 import { Heading } from '../../shared/Heading';
 import { Button } from '../../shared/Button';
@@ -13,7 +14,7 @@ type ConfigureFormValues = {
   option: string;
   lrn?: string;
   numProviders?: number;
-  maxPrice?: number;
+  maxPrice?: string;
 };
 
 const Configure = () => {
@@ -46,20 +47,23 @@ const Configure = () => {
           isPrivate
         };
 
-        let configData: any;
+        let lrn: string | undefined;
+        let auctionData: AuctionData | undefined;
+
         if (data.option === 'LRN') {
-          configData = data.lrn;
+          lrn = data.lrn;
         } else if (data.option === 'Auction') {
-          configData = {
-            numProviders: data.numProviders,
-            maxPrice: data.maxPrice
-          }
+          auctionData = {
+            numProviders: Number(data.numProviders!),
+            maxPrice: (data.maxPrice!).toString()
+          };
         }
 
         const { addProjectFromTemplate } = await client.addProjectFromTemplate(
           orgSlug,
           projectData,
-          configData
+          lrn,
+          auctionData
         );
 
         navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);

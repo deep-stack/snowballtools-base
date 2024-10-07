@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 import { DeepPartial } from 'typeorm';
 import { Octokit } from 'octokit';
 
-import { Registry as LaconicRegistry, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
 import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 import { RegistryConfig } from './config';
@@ -35,12 +35,13 @@ export class Registry {
 
   constructor (registryConfig: RegistryConfig) {
     this.registryConfig = registryConfig;
-    // const gasPrice = Util.getGasPrice(registryConfig.fee.gasPrice);
+
+    const gasPrice = getGasPrice(registryConfig.fee.gasPrice);
+
     this.registry = new LaconicRegistry(
       registryConfig.gqlEndpoint,
       registryConfig.restEndpoint,
-      // Pass gasPrice
-      { chainId: registryConfig.chainId }
+      { chainId: registryConfig.chainId, gasPrice }
     );
   }
 
@@ -218,6 +219,7 @@ export class Registry {
 
     const config = await getConfig();
     const auctionConfig = config.auction;
+
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const auctionResult = await this.registry.createProviderAuction(

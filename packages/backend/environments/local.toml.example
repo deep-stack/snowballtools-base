@@ -38,7 +38,7 @@
   [registryConfig.fee]
     gas = ""
     fees = ""
-    gasPrice = "1"
+    gasPrice = "1alnt"
 
 [auction]
   commitFee = "1000"
