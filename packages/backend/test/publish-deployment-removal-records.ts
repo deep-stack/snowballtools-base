@@ -2,7 +2,7 @@ import debug from 'debug';
 import { DataSource } from 'typeorm';
 import path from 'path';
 
-import { Registry, Util } from '@cerc-io/registry-sdk';
+import { parseGasAndFees, Registry } from '@cerc-io/registry-sdk';
 
 import { getConfig } from '../src/utils';
 import { Deployment, DeploymentStatus } from '../src/entity/Deployment';
@@ -45,7 +45,7 @@ async function main () {
       request: deployment.applicationDeploymentRemovalRequestId,
     }
 
-    const fee = Util.parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
+    const fee = parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
 
     const result = await registry.setRecord(
       {

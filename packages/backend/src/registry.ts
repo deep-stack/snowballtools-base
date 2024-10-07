@@ -3,7 +3,7 @@ import assert from 'assert';
 import { inc as semverInc } from 'semver';
 import { DateTime } from 'luxon';
 
-import { Registry as LaconicRegistry, Util } from '@cerc-io/registry-sdk';
+import { Registry as LaconicRegistry, parseGasAndFees } from '@cerc-io/registry-sdk';
 
 import { RegistryConfig } from './config';
 import {
@@ -100,7 +100,7 @@ export class Registry {
       ...(packageJSON.version && { app_version: packageJSON.version })
     };
 
-    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {
@@ -192,7 +192,7 @@ export class Registry {
 
     await sleep(SLEEP_DURATION);
 
-    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {
@@ -286,7 +286,7 @@ export class Registry {
       deployment: data.deploymentId
     };
 
-    const fee = Util.parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
     const result = await this.registry.setRecord(
       {

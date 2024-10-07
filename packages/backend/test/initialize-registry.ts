@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-import { Registry, Util } from '@cerc-io/registry-sdk';
+import { parseGasAndFees, Registry } from '@cerc-io/registry-sdk';
 
 import { getConfig } from '../src/utils';
 
@@ -20,7 +20,7 @@ async function main () {
   const bondId = await registry.getNextBondId(registryConfig.privateKey);
   log('bondId:', bondId);
 
-  const fee = Util.parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
+  const fee = parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
 
   await registry.createBond(
     { denom: DENOM, amount: BOND_AMOUNT },

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "@cerc-io/registry-sdk": "^0.2.5",
+    "@cerc-io/registry-sdk": "^0.2.11",
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/utils": "^10.0.12",
     "@octokit/oauth-app": "^6.1.0",
