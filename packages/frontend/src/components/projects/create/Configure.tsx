@@ -75,14 +75,14 @@ const Configure = () => {
         );
 
         data.option === 'Auction'
-        ? navigate(
-          `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
-        {
-          state: {
-            isAuction: true
-          }
-        })
-        : navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);
+          ? navigate(
+            `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
+            {
+              state: {
+                isAuction: true
+              }
+            })
+          : navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);
       } catch (error) {
         console.error('Error creating project:', error);
         toast({
@@ -105,87 +105,96 @@ const Configure = () => {
           <Heading as="h4" className="md:text-lg font-medium">
             Configure deployment
           </Heading>
+          <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+            The app can be deployed by setting the deployer LRN for a single deployment or by creating a deployer auction for multiple deployments
+          </Heading>
         </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-4 lg:gap-7 w-full">
-        <div className="flex flex-col justify-start gap-3">
-          <span className="text-sm text-elements-high-em">Choose an option</span>
-          <Controller
-            name="option"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Select
-                value={{ value } as SelectOption}
-                onChange={(value) =>
-                  onChange((value as SelectOption).value)
-                }
-                options={[
-                  { value: 'LRN', label: 'Set LRN' },
-                  { value: 'Auction', label: 'Create Auction' },
-                ]}
-              />
-            )}
-          />
-        </div>
-
-        {selectedOption === 'LRN' && (
+        <div className="flex flex-col gap-4 lg:gap-7 w-full">
           <div className="flex flex-col justify-start gap-3">
-            <span className="text-sm text-elements-high-em">Enter LRN</span>
             <Controller
-              name="lrn"
+              name="option"
               control={control}
               render={({ field: { value, onChange } }) => (
-                <Input value={value} onChange={onChange} />
+                <Select
+                  label='Configuration Options'
+                  value={{ value: value || 'LRN', label: value === 'Auction' ? 'Create Auction' : 'Deployer LRN' } as SelectOption}
+                  onChange={(value) =>
+                    onChange((value as SelectOption).value)
+                  }
+                  options={[
+                    { value: 'LRN', label: 'Deployer LRN' },
+                    { value: 'Auction', label: 'Create Auction' },
+                  ]}
+                />
               )}
             />
           </div>
-        )}
 
-        {selectedOption === 'Auction' && (
-          <>
+          {selectedOption === 'LRN' && (
             <div className="flex flex-col justify-start gap-3">
-              <span className="text-sm text-elements-high-em">Num Providers</span>
+              <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+                The app will be deployed by the configured deployer
+              </Heading>
+              <span className="text-sm text-elements-high-em">Enter LRN for deployer</span>
               <Controller
-                name="numProviders"
+                name="lrn"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <Input type="number" value={value} onChange={onChange} />
+                  <Input value={value} onChange={onChange} />
                 )}
               />
             </div>
-            <div className="flex flex-col justify-start gap-3">
-              <span className="text-sm text-elements-high-em">Max Price</span>
-              <Controller
-                name="maxPrice"
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <Input type="number" value={value} onChange={onChange} />
-                )}
-              />
-            </div>
-          </>
-        )}
+          )}
 
-        <div>
-          <Button
-            {...buttonSize}
-            type="submit"
-            disabled={isLoading}
-            rightIcon={
-              isLoading ? (
-                <LoadingIcon className="animate-spin" />
-              ) : (
-                <ArrowRightCircleFilledIcon />
-              )
-            }
-          >
-            {isLoading? 'Deploying' : 'Deploy' }
-          </Button>
+          {selectedOption === 'Auction' && (
+            <>
+              <div className="flex flex-col justify-start gap-3">
+              <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+                Set the number of deployers and maximum price for each deployment
+              </Heading>
+                <span className="text-sm text-elements-high-em">Number of Deployers</span>
+                <Controller
+                  name="numProviders"
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Input type="number" value={value} onChange={onChange} />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col justify-start gap-3">
+                <span className="text-sm text-elements-high-em">Maximum Price (alnt)</span>
+                <Controller
+                  name="maxPrice"
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Input type="number" value={value} onChange={onChange} />
+                  )}
+                />
+              </div>
+            </>
+          )}
+
+          <div>
+            <Button
+              {...buttonSize}
+              type="submit"
+              disabled={isLoading}
+              rightIcon={
+                isLoading ? (
+                  <LoadingIcon className="animate-spin" />
+                ) : (
+                  <ArrowRightCircleFilledIcon />
+                )
+              }
+            >
+              {isLoading ? 'Deploying' : 'Deploy'}
+            </Button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
     </div>
   );
 };
