@@ -1,4 +1,3 @@
-import assert from 'assert';
 import fs from 'fs-extra';
 import path from 'path';
 import toml from 'toml';
