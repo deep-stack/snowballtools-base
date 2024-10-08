@@ -266,7 +266,7 @@ export class Service {
   }
 
   /**
-   * Checks for auction status for all ongoing auctions
+   * Checks the status for all ongoing auctions
    * Calls the createDeploymentFromAuction method for deployments with completed auctions
    */
   async checkAuctionStatus(): Promise<void> {

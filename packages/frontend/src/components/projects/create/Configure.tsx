@@ -74,7 +74,15 @@ const Configure = () => {
           auctionData
         );
 
-        navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);
+        data.option === 'Auction'
+        ? navigate(
+          `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
+        {
+          state: {
+            isAuction: true
+          }
+        })
+        : navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);
       } catch (error) {
         console.error('Error creating project:', error);
         toast({

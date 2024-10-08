@@ -1431,10 +1431,10 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/safe-json-stringify/-/safe-json-stringify-6.0.0.tgz#22abdcd83e008c369902976730c34c150148a758"
   integrity sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==
 
-"@cerc-io/registry-sdk@^0.2.5":
-  version "0.2.10"
-  resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Fregistry-sdk/-/0.2.10/registry-sdk-0.2.10.tgz#15773ea36a862585cdcb0991cbf075736f845f96"
-  integrity sha512-xxVD7ylrN951TFoSFbluz7mt4SwSCv7z+yry3jGd8v8TWnycoBMMrrYSTfETs6Ydxwziiz/uLrRwk59vFZxLEA==
+"@cerc-io/registry-sdk@^0.2.11":
+  version "0.2.11"
+  resolved "https://git.vdb.to/api/packages/cerc-io/npm/%40cerc-io%2Fregistry-sdk/-/0.2.11/registry-sdk-0.2.11.tgz#019b792c68f440f2cfca5af2f49e1205bb33ba72"
+  integrity sha512-IipqJzaBQEXMNH6yWFG2E/o0U6IAXw35PBMHx6QIboVu/sMNLIsWy1P8MmR8C8xYsmHOhgXLsC4hYSeFMXrqFw==
   dependencies:
     "@cosmjs/amino" "^0.28.1"
     "@cosmjs/crypto" "^0.28.1"
