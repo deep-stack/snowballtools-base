@@ -1,8 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useMediaQuery } from 'usehooks-ts';
 import { AuctionData } from 'gql-client';
 
+import {
+  ArrowRightCircleFilledIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
 import { Heading } from '../../shared/Heading';
 import { Button } from '../../shared/Button';
 import { Select, SelectOption } from 'components/shared/Select';
@@ -33,6 +38,9 @@ const Configure = () => {
   });
 
   const selectedOption = watch('option');
+
+  const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
+  const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
   const onSubmit: SubmitHandler<ConfigureFormValues> = useCallback(
     async (data) => {
@@ -154,8 +162,16 @@ const Configure = () => {
 
         <div>
           <Button
+            {...buttonSize}
             type="submit"
             disabled={isLoading}
+            rightIcon={
+              isLoading ? (
+                <LoadingIcon className="animate-spin" />
+              ) : (
+                <ArrowRightCircleFilledIcon />
+              )
+            }
           >
             {isLoading? 'Deploying' : 'Deploy' }
           </Button>
