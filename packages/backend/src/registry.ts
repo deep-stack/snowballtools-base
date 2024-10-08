@@ -6,7 +6,6 @@ import { DeepPartial } from 'typeorm';
 import { Octokit } from 'octokit';
 
 import { Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
-import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 import { RegistryConfig } from './config';
 import {
@@ -15,7 +14,7 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, Auction, AuctionData, PackageJSON } from './types';
 import { getConfig, sleep } from './utils';
 
 const log = debug('snowball:registry');
@@ -195,7 +194,7 @@ export class Registry {
       })
     ).data.html_url;
 
-    // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
+    // TODO: Set environment variables for each deployment (environment variables can't be set in application record)
     const { applicationRecordId } =
       await this.createApplicationRecord({
         appName: repo,
@@ -221,7 +220,6 @@ export class Registry {
     const auctionConfig = config.auction;
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
-
     const auctionResult = await this.registry.createProviderAuction(
       {
         commitFee: auctionConfig.commitFee,
@@ -472,7 +470,6 @@ export class Registry {
   }
 
   async getRecordsByName(name: string): Promise<any> {
-
     return this.registry.resolveNames([name]);
   }
 

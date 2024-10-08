@@ -194,7 +194,7 @@ export class Service {
 
     const recordToDeploymentsMap = deployments.reduce(
       (acc: { [key: string]: Deployment }, deployment) => {
-        acc[deployment.applicationRecordId] = deployment;
+        acc[deployment.applicationDeploymentRequestId!] = deployment;
         return acc;
       },
       {},
@@ -202,7 +202,7 @@ export class Service {
 
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
-      const deployment = recordToDeploymentsMap[record.attributes.application];
+      const deployment = recordToDeploymentsMap[record.attributes.request];
 
       await this.db.updateDeploymentById(deployment.id, {
         applicationDeploymentRecordId: record.id,
@@ -282,11 +282,11 @@ export class Service {
     const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
 
     if (completedAuctionIds) {
-      const auctionProjects = projects.filter((project) =>
+      const projectsToBedeployed = projects.filter((project) =>
         completedAuctionIds.includes(project.auctionId!)
       );
 
-      for (const project of auctionProjects) {
+      for (const project of projectsToBedeployed) {
         await this.createDeploymentFromAuction(project);
       }
     }
@@ -688,12 +688,12 @@ export class Service {
   async createDeploymentFromAuction(
     project: DeepPartial<Project>,
   ) {
-    const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
-
     // Update project with deployer LRNs
+    const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
     await this.db.updateProjectById(project.id!, {
       deployerLrn: deployerLrns
     })
+
     const octokit = await this.getOctokit(project.ownerId!);
     const [owner, repo] = project.repository!.split('/');
 

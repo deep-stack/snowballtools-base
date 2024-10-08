@@ -70,6 +70,25 @@ export interface AddProjectFromTemplateInput {
   isPrivate: boolean;
 }
 
+export interface Auction {
+  id: string;
+  kind: string;
+  status: string;
+  ownerAddress: string;
+  createTime?: Date;
+  commitsEndTime?: Date;
+  revealsEndTime?: Date;
+  commitFee?: string;
+  revealFee?: string;
+  minimumBid?: string;
+  winnerAddresses: string[];
+  winningBids: string[];
+  winningPrice?: string;
+  maxPrice?: string;
+  numProviders: number;
+  fundsReleased: boolean;
+}
+
 export interface AuctionData {
   maxPrice: string,
   numProviders: number,
