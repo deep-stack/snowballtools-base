@@ -36,9 +36,9 @@
   bondId = ""
   authority = ""
   [registryConfig.fee]
-    amount = "200000"
-    denom = "aphoton"
-    gas = "750000"
+    gas = "200000"
+    fees = "200000alnt"
+    gasPrice = ""
 
 [misc]
   projectDomain = "apps.snowballtools.com"

@@ -22,10 +22,10 @@ yarn build --ignore frontend
 
 #### Local
 
-Copy the `envionments/local.toml.example` file to `envionments/local.toml`:
+Copy the `environments/local.toml.example` file to `environments/local.toml`:
 
 ```zsh
-cp envionments/local.toml.example envionments/local.toml
+cp environments/local.toml.example environments/local.toml
 ```
 
 #### Staging environment variables

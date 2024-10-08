@@ -1,8 +1,10 @@
+import assert from 'assert';
 import fs from 'fs-extra';
 import path from 'path';
 import toml from 'toml';
 import debug from 'debug';
 import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
+
 import { Config } from './config';
 import { DEFAULT_CONFIG_FILE_PATH } from './constants';
 

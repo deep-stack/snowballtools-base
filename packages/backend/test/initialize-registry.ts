@@ -1,39 +1,40 @@
 import debug from 'debug';
 
-import { Registry } from '@snowballtools/laconic-sdk';
+import { parseGasAndFees, Registry } from '@cerc-io/registry-sdk';
 
-import { DEFAULT_CONFIG_FILE_PATH } from '../src/constants';
-import { Config } from '../src/config';
 import { getConfig } from '../src/utils';
 
 const log = debug('snowball:initialize-registry');
 
-const DENOM = 'aphoton';
+const DENOM = 'alnt';
 const BOND_AMOUNT = '1000000000';
 
 async function main () {
-  const { registryConfig } = await getConfig<Config>(DEFAULT_CONFIG_FILE_PATH);
+  const { registryConfig } = await getConfig();
 
   // TODO: Get authority names from args
   const authorityNames = ['snowballtools', registryConfig.authority];
 
-  const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, registryConfig.chainId);
+  const registry = new Registry(registryConfig.gqlEndpoint, registryConfig.restEndpoint, {chainId: registryConfig.chainId});
 
   const bondId = await registry.getNextBondId(registryConfig.privateKey);
   log('bondId:', bondId);
+
+  const fee = parseGasAndFees(registryConfig.fee.gas, registryConfig.fee.fees);
+
   await registry.createBond(
     { denom: DENOM, amount: BOND_AMOUNT },
     registryConfig.privateKey,
-    registryConfig.fee
+    fee
   );
 
   for await (const name of authorityNames) {
-    await registry.reserveAuthority({ name }, registryConfig.privateKey, registryConfig.fee);
+    await registry.reserveAuthority({ name }, registryConfig.privateKey, fee);
     log('Reserved authority name:', name);
     await registry.setAuthorityBond(
       { name, bondId },
       registryConfig.privateKey,
-      registryConfig.fee
+      fee
     );
     log(`Bond ${bondId} set for authority ${name}`);
   }
