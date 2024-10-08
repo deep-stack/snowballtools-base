@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Lottie from 'lottie-react';
 
 import { Badge } from 'components/shared/Badge';
@@ -19,6 +19,8 @@ const Id = () => {
   const { id, orgSlug } = useParams();
   const client = useGQLClient();
   const [project, setProject] = useState<Project | null>(null);
+  const location = useLocation();
+  const { isAuction } = location.state || {};
 
   const handleSetupDomain = async () => {
     if (id) {
@@ -51,22 +53,24 @@ const Id = () => {
           {/* Heading */}
           <div className="flex flex-col items-center gap-1.5">
             <Heading as="h3" className="font-medium text-xl">
-              Project deployed successfully.
+              {isAuction? 'Project created successfully.' : 'Project deployed successfully.'}
             </Heading>
-            <p className="flex flex-col items-center lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
-              Your project has been deployed at{' '}
-              <Button
-                className="no-underline text-elements-link"
-                // TODO: use dynamic value
-                href={project ? `https://${project.subDomain}` : ''}
-                as="a"
-                variant="link-emphasized"
-                external
-                leftIcon={<LinkChainIcon />}
-              >
-                {project.subDomain}
-              </Button>
-            </p>
+            {!isAuction && (
+              <p className="flex flex-col items-center lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
+                Your project has been deployed at{' '}
+                <Button
+                  className="no-underline text-elements-link"
+                  // TODO: use dynamic value
+                  href={project ? `https://${project.subDomain}` : ''}
+                  as="a"
+                  variant="link-emphasized"
+                  external
+                  leftIcon={<LinkChainIcon />}
+                >
+                  {project.subDomain}
+                </Button>
+              </p>
+            )}
           </div>
 
           {/* Card */}

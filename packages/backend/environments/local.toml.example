@@ -30,7 +30,8 @@
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
   checkAuctionStatusDelay = 5000
-  restEndpoint = "http://dss-daemon.test1.wireitin.com:26657"
+  restEndpoint = "http://localhost:1317"
+  gqlEndpoint = "http://localhost:9473/api"
   chainId = "laconic_9000-1"
   privateKey = ""
   bondId = ""
