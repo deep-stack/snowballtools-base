@@ -47,7 +47,7 @@ export class Project {
     description!: string;
 
   @Column('varchar', { nullable: true })
-    auctionId?: string | null;
+    auctionId!: string | null;
 
   @Column({ type: 'simple-array', nullable: true })
     deployerLrn!: string[] | null;
