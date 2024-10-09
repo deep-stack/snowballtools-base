@@ -127,6 +127,9 @@ export class Deployment {
   @Column('simple-json', { nullable: true })
     applicationDeploymentRemovalRecordData!: AppDeploymentRemovalRecordAttributes | null;
 
+  @Column('varchar')
+    deployerLrn!: string;
+
   @Column({
     enum: Environment
   })
