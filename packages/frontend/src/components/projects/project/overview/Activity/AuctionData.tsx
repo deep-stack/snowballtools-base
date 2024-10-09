@@ -62,7 +62,7 @@ export const AuctionData = ({
       <div className="flex justify-between items-center py-3 text-sm">
         <div className="flex items-center text-elements-high-em gap-2">
           <GlobeIcon />
-          <span>Auction data</span>
+          <span>Auction details</span>
         </div>
 
         {/* AUCTION STATUS */}

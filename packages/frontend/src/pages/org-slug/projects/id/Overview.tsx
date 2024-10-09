@@ -137,7 +137,6 @@ const OverviewTabPanel = () => {
             </a>
           </div>
         </div>
-        <AuctionData project={project}/>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
           {liveDomain ? (
             <Tag type="positive" size="xs" leftIcon={<CheckRoundFilledIcon />}>
@@ -207,6 +206,7 @@ const OverviewTabPanel = () => {
             No current deployment found.
           </p>
         )}
+        <AuctionData project={project}/>
       </div>
       <Activity activities={activities} isLoading={fetchingActivities} />
     </div>
