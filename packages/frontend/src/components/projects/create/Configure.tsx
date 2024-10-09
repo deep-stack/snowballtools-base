@@ -190,7 +190,7 @@ const Configure = () => {
                 )
               }
             >
-              {isLoading ? 'Deploying' : 'Deploy'}
+              {isLoading ? 'Deploying repo' : 'Deploy repo'}
             </Button>
           </div>
         </div>

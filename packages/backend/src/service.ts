@@ -553,7 +553,7 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-    });
+    }, oldDeployment.deployerLrn);
 
     return newDeployment;
   }
@@ -562,7 +562,7 @@ export class Service {
     userId: string,
     octokit: Octokit,
     data: DeepPartial<Deployment>,
-    lrn?: string
+    lrn: string
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
@@ -629,6 +629,7 @@ export class Service {
       createdBy: Object.assign(new User(), {
         id: userId,
       }),
+      deployerLrn: lrn,
     });
 
     log(
@@ -887,7 +888,7 @@ export class Service {
       const { applicationDeploymentAuctionId } = await this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
-      await this.createDeployment(user.id, octokit, deploymentData, lrn);
+      await this.createDeployment(user.id, octokit, deploymentData, lrn!);
     }
 
     await this.createRepoHook(octokit, project);
@@ -959,19 +960,30 @@ export class Service {
         branch,
       });
 
-      // Create deployment with branch and latest commit in GitHub data
-      await this.createDeployment(project.ownerId, octokit, {
-        project,
-        branch,
-        environment:
-          project.prodBranch === branch
-            ? Environment.Production
-            : Environment.Preview,
-        domain,
-        commitHash: headCommit.id,
-        commitMessage: headCommit.message,
-      });
+      const deployers = project.deployerLrn;
+      if (!deployers) {
+        return;
+      }
+
+      for (const deployer of deployers) {
+        // Create deployment with branch and latest commit in GitHub data
+        await this.createDeployment(project.ownerId, octokit,
+          {
+            project,
+            branch,
+            environment:
+             project.prodBranch === branch
+              ? Environment.Production
+              : Environment.Preview,
+            domain,
+            commitHash: headCommit.id,
+            commitMessage: headCommit.message,
+          },
+          deployer
+        );
+      }
     }
+
   }
 
   async updateProject(
@@ -1028,7 +1040,7 @@ export class Service {
       domain: oldDeployment.domain,
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-    });
+    }, oldDeployment.deployerLrn);
 
     return newDeployment;
   }

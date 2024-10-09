@@ -50,7 +50,7 @@ export class Project {
     auctionId?: string | null;
 
   @Column({ type: 'simple-array', nullable: true })
-    deployerLrn?: string[] | null;
+    deployerLrn!: string[] | null;
 
   // TODO: Compute template & framework in import repository
   @Column('varchar', { nullable: true })
