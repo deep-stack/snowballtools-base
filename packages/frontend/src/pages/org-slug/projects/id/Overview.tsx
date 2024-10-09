@@ -21,6 +21,7 @@ import { Activity } from 'components/projects/project/overview/Activity';
 import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
 import { relativeTimeMs } from 'utils/time';
 import { Domain, DomainStatus } from 'gql-client';
+import { AuctionData } from 'components/projects/project/overview/Activity/AuctionData';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -136,6 +137,7 @@ const OverviewTabPanel = () => {
             </a>
           </div>
         </div>
+        <AuctionData project={project}/>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
           {liveDomain ? (
             <Tag type="positive" size="xs" leftIcon={<CheckRoundFilledIcon />}>

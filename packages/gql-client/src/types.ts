@@ -25,6 +25,13 @@ export enum DeploymentStatus {
   Deleting = "Deleting",
 }
 
+export enum AuctionStatus {
+	AuctionStatusCommitPhase = "commit",
+	AuctionStatusRevealPhase = "reveal",
+	AuctionStatusExpired = "expired",
+	AuctionStatusCompleted = "completed",
+}
+
 export enum DomainStatus {
   Live = "Live",
   Pending = "Pending",
@@ -66,6 +73,8 @@ export type Deployment = {
   commitHash: string;
   commitMessage: string;
   url?: string;
+  deployerLrn: string;
+  auctionId?: string;
   environment: Environment;
   isCurrent: boolean;
   status: DeploymentStatus;
@@ -128,6 +137,8 @@ export type Project = {
   description: string;
   template: string;
   framework: string;
+  deployerLrn: string[];
+  auctionId: string;
   webhooks: string[];
   members: ProjectMember[];
   environmentVariables: EnvironmentVariable[];

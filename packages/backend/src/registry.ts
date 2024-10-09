@@ -472,6 +472,11 @@ export class Registry {
     return this.registry.resolveNames([name]);
   }
 
+  async getAuctionData(auctionId: string): Promise<any> {
+    const auction = this.registry.getAuctionsByIds([auctionId]);
+    return auction;
+  }
+
   getLrn(appName: string): string {
     assert(this.registryConfig.authority, "Authority doesn't exist");
     return `lrn://${this.registryConfig.authority}/applications/${appName}`;
