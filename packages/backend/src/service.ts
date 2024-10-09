@@ -746,7 +746,8 @@ export class Service {
       createdBy: Object.assign(new User(), {
         id: project.ownerId!,
       }),
-      deployerLrn: deployer
+      deployerLrn: deployer,
+      auctionId: project.auctionId
     });
 
     log(
@@ -777,7 +778,8 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn
+        auctionId: project.auctionId!,
+        lrn: deployer,
       });
     }
 
