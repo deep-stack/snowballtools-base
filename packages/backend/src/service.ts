@@ -1267,4 +1267,11 @@ export class Service {
   ): Promise<boolean> {
     return this.db.updateUser(user, data);
   }
+
+  async getAuctionStatus(
+    auctionId: string
+  ): Promise<boolean> {
+    const auctions = await this.registry.getAuctionData(auctionId);
+    return auctions[0].status;
+  }
 }

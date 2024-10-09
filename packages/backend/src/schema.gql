@@ -22,6 +22,13 @@ enum DeploymentStatus {
   Deleting
 }
 
+enum AuctionStatus {
+	AuctionStatusCommitPhase
+	AuctionStatusRevealPhase
+	AuctionStatusExpired
+	AuctionStatusCompleted
+}
+
 enum DomainStatus {
   Live
   Pending
@@ -199,6 +206,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
+  getAuctionStatus(auctionId: String!): AuctionStatus!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }
 

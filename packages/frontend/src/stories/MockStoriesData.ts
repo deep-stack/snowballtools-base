@@ -102,6 +102,8 @@ export const deployment0: Deployment = {
   domain: domain0,
   commitMessage: 'Commit Message',
   createdBy: user,
+  auctionId: '7553538436710373822151221341b43f577e07b0525d083cc9b2de98890138a1',
+  deployerLrn: 'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com',
 };
 
 export const project: Project = {
@@ -119,6 +121,8 @@ export const project: Project = {
   organization: organization,
   template: 'Template',
   members: [member],
+  auctionId: '7553538436710373822151221341b43f577e07b0525d083cc9b2de98890138a1',
+  deployerLrn: ['lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com', 'lrn://wireitin/deployers/webapp-deployer-api.wireitin.com'],
   webhooks: ['beepboop'],
   icon: 'Icon',
   subDomain: 'SubDomain',

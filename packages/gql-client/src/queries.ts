@@ -132,6 +132,8 @@ query ($projectId: String!)  {
     commitHash
     commitMessage
     url
+    auctionId
+    deployerLrn
     environment
     isCurrent
     status
@@ -221,5 +223,11 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
     status
     updatedAt
   }
+}
+`;
+
+export const getAuctionStatus = gql`
+query ($auctionId: String!) {
+  getAuctionStatus(auctionId: $auctionId)
 }
 `;

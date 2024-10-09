@@ -40,6 +40,7 @@ var __async = (__this, __arguments, generator) => {
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
+  AuctionStatus: () => AuctionStatus,
   DeploymentStatus: () => DeploymentStatus,
   DomainStatus: () => DomainStatus,
   Environment: () => Environment,
@@ -182,6 +183,8 @@ query ($projectId: String!)  {
     commitHash
     commitMessage
     url
+    auctionId
+    deployerLrn
     environment
     isCurrent
     status
@@ -267,6 +270,11 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
     status
     updatedAt
   }
+}
+`;
+var getAuctionStatus = import_client.gql`
+query ($auctionId: String!) {
+  getAuctionStatus(auctionId: $auctionId)
 }
 `;
 
@@ -714,6 +722,17 @@ var GQLClient = class {
       return data;
     });
   }
+  getAuctionStatus(auctionId) {
+    return __async(this, null, function* () {
+      const { data } = yield this.client.query({
+        query: getAuctionStatus,
+        variables: {
+          auctionId
+        }
+      });
+      return data;
+    });
+  }
 };
 
 // src/types.ts
@@ -741,6 +760,13 @@ var DeploymentStatus = /* @__PURE__ */ ((DeploymentStatus2) => {
   DeploymentStatus2["Deleting"] = "Deleting";
   return DeploymentStatus2;
 })(DeploymentStatus || {});
+var AuctionStatus = /* @__PURE__ */ ((AuctionStatus2) => {
+  AuctionStatus2["AuctionStatusCommitPhase"] = "commit";
+  AuctionStatus2["AuctionStatusRevealPhase"] = "reveal";
+  AuctionStatus2["AuctionStatusExpired"] = "expired";
+  AuctionStatus2["AuctionStatusCompleted"] = "completed";
+  return AuctionStatus2;
+})(AuctionStatus || {});
 var DomainStatus = /* @__PURE__ */ ((DomainStatus2) => {
   DomainStatus2["Live"] = "Live";
   DomainStatus2["Pending"] = "Pending";
@@ -748,6 +774,7 @@ var DomainStatus = /* @__PURE__ */ ((DomainStatus2) => {
 })(DomainStatus || {});
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  AuctionStatus,
   DeploymentStatus,
   DomainStatus,
   Environment,

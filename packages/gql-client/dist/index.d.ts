@@ -18,6 +18,12 @@ declare enum DeploymentStatus {
     Error = "Error",
     Deleting = "Deleting"
 }
+declare enum AuctionStatus {
+    AuctionStatusCommitPhase = "commit",
+    AuctionStatusRevealPhase = "reveal",
+    AuctionStatusExpired = "expired",
+    AuctionStatusCompleted = "completed"
+}
 declare enum DomainStatus {
     Live = "Live",
     Pending = "Pending"
@@ -55,6 +61,8 @@ type Deployment = {
     commitHash: string;
     commitMessage: string;
     url?: string;
+    deployerLrn: string;
+    auctionId?: string;
     environment: Environment;
     isCurrent: boolean;
     status: DeploymentStatus;
@@ -112,6 +120,8 @@ type Project = {
     description: string;
     template: string;
     framework: string;
+    deployerLrn: string[];
+    auctionId: string;
     webhooks: string[];
     members: ProjectMember[];
     environmentVariables: EnvironmentVariable[];
@@ -294,6 +304,7 @@ declare class GQLClient {
     getDomains(projectId: string, filter?: FilterDomainInput): Promise<GetDomainsResponse>;
     authenticateGitHub(code: string): Promise<AuthenticateGitHubResponse>;
     unauthenticateGithub(): Promise<UnauthenticateGitHubResponse>;
+    getAuctionStatus(auctionId: string): Promise<AuctionStatus>;
 }
 
-export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectFromTemplateInput, type AddProjectFromTemplateResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type AuctionData, type AuthenticateGitHubResponse, type DeleteDeploymentResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };
+export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectFromTemplateInput, type AddProjectFromTemplateResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type AuctionData, AuctionStatus, type AuthenticateGitHubResponse, type DeleteDeploymentResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };
