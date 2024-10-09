@@ -269,7 +269,7 @@ export class Registry {
     appName: string,
     repository: string,
     auctionId?: string,
-    lrn?: string,
+    lrn: string,
     environmentVariables: { [key: string]: string },
     dns: string,
   }): Promise<{
@@ -304,7 +304,7 @@ export class Registry {
         repository: data.repository,
         repository_ref: data.deployment.commitHash
       }),
-      ...(data.lrn && { deployer: data.lrn }),
+      deployer: data.lrn,
       ...(data.auctionId && { auction: data.auctionId }),
     };
 

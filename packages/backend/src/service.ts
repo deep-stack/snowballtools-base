@@ -287,7 +287,15 @@ export class Service {
       );
 
       for (const project of projectsToBedeployed) {
-        await this.createDeploymentFromAuction(project);
+        const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
+
+        // Update project with deployer LRNs
+        await this.db.updateProjectById(project.id!, {
+          deployerLrn: deployerLrns
+        })
+        for (const deployer of deployerLrns) {
+          await this.createDeploymentFromAuction(project, deployer);
+        }
       }
     }
 
@@ -660,6 +668,7 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
+        lrn
       });
     }
 
@@ -688,13 +697,8 @@ export class Service {
 
   async createDeploymentFromAuction(
     project: DeepPartial<Project>,
-  ) {
-    // Update project with deployer LRNs
-    const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
-    await this.db.updateProjectById(project.id!, {
-      deployerLrn: deployerLrns
-    })
-
+    deployer: string
+  ): Promise<Deployment> {
     const octokit = await this.getOctokit(project.ownerId!);
     const [owner, repo] = project.repository!.split('/');
 
@@ -719,80 +723,82 @@ export class Service {
     const applicationRecordId = record.id;
     const applicationRecordData = record.attributes;
 
-    for (const deployer of deployerLrns) {
-      // Create deployment with prod branch and latest commit
-      const deploymentData = {
-        project,
-        branch: project.prodBranch,
-        environment: Environment.Production,
-        domain: null,
-        commitHash: latestCommit.sha,
-        commitMessage: latestCommit.commit.message,
-      };
+    // Create deployment with prod branch and latest commit
+    const deploymentData = {
+      project,
+      branch: project.prodBranch,
+      environment: Environment.Production,
+      domain: null,
+      commitHash: latestCommit.sha,
+      commitMessage: latestCommit.commit.message,
+    };
 
-      const newDeployment = await this.db.addDeployment({
-        project: project,
-        branch: deploymentData.branch,
-        commitHash: deploymentData.commitHash,
-        commitMessage: deploymentData.commitMessage,
-        environment: deploymentData.environment,
-        status: DeploymentStatus.Building,
-        applicationRecordId,
-        applicationRecordData,
-        domain: deploymentData.domain,
-        createdBy: Object.assign(new User(), {
-          id: project.ownerId!,
-        }),
+    const newDeployment = await this.db.addDeployment({
+      project: project,
+      branch: deploymentData.branch,
+      commitHash: deploymentData.commitHash,
+      commitMessage: deploymentData.commitMessage,
+      environment: deploymentData.environment,
+      status: DeploymentStatus.Building,
+      applicationRecordId,
+      applicationRecordData,
+      domain: deploymentData.domain,
+      createdBy: Object.assign(new User(), {
+        id: project.ownerId!,
+      }),
+      deployerLrn: deployer
+    });
+
+    log(
+      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
+    );
+
+    const environmentVariables =
+      await this.db.getEnvironmentVariablesByProjectId(project!.id!, {
+        environment: Environment.Production,
       });
 
-      log(
-        `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
-      );
+    const environmentVariablesObj = environmentVariables.reduce(
+      (acc, env) => {
+        acc[env.key] = env.value;
 
-      const environmentVariables =
-        await this.db.getEnvironmentVariablesByProjectId(project!.id!, {
-          environment: Environment.Production,
-        });
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
 
-      const environmentVariablesObj = environmentVariables.reduce(
-        (acc, env) => {
-          acc[env.key] = env.value;
-
-          return acc;
-        },
-        {} as { [key: string]: string },
-      );
-
-      // To set project DNS
-      if (deploymentData.environment === Environment.Production) {
-        // On deleting deployment later, project DNS deployment is also deleted
-        // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
-        await this.registry.createApplicationDeploymentRequest({
-          deployment: newDeployment,
-          appName: repo,
-          repository: repoUrl,
-          environmentVariables: environmentVariablesObj,
-          dns: `${newDeployment.project.name}`,
-        });
-      }
-
-      const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
-        // Create requests for all the deployers
-        await this.registry.createApplicationDeploymentRequest({
-          deployment: newDeployment,
-          appName: repo,
-          repository: repoUrl,
-          auctionId: project.auctionId!,
-          lrn: deployer,
-          environmentVariables: environmentVariablesObj,
-          dns: `${newDeployment.project.name}-${newDeployment.id}`,
-        });
-
-      await this.db.updateDeploymentById(newDeployment.id, {
-        applicationDeploymentRequestId,
-        applicationDeploymentRequestData,
+    // To set project DNS
+    if (deploymentData.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
+      await this.registry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}`,
+        lrn
       });
     }
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
+      // Create requests for all the deployers
+      await this.registry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        auctionId: project.auctionId!,
+        lrn: deployer,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`,
+      });
+
+    await this.db.updateDeploymentById(newDeployment.id, {
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData,
+    });
+
+    return newDeployment;
   }
 
   async addProjectFromTemplate(
@@ -972,9 +978,9 @@ export class Service {
             project,
             branch,
             environment:
-             project.prodBranch === branch
-              ? Environment.Production
-              : Environment.Preview,
+              project.prodBranch === branch
+                ? Environment.Production
+                : Environment.Preview,
             domain,
             commitHash: headCommit.id,
             commitMessage: headCommit.message,
@@ -1032,15 +1038,24 @@ export class Service {
 
     const octokit = await this.getOctokit(user.id);
 
-    const newDeployment = await this.createDeployment(user.id, octokit, {
-      project: oldDeployment.project,
-      // TODO: Put isCurrent field in project
-      branch: oldDeployment.branch,
-      environment: Environment.Production,
-      domain: oldDeployment.domain,
-      commitHash: oldDeployment.commitHash,
-      commitMessage: oldDeployment.commitMessage,
-    }, oldDeployment.deployerLrn);
+    let newDeployment: Deployment;
+
+    if (oldDeployment.project.auctionId) {
+      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployerLrn);
+    } else {
+      newDeployment = await this.createDeployment(user.id, octokit,
+        {
+          project: oldDeployment.project,
+          // TODO: Put isCurrent field in project
+          branch: oldDeployment.branch,
+          environment: Environment.Production,
+          domain: oldDeployment.domain,
+          commitHash: oldDeployment.commitHash,
+          commitMessage: oldDeployment.commitMessage,
+        },
+        oldDeployment.deployerLrn
+      );
+    }
 
     return newDeployment;
   }
