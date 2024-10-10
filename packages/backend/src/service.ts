@@ -1,6 +1,6 @@
 import assert from 'assert';
 import debug from 'debug';
-import { DeepPartial, FindOptionsWhere, IsNull } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, IsNull, Not } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
 
 import { OAuthApp } from '@octokit/oauth-app';
@@ -275,13 +275,14 @@ export class Service {
    * Calls the createDeploymentFromAuction method for deployments with completed auctions
    */
   async checkAuctionStatus(): Promise<void> {
-    const projects = await this.db.getProjects({
+    const allProjects = await this.db.getProjects({
       where: {
-        deployments: {
-          applicationDeploymentRequestId: IsNull()
-        }
+        auctionId: Not(IsNull()),
       },
+      relations: ['deployments'],
     });
+
+    const projects = allProjects.filter(project => project.deployments.length === 0);
 
     const auctionIds = projects.map((project) => project.auctionId);
     const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
@@ -298,6 +299,7 @@ export class Service {
         await this.db.updateProjectById(project.id!, {
           deployerLrn: deployerLrns
         })
+
         for (const deployer of deployerLrns) {
           await this.createDeploymentFromAuction(project, deployer);
         }
