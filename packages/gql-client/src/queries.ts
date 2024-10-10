@@ -132,7 +132,6 @@ query ($projectId: String!)  {
     commitHash
     commitMessage
     url
-    auctionId
     deployerLrn
     environment
     isCurrent

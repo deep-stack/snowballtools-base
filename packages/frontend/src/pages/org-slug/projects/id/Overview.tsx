@@ -21,7 +21,7 @@ import { Activity } from 'components/projects/project/overview/Activity';
 import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
 import { relativeTimeMs } from 'utils/time';
 import { Domain, DomainStatus } from 'gql-client';
-import { AuctionData } from 'components/projects/project/overview/Activity/AuctionData';
+import { AuctionCard } from 'components/projects/project/overview/Activity/AuctionCard';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -206,7 +206,7 @@ const OverviewTabPanel = () => {
             No current deployment found.
           </p>
         )}
-        {project.auctionId && <AuctionData project={project}/>}
+        {project.auctionId && <AuctionCard project={project}/>}
       </div>
       <Activity activities={activities} isLoading={fetchingActivities} />
     </div>

@@ -473,9 +473,7 @@ export class Registry {
   }
 
   async getAuctionData(auctionId: string): Promise<any> {
-    const auction = await this.registry.getAuctionsByIds([auctionId]);
-    log({auction})
-    return auction;
+    return this.registry.getAuctionsByIds([auctionId]);;
   }
 
   getLrn(appName: string): string {

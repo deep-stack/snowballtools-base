@@ -130,9 +130,6 @@ export class Deployment {
   @Column('varchar')
     deployerLrn!: string;
 
-  @Column('varchar', { nullable: true })
-    auctionId!: string | null;
-
   @Column({
     enum: Environment
   })

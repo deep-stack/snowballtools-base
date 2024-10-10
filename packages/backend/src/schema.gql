@@ -103,6 +103,7 @@ type Deployment {
   commitMessage: String!
   url: String
   environment: Environment!
+  deployerLrn: String
   isCurrent: Boolean!
   status: DeploymentStatus!
   createdAt: String!
