@@ -165,7 +165,7 @@ export class Service {
   async updateDeploymentsWithRecordData(
     records: AppDeploymentRecord[],
   ): Promise<void> {
-    // Get deployments for ApplicationDeploymentRecords
+    // Deployments that are completed, not updated(are in building state and ApplicationDeploymentRecord is present)
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
         applicationRecordId: record.attributes.application,
@@ -174,13 +174,9 @@ export class Service {
         createdAt: 'DESC',
       },
     });
-    const requestRecordIds = new Set(records.map((record) => record.attributes.request).filter(Boolean));
-    const filteredDeployments = deployments.filter((deployment) =>
-      deployment.applicationDeploymentRequestId && requestRecordIds.has(deployment.applicationDeploymentRequestId)
-    );
 
     // Get project IDs of deployments that are in production environment
-    const productionDeploymentProjectIds = filteredDeployments.reduce(
+    const productionDeploymentProjectIds = deployments.reduce(
       (acc, deployment): Set<string> => {
         if (deployment.environment === Environment.Production) {
           acc.add(deployment.projectId);
@@ -208,6 +204,10 @@ export class Service {
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
+
+      if(!deployment) {
+        log('Deployment does not exist')
+      }
 
       await this.db.updateDeploymentById(deployment.id, {
         applicationDeploymentRecordId: record.id,

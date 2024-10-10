@@ -248,11 +248,39 @@ query ($auctionId: String!) {
       quantity
     }
     winnerAddresses
-    winningBids
-    winningPrice
-    maxPrice
+    winnerBids {
+      type
+      quantity
+    }
+    winnerPrice {
+      type
+      quantity
+    }
+    maxPrice {
+      type
+      quantity
+    }
     numProviders
     fundsReleased
+    bids {
+      bidderAddress
+      status
+      commitHash
+      commitTime
+      revealTime
+      commitFee {
+        type
+        quantity
+      }
+      revealFee {
+        type
+        quantity
+      }
+      bidAmount {
+        type
+        quantity
+      }
+    }
   }
 }
 `;
