@@ -82,11 +82,12 @@ export interface Auction {
   revealFee?: string;
   minimumBid?: string;
   winnerAddresses: string[];
-  winningBids: string[];
-  winningPrice?: string;
+  winnerBids?: string[];
+  winnerPrice?: string;
   maxPrice?: string;
   numProviders: number;
   fundsReleased: boolean;
+  bids: string[];
 }
 
 export interface AuctionData {

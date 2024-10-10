@@ -37,6 +37,18 @@ export type Fee = {
   quantity: string;
 }
 
+export type Bid = {
+  auctionId: string;
+  bidderAddress: string;
+  status: string;
+  commitHash: string;
+  commitTime?: Date;
+  commitFee?: string;
+  revealTime?: Date;
+  revealFee?: string;
+  bidAmount?: string;
+}
+
 export type Auction = {
   id: string;
   kind: string;
@@ -49,11 +61,12 @@ export type Auction = {
   revealFee?: string;
   minimumBid?: string;
   winnerAddresses: string[];
-  winningBids?: string[];
-  winningPrice?: string;
+  winnerBids?: string[];
+  winnerPrice?: string;
   maxPrice?: string;
   numProviders: number;
   fundsReleased: boolean;
+  bids: Bid[];
 }
 
 export enum DomainStatus {

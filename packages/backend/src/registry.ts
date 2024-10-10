@@ -377,7 +377,7 @@ export class Registry {
     return records.filter((record: AppDeploymentRecord) =>
       deployments.some(
         (deployment) =>
-          deployment.applicationRecordId === record.attributes.application
+          deployment.applicationDeploymentRequestId === record.attributes.request
       )
     );
   }

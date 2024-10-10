@@ -197,6 +197,18 @@ type Fee {
   quantity: String!
 }
 
+type Bid {
+  auctionId: String!
+  bidderAddress: String!
+  status: String!
+  commitHash: String!
+  commitTime: String
+  commitFee: Fee
+  revealTime: String
+  revealFee: Fee
+  bidAmount: Fee
+}
+
 type Auction {
   id: String!
   kind: String!
@@ -209,11 +221,12 @@ type Auction {
   revealFee: Fee!
   minimumBid: Fee
   winnerAddresses: [String!]!
-  winningBids: [String!]
-  winningPrice: String
-  maxPrice: String
+  winnerBids: [Fee!]
+  winnerPrice: Fee
+  maxPrice: Fee
   numProviders: Int!
   fundsReleased: Boolean!
+  bids: [Bid!]!
 }
 
 input AuctionData {
