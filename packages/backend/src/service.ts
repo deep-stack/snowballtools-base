@@ -173,9 +173,13 @@ export class Service {
         createdAt: 'DESC',
       },
     });
+    const requestRecordIds = new Set(records.map((record) => record.attributes.request).filter(Boolean));
+    const filteredDeployments = deployments.filter((deployment) =>
+      deployment.applicationDeploymentRequestId && requestRecordIds.has(deployment.applicationDeploymentRequestId)
+    );
 
     // Get project IDs of deployments that are in production environment
-    const productionDeploymentProjectIds = deployments.reduce(
+    const productionDeploymentProjectIds = filteredDeployments.reduce(
       (acc, deployment): Set<string> => {
         if (deployment.environment === Environment.Production) {
           acc.add(deployment.projectId);

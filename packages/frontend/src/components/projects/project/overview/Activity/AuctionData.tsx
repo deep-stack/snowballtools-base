@@ -12,7 +12,7 @@ export const AuctionData = ({
 }: {
   project: Project
 }) => {
-  const [isAuctionCompleted, setIsAuctionCompleted] = useState<boolean>(true);
+  const [isAuctionCompleted, setIsAuctionCompleted] = useState<boolean>(false);
   const client = useGQLClient();
   const getIconByAuctionStatus = (isCompleted: Boolean) => {
     return isCompleted ? <CheckRoundFilledIcon /> : <LoadingIcon className="animate-spin" />
@@ -76,7 +76,7 @@ export const AuctionData = ({
           Auction Id: {project.auctionId}
         </p>
 
-        <p className="text-elements-low-em text-sm mt-2">
+        <p className="text-elements-low-em text-sm">
           Deployer LRNs:
         </p>
 

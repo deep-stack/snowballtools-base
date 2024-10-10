@@ -206,7 +206,7 @@ const OverviewTabPanel = () => {
             No current deployment found.
           </p>
         )}
-        <AuctionData project={project}/>
+        {project.auctionId && <AuctionData project={project}/>}
       </div>
       <Activity activities={activities} isLoading={fetchingActivities} />
     </div>
