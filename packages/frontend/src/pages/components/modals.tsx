@@ -36,7 +36,6 @@ const deployment: Deployment = {
   url: 'https://deploy1.example.com',
   environment: Environment.Production,
   isCurrent: true,
-  auctionId: '7553538436710373822151221341b43f577e07b0525d083cc9b2de98890138a1',
   deployerLrn: 'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com',
   status: DeploymentStatus.Ready,
   createdBy: {

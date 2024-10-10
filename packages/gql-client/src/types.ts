@@ -45,9 +45,6 @@ export type Auction = {
   createTime?: Date;
   commitsEndTime?: Date;
   revealsEndTime?: Date;
-  // commitFee?: Fee;
-  // revealFee?: Fee;
-  // minimumBid?: Fee;
   commitFee?: string;
   revealFee?: string;
   minimumBid?: string;
@@ -101,7 +98,6 @@ export type Deployment = {
   commitMessage: string;
   url?: string;
   deployerLrn: string;
-  auctionId?: string;
   environment: Environment;
   isCurrent: boolean;
   status: DeploymentStatus;

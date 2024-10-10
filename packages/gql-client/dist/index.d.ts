@@ -84,7 +84,6 @@ type Deployment = {
     commitMessage: string;
     url?: string;
     deployerLrn: string;
-    auctionId?: string;
     environment: Environment;
     isCurrent: boolean;
     status: DeploymentStatus;

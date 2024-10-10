@@ -752,7 +752,6 @@ export class Service {
         id: project.ownerId!,
       }),
       deployerLrn: deployer,
-      auctionId: project.auctionId
     });
 
     log(

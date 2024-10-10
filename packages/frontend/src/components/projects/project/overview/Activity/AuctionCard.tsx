@@ -18,12 +18,13 @@ import { Button, Tag } from 'components/shared';
 
 const CHECK_AUCTION_STATUS_INTERVAL = 2000;
 
-export const AuctionData = ({
+export const AuctionCard = ({
   project,
 }: {
   project: Project;
 }) => {
   const [auctionStatus, setAuctionStatus] = useState<string>('');
+  const [deployerLrns, setDeployerLrns] = useState<string[]>([]);
   const [auctionDetails, setAuctionDetails] = useState<Auction | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const client = useGQLClient();
@@ -48,6 +49,8 @@ export const AuctionData = ({
     if (auctionStatus !== 'completed') {
       checkAuctionStatus();
       intervalId = setInterval(checkAuctionStatus, CHECK_AUCTION_STATUS_INTERVAL);
+    } else {
+      setDeployerLrns(project.deployerLrn)
     }
 
     return () => {
@@ -59,7 +62,11 @@ export const AuctionData = ({
 
   const renderAuctionStatus = useCallback(
     () => (
-      <Tag leftIcon={getIconByAuctionStatus(auctionStatus)} size="xs">
+      <Tag
+        leftIcon={getIconByAuctionStatus(auctionStatus)}
+        size="xs"
+        type={auctionStatus === 'completed' ? "positive" : "neutral"}
+      >
         {auctionStatus.toUpperCase()}
       </Tag>
     ),
@@ -103,15 +110,13 @@ export const AuctionData = ({
           <Typography variant="subtitle1" className="mt-3">
             Deployer LRNs
           </Typography>
-          {project.deployerLrn && (
-            <div>
-              {project.deployerLrn.map((lrn, index) => (
-                <Typography key={index} variant="body2" className="text-elements">
-                  {'\u2022'} {lrn}
-                </Typography>
-              ))}
-            </div>
-          )}
+          <div>
+            {deployerLrns.map((lrn, index) => (
+              <Typography key={index} variant="body2" className="text-elements">
+                {'\u2022'} {lrn}
+              </Typography>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
