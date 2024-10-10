@@ -1,35 +1,51 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Project } from 'gql-client';
+import { Auction, Project } from 'gql-client';
 
-import { CheckRoundFilledIcon, GlobeIcon, LoadingIcon } from 'components/shared/CustomIcon';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+
+import { CheckRoundFilledIcon, LoadingIcon } from 'components/shared/CustomIcon';
 import { useGQLClient } from 'context/GQLClientContext';
-import { Tag } from 'components/shared';
+import { Button, Tag } from 'components/shared';
 
 const CHECK_AUCTION_STATUS_INTERVAL = 2000;
 
 export const AuctionData = ({
-  project
+  project,
 }: {
-  project: Project
+  project: Project;
 }) => {
-  const [isAuctionCompleted, setIsAuctionCompleted] = useState<boolean>(false);
+  const [auctionStatus, setAuctionStatus] = useState<string>('');
+  const [auctionDetails, setAuctionDetails] = useState<Auction | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
   const client = useGQLClient();
-  const getIconByAuctionStatus = (isCompleted: Boolean) => {
-    return isCompleted ? <CheckRoundFilledIcon /> : <LoadingIcon className="animate-spin" />
+
+  const getIconByAuctionStatus = (status: string) => {
+    return status === 'completed' ? (
+      <CheckRoundFilledIcon />
+    ) : (
+      <LoadingIcon className="animate-spin" />
+    );
   };
 
   const checkAuctionStatus = async () => {
-    const result = await client.getAuctionStatus(project.auctionId);
-
-    if (result) {
-      setIsAuctionCompleted(true);
-    }
+    const result = await client.getAuctionData(project.auctionId);
+    setAuctionStatus(result.status);
+    setAuctionDetails(result);
   };
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
 
-    if (!isAuctionCompleted) {
+    if (auctionStatus !== 'completed') {
       checkAuctionStatus();
       intervalId = setInterval(checkAuctionStatus, CHECK_AUCTION_STATUS_INTERVAL);
     }
@@ -39,56 +55,79 @@ export const AuctionData = ({
         clearInterval(intervalId);
       }
     };
-  }, [isAuctionCompleted]);
+  }, [auctionStatus]);
 
   const renderAuctionStatus = useCallback(
-    (className?: string) => {
-      return (
-        <div className={className}>
-          <Tag
-            leftIcon={getIconByAuctionStatus(isAuctionCompleted)}
-            size="xs"
-          >
-            {isAuctionCompleted ? 'Auction Completed' : 'Auction ongoing'}
-          </Tag>
-        </div>
-      );
-    },
-    [isAuctionCompleted],
+    () => (
+      <Tag leftIcon={getIconByAuctionStatus(auctionStatus)} size="xs">
+        {auctionStatus.toUpperCase()}
+      </Tag>
+    ),
+    [auctionStatus],
   );
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <>
-      <div className="flex justify-between items-center py-3 text-sm">
-        <div className="flex items-center text-elements-high-em gap-2">
-          <GlobeIcon />
-          <span>Auction details</span>
-        </div>
+      <Card variant="outlined" className="my-4">
+        <CardHeader
+          title="Auction Details"
+          titleTypographyProps={{ variant: 'h6' }}
+          action={
+            <Button onClick={handleOpenDialog} variant="tertiary" size="sm">
+              View details
+            </Button>
+          }
+          sx={{ pb: 0.1 }}
+        />
+        <CardContent>
+          <div className="flex justify-between items-center mt-1">
+            <Typography variant="subtitle1">Auction Status</Typography>
+            <div className="ml-2">{renderAuctionStatus()}</div>
+          </div>
 
-        {/* AUCTION STATUS */}
-        <div className="w-[10%] max-w-[110px] hidden md:flex h-fit">
-          {renderAuctionStatus('w-[10%] max-w-[110px] hidden md:flex h-fit')}
-        </div>
-      </div>
+          <div className="flex justify-between items-center mt-2">
+            <Typography variant="subtitle1">Auction Id</Typography>
+            <Typography variant="body2" className="mt-1 text-right">
+              {project.auctionId}
+            </Typography>
+          </div>
 
-      <div className="ml-4 mb-2">
-        <p className="text-elements-low-em text-sm">
-          Auction Id: {project.auctionId}
-        </p>
+          <Typography variant="subtitle1" className="mt-3">
+            Deployer LRNs
+          </Typography>
+          {project.deployerLrn && (
+            <div>
+              {project.deployerLrn.map((lrn, index) => (
+                <Typography key={index} variant="body2" className="text-elements">
+                  {'\u2022'} {lrn}
+                </Typography>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        <p className="text-elements-low-em text-sm">
-          Deployer LRNs:
-        </p>
-
-        <div>
-          {project.deployerLrn.map((lrn, index) => (
-            <p key={index} className="text-elements-low-em text-sm">
-              {lrn}
-            </p>
-          ))}
-        </div>
-      </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
+        <DialogTitle>Auction Details</DialogTitle>
+        <DialogContent>
+          {auctionDetails && (
+            <Typography variant="body1">
+              <pre>{JSON.stringify(auctionDetails, null, 2)}</pre>
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </>
-
   );
 };

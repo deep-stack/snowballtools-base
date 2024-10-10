@@ -244,9 +244,35 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
   }
 }
 `;
-var getAuctionStatus = gql`
+var getAuctionData = gql`
 query ($auctionId: String!) {
-  getAuctionStatus(auctionId: $auctionId)
+  getAuctionData(auctionId: $auctionId){
+    id
+    kind
+    status
+    ownerAddress
+    createTime
+    commitsEndTime
+    revealsEndTime
+    commitFee {
+      type
+      quantity
+    }
+    revealFee {
+      type
+      quantity
+    }
+    minimumBid {
+      type
+      quantity
+    }
+    winnerAddresses
+    winningBids
+    winningPrice
+    maxPrice
+    numProviders
+    fundsReleased
+  }
 }
 `;
 
@@ -694,15 +720,15 @@ var GQLClient = class {
       return data;
     });
   }
-  getAuctionStatus(auctionId) {
+  getAuctionData(auctionId) {
     return __async(this, null, function* () {
       const { data } = yield this.client.query({
-        query: getAuctionStatus,
+        query: getAuctionData,
         variables: {
           auctionId
         }
       });
-      return data;
+      return data.getAuctionData;
     });
   }
 };

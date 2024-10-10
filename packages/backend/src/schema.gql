@@ -191,6 +191,30 @@ input FilterDomainsInput {
   status: DomainStatus
 }
 
+type Fee {
+  type: String!
+  quantity: String!
+}
+
+type Auction {
+  id: String!
+  kind: String!
+  status: String!
+  ownerAddress: String!
+  createTime: String!
+  commitsEndTime: String!
+  revealsEndTime: String!
+  commitFee: Fee!
+  revealFee: Fee!
+  minimumBid: Fee
+  winnerAddresses: [String!]!
+  winningBids: [String!]
+  winningPrice: String
+  maxPrice: String
+  numProviders: Int!
+  fundsReleased: Boolean!
+}
+
 input AuctionData {
   maxPrice: String,
   numProviders: Int,
@@ -206,7 +230,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
-  getAuctionStatus(auctionId: String!): AuctionStatus!
+  getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }
 

@@ -226,8 +226,34 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
 }
 `;
 
-export const getAuctionStatus = gql`
+export const getAuctionData = gql`
 query ($auctionId: String!) {
-  getAuctionStatus(auctionId: $auctionId)
+  getAuctionData(auctionId: $auctionId){
+    id
+    kind
+    status
+    ownerAddress
+    createTime
+    commitsEndTime
+    revealsEndTime
+    commitFee {
+      type
+      quantity
+    }
+    revealFee {
+      type
+      quantity
+    }
+    minimumBid {
+      type
+      quantity
+    }
+    winnerAddresses
+    winningBids
+    winningPrice
+    maxPrice
+    numProviders
+    fundsReleased
+  }
 }
 `;

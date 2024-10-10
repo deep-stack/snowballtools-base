@@ -410,14 +410,14 @@ export class GQLClient {
     return data;
   }
 
-  async getAuctionStatus(auctionId: string): Promise<types.AuctionStatus> {
+  async getAuctionData(auctionId: string): Promise<types.Auction> {
     const { data } = await this.client.query({
-      query: queries.getAuctionStatus,
+      query: queries.getAuctionData,
       variables: {
         auctionId,
       },
     });
 
-    return data;
+    return data.getAuctionData;
   }
 }

@@ -19,6 +19,7 @@ import {
   AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
+  Auction,
   AuctionData,
   GitPushEventPayload,
   PackageJSON,
@@ -1272,10 +1273,10 @@ export class Service {
     return this.db.updateUser(user, data);
   }
 
-  async getAuctionStatus(
+  async getAuctionData(
     auctionId: string
-  ): Promise<boolean> {
+  ): Promise<Auction> {
     const auctions = await this.registry.getAuctionData(auctionId);
-    return auctions[0].status;
+    return auctions[0];
   }
 }
