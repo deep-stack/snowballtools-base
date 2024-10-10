@@ -32,6 +32,33 @@ export enum AuctionStatus {
 	AuctionStatusCompleted = "completed",
 }
 
+export type Fee = {
+  type: string;
+  quantity: string;
+}
+
+export type Auction = {
+  id: string;
+  kind: string;
+  status: string;
+  ownerAddress: string;
+  createTime?: Date;
+  commitsEndTime?: Date;
+  revealsEndTime?: Date;
+  // commitFee?: Fee;
+  // revealFee?: Fee;
+  // minimumBid?: Fee;
+  commitFee?: string;
+  revealFee?: string;
+  minimumBid?: string;
+  winnerAddresses: string[];
+  winningBids?: string[];
+  winningPrice?: string;
+  maxPrice?: string;
+  numProviders: number;
+  fundsReleased: boolean;
+}
+
 export enum DomainStatus {
   Live = "Live",
   Pending = "Pending",

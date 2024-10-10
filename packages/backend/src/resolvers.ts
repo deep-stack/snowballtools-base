@@ -70,11 +70,11 @@ export const createResolvers = async (service: Service): Promise<any> => {
         return service.getDomainsByProjectId(projectId, filter);
       },
 
-      getAuctionStatus: async (
+      getAuctionData: async (
         _: any,
         { auctionId }: { auctionId: string },
       ) => {
-        return service.getAuctionStatus(auctionId);
+        return service.getAuctionData(auctionId);
       },
     },
 
