@@ -26,15 +26,10 @@ export enum DeploymentStatus {
 }
 
 export enum AuctionStatus {
-	AuctionStatusCommitPhase = "commit",
-	AuctionStatusRevealPhase = "reveal",
-	AuctionStatusExpired = "expired",
-	AuctionStatusCompleted = "completed",
-}
-
-export type Fee = {
-  type: string;
-  quantity: string;
+  AuctionStatusCommitPhase = "commit",
+  AuctionStatusRevealPhase = "reveal",
+  AuctionStatusExpired = "expired",
+  AuctionStatusCompleted = "completed",
 }
 
 export type Bid = {
@@ -173,7 +168,7 @@ export type Project = {
   description: string;
   template: string;
   framework: string;
-  deployerLrn: string[];
+  deployerLrns: string[];
   auctionId: string;
   webhooks: string[];
   members: ProjectMember[];

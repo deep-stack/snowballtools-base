@@ -165,7 +165,8 @@ export class Service {
   async updateDeploymentsWithRecordData(
     records: AppDeploymentRecord[],
   ): Promise<void> {
-    // Deployments that are completed, not updated(are in building state and ApplicationDeploymentRecord is present)
+    // Get deployments for ApplicationDeploymentRecords
+    // Deployments that are completed but not updated(are in building state and ApplicationDeploymentRecord is present)
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
         applicationRecordId: record.attributes.application,
@@ -204,10 +205,6 @@ export class Service {
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
-
-      if(!deployment) {
-        log('Deployment does not exist')
-      }
 
       await this.db.updateDeploymentById(deployment.id, {
         applicationDeploymentRecordId: record.id,
@@ -282,6 +279,7 @@ export class Service {
       relations: ['deployments'],
     });
 
+    // Should only check on the first deployment
     const projects = allProjects.filter(project => project.deployments.length === 0);
 
     const auctionIds = projects.map((project) => project.auctionId);
@@ -297,7 +295,7 @@ export class Service {
 
         // Update project with deployer LRNs
         await this.db.updateProjectById(project.id!, {
-          deployerLrn: deployerLrns
+          deployerLrns
         })
 
         for (const deployer of deployerLrns) {
@@ -696,7 +694,7 @@ export class Service {
 
     // Save deployer lrn only if present
     if (lrn) {
-      newDeployment.project.deployerLrn = [lrn];
+      newDeployment.project.deployerLrns = [lrn];
     }
 
     return newDeployment;
@@ -974,7 +972,7 @@ export class Service {
         branch,
       });
 
-      const deployers = project.deployerLrn;
+      const deployers = project.deployerLrns;
       if (!deployers) {
         return;
       }

@@ -24,10 +24,6 @@ declare enum AuctionStatus {
     AuctionStatusExpired = "expired",
     AuctionStatusCompleted = "completed"
 }
-type Fee = {
-    type: string;
-    quantity: string;
-};
 type Bid = {
     auctionId: string;
     bidderAddress: string;
@@ -153,7 +149,7 @@ type Project = {
     description: string;
     template: string;
     framework: string;
-    deployerLrn: string[];
+    deployerLrns: string[];
     auctionId: string;
     webhooks: string[];
     members: ProjectMember[];
@@ -340,4 +336,4 @@ declare class GQLClient {
     getAuctionData(auctionId: string): Promise<Auction>;
 }
 
-export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectFromTemplateInput, type AddProjectFromTemplateResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type Auction, type AuctionData, AuctionStatus, type AuthenticateGitHubResponse, type Bid, type DeleteDeploymentResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type Fee, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };
+export { type AddDomainInput, type AddDomainResponse, type AddEnvironmentVariableInput, type AddEnvironmentVariablesResponse, type AddProjectFromTemplateInput, type AddProjectFromTemplateResponse, type AddProjectInput, type AddProjectMemberInput, type AddProjectMemberResponse, type AddProjectResponse, type Auction, type AuctionData, AuctionStatus, type AuthenticateGitHubResponse, type Bid, type DeleteDeploymentResponse, type DeleteDomainResponse, type DeleteProjectResponse, type Deployment, DeploymentStatus, type Domain, DomainStatus, Environment, type EnvironmentVariable, type FilterDomainInput, GQLClient, type GetDeploymentsResponse, type GetDomainsResponse, type GetEnvironmentVariablesResponse, type GetOrganizationsResponse, type GetProjectMembersResponse, type GetProjectResponse, type GetProjectsInOrganizationResponse, type GetUserResponse, type GraphQLConfig, type Organization, type OrganizationMember, type OrganizationProject, Permission, type Project, type ProjectMember, type RedeployToProdResponse, type RemoveEnvironmentVariableResponse, type RemoveProjectMemberResponse, Role, type RollbackDeploymentResponse, type SearchProjectsResponse, type UnauthenticateGitHubResponse, type UpdateDeploymentToProdResponse, type UpdateDomainInput, type UpdateDomainResponse, type UpdateEnvironmentVariableInput, type UpdateEnvironmentVariableResponse, type UpdateProjectInput, type UpdateProjectMemberInput, type UpdateProjectMemberResponse, type UpdateProjectResponse, type User };

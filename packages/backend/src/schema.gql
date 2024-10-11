@@ -23,10 +23,10 @@ enum DeploymentStatus {
 }
 
 enum AuctionStatus {
-	completed
-	reveal
-	commit
-	expired
+  completed
+  reveal
+  commit
+  expired
 }
 
 enum DomainStatus {
@@ -72,7 +72,7 @@ type Project {
   repository: String!
   prodBranch: String!
   description: String
-  deployerLrn: [String]
+  deployerLrns: [String]
   auctionId: String
   template: String
   framework: String
