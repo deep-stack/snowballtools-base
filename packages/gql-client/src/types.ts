@@ -108,6 +108,7 @@ export type Deployment = {
   deployerLrn: string;
   environment: Environment;
   isCurrent: boolean;
+  baseDomain?: string;
   status: DeploymentStatus;
   createdBy: User;
   createdAt: string;
@@ -177,7 +178,7 @@ export type Project = {
   updatedAt: string;
   organization: Organization;
   icon: string;
-  subDomain: string;
+  baseDomains?: string[] | null;
 };
 
 export type GetProjectMembersResponse = {

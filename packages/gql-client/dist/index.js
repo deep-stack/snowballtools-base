@@ -83,7 +83,7 @@ query ($projectId: String!) {
     repository
     webhooks
     icon
-    subDomain
+    baseDomains
     organization {
       id
       name
@@ -97,6 +97,7 @@ query ($projectId: String!) {
       id
       branch
       isCurrent
+      baseDomain
       status
       updatedAt
       commitHash
@@ -133,11 +134,12 @@ query ($organizationSlug: String!) {
     repository
     updatedAt
     icon
-    subDomain
+    baseDomains
     deployments {
       id
       branch
       isCurrent
+      baseDomain
       status
       updatedAt
       commitHash
@@ -186,6 +188,7 @@ query ($projectId: String!)  {
     deployerLrn
     environment
     isCurrent
+    baseDomain
     status
     createdAt
     updatedAt

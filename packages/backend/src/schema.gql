@@ -83,7 +83,7 @@ type Project {
   updatedAt: String!
   organization: Organization!
   icon: String
-  subDomain: String
+  baseDomains: [String!]
 }
 
 type ProjectMember {
@@ -105,6 +105,7 @@ type Deployment {
   environment: Environment!
   deployerLrn: String
   isCurrent: Boolean!
+	baseDomain: String
   status: DeploymentStatus!
   createdAt: String!
   updatedAt: String!

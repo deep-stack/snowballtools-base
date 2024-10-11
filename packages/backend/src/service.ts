@@ -210,9 +210,20 @@ export class Service {
         applicationDeploymentRecordId: record.id,
         applicationDeploymentRecordData: record.attributes,
         url: record.attributes.url,
+        baseDomain,
         status: DeploymentStatus.Ready,
         isCurrent: deployment.environment === Environment.Production,
       });
+
+      const baseDomains = project.baseDomains || [];
+
+      if (!baseDomains.includes(baseDomain)) {
+        baseDomains.push(baseDomain);
+      }
+
+      await this.db.updateProjectById(project.id, {
+        baseDomains
+      })
 
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
@@ -1113,7 +1124,7 @@ export class Service {
     if (deployment && deployment.applicationDeploymentRecordId) {
       // If deployment is current, remove deployment for project subdomain as well
       if (deployment.isCurrent) {
-        const currentDeploymentURL = `https://${deployment.project.subDomain}`;
+        const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.baseDomain}`;
 
         const deploymentRecords =
           await this.registry.getDeploymentRecordsByFilter({
@@ -1131,12 +1142,14 @@ export class Service {
 
         await this.registry.createApplicationDeploymentRemovalRequest({
           deploymentId: deploymentRecords[0].id,
+          deployerLrn: deployment.deployerLrn
         });
       }
 
       const result =
         await this.registry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
+          deployerLrn: deployment.deployerLrn
         });
 
       await this.db.updateDeploymentById(deployment.id, {
