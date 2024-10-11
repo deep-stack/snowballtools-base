@@ -14,8 +14,9 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, Auction, AuctionData, PackageJSON } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
 import { getConfig, sleep } from './utils';
+import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 const log = debug('snowball:registry');
 
@@ -329,7 +330,7 @@ export class Registry {
     };
   }
 
-  async getAuctionWinners(
+  async getAuctionWinningDeployers(
     auctionId: string
   ): Promise<string[]> {
     const records = await this.registry.getAuctionsByIds([auctionId]);
@@ -372,11 +373,12 @@ export class Registry {
       true
     );
 
-    // Filter records with ApplicationRecord ID and Deployment specific URL
+    // Filter records with ApplicationDeploymentRequestId ID and Deployment specific URL
     return records.filter((record: AppDeploymentRecord) =>
       deployments.some(
         (deployment) =>
-          deployment.applicationDeploymentRequestId === record.attributes.request
+          deployment.applicationDeploymentRequestId === record.attributes.request &&
+          record.attributes.url.includes(deployment.id)
       )
     );
   }

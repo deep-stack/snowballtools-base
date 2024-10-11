@@ -274,7 +274,7 @@ type Mutation {
   ): Project!
   addProject(
     organizationSlug: String!
-    data: AddProjectInput
+    data: AddProjectInput!
     lrn: String
     auctionData: AuctionData
   ): Project!
