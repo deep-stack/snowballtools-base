@@ -19,7 +19,6 @@ import {
   AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
-  Auction,
   AuctionData,
   GitPushEventPayload,
   PackageJSON,
@@ -41,7 +40,7 @@ interface Config {
 export class Service {
   private db: Database;
   private oauthApp: OAuthApp;
-  private registry: Registry;
+  private laconicRegistry: Registry;
   private config: Config;
 
   private deployRecordCheckTimeout?: NodeJS.Timeout;
@@ -49,7 +48,7 @@ export class Service {
   constructor(config: Config, db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
     this.oauthApp = app;
-    this.registry = registry;
+    this.laconicRegistry = registry;
     this.config = config;
     this.init();
   }
@@ -112,7 +111,7 @@ export class Service {
       }
 
       // Fetch ApplicationDeploymentRecord for deployments
-      const records = await this.registry.getDeploymentRecords(deployments);
+      const records = await this.laconicRegistry.getDeploymentRecords(deployments);
       log(`Found ${records.length} ApplicationDeploymentRecords`);
 
       // Update deployments for which ApplicationDeploymentRecords were returned
@@ -145,7 +144,7 @@ export class Service {
 
       // Fetch ApplicationDeploymentRemovalRecords for deployments
       const records =
-        await this.registry.getDeploymentRemovalRecords(deployments);
+        await this.laconicRegistry.getDeploymentRemovalRecords(deployments);
       log(`Found ${records.length} ApplicationDeploymentRemovalRecords`);
 
       // Update deployments for which ApplicationDeploymentRemovalRecords were returned
@@ -205,6 +204,11 @@ export class Service {
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
+      const project = await this.getProjectById(deployment.projectId)
+      assert(project)
+
+      const parts = record.attributes.url.replace('https://', '').split('.');
+      const baseDomain = parts.slice(1).join('.');
 
       await this.db.updateDeploymentById(deployment.id, {
         applicationDeploymentRecordId: record.id,
@@ -273,6 +277,13 @@ export class Service {
       );
 
       await this.db.deleteDeploymentById(deployment.id);
+      const project = await this.db.getProjectById(deployment.projectId);
+
+      const updatedBaseDomains = project!.baseDomains!.filter(baseDomain => baseDomain !== deployment.baseDomain);
+
+      await this.db.updateProjectById(deployment.projectId, {
+        baseDomains: updatedBaseDomains
+      });
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -294,7 +305,7 @@ export class Service {
     const projects = allProjects.filter(project => project.deployments.length === 0);
 
     const auctionIds = projects.map((project) => project.auctionId);
-    const completedAuctionIds = await this.registry.getCompletedAuctionIds(auctionIds);
+    const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
 
     if (completedAuctionIds) {
       const projectsToBedeployed = projects.filter((project) =>
@@ -302,12 +313,12 @@ export class Service {
       );
 
       for (const project of projectsToBedeployed) {
-        const deployerLrns = await this.registry.getAuctionWinners(project!.auctionId!);
+        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
 
         // Update project with deployer LRNs
         await this.db.updateProjectById(project.id!, {
           deployerLrns
-        })
+        });
 
         for (const deployer of deployerLrns) {
           await this.createDeploymentFromAuction(project, deployer);
@@ -619,7 +630,7 @@ export class Service {
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } =
-      await this.registry.createApplicationRecord({
+      await this.laconicRegistry.createApplicationRecord({
         appName: repo,
         packageJSON,
         appType: data.project!.template!,
@@ -678,7 +689,7 @@ export class Service {
     if (data.environment === Environment.Production) {
       // On deleting deployment later, project DNS deployment is also deleted
       // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
-      await this.registry.createApplicationDeploymentRequest({
+      await this.laconicRegistry.createApplicationDeploymentRequest({
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
@@ -689,7 +700,7 @@ export class Service {
     }
 
     const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
-      await this.registry.createApplicationDeploymentRequest({
+      await this.laconicRegistry.createApplicationDeploymentRequest({
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
@@ -734,8 +745,8 @@ export class Service {
       per_page: 1,
     });
 
-    const lrn = this.registry.getLrn(repo);
-    const [record] = await this.registry.getRecordsByName(lrn);
+    const lrn = this.laconicRegistry.getLrn(repo);
+    const [record] = await this.laconicRegistry.getRecordsByName(lrn);
     const applicationRecordId = record.id;
     const applicationRecordData = record.attributes;
 
@@ -787,7 +798,7 @@ export class Service {
     if (deploymentData.environment === Environment.Production) {
       // On deleting deployment later, project DNS deployment is also deleted
       // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
-      await this.registry.createApplicationDeploymentRequest({
+      await this.laconicRegistry.createApplicationDeploymentRequest({
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
@@ -800,7 +811,7 @@ export class Service {
 
     const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
       // Create requests for all the deployers
-      await this.registry.createApplicationDeploymentRequest({
+      await this.laconicRegistry.createApplicationDeploymentRequest({
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
@@ -908,7 +919,7 @@ export class Service {
     };
 
     if (auctionData) {
-      const { applicationDeploymentAuctionId } = await this.registry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData);
+      const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
       await this.createDeployment(user.id, octokit, deploymentData, lrn!);
@@ -1127,7 +1138,7 @@ export class Service {
         const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.baseDomain}`;
 
         const deploymentRecords =
-          await this.registry.getDeploymentRecordsByFilter({
+          await this.laconicRegistry.getDeploymentRecordsByFilter({
             application: deployment.applicationRecordId,
             url: currentDeploymentURL,
           });
@@ -1140,14 +1151,14 @@ export class Service {
           return false;
         }
 
-        await this.registry.createApplicationDeploymentRemovalRequest({
+        await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deploymentRecords[0].id,
           deployerLrn: deployment.deployerLrn
         });
       }
 
       const result =
-        await this.registry.createApplicationDeploymentRemovalRequest({
+        await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
           deployerLrn: deployment.deployerLrn
         });
@@ -1287,8 +1298,8 @@ export class Service {
 
   async getAuctionData(
     auctionId: string
-  ): Promise<Auction> {
-    const auctions = await this.registry.getAuctionData(auctionId);
+  ): Promise<any> {
+    const auctions = await this.laconicRegistry.getAuctionData(auctionId);
     return auctions[0];
   }
 }
