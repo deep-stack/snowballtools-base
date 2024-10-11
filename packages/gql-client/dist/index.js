@@ -78,7 +78,7 @@ query ($projectId: String!) {
     updatedAt
     prodBranch
     auctionId
-    deployerLrn
+    deployerLrns
     framework
     repository
     webhooks
@@ -127,7 +127,7 @@ query ($organizationSlug: String!) {
     description
     framework
     auctionId
-    deployerLrn
+    deployerLrns
     prodBranch
     webhooks
     repository
@@ -237,7 +237,7 @@ query ($searchText: String!) {
     description
     framework
     auctionId
-    deployerLrn
+    deployerLrns
     prodBranch
     webhooks
     updatedAt

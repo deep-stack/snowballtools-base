@@ -121,7 +121,7 @@ export const project: Project = {
   template: 'Template',
   members: [member],
   auctionId: '7553538436710373822151221341b43f577e07b0525d083cc9b2de98890138a1',
-  deployerLrn: ['lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com', 'lrn://wireitin/deployers/webapp-deployer-api.wireitin.com'],
+  deployerLrns: ['lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com', 'lrn://wireitin/deployers/webapp-deployer-api.wireitin.com'],
   webhooks: ['beepboop'],
   icon: 'Icon',
   subDomain: 'SubDomain',

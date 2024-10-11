@@ -75,11 +75,11 @@ export interface Auction {
   kind: string;
   status: string;
   ownerAddress: string;
-  createTime?: Date;
-  commitsEndTime?: Date;
-  revealsEndTime?: Date;
-  commitFee?: string;
-  revealFee?: string;
+  createTime: Date;
+  commitsEndTime: Date;
+  revealsEndTime: Date;
+  commitFee: string;
+  revealFee: string;
   minimumBid?: string;
   winnerAddresses: string[];
   winnerBids?: string[];
