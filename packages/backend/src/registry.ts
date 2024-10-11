@@ -194,7 +194,6 @@ export class Registry {
       })
     ).data.html_url;
 
-    // TODO: Set environment variables for each deployment (environment variables can't be set in application record)
     const { applicationRecordId } =
       await this.createApplicationRecord({
         appName: repo,
@@ -421,6 +420,7 @@ export class Registry {
 
   async createApplicationDeploymentRemovalRequest (data: {
     deploymentId: string;
+    deployerLrn: string;
   }): Promise<{
     applicationDeploymentRemovalRequestId: string;
     applicationDeploymentRemovalRequestData: ApplicationDeploymentRemovalRequest;
@@ -428,7 +428,8 @@ export class Registry {
     const applicationDeploymentRemovalRequest = {
       type: APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE,
       version: '1.0.0',
-      deployment: data.deploymentId
+      deployment: data.deploymentId,
+      deployer: data.deployerLrn
     };
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
