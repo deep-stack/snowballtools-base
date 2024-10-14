@@ -357,7 +357,7 @@ var addProjectFromTemplate = gql2`
   }
 `;
 var addProject = gql2`
-  mutation ($organizationSlug: String!, $data: AddProjectInput, $lrn: String, $auctionData: AuctionData) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionData: AuctionData) {
     addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
       id
     }
