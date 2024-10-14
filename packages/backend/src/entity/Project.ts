@@ -67,7 +67,7 @@ export class Project {
   @Column('varchar')
     icon!: string;
 
-  @Column('varchar', { nullable: true })
+  @Column({ type: 'simple-array',  nullable: true })
     baseDomains!: string[] | null;
 
   @CreateDateColumn()

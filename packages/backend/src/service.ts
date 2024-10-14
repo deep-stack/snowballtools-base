@@ -299,6 +299,7 @@ export class Service {
         auctionId: Not(IsNull()),
       },
       relations: ['deployments'],
+      withDeleted: true,
     });
 
     // Should only check on the first deployment

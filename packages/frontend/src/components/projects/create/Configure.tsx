@@ -26,7 +26,7 @@ const Configure = () => {
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
   const location = useLocation();
-  const { templateOwner, templateRepo, owner, name, isPrivate, orgSlug } = location.state || {};
+  const { templateOwner, templateRepo, owner, name, isPrivate, orgSlug, repository } = location.state || {};
 
   const navigate = useNavigate();
   const { toast, dismiss } = useToast();
@@ -47,14 +47,6 @@ const Configure = () => {
       setIsLoading(true);
 
       try {
-        const projectData: any = {
-          templateOwner,
-          templateRepo,
-          owner,
-          name,
-          isPrivate
-        };
-
         let lrn: string | undefined;
         let auctionData: AuctionData | undefined;
 
@@ -63,26 +55,57 @@ const Configure = () => {
         } else if (data.option === 'Auction') {
           auctionData = {
             numProviders: Number(data.numProviders!),
-            maxPrice: (data.maxPrice!).toString()
+            maxPrice: (data.maxPrice!).toString(),
           };
         }
 
-        const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-          orgSlug,
-          projectData,
-          lrn,
-          auctionData
-        );
+        if (templateId) {
+          // Template-based project creation
+          const projectData: any = {
+            templateOwner,
+            templateRepo,
+            owner,
+            name,
+            isPrivate,
+          };
 
-        data.option === 'Auction'
-          ? navigate(
-            `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
+          const { addProjectFromTemplate } = await client.addProjectFromTemplate(
+            orgSlug,
+            projectData,
+            lrn,
+            auctionData
+          );
+
+          data.option === 'Auction'
+            ? navigate(
+                `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
+                { state: { isAuction: true } }
+              )
+            : navigate(
+                `/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
+              );
+        } else {
+          const { addProject } = await client.addProject(
+            orgSlug,
             {
-              state: {
-                isAuction: true
-              }
-            })
-          : navigate(`/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`);
+              name: repository.fullName,
+              prodBranch: repository.defaultBranch,
+              repository: repository.fullName,
+              template: 'webapp',
+            },
+            lrn,
+            auctionData
+          );
+
+          data.option === 'Auction'
+            ? navigate(
+                `/${orgSlug}/projects/create/success/${addProject.id}`,
+                { state: { isAuction: true } }
+              )
+            : navigate(
+                `/${orgSlug}/projects/create/deploy?projectId=${addProject.id}`
+              );
+        }
       } catch (error) {
         console.error('Error creating project:', error);
         toast({
@@ -106,7 +129,9 @@ const Configure = () => {
             Configure deployment
           </Heading>
           <Heading as="h5" className="text-sm font-sans text-elements-low-em">
-            The app can be deployed by setting the deployer LRN for a single deployment or by creating a deployer auction for multiple deployments
+            The app can be deployed by setting the deployer LRN for a single
+            deployment or by creating a deployer auction for multiple
+            deployments
           </Heading>
         </div>
       </div>
@@ -119,11 +144,14 @@ const Configure = () => {
               control={control}
               render={({ field: { value, onChange } }) => (
                 <Select
-                  label='Configuration Options'
-                  value={{ value: value || 'LRN', label: value === 'Auction' ? 'Create Auction' : 'Deployer LRN' } as SelectOption}
-                  onChange={(value) =>
-                    onChange((value as SelectOption).value)
+                  label="Configuration Options"
+                  value={
+                    {
+                      value: value || 'LRN',
+                      label: value === 'Auction' ? 'Create Auction' : 'Deployer LRN',
+                    } as SelectOption
                   }
+                  onChange={(value) => onChange((value as SelectOption).value)}
                   options={[
                     { value: 'LRN', label: 'Deployer LRN' },
                     { value: 'Auction', label: 'Create Auction' },
@@ -138,7 +166,9 @@ const Configure = () => {
               <Heading as="h5" className="text-sm font-sans text-elements-low-em">
                 The app will be deployed by the configured deployer
               </Heading>
-              <span className="text-sm text-elements-high-em">Enter LRN for deployer</span>
+              <span className="text-sm text-elements-high-em">
+                Enter LRN for deployer
+              </span>
               <Controller
                 name="lrn"
                 control={control}
@@ -152,10 +182,12 @@ const Configure = () => {
           {selectedOption === 'Auction' && (
             <>
               <div className="flex flex-col justify-start gap-3">
-              <Heading as="h5" className="text-sm font-sans text-elements-low-em">
-                Set the number of deployers and maximum price for each deployment
-              </Heading>
-                <span className="text-sm text-elements-high-em">Number of Deployers</span>
+                <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+                  Set the number of deployers and maximum price for each deployment
+                </Heading>
+                <span className="text-sm text-elements-high-em">
+                  Number of Deployers
+                </span>
                 <Controller
                   name="numProviders"
                   control={control}
@@ -165,7 +197,9 @@ const Configure = () => {
                 />
               </div>
               <div className="flex flex-col justify-start gap-3">
-                <span className="text-sm text-elements-high-em">Maximum Price (alnt)</span>
+                <span className="text-sm text-elements-high-em">
+                  Maximum Price (alnt)
+                </span>
                 <Controller
                   name="maxPrice"
                   control={control}
