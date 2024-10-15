@@ -1,9 +1,9 @@
-import debug from 'debug';
 import assert from 'assert';
-import { inc as semverInc } from 'semver';
+import debug from 'debug';
 import { DateTime } from 'luxon';
-import { DeepPartial } from 'typeorm';
 import { Octokit } from 'octokit';
+import { inc as semverInc } from 'semver';
+import { DeepPartial } from 'typeorm';
 
 import { Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
 
@@ -14,8 +14,8 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData, PackageJSON } from './types';
-import { getConfig, sleep } from './utils';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData } from './types';
+import { getConfig, getRepoDetails, sleep } from './utils';
 import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 const log = debug('snowball:registry');
@@ -33,7 +33,7 @@ export class Registry {
   private registry: LaconicRegistry;
   private registryConfig: RegistryConfig;
 
-  constructor (registryConfig: RegistryConfig) {
+  constructor(registryConfig: RegistryConfig) {
     this.registryConfig = registryConfig;
 
     const gasPrice = getGasPrice(registryConfig.fee.gasPrice);
@@ -45,22 +45,21 @@ export class Registry {
     );
   }
 
-  async createApplicationRecord ({
-    appName,
-    packageJSON,
+  async createApplicationRecord({
+    octokit,
+    repository,
     commitHash,
     appType,
-    repoUrl
   }: {
-    appName: string;
-    packageJSON: PackageJSON;
+    octokit: Octokit
+    repository: string;
     commitHash: string;
     appType: string;
-    repoUrl: string;
   }): Promise<{
     applicationRecordId: string;
     applicationRecordData: ApplicationRecord;
   }> {
+    const { repo, repoUrl, packageJSON } = await getRepoDetails(octokit, repository, commitHash)
     // Use registry-sdk to publish record
     // Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts/publish-app-record.sh
     // Fetch previous records
@@ -94,7 +93,7 @@ export class Registry {
       repository_ref: commitHash,
       repository: [repoUrl],
       app_type: appType,
-      name: appName,
+      name: repo,
       ...(packageJSON.description && { description: packageJSON.description }),
       ...(packageJSON.homepage && { homepage: packageJSON.homepage }),
       ...(packageJSON.license && { license: packageJSON.license }),
@@ -119,10 +118,11 @@ export class Registry {
       fee
     );
 
+    log(`Published application record ${result.id}`);
     log('Application record data:', applicationRecord);
 
     // TODO: Discuss computation of LRN
-    const lrn = this.getLrn(appName);
+    const lrn = this.getLrn(repo);
     log(`Setting name: ${lrn} for record ID: ${result.id}`);
 
     await sleep(SLEEP_DURATION);
@@ -161,7 +161,7 @@ export class Registry {
     };
   }
 
-  async createApplicationDeploymentAuction (
+  async createApplicationDeploymentAuction(
     appName: string,
     octokit: Octokit,
     auctionData: AuctionData,
@@ -170,52 +170,15 @@ export class Registry {
     applicationDeploymentAuctionId: string;
   }> {
     assert(data.project?.repository, 'Project repository not found');
-    const [owner, repo] = data.project.repository.split('/');
 
-    const { data: packageJSONData } = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-      ref: data.commitHash,
+    await this.createApplicationRecord({
+      octokit,
+      repository: data.project.repository,
+      appType: data.project!.template!,
+      commitHash: data.commitHash!,
     });
 
-    if (!packageJSONData) {
-      throw new Error('Package.json file not found');
-    }
-
-    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
-
-    assert(packageJSON.name, "name field doesn't exist in package.json");
-
-    const repoUrl = (
-      await octokit.rest.repos.get({
-        owner,
-        repo,
-      })
-    ).data.html_url;
-
-    const { applicationRecordId } =
-      await this.createApplicationRecord({
-        appName: repo,
-        packageJSON,
-        appType: data.project!.template!,
-        commitHash: data.commitHash!,
-        repoUrl,
-      });
-
-    log(
-      `Published application record ${applicationRecordId}`,
-    );
-
     const lrn = this.getLrn(appName);
-    const records = await this.registry.resolveNames([lrn]);
-    const applicationRecord = records[0];
-
-    if (!applicationRecord) {
-      throw new Error(`No record found for ${lrn}`);
-    }
-
     const config = await getConfig();
     const auctionConfig = config.auction;
 
@@ -264,7 +227,7 @@ export class Registry {
     };
   }
 
-  async createApplicationDeploymentRequest (data: {
+  async createApplicationDeploymentRequest(data: {
     deployment: Deployment,
     appName: string,
     repository: string,
@@ -361,7 +324,7 @@ export class Registry {
   /**
    * Fetch ApplicationDeploymentRecords for deployments
    */
-  async getDeploymentRecords (
+  async getDeploymentRecords(
     deployments: Deployment[]
   ): Promise<AppDeploymentRecord[]> {
     // Fetch ApplicationDeploymentRecords for corresponding ApplicationRecord set in deployments
@@ -386,7 +349,7 @@ export class Registry {
   /**
    * Fetch ApplicationDeploymentRecords by filter
    */
-  async getDeploymentRecordsByFilter (filter: { [key: string]: any }): Promise<AppDeploymentRecord[]> {
+  async getDeploymentRecordsByFilter(filter: { [key: string]: any }): Promise<AppDeploymentRecord[]> {
     return this.registry.queryRecords(
       {
         type: APP_DEPLOYMENT_RECORD_TYPE,
@@ -399,7 +362,7 @@ export class Registry {
   /**
    * Fetch ApplicationDeploymentRemovalRecords for deployments
    */
-  async getDeploymentRemovalRecords (
+  async getDeploymentRemovalRecords(
     deployments: Deployment[]
   ): Promise<AppDeploymentRemovalRecord[]> {
     // Fetch ApplicationDeploymentRemovalRecords for corresponding ApplicationDeploymentRecord set in deployments
@@ -420,7 +383,7 @@ export class Registry {
     );
   }
 
-  async createApplicationDeploymentRemovalRequest (data: {
+  async createApplicationDeploymentRemovalRequest(data: {
     deploymentId: string;
     deployerLrn: string;
   }): Promise<{

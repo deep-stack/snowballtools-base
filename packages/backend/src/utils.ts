@@ -1,11 +1,14 @@
+import assert from 'assert';
+import debug from 'debug';
 import fs from 'fs-extra';
+import { Octokit } from 'octokit';
 import path from 'path';
 import toml from 'toml';
-import debug from 'debug';
 import { DataSource, DeepPartial, EntityTarget, ObjectLiteral } from 'typeorm';
 
 import { Config } from './config';
 import { DEFAULT_CONFIG_FILE_PATH } from './constants';
+import { PackageJSON } from './types';
 
 const log = debug('snowball:utils');
 
@@ -77,3 +80,43 @@ export const loadAndSaveData = async <Entity extends ObjectLiteral>(
 
 export const sleep = async (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const getRepoDetails = async (
+  octokit: Octokit,
+  repository: string,
+  commitHash: string | undefined,
+): Promise<{
+  repo: string;
+  packageJSON: PackageJSON;
+  repoUrl: string;
+}> => {
+  const [owner, repo] = repository.split('/');
+  const { data: packageJSONData } = await octokit.rest.repos.getContent({
+    owner,
+    repo,
+    path: 'package.json',
+    ref: commitHash,
+  });
+
+  if (!packageJSONData) {
+    throw new Error('Package.json file not found');
+  }
+
+  assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
+  const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
+
+  assert(packageJSON.name, "name field doesn't exist in package.json");
+
+  const repoUrl = (
+    await octokit.rest.repos.get({
+      owner,
+      repo,
+    })
+  ).data.html_url;
+
+  return {
+    repo,
+    packageJSON,
+    repoUrl
+  };
+}
