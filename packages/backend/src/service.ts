@@ -1095,7 +1095,7 @@ export class Service {
         }
 
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
-          deploymentId: deploymentRecords[0].id,
+          deploymentId: deploymentRecords[deploymentRecords.length - 1].id,
           deployerLrn: deployment.deployerLrn
         });
       }
