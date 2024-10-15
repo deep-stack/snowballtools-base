@@ -6,7 +6,7 @@ import { Octokit, RequestError } from 'octokit';
 import { OAuthApp } from '@octokit/oauth-app';
 
 import { Database } from './database';
-import { Deployment, DeploymentStatus, Environment } from './entity/Deployment';
+import { ApplicationRecord, Deployment, DeploymentStatus, Environment } from './entity/Deployment';
 import { Domain } from './entity/Domain';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Organization } from './entity/Organization';
@@ -21,9 +21,9 @@ import {
   AppDeploymentRemovalRecord,
   AuctionData,
   GitPushEventPayload,
-  PackageJSON,
 } from './types';
 import { Role } from './entity/UserOrganization';
+import { getRepoDetails } from './utils';
 
 const log = debug('snowball:service');
 
@@ -598,45 +598,20 @@ export class Service {
     userId: string,
     octokit: Octokit,
     data: DeepPartial<Deployment>,
-    lrn: string
+    deployerLrn: string
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
       `Creating deployment in project ${data.project.name} from branch ${data.branch}`,
     );
-    const [owner, repo] = data.project.repository.split('/');
-
-    const { data: packageJSONData } = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-      ref: data.commitHash,
-    });
-
-    if (!packageJSONData) {
-      throw new Error('Package.json file not found');
-    }
-
-    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
-
-    assert(packageJSON.name, "name field doesn't exist in package.json");
-
-    const repoUrl = (
-      await octokit.rest.repos.get({
-        owner,
-        repo,
-      })
-    ).data.html_url;
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } =
       await this.laconicRegistry.createApplicationRecord({
-        appName: repo,
-        packageJSON,
+        octokit,
+        repository: data.project.repository,
         appType: data.project!.template!,
         commitHash: data.commitHash!,
-        repoUrl,
       });
 
     // Update previous deployment with prod branch domain
@@ -652,40 +627,10 @@ export class Service {
       );
     }
 
-    const newDeployment = await this.db.addDeployment({
-      project: data.project,
-      branch: data.branch,
-      commitHash: data.commitHash,
-      commitMessage: data.commitMessage,
-      environment: data.environment,
-      status: DeploymentStatus.Building,
-      applicationRecordId,
-      applicationRecordData,
-      domain: data.domain,
-      createdBy: Object.assign(new User(), {
-        id: userId,
-      }),
-      deployerLrn: lrn,
-    });
+    const newDeployment = await this.createDeploymentFromData(userId, data, deployerLrn, applicationRecordId, applicationRecordData);
 
-    log(
-      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
-    );
-
-    const environmentVariables =
-      await this.db.getEnvironmentVariablesByProjectId(data.project.id!, {
-        environment: Environment.Production,
-      });
-
-    const environmentVariablesObj = environmentVariables.reduce(
-      (acc, env) => {
-        acc[env.key] = env.value;
-
-        return acc;
-      },
-      {} as { [key: string]: string },
-    );
-
+    const { repo, repoUrl } = await getRepoDetails(octokit, data.project.repository, data.commitHash);
+    const environmentVariablesObj = await this.getEnvVariables(data.project!.id!);
     // To set project DNS
     if (data.environment === Environment.Production) {
       // On deleting deployment later, project DNS deployment is also deleted
@@ -696,7 +641,7 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn
+        lrn: deployerLrn
       });
     }
 
@@ -705,7 +650,7 @@ export class Service {
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
-        lrn,
+        lrn: deployerLrn,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -716,8 +661,8 @@ export class Service {
     });
 
     // Save deployer lrn only if present
-    if (lrn) {
-      newDeployment.project.deployerLrns = [lrn];
+    if (deployerLrn) {
+      newDeployment.project.deployerLrns = [deployerLrn];
     }
 
     return newDeployment;
@@ -725,7 +670,7 @@ export class Service {
 
   async createDeploymentFromAuction(
     project: DeepPartial<Project>,
-    deployer: string
+    deployerLrn: string
   ): Promise<Deployment> {
     const octokit = await this.getOctokit(project.ownerId!);
     const [owner, repo] = project.repository!.split('/');
@@ -761,40 +706,9 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    const newDeployment = await this.db.addDeployment({
-      project: project,
-      branch: deploymentData.branch,
-      commitHash: deploymentData.commitHash,
-      commitMessage: deploymentData.commitMessage,
-      environment: deploymentData.environment,
-      status: DeploymentStatus.Building,
-      applicationRecordId,
-      applicationRecordData,
-      domain: deploymentData.domain,
-      createdBy: Object.assign(new User(), {
-        id: project.ownerId!,
-      }),
-      deployerLrn: deployer,
-    });
+    const newDeployment = await this.createDeploymentFromData(project.ownerId!, deploymentData, deployerLrn, applicationRecordId, applicationRecordData);
 
-    log(
-      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
-    );
-
-    const environmentVariables =
-      await this.db.getEnvironmentVariablesByProjectId(project!.id!, {
-        environment: Environment.Production,
-      });
-
-    const environmentVariablesObj = environmentVariables.reduce(
-      (acc, env) => {
-        acc[env.key] = env.value;
-
-        return acc;
-      },
-      {} as { [key: string]: string },
-    );
-
+    const environmentVariablesObj = await this.getEnvVariables(project!.id!);
     // To set project DNS
     if (deploymentData.environment === Environment.Production) {
       // On deleting deployment later, project DNS deployment is also deleted
@@ -806,7 +720,7 @@ export class Service {
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
         auctionId: project.auctionId!,
-        lrn: deployer,
+        lrn: deployerLrn,
       });
     }
 
@@ -817,7 +731,7 @@ export class Service {
         appName: repo,
         repository: repoUrl,
         auctionId: project.auctionId!,
-        lrn: deployer,
+        lrn: deployerLrn,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -826,6 +740,34 @@ export class Service {
       applicationDeploymentRequestId,
       applicationDeploymentRequestData,
     });
+
+    return newDeployment;
+  }
+
+  async createDeploymentFromData(
+    userId: string,
+    data: DeepPartial<Deployment>,
+    deployerLrn: string,
+    applicationRecordId: string,
+    applicationRecordData: ApplicationRecord,
+  ): Promise<Deployment> {
+    const newDeployment = await this.db.addDeployment({
+      project: data.project,
+      branch: data.branch,
+      commitHash: data.commitHash,
+      commitMessage: data.commitMessage,
+      environment: data.environment,
+      status: DeploymentStatus.Building,
+      applicationRecordId,
+      applicationRecordData,
+      domain: data.domain,
+      createdBy: Object.assign(new User(), {
+        id: userId,
+      }),
+      deployerLrn,
+    });
+
+    log(`Created deployment ${newDeployment.id}`);
 
     return newDeployment;
   }
@@ -1295,6 +1237,24 @@ export class Service {
     data: DeepPartial<User>,
   ): Promise<boolean> {
     return this.db.updateUser(user, data);
+  }
+
+  async getEnvVariables(
+    projectId: string,
+  ): Promise<{ [key: string]: string }> {
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(projectId, {
+      environment: Environment.Production,
+    });
+
+    const environmentVariablesObj = environmentVariables.reduce(
+      (acc, env) => {
+        acc[env.key] = env.value;
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
+
+    return environmentVariablesObj;
   }
 
   async getAuctionData(
