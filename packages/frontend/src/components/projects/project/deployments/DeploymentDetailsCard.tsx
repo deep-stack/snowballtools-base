@@ -83,7 +83,7 @@ const DeploymentDetailsCard = ({
 
   return (
     <div className="flex md:flex-row flex-col gap-6 py-4 px-3 pb-6 mb-2 last:mb-0 last:pb-4 border-b border-border-separator last:border-b-transparent relative">
-      <div className="flex-1 flex justify-between w-full md:max-w-[25%] lg:max-w-[28%]">
+      <div className="flex-1 flex justify-between w-full md:max-w-[30%] lg:max-w-[33%]">
         <div className="flex-1 w-full space-y-2 max-w-[90%] sm:max-w-full">
           {/* DEPLOYMENT URL */}
           {deployment.url && (
@@ -96,7 +96,12 @@ const DeploymentDetailsCard = ({
               </OverflownText>
             </Heading>
           )}
-          <span className="text-sm text-elements-low-em tracking-tight">
+          {deployment.deployerLrn && (
+            <span className="text-sm text-elements-low-em tracking-tight block mt-2">
+              Deployer LRN: {deployment.deployerLrn}
+            </span>
+          )}
+          <span className="text-sm text-elements-low-em tracking-tight block">
             {deployment.environment === Environment.Production
               ? `Production ${deployment.isCurrent ? '(Current)' : ''}`
               : 'Preview'}

@@ -28,7 +28,8 @@ export const AuctionCard = ({ project }: { project: Project }) => {
     const result = await client.getAuctionData(project.auctionId);
     setAuctionStatus(result.status);
     setAuctionDetails(result);
-  }, [client, project.auctionId]);
+    setDeployerLrns(project.deployerLrns);
+    }, [client, project.auctionId, project.deployerLrns]);
 
   useEffect(() => {
     const fetchUpdatedProject = async () => {
@@ -89,7 +90,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-        {deployerLrns.length > 0 && (
+        {deployerLrns?.length > 0 && (
           <div className="mt-3">
             <span className="text-elements-high-em text-sm font-medium tracking-tight">Deployer LRNs</span>
             {deployerLrns.map((lrn, index) => (

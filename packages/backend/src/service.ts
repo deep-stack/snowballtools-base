@@ -169,29 +169,32 @@ export class Service {
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
         applicationRecordId: record.attributes.application,
+        // Only for the specific deployer
+        deployerLrn: record.attributes.deployer
       })),
       order: {
         createdAt: 'DESC',
       },
     });
 
-    // Get project IDs of deployments that are in production environment
-    const productionDeploymentProjectIds = deployments.reduce(
-      (acc, deployment): Set<string> => {
-        if (deployment.environment === Environment.Production) {
-          acc.add(deployment.projectId);
+    // Get deployment IDs of deployments that are in production environment
+    const productionDeploymentIds: string[] = [];
+    deployments.forEach(deployment => {
+      if (deployment.environment === Environment.Production) {
+        if (!productionDeploymentIds.includes(deployment.id)) {
+          productionDeploymentIds.push(deployment.id);
         }
-
-        return acc;
-      },
-      new Set<string>(),
-    );
+      }
+    });
 
     // Set old deployments isCurrent to false
-    await this.db.updateDeploymentsByProjectIds(
-      Array.from(productionDeploymentProjectIds),
-      { isCurrent: false },
-    );
+    // TODO: Only set isCurrent to false for the deployment for that specific deployer
+    for (const deploymentId of productionDeploymentIds) {
+      await this.db.updateDeployment(
+        { id: deploymentId },
+        { isCurrent: false }
+      );
+    }
 
     const recordToDeploymentsMap = deployments.reduce(
       (acc: { [key: string]: Deployment }, deployment) => {
@@ -303,7 +306,13 @@ export class Service {
     });
 
     // Should only check on the first deployment
-    const projects = allProjects.filter(project => project.deployments.length === 0);
+    const projects = allProjects.filter(project => {
+      if (project.deletedAt !== null) return false;
+
+      const deletedDeployments = project.deployments.filter(deployment => deployment.deletedAt !== null).length;
+
+      return project.deployments.length === 0 && deletedDeployments === 0;
+    });
 
     const auctionIds = projects.map((project) => project.auctionId);
     const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
@@ -314,14 +323,16 @@ export class Service {
       );
 
       for (const project of projectsToBedeployed) {
-        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
+        log(`Auction ${project!.auctionId} completed`);
 
+        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
         // Update project with deployer LRNs
         await this.db.updateProjectById(project.id!, {
           deployerLrns
         });
 
         for (const deployer of deployerLrns) {
+          log(`Creating deployment for deployer LRN ${deployer}`);
           await this.createDeploymentFromAuction(project, deployer);
         }
       }
@@ -838,6 +849,7 @@ export class Service {
     }
 
     const project = await this.db.addProject(user, organization.id, data);
+    log(`Project created ${project.id}`);
 
     const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');
@@ -869,8 +881,6 @@ export class Service {
     }
 
     await this.createRepoHook(octokit, project);
-
-    console.log('projectid is', project.id);
 
     return project;
   }

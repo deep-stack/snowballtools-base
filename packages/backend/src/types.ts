@@ -29,6 +29,8 @@ export interface GitPushEventPayload {
 
 export interface AppDeploymentRecordAttributes {
   application: string;
+  auction: string;
+  deployer: string;
   dns: string;
   meta: string;
   name: string;

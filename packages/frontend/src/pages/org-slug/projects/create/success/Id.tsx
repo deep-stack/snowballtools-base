@@ -52,7 +52,7 @@ const Id = () => {
           {/* Heading */}
           <div className="flex flex-col items-center gap-1.5">
             <Heading as="h3" className="font-medium text-xl">
-              {isAuction? 'Auction created successfully.' : 'Project deployed successfully.'}
+              {isAuction? 'Auction created successfully.' : 'Project deployment created successfully.'}
             </Heading>
           </div>
 
