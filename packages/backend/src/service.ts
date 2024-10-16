@@ -319,7 +319,7 @@ export class Service {
 
     if (completedAuctionIds) {
       const projectsToBedeployed = projects.filter((project) =>
-        completedAuctionIds.includes(project.auctionId!)
+        completedAuctionIds.includes(project.auctionId!) && project.deployerLrns !== null
       );
 
       for (const project of projectsToBedeployed) {
@@ -878,6 +878,7 @@ export class Service {
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
       await this.createDeployment(user.id, octokit, deploymentData, lrn!);
+      await this.updateProject(project.id, { deployerLrns: [lrn!] })
     }
 
     await this.createRepoHook(octokit, project);
@@ -948,9 +949,7 @@ export class Service {
       });
 
       const deployers = project.deployerLrns;
-      if (!deployers) {
-        return;
-      }
+      if (!deployers) return;
 
       for (const deployer of deployers) {
         // Create deployment with branch and latest commit in GitHub data
@@ -970,7 +969,6 @@ export class Service {
         );
       }
     }
-
   }
 
   async updateProject(

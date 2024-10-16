@@ -72,26 +72,6 @@ export interface AddProjectFromTemplateInput {
   isPrivate: boolean;
 }
 
-export interface Auction {
-  id: string;
-  kind: string;
-  status: string;
-  ownerAddress: string;
-  createTime: Date;
-  commitsEndTime: Date;
-  revealsEndTime: Date;
-  commitFee: string;
-  revealFee: string;
-  minimumBid?: string;
-  winnerAddresses: string[];
-  winnerBids?: string[];
-  winnerPrice?: string;
-  maxPrice?: string;
-  numProviders: number;
-  fundsReleased: boolean;
-  bids: string[];
-}
-
 export interface AuctionData {
   maxPrice: string,
   numProviders: number,

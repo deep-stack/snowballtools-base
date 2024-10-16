@@ -16,7 +16,6 @@ import {
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData } from './types';
 import { getConfig, getRepoDetails, sleep } from './utils';
-import { Auction } from '@cerc-io/registry-sdk/dist/proto/cerc/auction/v1/auction';
 
 const log = debug('snowball:registry');
 
@@ -428,8 +427,8 @@ export class Registry {
     const auctions = await this.registry.getAuctionsByIds(validAuctionIds);
 
     const completedAuctions = auctions
-      .filter((auction: Auction) => auction.status === 'completed')
-      .map((auction: Auction) => auction.id);
+      .filter((auction: { id:  string, status: string }) => auction.status === 'completed')
+      .map((auction: { id:  string, status: string }) => auction.id);
 
     return completedAuctions;
   }
