@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@cerc-io/registry-sdk": "^0.2.11",
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/utils": "^10.0.12",
     "@octokit/oauth-app": "^6.1.0",
-    "@snowballtools/laconic-sdk": "^0.1.17",
     "@turnkey/sdk-server": "^0.1.0",
     "@types/debug": "^4.1.5",
     "@types/express": "^4.17.21",

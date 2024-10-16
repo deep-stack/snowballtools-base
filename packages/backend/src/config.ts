@@ -36,9 +36,9 @@ export interface RegistryConfig {
   fetchDeploymentRecordDelay: number;
   authority: string;
   fee: {
-    amount: string;
-    denom: string;
     gas: string;
+    fees: string;
+    gasPrice: string;
   };
 }
 
