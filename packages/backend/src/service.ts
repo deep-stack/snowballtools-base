@@ -1080,6 +1080,7 @@ export class Service {
       if (deployment.isCurrent) {
         const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.baseDomain}`;
 
+        // TODO: Store the latest DNS deployment record
         const deploymentRecords =
           await this.laconicRegistry.getDeploymentRecordsByFilter({
             application: deployment.applicationRecordId,
@@ -1094,8 +1095,12 @@ export class Service {
           return false;
         }
 
+        // Multiple records are fetched, take the latest record
+        const latestRecord = deploymentRecords
+          .sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime())[0];
+
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
-          deploymentId: deploymentRecords[deploymentRecords.length - 1].id,
+          deploymentId: latestRecord.id,
           deployerLrn: deployment.deployerLrn
         });
       }
