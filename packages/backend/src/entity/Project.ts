@@ -52,6 +52,9 @@ export class Project {
   @Column({ type: 'simple-array', nullable: true })
     deployerLrns!: string[] | null;
 
+  @Column('boolean', { default: false, nullable: true })
+    fundsReleased!: boolean;
+
   // TODO: Compute template & framework in import repository
   @Column('varchar', { nullable: true })
     template!: string | null;

@@ -171,6 +171,7 @@ export type Project = {
   framework: string;
   deployerLrns: string[];
   auctionId: string;
+  fundsReleased: boolean;
   webhooks: string[];
   members: ProjectMember[];
   environmentVariables: EnvironmentVariable[];

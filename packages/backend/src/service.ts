@@ -210,8 +210,12 @@ export class Service {
         baseDomains.push(baseDomain);
       }
 
+      // Release deployer funds on successful deployment
+      const fundsReleased = await this.releaseDeployerFundsByProjectId(project.id);
+
       await this.db.updateProjectById(project.id, {
-        baseDomains
+        baseDomains,
+        fundsReleased,
       })
 
       log(
@@ -1260,5 +1264,25 @@ export class Service {
   ): Promise<any> {
     const auctions = await this.laconicRegistry.getAuctionData(auctionId);
     return auctions[0];
+  }
+
+  async releaseDeployerFundsByProjectId(projectId: string): Promise<boolean> {
+    const project = await this.db.getProjectById(projectId);
+
+    if (!project || !project.auctionId) {
+      log(`Project ${projectId} ${!project ? 'not found' : 'does not have an auction'}`);
+      return false;
+    }
+
+    const auction = await this.laconicRegistry.releaseDeployerFunds(project.auctionId);
+
+    if (auction.auction.fundsReleased) {
+      log(`Funds released for auction ${project.auctionId}`);
+      await this.db.updateProjectById(projectId, { fundsReleased: true });
+      return true;
+    }
+
+    log(`Error releasing funds for auction ${project.auctionId}`);
+    return false;
   }
 }

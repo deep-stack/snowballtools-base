@@ -17,6 +17,7 @@ const WAIT_DURATION = 5000;
 export const AuctionCard = ({ project }: { project: Project }) => {
   const [auctionStatus, setAuctionStatus] = useState<string>('');
   const [deployerLrns, setDeployerLrns] = useState<string[]>([]);
+  const [fundsStatus, setFundsStatus] = useState<boolean>(false);
   const [auctionDetails, setAuctionDetails] = useState<Auction | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const client = useGQLClient();
@@ -29,13 +30,13 @@ export const AuctionCard = ({ project }: { project: Project }) => {
     setAuctionStatus(result.status);
     setAuctionDetails(result);
     setDeployerLrns(project.deployerLrns);
-  }, [client, project.auctionId, project.deployerLrns]);
+    setFundsStatus(project.fundsReleased);
+  }, []);
 
   useEffect(() => {
     if (auctionStatus !== 'completed') {
       checkAuctionStatus();
       const intervalId = setInterval(checkAuctionStatus, WAIT_DURATION);
-
       return () => clearInterval(intervalId);
     }
   }, [auctionStatus, checkAuctionStatus]);
@@ -48,10 +49,9 @@ export const AuctionCard = ({ project }: { project: Project }) => {
         const updatedProject = await client.getProject(project.id);
         setDeployerLrns(updatedProject.project?.deployerLrns || []);
       };
-
       fetchUpdatedProject();
     }
-  }, [auctionStatus, client, project.id]);
+  }, [auctionStatus, client]);
 
   const renderAuctionStatus = useCallback(
     () => (
@@ -101,6 +101,18 @@ export const AuctionCard = ({ project }: { project: Project }) => {
             ))}
           </div>
         )}
+
+        <div className="flex justify-between items-center mt-1">
+          <span className="text-elements-high-em text-sm font-medium tracking-tight">Deployer Funds Status</span>
+          <div className="ml-2">
+            <Tag
+              size="xs"
+              type={fundsStatus ? 'positive' : 'emphasized'}
+            >
+              {fundsStatus ? 'RELEASED' : 'LOCKED'}
+            </Tag>
+          </div>
+        </div>
       </div>
 
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
