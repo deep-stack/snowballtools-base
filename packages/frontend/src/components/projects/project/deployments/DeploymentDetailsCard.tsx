@@ -72,6 +72,11 @@ const DeploymentDetailsCard = ({
             leftIcon={getIconByDeploymentStatus(deployment.status)}
             size="xs"
             type={STATUS_COLORS[deployment.status] ?? 'neutral'}
+            onClick={async()=> {
+              let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`
+              const res = await fetch(url);
+              console.log(">>>>RESPONSE",await res.text())
+            }}
           >
             {deployment.status}
           </Tag>
@@ -96,9 +101,9 @@ const DeploymentDetailsCard = ({
               </OverflownText>
             </Heading>
           )}
-          {deployment.deployerLrn && (
+          {deployment.deployer.deployerLrn && (
             <span className="text-sm text-elements-low-em tracking-tight block mt-2">
-              Deployer LRN: {deployment.deployerLrn}
+              Deployer LRN: {deployment.deployer.deployerLrn}
             </span>
           )}
           <span className="text-sm text-elements-low-em tracking-tight block">

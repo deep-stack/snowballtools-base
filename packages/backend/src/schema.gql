@@ -104,7 +104,8 @@ type Deployment {
   commitMessage: String!
   url: String
   environment: Environment!
-  deployerId: String
+  deployer: Deployer
+  applicationDeploymentRequestId: String
   isCurrent: Boolean!
   baseDomain: String
   status: DeploymentStatus!
