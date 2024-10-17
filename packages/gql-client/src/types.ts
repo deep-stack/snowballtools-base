@@ -105,7 +105,7 @@ export type Deployment = {
   commitHash: string;
   commitMessage: string;
   url?: string;
-  deployerLrn: string;
+  deployer: Deployer;
   environment: Environment;
   isCurrent: boolean;
   baseDomain?: string;
@@ -113,7 +113,14 @@ export type Deployment = {
   createdBy: User;
   createdAt: string;
   updatedAt: string;
+  applicationDeploymentRequestId: string;
 };
+
+export type Deployer = {
+  deployerApiUrl: string;
+  deployerId: string;
+  deployerLrn: string;
+}
 
 export type OrganizationMember = {
   id: string;

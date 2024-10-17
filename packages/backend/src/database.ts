@@ -196,7 +196,8 @@ export class Database {
       relations: {
         project: true,
         domain: true,
-        createdBy: true
+        createdBy: true,
+        deployer: true,
       },
       where: {
         project: {
