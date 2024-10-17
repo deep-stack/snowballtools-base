@@ -171,8 +171,13 @@ export class Service {
       where: records.map((record) => ({
         applicationRecordId: record.attributes.application,
         // Only for the specific deployer
-        deployerLrn: record.attributes.deployer
+        deployer: {
+          deployerLrn: record.attributes.deployer
+        }
       })),
+      relations: {
+        deployer: true,
+      },
       order: {
         createdAt: 'DESC',
       },
@@ -209,29 +214,34 @@ export class Service {
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
       const project = await this.getProjectById(deployment.projectId)
-      assert(project)
 
-      const parts = record.attributes.url.replace('https://', '').split('.');
-      const baseDomain = parts.slice(1).join('.');
-
-      await this.db.updateDeploymentById(deployment.id, {
-        applicationDeploymentRecordId: record.id,
-        applicationDeploymentRecordData: record.attributes,
-        url: record.attributes.url,
-        baseDomain,
-        status: DeploymentStatus.Ready,
-        isCurrent: deployment.environment === Environment.Production,
-      });
-
-      const baseDomains = project.baseDomains || [];
-
-      if (!baseDomains.includes(baseDomain)) {
-        baseDomains.push(baseDomain);
+      if (!project) {
+        log(`Project ${deployment.projectId} not found`);
+        return;
       }
+      else {
+        const parts = record.attributes.url.replace('https://', '').split('.');
+        const baseDomain = parts.slice(1).join('.');
 
-      await this.db.updateProjectById(project.id, {
-        baseDomains
-      })
+        await this.db.updateDeploymentById(deployment.id, {
+          applicationDeploymentRecordId: record.id,
+          applicationDeploymentRecordData: record.attributes,
+          url: record.attributes.url,
+          baseDomain,
+          status: DeploymentStatus.Ready,
+          isCurrent: deployment.environment === Environment.Production,
+        });
+
+        const baseDomains = project.baseDomains || [];
+
+        if (!baseDomains.includes(baseDomain)) {
+          baseDomains.push(baseDomain);
+        }
+
+        await this.db.updateProjectById(project.id, {
+          baseDomains
+        })
+      }
 
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
@@ -326,17 +336,40 @@ export class Service {
       for (const project of projectsToBedeployed) {
         log(`Auction ${project!.auctionId} completed`);
 
-        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
+        const deployerRecords = await this.laconicRegistry.getAuctionWinningDeployerRecords(project!.auctionId!);
 
-        if (!deployerLrns) {
+        if (!deployerRecords) {
           log(`No winning deployer for auction ${project!.auctionId}`);
-        } else {
+        }
+
+        else {
+          const deployerLrns = [];
+          const deployerIds = [];
+
+          for (const record of deployerRecords){
+            const deployerId = record.id;
+            const deployerLrn = record.names[0]
+            const deployerApiUrl = record.attributes.apiUrl;
+
+            deployerIds.push(deployerId);
+            deployerLrns.push(deployerLrn);
+
+            const deployerData = {
+            deployerId,
+            deployerLrn,
+            deployerApiUrl,
+          };
+
+          // Store the deployer in the DB
+          await this.db.addDeployer(deployerData);
+        }
+
           // Update project with deployer LRNs
           await this.db.updateProjectById(project.id!, {
             deployerLrns
           });
 
-          for (const deployer of deployerLrns) {
+          for (const deployer of deployerIds) {
             log(`Creating deployment for deployer LRN ${deployer}`);
             await this.createDeploymentFromAuction(project, deployer);
           }
@@ -687,7 +720,7 @@ export class Service {
 
   async createDeploymentFromAuction(
     project: DeepPartial<Project>,
-    deployerLrn: string
+    deployerId: string
   ): Promise<Deployment> {
     const octokit = await this.getOctokit(project.ownerId!);
     const [owner, repo] = project.repository!.split('/');
@@ -713,6 +746,9 @@ export class Service {
     const applicationRecordId = record.id;
     const applicationRecordData = record.attributes;
 
+    const deployer = await this.db.getDeployerById(deployerId);
+    const deployerLrn = deployer!.deployerLrn
+
     // Create deployment with prod branch and latest commit
     const deploymentData = {
       project,
@@ -723,7 +759,7 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    const newDeployment = await this.createDeploymentFromData(project.ownerId!, deploymentData, deployerLrn, applicationRecordId, applicationRecordData);
+    const newDeployment = await this.createDeploymentFromData(project.ownerId!, deploymentData, deployerId, applicationRecordId, applicationRecordData);
 
     const environmentVariablesObj = await this.getEnvVariables(project!.id!);
     // To set project DNS
