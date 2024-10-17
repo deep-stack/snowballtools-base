@@ -59,11 +59,16 @@ function App() {
     fetch(`${baseUrl}/auth/session`, {
       credentials: 'include',
     }).then((res) => {
+      const path = window.location.pathname;
       if (res.status !== 200) {
         localStorage.clear();
-        const path = window.location.pathname;
+
         if (path !== '/login') {
           window.location.pathname = '/login';
+        }
+      } else {
+        if (path === '/login') {
+          window.location.pathname = '/';
         }
       }
     });

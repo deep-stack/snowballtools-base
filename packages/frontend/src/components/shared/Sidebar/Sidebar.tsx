@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
 import { motion } from 'framer-motion';
+import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from 'context/GQLClientContext';
 import {
@@ -33,6 +34,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [user, setUser] = useState<User>();
+  const { disconnect } = useDisconnect();
 
   const fetchUser = useCallback(async () => {
     const { user } = await client.getUser();
@@ -89,8 +91,9 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       credentials: 'include',
     });
     localStorage.clear();
+    disconnect();
     navigate('/login');
-  }, [navigate]);
+  }, [disconnect, navigate]);
 
   return (
     <motion.nav

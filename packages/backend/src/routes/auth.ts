@@ -108,9 +108,12 @@ router.get('/session', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  // This is how you clear cookie-session
-  (req as any).session = null;
-  res.send({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.send({ success: false });
+    }
+    res.send({ success: true });
+  });
 });
 
 export default router;
