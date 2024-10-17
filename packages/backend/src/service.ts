@@ -319,21 +319,26 @@ export class Service {
 
     if (completedAuctionIds) {
       const projectsToBedeployed = projects.filter((project) =>
-        completedAuctionIds.includes(project.auctionId!) && project.deployerLrns !== null
+        completedAuctionIds.includes(project.auctionId!)
       );
 
       for (const project of projectsToBedeployed) {
         log(`Auction ${project!.auctionId} completed`);
 
         const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
-        // Update project with deployer LRNs
-        await this.db.updateProjectById(project.id!, {
-          deployerLrns
-        });
 
-        for (const deployer of deployerLrns) {
-          log(`Creating deployment for deployer LRN ${deployer}`);
-          await this.createDeploymentFromAuction(project, deployer);
+        if (!deployerLrns) {
+          log(`No winning deployer for auction ${project!.auctionId}`);
+        } else {
+          // Update project with deployer LRNs
+          await this.db.updateProjectById(project.id!, {
+            deployerLrns
+          });
+
+          for (const deployer of deployerLrns) {
+            log(`Creating deployment for deployer LRN ${deployer}`);
+            await this.createDeploymentFromAuction(project, deployer);
+          }
         }
       }
     }
