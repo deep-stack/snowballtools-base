@@ -1,4 +1,5 @@
-import React, { ReactNode, Suspense } from 'react';
+import { ReactNode } from 'react';
+import assert from 'assert';
 import { SiweMessage, generateNonce } from 'siwe';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum, mainnet } from 'wagmi/chains';
@@ -12,12 +13,16 @@ import type {
 } from '@web3modal/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// TODO: Use environment variable
-const WALLET_CONNECT_ID="d37f5a2f09d22f5e3ccaff4bbc93d37c"
+import { VITE_WALLET_CONNECT_ID, baseUrl } from 'utils/constants';
+
+if (!VITE_WALLET_CONNECT_ID) {
+  throw new Error('Error: REACT_APP_WALLET_CONNECT_ID env config is not set');
+}
+assert(baseUrl, 'VITE_SERVER_URL is not set in env');
+
 const queryClient = new QueryClient();
 const axiosInstance = axios.create({
-  // TODO: Use environment variable
-  baseURL: 'http://localhost:8000',
+  baseURL: baseUrl,
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -33,7 +38,7 @@ const metadata = {
 const chains = [mainnet, arbitrum] as const;
 const config = defaultWagmiConfig({
   chains,
-  projectId: WALLET_CONNECT_ID,
+  projectId: VITE_WALLET_CONNECT_ID,
   metadata,
 });
 const siweConfig = createSIWEConfig({
@@ -95,7 +100,7 @@ const siweConfig = createSIWEConfig({
 createWeb3Modal({
   siweConfig,
   wagmiConfig: config,
-  projectId: WALLET_CONNECT_ID,
+  projectId: VITE_WALLET_CONNECT_ID,
 });
 export default function Web3ModalProvider({
   children,

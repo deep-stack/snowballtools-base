@@ -6,19 +6,6 @@ import { authenticateUser, createUser } from '../turnkey-backend';
 const router = Router();
 
 //
-// Access Code
-//
-router.post('/accesscode', async (req, res) => {
-  console.log('Access Code', req.body);
-  const { accesscode } = req.body;
-  if (accesscode === '44444') {
-    return res.send({ isValid: true });
-  } else {
-    return res.sendStatus(204);
-  }
-});
-
-//
 // Turnkey
 //
 router.get('/registration/:email', async (req, res) => {
@@ -58,10 +45,6 @@ router.post('/authenticate', async (req, res) => {
     res.sendStatus(401);
   }
 });
-
-//
-// Lit
-//
 
 router.post('/validate', async (req, res) => {
   const { message, signature } = req.body;
