@@ -86,8 +86,7 @@ export const createAndStartServer = async (
     saveUninitialized: true,
     cookie: {
       secure: new URL(appOriginUrl).protocol === 'https:',
-      // 23 hours (less than 24 hours to avoid sessionSigs expiration issues)
-      maxAge: 23 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       domain: domain || undefined,
       sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax',
     }
