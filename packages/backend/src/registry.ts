@@ -416,11 +416,11 @@ export class Registry {
     };
   }
 
-  async getCompletedAuctionIds(auctionIds: (string | null | undefined)[]): Promise<string[] | null> {
-    const validAuctionIds = auctionIds.filter((id): id is string => id !== null && id !== undefined);
+  async getCompletedAuctionIds(auctionIds: string[]): Promise<string[]> {
+    const validAuctionIds = auctionIds.filter((id): id is string => id !== '');
 
     if (!validAuctionIds.length) {
-      return null;
+      return [];
     }
 
     const auctions = await this.registry.getAuctionsByIds(validAuctionIds);

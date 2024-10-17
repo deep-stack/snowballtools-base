@@ -14,6 +14,8 @@ import { ProjectSettingContainer } from 'components/projects/project/settings/Pr
 import { useToast } from 'components/shared/Toast';
 import { Environment, EnvironmentVariable } from 'gql-client';
 import EnvironmentVariablesForm from './EnvironmentVariablesForm';
+import { FieldValues, FormProvider, useForm } from 'react-hook-form';
+import { Button } from 'components/shared';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -25,6 +27,17 @@ export const EnvironmentVariablesTabPanel = () => {
   >([]);
 
   const [createNewVariable, setCreateNewVariable] = useState(false);
+
+  const methods = useForm<EnvironmentVariablesFormValues>({
+    defaultValues: {
+      variables: [{ key: '', value: '' }],
+      environment: {
+        development: false,
+        preview: false,
+        production: false,
+      },
+    },
+  });
 
   const getEnvironmentVariables = useCallback(
     (environment: Environment) => {
@@ -51,8 +64,8 @@ export const EnvironmentVariablesTabPanel = () => {
   }, [id]);
 
   const createEnvironmentVariablesHandler = useCallback(
-    async (createFormData: EnvironmentVariablesFormValues, reset: () => void) => {
-      const environmentVariables = createFormData.variables.map((variable) => {
+    async (createFormData: FieldValues) => {
+      const environmentVariables = createFormData.variables.map((variable: any) => {
         return {
           key: variable.key,
           value: variable.value,
@@ -66,7 +79,7 @@ export const EnvironmentVariablesTabPanel = () => {
         await client.addEnvironmentVariables(id!, environmentVariables);
 
       if (isEnvironmentVariablesAdded) {
-        reset();
+        // reset();
         setCreateNewVariable((cur) => !cur);
 
         fetchEnvironmentVariables(id);
@@ -111,10 +124,18 @@ export const EnvironmentVariablesTabPanel = () => {
           </div>
         </Heading>
         <Collapse open={createNewVariable}>
-          <div className="p-4 bg-slate-100">
-            <EnvironmentVariablesForm
-              onSubmit={(data, reset) => createEnvironmentVariablesHandler(data, reset)} />
-            </div>
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit((data) => createEnvironmentVariablesHandler(data))}>
+              <div className="p-4 bg-slate-100">
+                <EnvironmentVariablesForm />
+              </div>
+              <div className="p-2">
+                <Button size="md" type="submit">
+                  Save changes
+                </Button>
+              </div>
+            </form>
+          </FormProvider>
         </Collapse>
       </div>
       <div className="p-2">

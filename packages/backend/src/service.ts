@@ -313,10 +313,9 @@ export class Service {
       return project.deployments.length === 0;
     });
 
-    const auctionIds = projects.map((project) => project.auctionId);
-    const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
-
-    if (completedAuctionIds) {
+    if (projects.length > 0) {
+      const auctionIds = projects.map((project) => project.auctionId!);
+      const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
       const projectsToBedeployed = projects.filter((project) =>
         completedAuctionIds.includes(project.auctionId!)
       );
