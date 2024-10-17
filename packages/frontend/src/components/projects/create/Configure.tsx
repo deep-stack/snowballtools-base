@@ -233,6 +233,7 @@ const Configure = () => {
                 <Controller
                   name="lrn"
                   control={methods.control}
+                  rules={{ required : true }}
                   render={({ field: { value, onChange } }) => (
                     <Input value={value} onChange={onChange} />
                   )}
@@ -252,6 +253,7 @@ const Configure = () => {
                   <Controller
                     name="numProviders"
                     control={methods.control}
+                    rules={{ required : true }}
                     render={({ field: { value, onChange } }) => (
                       <Input type="number" value={value} onChange={onChange} />
                     )}
@@ -264,6 +266,7 @@ const Configure = () => {
                   <Controller
                     name="maxPrice"
                     control={methods.control}
+                    rules={{ required : true }}
                     render={({ field: { value, onChange } }) => (
                       <Input type="number" value={value} onChange={onChange} />
                     )}

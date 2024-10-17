@@ -163,6 +163,7 @@ const CreateRepo = () => {
           <Controller
             name="repoName"
             control={control}
+            rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <Input value={value} onChange={onChange} />
             )}
@@ -172,7 +173,7 @@ const CreateRepo = () => {
           <Controller
             name="isPrivate"
             control={control}
-            render={({}) => (
+            render={({ }) => (
               <Checkbox label="Make this repo private" disabled={true} />
             )}
           />

@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 import { Checkbox } from '@snowballtools/material-tailwind-react-fork';
 
 import { Button } from 'components/shared/Button';
-// import { InlineNotification } from 'components/shared/InlineNotification';
+import { InlineNotification } from 'components/shared/InlineNotification';
 import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
 import { EnvironmentVariablesFormValues } from 'types/types';
 
@@ -13,14 +13,11 @@ const EnvironmentVariablesForm = () => {
     register,
     control,
     reset,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, errors },
   } = useFormContext<EnvironmentVariablesFormValues>();
   const { fields, append, remove } = useFieldArray({
     name: 'variables',
     control,
-    rules: {
-      required: 'Add at least 1 environment variables',
-    },
   });
 
   useEffect(() => {
@@ -29,20 +26,20 @@ const EnvironmentVariablesForm = () => {
     }
   }, [isSubmitSuccessful, reset]);
 
-  // const isFieldEmpty = useMemo(() => {
-  //   if (errors.variables) {
-  //     return fields.some((_, index) => {
-  //       if (
-  //         errors.variables![index]?.value?.type === 'required' ||
-  //         errors.variables![index]?.key?.type === 'required'
-  //       ) {
-  //         return true;
-  //       }
-  //     });
-  //   }
+  const isFieldEmpty = useMemo(() => {
+    if (errors.variables) {
+      return fields.some((_, index) => {
+        if (
+          errors.variables![index]?.value?.type === 'required' ||
+          errors.variables![index]?.key?.type === 'required'
+        ) {
+          return true;
+        }
+      });
+    }
 
-  //   return false;
-  // }, [fields, errors.variables]);
+    return false;
+  }, [fields, errors.variables]);
 
   return (
     <>
@@ -52,7 +49,7 @@ const EnvironmentVariablesForm = () => {
           index={index}
           register={register}
           onDelete={() => remove(index)}
-          isDeleteDisabled={fields.length === 1}
+          isDeleteDisabled={fields.length === 0}
         />
       ))}
       <div className="flex gap-1 p-2">
@@ -60,18 +57,18 @@ const EnvironmentVariablesForm = () => {
           + Add variable
         </Button>
       </div>
-      {/* {isFieldEmpty && (
+      {isFieldEmpty && (
         <InlineNotification
           title="Please ensure no fields are empty before saving."
           variant="danger"
         />
-      )} */}
+      )}
       <div className="flex gap-2 p-2">
         <Checkbox label="Production" {...register('environment.production')} />
         <Checkbox label="Preview" {...register('environment.preview')} />
         <Checkbox label="Development" {...register('environment.development')} />
       </div>
-      </>
+    </>
   );
 };
 
