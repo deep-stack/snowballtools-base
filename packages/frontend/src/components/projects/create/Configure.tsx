@@ -142,19 +142,20 @@ const Configure = () => {
             <Controller
               name="option"
               control={control}
+              defaultValue="Auction"
               render={({ field: { value, onChange } }) => (
                 <Select
                   label="Configuration Options"
                   value={
                     {
-                      value: value || 'LRN',
+                      value: value || 'Auction',
                       label: value === 'Auction' ? 'Create Auction' : 'Deployer LRN',
                     } as SelectOption
                   }
                   onChange={(value) => onChange((value as SelectOption).value)}
                   options={[
-                    { value: 'LRN', label: 'Deployer LRN' },
                     { value: 'Auction', label: 'Create Auction' },
+                    { value: 'LRN', label: 'Deployer LRN' },
                   ]}
                 />
               )}

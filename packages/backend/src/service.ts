@@ -14,6 +14,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
+import { Deployer } from './entity/Deployer';
 import { GitHubConfig, RegistryConfig } from './config';
 import {
   AddProjectFromTemplateInput,
@@ -605,7 +606,7 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-    }, oldDeployment.deployerLrn);
+    }, oldDeployment.deployer.deployerLrn);
 
     return newDeployment;
   }
@@ -763,7 +764,7 @@ export class Service {
   async createDeploymentFromData(
     userId: string,
     data: DeepPartial<Deployment>,
-    deployerLrn: string,
+    deployerId: string,
     applicationRecordId: string,
     applicationRecordData: ApplicationRecord,
   ): Promise<Deployment> {
@@ -780,7 +781,9 @@ export class Service {
       createdBy: Object.assign(new User(), {
         id: userId,
       }),
-      deployerLrn,
+      deployer: Object.assign(new Deployer(), {
+        deployerId,
+      }),
     });
 
     log(`Created deployment ${newDeployment.id}`);
@@ -1025,7 +1028,7 @@ export class Service {
     let newDeployment: Deployment;
 
     if (oldDeployment.project.auctionId) {
-      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployerLrn);
+      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployer.deployerLrn);
     } else {
       newDeployment = await this.createDeployment(user.id, octokit,
         {
@@ -1037,7 +1040,7 @@ export class Service {
           commitHash: oldDeployment.commitHash,
           commitMessage: oldDeployment.commitMessage,
         },
-        oldDeployment.deployerLrn
+        oldDeployment.deployer.deployerLrn
       );
     }
 
@@ -1114,14 +1117,14 @@ export class Service {
 
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: latestRecord.id,
-          deployerLrn: deployment.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn
         });
       }
 
       const result =
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
-          deployerLrn: deployment.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn
         });
 
       await this.db.updateDeploymentById(deployment.id, {
