@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Suspense } from 'react';
 import { SiweMessage, generateNonce } from 'siwe';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum, mainnet } from 'wagmi/chains';
@@ -12,18 +12,17 @@ import type {
 } from '@web3modal/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// if (!process.env.VITE_WALLET_CONNECT_ID) {
-//   throw new Error('Error: VITE_WALLET_CONNECT_ID env config is not set');
-// }
+// TODO: Use environment variable
 const WALLET_CONNECT_ID="d37f5a2f09d22f5e3ccaff4bbc93d37c"
 const queryClient = new QueryClient();
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
-  // headers: {
-  //   'Content-Type': 'application/json',
-  //   'Access-Control-Allow-Origin': '*',
-  // },
-  // withCredentials: true,
+  // TODO: Use environment variable
+  baseURL: 'http://localhost:8000',
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  },
+  withCredentials: true,
 });
 const metadata = {
   name: 'Web3Modal',
@@ -78,13 +77,12 @@ const siweConfig = createSIWEConfig({
     }
   },
   signOut: async () => {
-    // try {
-    //   const { success } = (await axiosInstance.post('/auth/logout')).data;
-    //   return success;
-    // } catch (error) {
-    //   return false;
-    // }
-    return false
+    try {
+      const { success } = (await axiosInstance.post('/auth/logout')).data;
+      return success;
+    } catch (error) {
+      return false;
+    }
   },
   onSignOut: () => {
     window.location.href = '/login';

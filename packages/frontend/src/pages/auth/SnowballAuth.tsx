@@ -40,11 +40,7 @@ export const SnowballAuth: React.FC = () => {
   }
   if (screen === 'login') {
     return (
-      <Login
-        onDone={() => {
-          setScreen('success');
-        }}
-      />
+      <Login />
     );
   }
   if (screen === 'success') {

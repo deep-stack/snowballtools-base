@@ -50,28 +50,24 @@ const router = createBrowserRouter([
     path: '/login',
     element: <AuthPage />,
   },
-  {
-    path: '/signup',
-    element: <AuthPage />,
-  },
 ]);
 
 function App() {
   // Hacky way of checking session
   // TODO: Handle redirect backs
-  // useEffect(() => {
-  //   fetch(`${baseUrl}/auth/session`, {
-  //     credentials: 'include',
-  //   }).then((res) => {
-  //     if (res.status !== 200) {
-  //       localStorage.clear();
-  //       const path = window.location.pathname;
-  //       if (path !== '/login' && path !== '/signup') {
-  //         window.location.pathname = '/login';
-  //       }
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    fetch(`${baseUrl}/auth/session`, {
+      credentials: 'include',
+    }).then((res) => {
+      if (res.status !== 200) {
+        localStorage.clear();
+        const path = window.location.pathname;
+        if (path !== '/login') {
+          window.location.pathname = '/login';
+        }
+      }
+    });
+  }, []);
 
   return (
     <Web3Provider>

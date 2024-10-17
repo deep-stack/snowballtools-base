@@ -8,7 +8,7 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   AuthenticationError,
 } from 'apollo-server-core';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
 
 import { TypeSource } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
@@ -62,7 +62,6 @@ export const createAndStartServer = async (
       }
 
       const user = await service.getUser(address);
-
       return { user };
     },
     plugins: [
@@ -81,20 +80,26 @@ export const createAndStartServer = async (
     }),
   );
 
+  const sessionOptions: session.SessionOptions = {
+    secret: secret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: new URL(appOriginUrl).protocol === 'https:',
+      // 23 hours (less than 24 hours to avoid sessionSigs expiration issues)
+      maxAge: 23 * 60 * 60 * 1000,
+      domain: domain || undefined,
+      sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax',
+    }
+  };
+
   if (trustProxy) {
     // trust first proxy
     app.set('trust proxy', 1);
   }
 
   app.use(
-    cookieSession({
-      secret: secret,
-      secure: new URL(appOriginUrl).protocol === 'https:',
-      // 23 hours (less than 24 hours to avoid sessionSigs expiration issues)
-      maxAge: 23 * 60 * 60 * 1000,
-      sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax',
-      domain: domain || undefined,
-    }),
+    session(sessionOptions)
   );
 
   server.applyMiddleware({

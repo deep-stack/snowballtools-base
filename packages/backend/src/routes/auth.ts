@@ -69,7 +69,6 @@ router.post('/validate', async (req, res) => {
     signature,
   });
 
-  console.log("VALIDATE CALL",message, signature )
   if (!success) {
     return res.send({ success, error: 'SIWE verifcation failed' } );
   }
@@ -90,7 +89,6 @@ router.post('/validate', async (req, res) => {
     req.session.address = user.id;
     req.session.chainId = data.chainId;
   }
-  console.log("VALIDATE CALL FINISHED", req.session)
 
   res.send({ success });
 });
