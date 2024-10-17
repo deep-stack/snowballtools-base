@@ -14,6 +14,7 @@ import { Project } from './entity/Project';
 import { Permission, ProjectMember } from './entity/ProjectMember';
 import { User } from './entity/User';
 import { Registry } from './registry';
+import { Deployer } from './entity/Deployer';
 import { GitHubConfig, RegistryConfig } from './config';
 import {
   AddProjectFromTemplateInput,
@@ -235,7 +236,7 @@ export class Service {
     for (const deployment of prodDeployments) {
       const projectDeployments = await this.db.getDeploymentsByProjectId(deployment.projectId);
       const oldDeployments = projectDeployments
-        .filter(projectDeployment => projectDeployment.deployerLrn === deployment.deployerLrn && projectDeployment.id !== deployment.id);
+        .filter(projectDeployment => projectDeployment.deployer.deployerLrn === deployment.deployer.deployerLrn && projectDeployment.id !== deployment.id);
       for (const oldDeployment of oldDeployments) {
         await this.db.updateDeployment(
           { id: oldDeployment.id },
@@ -587,7 +588,7 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-      deployerLrn: oldDeployment.deployerLrn
+      deployer:  oldDeployment.deployer
     });
 
     return newDeployment;
@@ -625,7 +626,7 @@ export class Service {
       );
     }
 
-    const newDeployment = await this.createDeploymentFromData(userId, data, data.deployerLrn!, applicationRecordId, applicationRecordData);
+    const newDeployment = await this.createDeploymentFromData(userId, data, data.deployer!.deployerId!, applicationRecordId, applicationRecordData);
 
     const { repo, repoUrl } = await getRepoDetails(octokit, data.project.repository, data.commitHash);
     const environmentVariablesObj = await this.getEnvVariables(data.project!.id!);
@@ -639,7 +640,7 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn: data.deployerLrn!
+        lrn: data.deployer!.deployerLrn!
       });
     }
 
@@ -648,7 +649,7 @@ export class Service {
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
-        lrn: data.deployerLrn!,
+        lrn: data.deployer!.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -740,7 +741,7 @@ export class Service {
   async createDeploymentFromData(
     userId: string,
     data: DeepPartial<Deployment>,
-    deployerLrn: string,
+    deployerId: string,
     applicationRecordId: string,
     applicationRecordData: ApplicationRecord,
   ): Promise<Deployment> {
@@ -757,7 +758,9 @@ export class Service {
       createdBy: Object.assign(new User(), {
         id: userId,
       }),
-      deployerLrn,
+      deployer: Object.assign(new Deployer(), {
+        deployerId,
+      }),
     });
 
     log(`Created deployment ${newDeployment.id}`);
@@ -936,6 +939,7 @@ export class Service {
         branch,
       });
 
+      // TODO: Store deployer in project
       const deployers = project.deployerLrns;
       if (!deployers) {
         log(`No deployer present for project ${project.id}`)
@@ -955,7 +959,7 @@ export class Service {
             domain,
             commitHash: headCommit.id,
             commitMessage: headCommit.message,
-            deployerLrn: deployer
+            // deployer: deployer
           },
         );
       }
@@ -1011,8 +1015,7 @@ export class Service {
     let newDeployment: Deployment;
 
     if (oldDeployment.project.auctionId) {
-      // TODO: Discuss creating applicationRecord for redeployments
-      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployerLrn);
+      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployer.deployerLrn);
     } else {
       newDeployment = await this.createDeployment(user.id, octokit,
         {
@@ -1023,7 +1026,7 @@ export class Service {
           domain: oldDeployment.domain,
           commitHash: oldDeployment.commitHash,
           commitMessage: oldDeployment.commitMessage,
-          deployerLrn: oldDeployment.deployerLrn
+          deployer: oldDeployment.deployer
         }
       );
     }
@@ -1101,14 +1104,14 @@ export class Service {
 
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: latestRecord.id,
-          deployerLrn: deployment.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn
         });
       }
 
       const result =
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
-          deployerLrn: deployment.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn
         });
 
       await this.db.updateDeploymentById(deployment.id, {
