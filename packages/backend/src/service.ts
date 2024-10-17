@@ -308,20 +308,21 @@ export class Service {
       completedAuctionIds.includes(project.auctionId!)
     );
 
-    for (const project of projectsToBedeployed) {
-      const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project.auctionId!);
 
-      if (!deployerLrns) {
+    for (const project of projectsToBedeployed) {
+      const deployers = await this.laconicRegistry.getAuctionWinningDeployerRecords(project!.auctionId!);
+
+      if (!deployers) {
         log(`No winning deployer for auction ${project!.auctionId}`);
       } else {
-        // Update project with deployer LRNs
-        await this.db.updateProjectById(project.id!, {
-          deployerLrns
-        });
+        // TODO:Update project with deployer LRNs
+        // await this.db.updateProjectById(project.id!, {
+        //   deployers
+        // });
 
-        for (const deployer of deployerLrns) {
+        for (const deployer of deployers) {
           log(`Creating deployment for deployer LRN ${deployer}`);
-          await this.createDeploymentFromAuction(project, deployer);
+          await this.createDeploymentFromAuction(project, deployer.names[0]);
         }
       }
     }
@@ -588,7 +589,7 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-      deployer:  oldDeployment.deployer
+      deployer: oldDeployment.deployer
     });
 
     return newDeployment;

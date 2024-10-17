@@ -14,7 +14,7 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams, DeployerRecord } from './types';
 import { getConfig, getRepoDetails, sleep } from './utils';
 
 const log = debug('snowball:registry');
@@ -25,6 +25,7 @@ const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
 const APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE = 'ApplicationDeploymentRemovalRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
 const APP_DEPLOYMENT_REMOVAL_RECORD_TYPE = 'ApplicationDeploymentRemovalRecord';
+const WEBAPP_DEPLOYER_RECORD_TYPE = 'WebappDeployer'
 const SLEEP_DURATION = 1000;
 
 // TODO: Move registry code to registry-sdk/watcher-ts
@@ -116,7 +117,7 @@ export class Registry {
       this.registryConfig.privateKey,
       fee
     );
-
+    log("Result: ", result);
     log(`Published application record ${result.id}`);
     log('Application record data:', applicationRecord);
 
@@ -291,32 +292,33 @@ export class Registry {
     };
   }
 
-  async getAuctionWinningDeployers(
+  async getAuctionWinningDeployerRecords(
     auctionId: string
-  ): Promise<string[]> {
+  ): Promise<DeployerRecord[]> {
     const records = await this.registry.getAuctionsByIds([auctionId]);
     const auctionResult = records[0];
 
-    let deployerLrns = [];
+    let deployerRecords = [];
     const { winnerAddresses } = auctionResult;
 
     for (const auctionWinner of winnerAddresses) {
-      const deployerRecords = await this.registry.queryRecords(
+      const records = await this.registry.queryRecords(
         {
           paymentAddress: auctionWinner,
+          type: WEBAPP_DEPLOYER_RECORD_TYPE,
         },
         true
       );
 
-      for (const record of deployerRecords) {
-        if (record.names && record.names.length > 0) {
-          deployerLrns.push(record.names[0]);
+      for (const record of records) {
+        if (record.id) {
+          deployerRecords.push(record);
           break;
         }
       }
     }
 
-    return deployerLrns;
+    return deployerRecords;
   }
 
   async releaseDeployerFunds(

@@ -140,7 +140,6 @@ type Deployer {
   updatedAt: String!
 }
 
-
 type AuthResult {
   token: String!
 }
