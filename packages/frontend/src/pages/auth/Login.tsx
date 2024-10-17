@@ -20,51 +20,52 @@ import { signInWithEthereum } from 'utils/siwe';
 import { useSnowball } from 'utils/use-snowball';
 import { logError } from 'utils/log-error';
 
-type Provider = 'google' | 'github' | 'apple' | 'email' | 'passkey';
+// type Provider = 'google' | 'github' | 'apple' | 'email' | 'passkey';
 
 type Props = {
   onDone: () => void;
 };
 
 export const Login = ({ onDone }: Props) => {
-  const snowball = useSnowball();
-  const [error, setError] = useState<string>('');
-  const [provider, setProvider] = useState<Provider | false>(false);
+  // const snowball = useSnowball();
+  // const [error, setError] = useState<string>('');
+  // const [provider, setProvider] = useState<Provider | false>(false);
 
   // const loading = snowball.auth.state.loading && provider;
-  const loading = provider;
-  const { toast } = useToast();
+  // const loading = provider;
+  // const { toast } = useToast();
 
-  if (provider === 'email') {
-    return <CreatePasskey onDone={onDone} />;
-  }
+  console.log(">>ondone", onDone)
+  // if (provider === 'email') {
+  //   return <CreatePasskey onDone={onDone} />;
+  // }
 
-  async function handleSigninRedirect() {
-    let wallet: PKPEthersWallet | undefined;
-    const { google } = snowball.auth;
-    if (google.canHandleOAuthRedirectBack()) {
-      setProvider('google');
-      console.log('Handling google redirect back');
-      try {
-        await google.handleOAuthRedirectBack();
-        // @ts-ignore
-        wallet = await google.getEthersWallet();
-        // @ts-ignore
-        const result = await signInWithEthereum(1, 'login', wallet);
-        if (result.error) {
-          setError(result.error);
-          setProvider(false);
-          wallet = undefined;
-          logError(new Error(result.error));
-          return;
-        }
-      } catch (err: any) {
-        setError(err.message);
-        logError(err);
-        setProvider(false);
-        return;
-      }
-    }
+  // async function handleSigninRedirect() {
+  //   let wallet: PKPEthersWallet | undefined;
+  //   const { google } = snowball.auth;
+  //   if (google.canHandleOAuthRedirectBack()) {
+  //     setProvider('google');
+  //     console.log('Handling google redirect back');
+  //     try {
+  //       await google.handleOAuthRedirectBack();
+  //       // @ts-ignore
+  //       wallet = await google.getEthersWallet();
+  //       // @ts-ignore
+  //       const result = await signInWithEthereum(1, 'login', wallet);
+  //       if (result.error) {
+  //         setError(result.error);
+  //         setProvider(false);
+  //         wallet = undefined;
+  //         logError(new Error(result.error));
+  //         return;
+  //       }
+  //     } catch (err: any) {
+  //       setError(err.message);
+  //       logError(err);
+  //       setProvider(false);
+  //       return;
+  //     }
+  //   }
     // if (apple.canHandleOAuthRedirectBack()) {
     //   setProvider('apple');
     //   console.log('Handling apple redirect back');
@@ -86,14 +87,14 @@ export const Login = ({ onDone }: Props) => {
     //   }
     // }
 
-    if (wallet) {
-      window.location.pathname = '/';
-    }
-  }
+    // if (wallet) {
+    //   window.location.pathname = '/';
+    // }
+  // }
 
-  useEffect(() => {
-    handleSigninRedirect();
-  }, []);
+  // useEffect(() => {
+  //   handleSigninRedirect();
+  // }, []);
 
   return (
     <div>
@@ -105,8 +106,8 @@ export const Login = ({ onDone }: Props) => {
       <WavyBorder className="self-stretch" variant="stroke" />
 
       <div className="self-stretch p-4 xs:p-6 flex-col justify-center items-center gap-8 flex">
-        <div className="self-stretch p-5 bg-slate-50 rounded-xl shadow flex-col justify-center items-center gap-6 flex">
-          <div className="self-stretch flex-col justify-center items-center gap-4 flex">
+        {/* <div className="self-stretch p-5 bg-slate-50 rounded-xl shadow flex-col justify-center items-center gap-6 flex"> */}
+          {/* <div className="self-stretch flex-col justify-center items-center gap-4 flex">
             <KeyIcon />
             <div className="self-stretch flex-col justify-center items-center gap-2 flex">
               <div className="self-stretch text-center text-sky-950 text-lg font-medium font-display leading-normal">
@@ -116,9 +117,9 @@ export const Login = ({ onDone }: Props) => {
                 Use it to sign in securely without using a password.
               </div>
             </div>
-          </div>
-          <div className="self-stretch justify-center items-stretch xxs:items-center gap-3 flex flex-col xxs:flex-row">
-            <Button
+          </div> */}
+          {/* <div className="self-stretch justify-center items-stretch xxs:items-center gap-3 flex flex-col xxs:flex-row"> */}
+            {/* <Button
               as="a"
               leftIcon={<QuestionMarkRoundFilledIcon />}
               variant={'tertiary'}
@@ -126,8 +127,8 @@ export const Login = ({ onDone }: Props) => {
               href="https://safety.google/authentication/passkey/"
             >
               Learn more
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               rightIcon={
                 loading && loading === 'passkey' ? (
                   <LoaderIcon className="animate-spin" />
@@ -142,10 +143,10 @@ export const Login = ({ onDone }: Props) => {
               }}
             >
               Sign In with Passkey
-            </Button>
-          </div>
+            </Button> */}
+          {/* </div> */}
 
-          <div className="h-5 justify-center items-center gap-2 inline-flex">
+          {/* <div className="h-5 justify-center items-center gap-2 inline-flex">
             <div className="text-center text-slate-600 text-sm font-normal font-['Inter'] leading-tight">
               Lost your passkey?
             </div>
@@ -155,19 +156,20 @@ export const Login = ({ onDone }: Props) => {
               </button>
               <LinkIcon />
             </div>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
 
-        <div className="self-stretch justify-start items-center gap-8 inline-flex">
+        {/* <div className="self-stretch justify-start items-center gap-8 inline-flex">
           <DotBorder className="flex-1" />
           <div className="text-center text-slate-400 text-xs font-normal font-['JetBrains Mono'] leading-none">
             OR
           </div>
           <DotBorder className="flex-1" />
-        </div>
+        </div> */}
 
         <div className="self-stretch flex-col justify-center  items-center gap-3 flex">
-          <Button
+        <w3m-button />
+          {/* <Button
             leftIcon={<GoogleIcon />}
             rightIcon={
               loading && loading === 'google' ? (
@@ -176,16 +178,16 @@ export const Login = ({ onDone }: Props) => {
             }
             onClick={() => {
               setProvider('google');
-              snowball.auth.google.startOAuthRedirect();
+              // snowball.auth.google.startOAuthRedirect();
             }}
             className="flex-1 self-stretch"
             variant={'tertiary'}
             disabled={!!loading}
           >
             Continue with Google
-          </Button>
+          </Button> */}
 
-          <Button
+          {/* <Button
             leftIcon={<GithubIcon />}
             rightIcon={
               loading && loading === 'github' ? (
@@ -194,23 +196,23 @@ export const Login = ({ onDone }: Props) => {
             }
             onClick={async () => {
               setProvider('github');
-              await new Promise((resolve) => setTimeout(resolve, 800));
-              setProvider(false);
-              toast({
-                id: 'coming-soon',
-                title: 'Sign-in with GitHub is coming soon!',
-                variant: 'info',
-                onDismiss() {},
-              });
+              // await new Promise((resolve) => setTimeout(resolve, 800));
+              // setProvider(false);
+              // toast({
+              //   id: 'coming-soon',
+              //   title: 'Sign-in with GitHub is coming soon!',
+              //   variant: 'info',
+              //   onDismiss() {},
+              // });
             }}
             className="flex-1 self-stretch"
             variant={'tertiary'}
             disabled={!!loading}
           >
             Continue with GitHub
-          </Button>
+          </Button> */}
 
-          <Button
+          {/* <Button
             leftIcon={<AppleIcon />}
             rightIcon={
               loading && loading === 'apple' ? (
@@ -220,14 +222,14 @@ export const Login = ({ onDone }: Props) => {
             onClick={async () => {
               setProvider('apple');
               // snowball.auth.apple.startOAuthRedirect();
-              await new Promise((resolve) => setTimeout(resolve, 800));
-              setProvider(false);
-              toast({
-                id: 'coming-soon',
-                title: 'Sign-in with Apple is coming soon!',
-                variant: 'info',
-                onDismiss() {},
-              });
+              // await new Promise((resolve) => setTimeout(resolve, 800));
+              // setProvider(false);
+              // toast({
+              //   id: 'coming-soon',
+              //   title: 'Sign-in with Apple is coming soon!',
+              //   variant: 'info',
+              //   onDismiss() {},
+              // });
             }}
             className={`flex-1 self-stretch border-black enabled:bg-black text-white ${
               loading && loading === 'apple' ? 'disabled:bg-black' : ''
@@ -236,17 +238,17 @@ export const Login = ({ onDone }: Props) => {
             disabled={!!loading}
           >
             Continue with Apple
-          </Button>
+          </Button> */}
         </div>
 
         <div className="flex flex-col gap-3">
-          {error && (
+          {/* {error && (
             <div className="justify-center items-center gap-2 inline-flex">
               <div className="text-red-500 text-sm">Error: {error}</div>
             </div>
-          )}
+          )} */}
 
-          <div className="h-5 justify-center items-center gap-2 inline-flex">
+          {/* <div className="h-5 justify-center items-center gap-2 inline-flex">
             <div className="text-center text-slate-600 text-sm font-normal font-['Inter'] leading-tight">
               Don't have an account?
             </div>
@@ -258,7 +260,7 @@ export const Login = ({ onDone }: Props) => {
                 Sign up now
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

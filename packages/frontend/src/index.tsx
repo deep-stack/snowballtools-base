@@ -15,6 +15,8 @@ import { SERVER_GQL_PATH } from './constants';
 import { Toaster } from 'components/shared/Toast';
 import { LogErrorBoundary } from 'utils/log-error';
 import { baseUrl } from 'utils/constants';
+import Web3ModalProvider from './context/Web3Provider';
+
 
 console.log(`v-0.0.9`);
 
@@ -31,10 +33,12 @@ root.render(
   <LogErrorBoundary>
     <React.StrictMode>
       <ThemeProvider>
+      <Web3ModalProvider>
         <GQLClientProvider client={gqlClient}>
           <App />
           <Toaster />
         </GQLClientProvider>
+        </Web3ModalProvider>
       </ThemeProvider>
     </React.StrictMode>
   </LogErrorBoundary>,
