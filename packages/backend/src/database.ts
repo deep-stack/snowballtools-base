@@ -21,6 +21,7 @@ import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Domain } from './entity/Domain';
 import { getEntities, loadAndSaveData } from './utils';
 import { UserOrganization } from './entity/UserOrganization';
+import { Deployer } from './entity/Deployer';
 
 const ORGANIZATION_DATA_PATH = '../test/fixtures/organizations.json';
 
@@ -552,5 +553,20 @@ export class Database {
     });
 
     return domains;
+  }
+
+  async addDeployer (data: DeepPartial<Deployer>): Promise<Deployer> {
+    const deployerRepository = this.dataSource.getRepository(Deployer);
+    const newDomain = await deployerRepository.save(data);
+
+    return newDomain;
+  }
+
+  async getDeployerById (deployerId: string): Promise<Deployer | null> {
+    const deployerRepository = this.dataSource.getRepository(Deployer);
+
+    const deployer = await deployerRepository.findOne({ where: { deployerId } });
+
+    return deployer;
   }
 }
