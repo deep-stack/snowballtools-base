@@ -1,5 +1,4 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
-import { Deployment } from './Deployment';
 
 @Entity()
 export class Deployer {

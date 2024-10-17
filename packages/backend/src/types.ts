@@ -76,3 +76,20 @@ export interface AuctionData {
   maxPrice: string,
   numProviders: number,
 }
+
+export interface DeployerRecord {
+  id: string;
+  names: string[];
+  owners: string[];
+  bondId: string;
+  createTime: string;
+  expiryTime: string;
+  attributes: {
+    apiUrl: string;
+    name: string;
+    paymentAddress: string;
+    publicKey: string;
+    type: string;
+    version: string;
+  };
+}
