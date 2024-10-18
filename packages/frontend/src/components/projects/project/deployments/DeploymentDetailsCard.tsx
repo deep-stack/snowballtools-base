@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Deployment,
   DeploymentStatus,
@@ -15,14 +15,31 @@ import {
   LoadingIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { Heading } from 'components/shared/Heading';
 import { OverflownText } from 'components/shared/OverflownText';
 import { Tag, TagTheme } from 'components/shared/Tag';
+import { Button } from 'components/shared/Button';
 import { getInitials } from 'utils/geInitials';
 import { relativeTimeMs } from 'utils/time';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 import { formatAddress } from '../../../../utils/format';
 import { DeploymentMenu } from './DeploymentMenu';
+
+const DEPLOYMENT_LOGS_STYLE = {
+  backgroundColor: "rgba(0,0,0, .9)",
+  padding: "2em",
+  borderRadius: "0.5em",
+  marginLeft: "0.5em",
+  marginRight: "0.5em",
+  color: "gray",
+  fontSize: "small",
+};
 
 interface DeployDetailsCardProps {
   deployment: Deployment;
@@ -48,6 +65,12 @@ const DeploymentDetailsCard = ({
   project,
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+  const [deploymentLogs, setDeploymentLogs] = useState<string>();
+
+
   const getIconByDeploymentStatus = (status: DeploymentStatus) => {
     if (
       status === DeploymentStatus.Building ||
@@ -75,7 +98,10 @@ const DeploymentDetailsCard = ({
             onClick={async()=> {
               let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`
               const res = await fetch(url);
-              console.log(">>>>RESPONSE",await res.text())
+              const logs = await res.text()
+              // console.log(">>>>RESPONSE",await res.text())
+              setDeploymentLogs(logs)
+              handleOpenDialog()
             }}
           >
             {deployment.status}
@@ -172,6 +198,15 @@ const DeploymentDetailsCard = ({
           prodBranchDomains={prodBranchDomains}
         />
       </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
+        <DialogTitle>Deployment logs</DialogTitle>
+        <DialogContent style={DEPLOYMENT_LOGS_STYLE} >
+          {deploymentLogs && <pre >{deploymentLogs}</pre>}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
