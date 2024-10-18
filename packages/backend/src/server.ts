@@ -22,6 +22,9 @@ import { Service } from './service';
 
 const log = debug('snowball:server');
 
+// Set cookie expiration to 1 month in milliseconds
+const COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+
 declare module 'express-session' {
   interface SessionData {
     address: string;
@@ -86,7 +89,7 @@ export const createAndStartServer = async (
     saveUninitialized: true,
     cookie: {
       secure: new URL(appOriginUrl).protocol === 'https:',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: COOKIE_MAX_AGE,
       domain: domain || undefined,
       sameSite: new URL(appOriginUrl).protocol === 'https:' ? 'none' : 'lax',
     }

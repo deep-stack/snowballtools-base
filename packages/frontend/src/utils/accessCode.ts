@@ -1,9 +1,9 @@
-import { baseUrl } from './constants';
+import { BASE_URL } from './constants';
 
 export async function verifyAccessCode(
   accesscode: string,
 ): Promise<boolean | null> {
-  const res = await fetch(`${baseUrl}/auth/accesscode`, {
+  const res = await fetch(`${BASE_URL}/auth/accesscode`, {
     method: 'POST',
     body: JSON.stringify({
       accesscode,

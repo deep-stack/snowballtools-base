@@ -4,6 +4,7 @@ import { SiweMessage, generateNonce } from 'siwe';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum, mainnet } from 'wagmi/chains';
 import axios from 'axios';
+
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { createSIWEConfig } from '@web3modal/siwe';
@@ -13,16 +14,16 @@ import type {
 } from '@web3modal/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { VITE_WALLET_CONNECT_ID, baseUrl } from 'utils/constants';
+import { VITE_WALLET_CONNECT_ID, BASE_URL } from 'utils/constants';
 
 if (!VITE_WALLET_CONNECT_ID) {
   throw new Error('Error: REACT_APP_WALLET_CONNECT_ID env config is not set');
 }
-assert(baseUrl, 'VITE_SERVER_URL is not set in env');
+assert(BASE_URL, 'VITE_SERVER_URL is not set in env');
 
 const queryClient = new QueryClient();
 const axiosInstance = axios.create({
-  baseURL: baseUrl,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',

@@ -53,7 +53,7 @@ router.post('/validate', async (req, res) => {
   });
 
   if (!success) {
-    return res.send({ success, error: 'SIWE verifcation failed' } );
+    return res.send({ success });
   }
   const service: Service = req.app.get('service');
   const user = await service.getUserByEthAddress(data.address);
@@ -66,6 +66,7 @@ router.post('/validate', async (req, res) => {
       subOrgId: '',
       turnkeyWalletId: '',
     });
+    // SIWESession from the web3modal library requires both address and chain ID
     req.session.address = newUser.id;
     req.session.chainId = data.chainId;
   } else {

@@ -21,7 +21,7 @@ import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
 import { SIDEBAR_MENU } from './constants';
 import { UserSelect } from 'components/shared/UserSelect';
-import { baseUrl } from 'utils/constants';
+import { BASE_URL } from 'utils/constants';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -86,7 +86,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   }, [orgSlug]);
 
   const handleLogOut = useCallback(async () => {
-    await fetch(`${baseUrl}/auth/logout`, {
+    await fetch(`${BASE_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     });

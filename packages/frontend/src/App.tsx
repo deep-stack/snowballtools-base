@@ -12,7 +12,7 @@ import Index from './pages';
 import AuthPage from './pages/AuthPage';
 import { DashboardLayout } from './pages/org-slug/layout';
 import Web3Provider from 'context/Web3Provider';
-import { baseUrl } from 'utils/constants';
+import { BASE_URL } from 'utils/constants';
 
 const router = createBrowserRouter([
   {
@@ -56,7 +56,7 @@ function App() {
   // Hacky way of checking session
   // TODO: Handle redirect backs
   useEffect(() => {
-    fetch(`${baseUrl}/auth/session`, {
+    fetch(`${BASE_URL}/auth/session`, {
       credentials: 'include',
     }).then((res) => {
       const path = window.location.pathname;
