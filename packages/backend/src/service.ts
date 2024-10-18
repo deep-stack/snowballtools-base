@@ -330,10 +330,10 @@ export class Service {
             await this.db.addDeployer(deployerData);
           }
 
-          // Update project with deployer LRNs
-          await this.db.updateProjectById(project.id!, {
-            deployerLrns
-          });
+          // TODO:Update project with deployer LRNs
+          // await this.db.updateProjectById(project.id!, {
+          //   deployerLrns
+          // });
 
           for (const deployer of deployerIds) {
             log(`Creating deployment for deployer LRN ${deployer}`);
@@ -889,7 +889,7 @@ export class Service {
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
       await this.createDeployment(user.id, octokit, deploymentData);
-      await this.updateProject(project.id, { deployerLrns: [lrn!] })
+      // await this.updateProject(project.id, { deployerLrns: [lrn!] })
     }
 
     await this.createRepoHook(octokit, project);
@@ -960,13 +960,13 @@ export class Service {
       });
 
       // TODO: Store deployer in project
-      const deployers = project.deployerLrns;
-      if (!deployers) {
-        log(`No deployer present for project ${project.id}`)
-        return;
-      }
+      // const deployers = project.deployerLrns;
+      // if (!deployers) {
+      //   log(`No deployer present for project ${project.id}`)
+      //   return;
+      // }
 
-      for (const deployer of deployers) {
+      // for (const deployer of deployers) {
         // Create deployment with branch and latest commit in GitHub data
         await this.createDeployment(project.ownerId, octokit,
           {
@@ -982,7 +982,7 @@ export class Service {
             // deployer: deployer
           },
         );
-      }
+      // }
     }
   }
 

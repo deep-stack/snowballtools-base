@@ -14,6 +14,7 @@ import { User } from './User';
 import { Organization } from './Organization';
 import { ProjectMember } from './ProjectMember';
 import { Deployment } from './Deployment';
+import { Deployer } from './Deployer';
 
 @Entity()
 export class Project {
@@ -49,8 +50,8 @@ export class Project {
   @Column('varchar', { nullable: true })
     auctionId!: string | null;
 
-  @Column({ type: 'simple-array', nullable: true })
-    deployerLrns!: string[] | null;
+  @OneToMany(() => Deployer, (deployer) => deployer.deployerId)
+    deployers!: Deployer[];
 
   @Column('boolean', { default: false, nullable: true })
     fundsReleased!: boolean;
@@ -69,9 +70,6 @@ export class Project {
 
   @Column('varchar')
     icon!: string;
-
-  @Column({ type: 'simple-array',  nullable: true })
-    baseDomains!: string[] | null;
 
   @CreateDateColumn()
     createdAt!: Date;

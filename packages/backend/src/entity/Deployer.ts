@@ -10,4 +10,7 @@ export class Deployer {
 
   @Column()
   deployerApiUrl!: string;
+
+  @Column()
+  baseDomain!: string;
 }
