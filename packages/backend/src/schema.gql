@@ -105,7 +105,7 @@ type Deployment {
   environment: Environment!
   deployerLrn: String
   isCurrent: Boolean!
-	baseDomain: String
+  baseDomain: String
   status: DeploymentStatus!
   createdAt: String!
   updatedAt: String!

@@ -43,9 +43,9 @@
 
 [auction]
   commitFee = "1000"
-  commitsDuration = "60s"
+  commitsDuration = "120s"
   revealFee = "1000"
-  revealsDuration = "60s"
+  revealsDuration = "120s"
   denom = "alnt"
 
 [misc]
