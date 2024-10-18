@@ -9,7 +9,6 @@ import { Project } from 'gql-client';
 
 const Projects = () => {
   const client = useGQLClient();
-  const { orgSlug } = useParams();
   const [projects, setProjects] = useState<Project[]>([]);
 
   const fetchProjects = useCallback(async () => {

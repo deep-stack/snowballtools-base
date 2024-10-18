@@ -25,11 +25,10 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { orgSlug } = useParams();
   const { toast, dismiss } = useToast();
 
   const createProject = useCallback(async () => {
-    if (!repository || !orgSlug) {
+    if (!repository) {
       return toast({
         id: 'missing-repository-or-org-slug',
         title: 'Repository or organization slug is missing',
@@ -47,11 +46,10 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
             defaultBranch: repository.default_branch,
             fullName: repository.full_name,
           },
-          orgSlug,
         },
       }
     );
-  }, [client, repository, orgSlug, setIsLoading, navigate, toast]);
+  }, [client, repository, setIsLoading, navigate, toast]);
 
   return (
     <div

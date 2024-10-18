@@ -1,14 +1,14 @@
 import { FolderIcon, SettingsSlidersIcon } from 'components/shared/CustomIcon';
 
-export const SIDEBAR_MENU = (orgSlug?: string) => [
+export const SIDEBAR_MENU = () => [
   {
     title: 'Projects',
-    url: `/${orgSlug}/`,
+    url: `/`,
     icon: <FolderIcon />,
   },
   {
     title: 'Settings',
-    url: `/${orgSlug}/settings`,
+    url: `/settings`,
     icon: <SettingsSlidersIcon />,
   },
 ];

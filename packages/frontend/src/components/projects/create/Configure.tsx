@@ -26,7 +26,7 @@ const Configure = () => {
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
   const location = useLocation();
-  const { templateOwner, templateRepo, owner, name, isPrivate, orgSlug, repository } = location.state || {};
+  const { templateOwner, templateRepo, owner, name, isPrivate, repository } = location.state || {};
 
   const navigate = useNavigate();
   const { toast, dismiss } = useToast();
@@ -70,7 +70,7 @@ const Configure = () => {
           };
 
           const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-            orgSlug,
+            "",
             projectData,
             lrn,
             auctionData
@@ -78,15 +78,15 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-                `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
+                `/projects/create/success/${addProjectFromTemplate.id}`,
                 { state: { isAuction: true } }
               )
             : navigate(
-                `/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
+                `/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
               );
         } else {
           const { addProject } = await client.addProject(
-            orgSlug,
+            "",
             {
               name: repository.fullName,
               prodBranch: repository.defaultBranch,
@@ -99,11 +99,11 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-                `/${orgSlug}/projects/create/success/${addProject.id}`,
+                `/projects/create/success/${addProject.id}`,
                 { state: { isAuction: true } }
               )
             : navigate(
-                `/${orgSlug}/projects/create/deploy?projectId=${addProject.id}`
+                `/projects/create/deploy?projectId=${addProject.id}`
               );
         }
       } catch (error) {

@@ -16,7 +16,7 @@ import { baseUrl } from 'utils/constants';
 
 const router = createBrowserRouter([
   {
-    path: ':orgSlug',
+    path: '/',
     element: <DashboardLayout />,
     children: [
       {
@@ -42,10 +42,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: '/',
-    element: <Index />,
-  },
+  // {
+  //   path: '/',
+  //   element: <Index />,
+  // },
   {
     path: '/login',
     element: <AuthPage />,

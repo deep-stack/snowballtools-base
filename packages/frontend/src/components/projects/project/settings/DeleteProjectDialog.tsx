@@ -21,7 +21,6 @@ const DeleteProjectDialog = ({
   project,
 }: DeleteProjectDialogProp) => {
   const { toast, dismiss } = useToast();
-  const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
 
@@ -39,7 +38,7 @@ const DeleteProjectDialog = ({
     const { deleteProject } = await client.deleteProject(project.id);
 
     if (deleteProject) {
-      navigate(`/${orgSlug}`);
+      navigate(`/`);
     } else {
       toast({
         id: 'project_not_deleted',

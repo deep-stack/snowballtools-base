@@ -15,7 +15,7 @@ import { Project } from 'gql-client';
 import { useEffect, useState } from 'react';
 
 const Id = () => {
-  const { id, orgSlug } = useParams();
+  const { id } = useParams();
   const client = useGQLClient();
   const [project, setProject] = useState<Project | null>(null);
   const location = useLocation();
@@ -108,7 +108,7 @@ const Id = () => {
               </Link>
             </div>
             <div className="w-full lg:w-fit">
-              <Link to={`/${orgSlug}/projects/${id}`}>
+              <Link to={`/projects/${id}`}>
                 <Button fullWidth variant="primary">
                   View project
                 </Button>

@@ -15,9 +15,8 @@ export const CreateProjectLayout = ({
   className,
   ...props
 }: CreateProjectLayoutProps) => {
-  const { orgSlug } = useParams();
 
-  const closeBtnLink = `/${orgSlug}`;
+  const closeBtnLink = `/`;
 
   const heading = (
     <Heading as="h2" className="flex-1 text-xl md:text-2xl font-medium">

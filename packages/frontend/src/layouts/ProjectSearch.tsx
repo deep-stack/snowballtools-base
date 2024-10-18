@@ -23,12 +23,6 @@ const ProjectSearch = () => {
     fetchUser();
   }, []);
 
-  const fetchOrgSlug = useCallback(async () => {
-    const { organizations } = await client.getOrganizations();
-    // TODO: Get the selected organization. This is temp
-    return organizations[0].slug;
-  }, []);
-
   return (
     <section className="h-full flex flex-col">
       {/* Header */}
@@ -38,7 +32,7 @@ const ProjectSearch = () => {
             <ProjectSearchBar
               onChange={(project) => {
                 navigate(
-                  `/${project.organization.slug}/projects/${project.id}`,
+                  `/projects/${project.id}`,
                 );
               }}
             />
@@ -48,9 +42,7 @@ const ProjectSearch = () => {
               variant="secondary"
               iconOnly
               onClick={() => {
-                fetchOrgSlug().then((organizationSlug) => {
-                  navigate(`/${organizationSlug}/projects/create`);
-                });
+                navigate(`/projects/create`);
               }}
             >
               <PlusIcon />
