@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { Collapse } from '@snowballtools/material-tailwind-react-fork';
+import { Collapse, Checkbox } from '@snowballtools/material-tailwind-react-fork';
 
 import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
@@ -11,7 +11,7 @@ import { EnvironmentVariablesFormValues } from '../../../../../types';
 import HorizontalLine from 'components/HorizontalLine';
 import { Heading } from 'components/shared/Heading';
 import { Button } from 'components/shared/Button';
-import { Checkbox } from 'components/shared/Checkbox';
+// import { Checkbox } from 'components/shared/Checkbox';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { InlineNotification } from 'components/shared/InlineNotification';
 import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';

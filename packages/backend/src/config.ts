@@ -34,12 +34,21 @@ export interface RegistryConfig {
   privateKey: string;
   bondId: string;
   fetchDeploymentRecordDelay: number;
+  checkAuctionStatusDelay: number;
   authority: string;
   fee: {
     gas: string;
     fees: string;
     gasPrice: string;
   };
+}
+
+export interface AuctionConfig {
+  commitFee: string;
+  commitsDuration: string;
+  revealFee: string;
+  revealsDuration: string;
+  denom: string;
 }
 
 export interface MiscConfig {
@@ -51,6 +60,7 @@ export interface Config {
   database: DatabaseConfig;
   gitHub: GitHubConfig;
   registryConfig: RegistryConfig;
+  auction: AuctionConfig;
   misc: MiscConfig;
   turnkey: {
     apiBaseUrl: string;

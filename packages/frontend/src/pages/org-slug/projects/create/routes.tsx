@@ -2,7 +2,8 @@ import NewProject from './index';
 import CreateWithTemplate from './Template';
 import { templateRoutes } from './template/routes';
 import Id from './success/Id';
-import Import from './Import';
+import Configure from 'components/projects/create/Configure';
+import Deploy from 'components/projects/create/Deploy';
 
 export const createProjectRoutes = [
   {
@@ -19,7 +20,11 @@ export const createProjectRoutes = [
     element: <Id />,
   },
   {
-    path: 'import',
-    element: <Import />,
+    path: 'configure',
+    element: <Configure />,
+  },
+  {
+    path: 'deploy',
+    element: <Deploy />,
   },
 ];

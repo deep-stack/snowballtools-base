@@ -1,11 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link,  useParams, useSearchParams } from 'react-router-dom';
 import Lottie from 'lottie-react';
 
 import { Badge } from 'components/shared/Badge';
 import { Button } from 'components/shared/Button';
 import {
   ArrowLeftCircleFilledIcon,
-  LinkChainIcon,
   QuestionMarkRoundFilledIcon,
 } from 'components/shared/CustomIcon';
 import { Heading } from 'components/shared/Heading';
@@ -19,6 +18,8 @@ const Id = () => {
   const { id, orgSlug } = useParams();
   const client = useGQLClient();
   const [project, setProject] = useState<Project | null>(null);
+  const [searchParams] = useSearchParams();
+  const isAuction = searchParams.get('isAuction') === 'true';
 
   const handleSetupDomain = async () => {
     if (id) {
@@ -51,22 +52,8 @@ const Id = () => {
           {/* Heading */}
           <div className="flex flex-col items-center gap-1.5">
             <Heading as="h3" className="font-medium text-xl">
-              Project deployed successfully.
+              {isAuction? 'Auction created successfully.' : 'Project deployment created successfully.'}
             </Heading>
-            <p className="flex flex-col items-center lg:flex-row font-sans gap-0.5 lg:gap-2 text-sm text-elements-high-em">
-              Your project has been deployed at{' '}
-              <Button
-                className="no-underline text-elements-link"
-                // TODO: use dynamic value
-                href={project ? `https://${project.subDomain}` : ''}
-                as="a"
-                variant="link-emphasized"
-                external
-                leftIcon={<LinkChainIcon />}
-              >
-                {project.subDomain}
-              </Button>
-            </p>
           </div>
 
           {/* Card */}

@@ -29,6 +29,7 @@
 
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
+  checkAuctionStatusDelay = 5000
   restEndpoint = "http://localhost:1317"
   gqlEndpoint = "http://localhost:9473/api"
   chainId = "laconic_9000-1"
@@ -36,9 +37,17 @@
   bondId = ""
   authority = ""
   [registryConfig.fee]
-    gas = "200000"
-    fees = "200000alnt"
-    gasPrice = ""
+    gas = ""
+    fees = ""
+    gasPrice = "1alnt"
+
+# Durations are set to 2 mins as deployers may take time with ongoing deployments and auctions
+[auction]
+  commitFee = "100000"
+  commitsDuration = "120s"
+  revealFee = "100000"
+  revealsDuration = "120s"
+  denom = "alnt"
 
 [misc]
   projectDomain = "apps.snowballtools.com"

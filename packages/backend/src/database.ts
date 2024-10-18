@@ -465,8 +465,6 @@ export class Database {
       id: organizationId
     });
 
-    newProject.subDomain = `${newProject.name}.${this.projectDomain}`;
-
     return projectRepository.save(newProject);
   }
 

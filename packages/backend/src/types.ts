@@ -29,6 +29,8 @@ export interface GitPushEventPayload {
 
 export interface AppDeploymentRecordAttributes {
   application: string;
+  auction: string;
+  deployer: string;
   dns: string;
   meta: string;
   name: string;
@@ -68,4 +70,9 @@ export interface AddProjectFromTemplateInput {
   owner: string;
   name: string;
   isPrivate: boolean;
+}
+
+export interface AuctionParams {
+  maxPrice: string,
+  numProviders: number,
 }

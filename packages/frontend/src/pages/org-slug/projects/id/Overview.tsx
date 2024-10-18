@@ -21,6 +21,7 @@ import { Activity } from 'components/projects/project/overview/Activity';
 import { OverviewInfo } from 'components/projects/project/overview/OverviewInfo';
 import { relativeTimeMs } from 'utils/time';
 import { Domain, DomainStatus } from 'gql-client';
+import { AuctionCard } from 'components/projects/project/overview/Activity/AuctionCard';
 
 const COMMITS_PER_PAGE = 4;
 
@@ -128,12 +129,15 @@ const OverviewTabPanel = () => {
             <Heading className="text-lg leading-6 font-medium truncate">
               {project.name}
             </Heading>
-            <a
-              href={`https://${project.subDomain}`}
-              className="text-sm text-elements-low-em tracking-tight truncate"
-            >
-              {project.subDomain}
-            </a>
+            {project.baseDomains && project.baseDomains.length > 0 && project.baseDomains.map((baseDomain, index) => (
+              <a
+                key={index}
+                href={`https://${project.name}.${baseDomain}`}
+                className="text-sm text-elements-low-em tracking-tight truncate"
+              >
+                {baseDomain}
+              </a>
+            ))}
           </div>
         </div>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
@@ -205,6 +209,7 @@ const OverviewTabPanel = () => {
             No current deployment found.
           </p>
         )}
+        {project.auctionId && <AuctionCard project={project}/>}
       </div>
       <Activity activities={activities} isLoading={fetchingActivities} />
     </div>

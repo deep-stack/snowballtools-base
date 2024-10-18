@@ -33,6 +33,8 @@ export interface ApplicationDeploymentRequest {
   version: string;
   name: string;
   application: string;
+  lrn?: string;
+  auction?: string;
   config: string;
   meta: string;
 }
@@ -112,18 +114,21 @@ export class Deployment {
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRecordData!: AppDeploymentRecordAttributes | null;
-  
+
   @Column('varchar', { nullable: true })
     applicationDeploymentRemovalRequestId!: string | null;
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRemovalRequestData!: ApplicationDeploymentRemovalRequest | null;
-  
+
   @Column('varchar', { nullable: true })
     applicationDeploymentRemovalRecordId!: string | null;
 
   @Column('simple-json', { nullable: true })
     applicationDeploymentRemovalRecordData!: AppDeploymentRemovalRecordAttributes | null;
+
+  @Column('varchar')
+    deployerLrn!: string;
 
   @Column({
     enum: Environment
@@ -132,6 +137,9 @@ export class Deployment {
 
   @Column('boolean', { default: false })
     isCurrent!: boolean;
+
+  @Column('varchar', { nullable: true })
+    baseDomain!: string | null;
 
   @Column({
     enum: DeploymentStatus
@@ -147,7 +155,7 @@ export class Deployment {
 
   @UpdateDateColumn()
     updatedAt!: Date;
-  
+
   @DeleteDateColumn()
     deletedAt!: Date | null;
 }

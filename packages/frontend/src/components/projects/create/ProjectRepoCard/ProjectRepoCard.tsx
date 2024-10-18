@@ -38,36 +38,9 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
       });
     }
 
-    try {
-      setIsLoading(true);
-      const { addProject } = await client.addProject(orgSlug, {
-        name: `${repository.owner?.login}-${repository.name}`,
-        prodBranch: repository.default_branch as string,
-        repository: repository.full_name,
-        // TODO: Compute template from repo
-        template: 'webapp',
-      });
-      if (addProject) {
-        navigate(`import?projectId=${addProject.id}`);
-      } else {
-        toast({
-          id: 'failed-to-create-project',
-          title: 'Failed to create project',
-          variant: 'error',
-          onDismiss: dismiss,
-        });
-      }
-    } catch (error) {
-      console.error((error as Error).message);
-      toast({
-        id: 'failed-to-create-project',
-        title: 'Failed to create project',
-        variant: 'error',
-        onDismiss: dismiss,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    navigate(
+      `configure?owner=${repository.owner?.login}&name=${repository.name}&defaultBranch=${repository.default_branch}&fullName=${repository.full_name}&orgSlug=${orgSlug}`
+    );
   }, [client, repository, orgSlug, setIsLoading, navigate, toast]);
 
   return (

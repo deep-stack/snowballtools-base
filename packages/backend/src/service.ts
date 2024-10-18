@@ -1,12 +1,12 @@
 import assert from 'assert';
 import debug from 'debug';
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, IsNull, Not } from 'typeorm';
 import { Octokit, RequestError } from 'octokit';
 
 import { OAuthApp } from '@octokit/oauth-app';
 
 import { Database } from './database';
-import { Deployment, DeploymentStatus, Environment } from './entity/Deployment';
+import { ApplicationRecord, Deployment, DeploymentStatus, Environment } from './entity/Deployment';
 import { Domain } from './entity/Domain';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
 import { Organization } from './entity/Organization';
@@ -19,10 +19,11 @@ import {
   AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
+  AuctionParams,
   GitPushEventPayload,
-  PackageJSON,
 } from './types';
 import { Role } from './entity/UserOrganization';
+import { getRepoDetails } from './utils';
 
 const log = debug('snowball:service');
 
@@ -39,15 +40,16 @@ interface Config {
 export class Service {
   private db: Database;
   private oauthApp: OAuthApp;
-  private registry: Registry;
+  private laconicRegistry: Registry;
   private config: Config;
 
   private deployRecordCheckTimeout?: NodeJS.Timeout;
+  private auctionStatusCheckTimeout?: NodeJS.Timeout;
 
   constructor(config: Config, db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
     this.oauthApp = app;
-    this.registry = registry;
+    this.laconicRegistry = registry;
     this.config = config;
     this.init();
   }
@@ -60,6 +62,8 @@ export class Service {
     this.checkDeployRecordsAndUpdate();
     // Start check for ApplicationDeploymentRemovalRecords asynchronously
     this.checkDeploymentRemovalRecordsAndUpdate();
+    // Start check for Deployment Auctions asynchronously
+    this.checkAuctionStatus();
   }
 
   /**
@@ -67,6 +71,7 @@ export class Service {
    */
   destroy(): void {
     clearTimeout(this.deployRecordCheckTimeout);
+    clearTimeout(this.auctionStatusCheckTimeout);
   }
 
   /**
@@ -108,7 +113,7 @@ export class Service {
       }
 
       // Fetch ApplicationDeploymentRecord for deployments
-      const records = await this.registry.getDeploymentRecords(deployments);
+      const records = await this.laconicRegistry.getDeploymentRecords(deployments);
       log(`Found ${records.length} ApplicationDeploymentRecords`);
 
       // Update deployments for which ApplicationDeploymentRecords were returned
@@ -141,7 +146,7 @@ export class Service {
 
       // Fetch ApplicationDeploymentRemovalRecords for deployments
       const records =
-        await this.registry.getDeploymentRemovalRecords(deployments);
+        await this.laconicRegistry.getDeploymentRemovalRecords(deployments);
       log(`Found ${records.length} ApplicationDeploymentRemovalRecords`);
 
       // Update deployments for which ApplicationDeploymentRemovalRecords were returned
@@ -157,41 +162,24 @@ export class Service {
 
   /**
    * Update deployments with ApplicationDeploymentRecord data
+   * Deployments that are completed but not updated in DB
    */
   async updateDeploymentsWithRecordData(
     records: AppDeploymentRecord[],
   ): Promise<void> {
-    // Get deployments for ApplicationDeploymentRecords
+    // get and update deployments to be updated using request id
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
-        applicationRecordId: record.attributes.application,
+        applicationDeploymentRequestId: record.attributes.request,
       })),
       order: {
         createdAt: 'DESC',
       },
     });
 
-    // Get project IDs of deployments that are in production environment
-    const productionDeploymentProjectIds = deployments.reduce(
-      (acc, deployment): Set<string> => {
-        if (deployment.environment === Environment.Production) {
-          acc.add(deployment.projectId);
-        }
-
-        return acc;
-      },
-      new Set<string>(),
-    );
-
-    // Set old deployments isCurrent to false
-    await this.db.updateDeploymentsByProjectIds(
-      Array.from(productionDeploymentProjectIds),
-      { isCurrent: false },
-    );
-
     const recordToDeploymentsMap = deployments.reduce(
       (acc: { [key: string]: Deployment }, deployment) => {
-        acc[deployment.applicationRecordId] = deployment;
+        acc[deployment.applicationDeploymentRequestId!] = deployment;
         return acc;
       },
       {},
@@ -199,20 +187,63 @@ export class Service {
 
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
-      const deployment = recordToDeploymentsMap[record.attributes.application];
+      const deployment = recordToDeploymentsMap[record.attributes.request];
+      const project = await this.getProjectById(deployment.projectId)
+      assert(project)
 
-      await this.db.updateDeploymentById(deployment.id, {
-        applicationDeploymentRecordId: record.id,
-        applicationDeploymentRecordData: record.attributes,
-        url: record.attributes.url,
-        status: DeploymentStatus.Ready,
-        isCurrent: deployment.environment === Environment.Production,
-      });
+      const parts = record.attributes.url.replace('https://', '').split('.');
+      const baseDomain = parts.slice(1).join('.');
+
+      deployment.applicationDeploymentRecordId = record.id;
+      deployment.applicationDeploymentRecordData = record.attributes;
+      deployment.url = record.attributes.url;
+      deployment.baseDomain = baseDomain;
+      deployment.status = DeploymentStatus.Ready;
+      deployment.isCurrent = deployment.environment === Environment.Production;
+
+      await this.db.updateDeploymentById(deployment.id, deployment);
+
+      const baseDomains = project.baseDomains || [];
+
+      if (!baseDomains.includes(baseDomain)) {
+        baseDomains.push(baseDomain);
+      }
+
+      await this.db.updateProjectById(project.id, {
+        baseDomains
+      })
 
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
       );
     });
+
+    await Promise.all(deploymentUpdatePromises);
+
+    // if iscurrent is true for this deployment then update the old ones
+    const prodDeployments = Object.values(recordToDeploymentsMap).filter(deployment => deployment.isCurrent);
+
+    // Get deployment IDs of deployments that are in production environment
+    for (const deployment of prodDeployments) {
+      const projectDeployments = await this.db.getDeploymentsByProjectId(deployment.projectId);
+      const oldDeployments = projectDeployments
+        .filter(projectDeployment => projectDeployment.deployerLrn === deployment.deployerLrn && projectDeployment.id !== deployment.id);
+      for (const oldDeployment of oldDeployments) {
+        await this.db.updateDeployment(
+          { id: oldDeployment.id },
+          { isCurrent: false }
+        );
+      }
+    }
+
+    // Get old deployments for ApplicationDeploymentRecords
+    // flter out deps with is current false
+
+    // loop over these deps
+    // get the project
+    // get all the deployemnts in that proj with the same deployer lrn (query filter not above updated dep)
+    // set is current to false
+
 
     await Promise.all(deploymentUpdatePromises);
   }
@@ -260,6 +291,58 @@ export class Service {
     });
 
     await Promise.all(deploymentUpdatePromises);
+  }
+
+  /**
+   * Checks the status for all ongoing auctions
+   * Calls the createDeploymentFromAuction method for deployments with completed auctions
+   */
+  async checkAuctionStatus(): Promise<void> {
+    const allProjects = await this.db.getProjects({
+      where: {
+        auctionId: Not(IsNull()),
+      },
+      relations: ['deployments'],
+      withDeleted: true,
+    });
+
+    // Should only check on the first deployment
+    const projects = allProjects.filter(project => {
+      if (project.deletedAt !== null) return false;
+
+      return project.deployments.length === 0;
+    });
+
+    const auctionIds = projects.map((project) => project.auctionId);
+    const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
+
+    if (completedAuctionIds) {
+      const projectsToBedeployed = projects.filter((project) =>
+        completedAuctionIds.includes(project.auctionId!)
+      );
+
+      for (const project of projectsToBedeployed) {
+        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
+
+        if (!deployerLrns) {
+          log(`No winning deployer for auction ${project!.auctionId}`);
+        } else {
+          // Update project with deployer LRNs
+          await this.db.updateProjectById(project.id!, {
+            deployerLrns
+          });
+
+          for (const deployer of deployerLrns) {
+            log(`Creating deployment for deployer LRN ${deployer}`);
+            await this.createDeploymentFromAuction(project, deployer);
+          }
+        }
+      }
+    }
+
+    this.auctionStatusCheckTimeout = setTimeout(() => {
+      this.checkAuctionStatus();
+    }, this.config.registryConfig.checkAuctionStatusDelay);
   }
 
   async getUser(userId: string): Promise<User | null> {
@@ -519,6 +602,7 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
+      deployerLrn: oldDeployment.deployerLrn
     });
 
     return newDeployment;
@@ -527,45 +611,20 @@ export class Service {
   async createDeployment(
     userId: string,
     octokit: Octokit,
-    data: DeepPartial<Deployment>,
+    data: DeepPartial<Deployment>
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
       `Creating deployment in project ${data.project.name} from branch ${data.branch}`,
     );
-    const [owner, repo] = data.project.repository.split('/');
-
-    const { data: packageJSONData } = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-      ref: data.commitHash,
-    });
-
-    if (!packageJSONData) {
-      throw new Error('Package.json file not found');
-    }
-
-    assert(!Array.isArray(packageJSONData) && packageJSONData.type === 'file');
-    const packageJSON: PackageJSON = JSON.parse(atob(packageJSONData.content));
-
-    assert(packageJSON.name, "name field doesn't exist in package.json");
-
-    const repoUrl = (
-      await octokit.rest.repos.get({
-        owner,
-        repo,
-      })
-    ).data.html_url;
 
     // TODO: Set environment variables for each deployment (environment variables can`t be set in application record)
     const { applicationRecordId, applicationRecordData } =
-      await this.registry.createApplicationRecord({
-        appName: repo,
-        packageJSON,
+      await this.laconicRegistry.createApplicationRecord({
+        octokit,
+        repository: data.project.repository,
         appType: data.project!.template!,
         commitHash: data.commitHash!,
-        repoUrl,
       });
 
     // Update previous deployment with prod branch domain
@@ -581,6 +640,125 @@ export class Service {
       );
     }
 
+    const newDeployment = await this.createDeploymentFromData(userId, data, data.deployerLrn!, applicationRecordId, applicationRecordData);
+
+    const { repo, repoUrl } = await getRepoDetails(octokit, data.project.repository, data.commitHash);
+    const environmentVariablesObj = await this.getEnvVariables(data.project!.id!);
+    // To set project DNS
+    if (data.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
+      await this.laconicRegistry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}`,
+        lrn: data.deployerLrn!
+      });
+    }
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
+      await this.laconicRegistry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        lrn: data.deployerLrn!,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`,
+      });
+
+    await this.db.updateDeploymentById(newDeployment.id, {
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData,
+    });
+
+    return newDeployment;
+  }
+
+  async createDeploymentFromAuction(
+    project: DeepPartial<Project>,
+    deployerLrn: string
+  ): Promise<Deployment> {
+    const octokit = await this.getOctokit(project.ownerId!);
+    const [owner, repo] = project.repository!.split('/');
+
+    const repoUrl = (
+      await octokit.rest.repos.get({
+        owner,
+        repo,
+      })
+    ).data.html_url;
+
+    const {
+      data: [latestCommit],
+    } = await octokit.rest.repos.listCommits({
+      owner,
+      repo,
+      sha: project.prodBranch,
+      per_page: 1,
+    });
+
+    const lrn = this.laconicRegistry.getLrn(repo);
+    const [record] = await this.laconicRegistry.getRecordsByName(lrn);
+    const applicationRecordId = record.id;
+    const applicationRecordData = record.attributes;
+
+    // Create deployment with prod branch and latest commit
+    const deploymentData = {
+      project,
+      branch: project.prodBranch,
+      environment: Environment.Production,
+      domain: null,
+      commitHash: latestCommit.sha,
+      commitMessage: latestCommit.commit.message,
+    };
+
+    const newDeployment = await this.createDeploymentFromData(project.ownerId!, deploymentData, deployerLrn, applicationRecordId, applicationRecordData);
+
+    const environmentVariablesObj = await this.getEnvVariables(project!.id!);
+    // To set project DNS
+    if (deploymentData.environment === Environment.Production) {
+      // On deleting deployment later, project DNS deployment is also deleted
+      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
+      await this.laconicRegistry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}`,
+        auctionId: project.auctionId!,
+        lrn: deployerLrn,
+      });
+    }
+
+    const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
+      // Create requests for all the deployers
+      await this.laconicRegistry.createApplicationDeploymentRequest({
+        deployment: newDeployment,
+        appName: repo,
+        repository: repoUrl,
+        auctionId: project.auctionId!,
+        lrn: deployerLrn,
+        environmentVariables: environmentVariablesObj,
+        dns: `${newDeployment.project.name}-${newDeployment.id}`,
+      });
+
+    await this.db.updateDeploymentById(newDeployment.id, {
+      applicationDeploymentRequestId,
+      applicationDeploymentRequestData,
+    });
+
+    return newDeployment;
+  }
+
+  async createDeploymentFromData(
+    userId: string,
+    data: DeepPartial<Deployment>,
+    deployerLrn: string,
+    applicationRecordId: string,
+    applicationRecordData: ApplicationRecord,
+  ): Promise<Deployment> {
     const newDeployment = await this.db.addDeployment({
       project: data.project,
       branch: data.branch,
@@ -594,52 +772,10 @@ export class Service {
       createdBy: Object.assign(new User(), {
         id: userId,
       }),
+      deployerLrn,
     });
 
-    log(
-      `Created deployment ${newDeployment.id} and published application record ${applicationRecordId}`,
-    );
-
-    const environmentVariables =
-      await this.db.getEnvironmentVariablesByProjectId(data.project.id!, {
-        environment: Environment.Production,
-      });
-
-    const environmentVariablesObj = environmentVariables.reduce(
-      (acc, env) => {
-        acc[env.key] = env.value;
-
-        return acc;
-      },
-      {} as { [key: string]: string },
-    );
-
-    // To set project DNS
-    if (data.environment === Environment.Production) {
-      // On deleting deployment later, project DNS deployment is also deleted
-      // So publish project DNS deployment first so that ApplicationDeploymentRecord for the same is available when deleting deployment later
-      await this.registry.createApplicationDeploymentRequest({
-        deployment: newDeployment,
-        appName: repo,
-        repository: repoUrl,
-        environmentVariables: environmentVariablesObj,
-        dns: `${newDeployment.project.name}`,
-      });
-    }
-
-    const { applicationDeploymentRequestId, applicationDeploymentRequestData } =
-      await this.registry.createApplicationDeploymentRequest({
-        deployment: newDeployment,
-        appName: repo,
-        repository: repoUrl,
-        environmentVariables: environmentVariablesObj,
-        dns: `${newDeployment.project.name}-${newDeployment.id}`,
-      });
-
-    await this.db.updateDeploymentById(newDeployment.id, {
-      applicationDeploymentRequestId,
-      applicationDeploymentRequestData,
-    });
+    log(`Created deployment ${newDeployment.id}`);
 
     return newDeployment;
   }
@@ -648,6 +784,8 @@ export class Service {
     user: User,
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
+    lrn?: string,
+    auctionParams?: AuctionParams
   ): Promise<Project | undefined> {
     try {
       const octokit = await this.getOctokit(user.id);
@@ -678,7 +816,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      });
+      }, lrn, auctionParams);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -695,6 +833,8 @@ export class Service {
     user: User,
     organizationSlug: string,
     data: DeepPartial<Project>,
+    lrn?: string,
+    auctionParams?: AuctionParams
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -706,6 +846,7 @@ export class Service {
     }
 
     const project = await this.db.addProject(user, organization.id, data);
+    log(`Project created ${project.id}`);
 
     const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');
@@ -720,18 +861,25 @@ export class Service {
     });
 
     // Create deployment with prod branch and latest commit
-    const deployment = await this.createDeployment(user.id, octokit, {
+    const deploymentData = {
       project,
       branch: project.prodBranch,
       environment: Environment.Production,
       domain: null,
       commitHash: latestCommit.sha,
       commitMessage: latestCommit.commit.message,
-    });
+      deployerLrn: lrn
+    };
+
+    if (auctionParams) {
+      const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
+      await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
+    } else {
+      await this.createDeployment(user.id, octokit, deploymentData);
+      await this.updateProject(project.id, { deployerLrns: [lrn!] })
+    }
 
     await this.createRepoHook(octokit, project);
-
-    console.log('projectid is', project.id);
 
     return project;
   }
@@ -798,18 +946,29 @@ export class Service {
         branch,
       });
 
-      // Create deployment with branch and latest commit in GitHub data
-      await this.createDeployment(project.ownerId, octokit, {
-        project,
-        branch,
-        environment:
-          project.prodBranch === branch
-            ? Environment.Production
-            : Environment.Preview,
-        domain,
-        commitHash: headCommit.id,
-        commitMessage: headCommit.message,
-      });
+      const deployers = project.deployerLrns;
+      if (!deployers) {
+        log(`No deployer present for project ${project.id}`)
+        return;
+      }
+
+      for (const deployer of deployers) {
+        // Create deployment with branch and latest commit in GitHub data
+        await this.createDeployment(project.ownerId, octokit,
+          {
+            project,
+            branch,
+            environment:
+              project.prodBranch === branch
+                ? Environment.Production
+                : Environment.Preview,
+            domain,
+            commitHash: headCommit.id,
+            commitMessage: headCommit.message,
+            deployerLrn: deployer
+          },
+        );
+      }
     }
   }
 
@@ -859,15 +1018,25 @@ export class Service {
 
     const octokit = await this.getOctokit(user.id);
 
-    const newDeployment = await this.createDeployment(user.id, octokit, {
-      project: oldDeployment.project,
-      // TODO: Put isCurrent field in project
-      branch: oldDeployment.branch,
-      environment: Environment.Production,
-      domain: oldDeployment.domain,
-      commitHash: oldDeployment.commitHash,
-      commitMessage: oldDeployment.commitMessage,
-    });
+    let newDeployment: Deployment;
+
+    if (oldDeployment.project.auctionId) {
+      // TODO: Discuss creating applicationRecord for redeployments
+      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployerLrn);
+    } else {
+      newDeployment = await this.createDeployment(user.id, octokit,
+        {
+          project: oldDeployment.project,
+          // TODO: Put isCurrent field in project
+          branch: oldDeployment.branch,
+          environment: Environment.Production,
+          domain: oldDeployment.domain,
+          commitHash: oldDeployment.commitHash,
+          commitMessage: oldDeployment.commitMessage,
+          deployerLrn: oldDeployment.deployerLrn
+        }
+      );
+    }
 
     return newDeployment;
   }
@@ -919,10 +1088,11 @@ export class Service {
     if (deployment && deployment.applicationDeploymentRecordId) {
       // If deployment is current, remove deployment for project subdomain as well
       if (deployment.isCurrent) {
-        const currentDeploymentURL = `https://${deployment.project.subDomain}`;
+        const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.baseDomain}`;
 
+        // TODO: Store the latest DNS deployment record
         const deploymentRecords =
-          await this.registry.getDeploymentRecordsByFilter({
+          await this.laconicRegistry.getDeploymentRecordsByFilter({
             application: deployment.applicationRecordId,
             url: currentDeploymentURL,
           });
@@ -935,14 +1105,20 @@ export class Service {
           return false;
         }
 
-        await this.registry.createApplicationDeploymentRemovalRequest({
-          deploymentId: deploymentRecords[0].id,
+        // Multiple records are fetched, take the latest record
+        const latestRecord = deploymentRecords
+          .sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime())[0];
+
+        await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
+          deploymentId: latestRecord.id,
+          deployerLrn: deployment.deployerLrn
         });
       }
 
       const result =
-        await this.registry.createApplicationDeploymentRemovalRequest({
+        await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
+          deployerLrn: deployment.deployerLrn
         });
 
       await this.db.updateDeploymentById(deployment.id, {
@@ -1076,5 +1252,30 @@ export class Service {
     data: DeepPartial<User>,
   ): Promise<boolean> {
     return this.db.updateUser(user, data);
+  }
+
+  async getEnvVariables(
+    projectId: string,
+  ): Promise<{ [key: string]: string }> {
+    const environmentVariables = await this.db.getEnvironmentVariablesByProjectId(projectId, {
+      environment: Environment.Production,
+    });
+
+    const environmentVariablesObj = environmentVariables.reduce(
+      (acc, env) => {
+        acc[env.key] = env.value;
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
+
+    return environmentVariablesObj;
+  }
+
+  async getAuctionData(
+    auctionId: string
+  ): Promise<any> {
+    const auctions = await this.laconicRegistry.getAuctionData(auctionId);
+    return auctions[0];
   }
 }

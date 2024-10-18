@@ -22,6 +22,13 @@ enum DeploymentStatus {
   Deleting
 }
 
+enum AuctionStatus {
+  completed
+  reveal
+  commit
+  expired
+}
+
 enum DomainStatus {
   Live
   Pending
@@ -65,6 +72,8 @@ type Project {
   repository: String!
   prodBranch: String!
   description: String
+  deployerLrns: [String]
+  auctionId: String
   template: String
   framework: String
   webhooks: [String!]
@@ -74,7 +83,7 @@ type Project {
   updatedAt: String!
   organization: Organization!
   icon: String
-  subDomain: String
+  baseDomains: [String!]
 }
 
 type ProjectMember {
@@ -94,7 +103,9 @@ type Deployment {
   commitMessage: String!
   url: String
   environment: Environment!
+  deployerLrn: String
   isCurrent: Boolean!
+  baseDomain: String
   status: DeploymentStatus!
   createdAt: String!
   updatedAt: String!
@@ -182,6 +193,48 @@ input FilterDomainsInput {
   status: DomainStatus
 }
 
+type Fee {
+  type: String!
+  quantity: String!
+}
+
+type Bid {
+  auctionId: String!
+  bidderAddress: String!
+  status: String!
+  commitHash: String!
+  commitTime: String
+  commitFee: Fee
+  revealTime: String
+  revealFee: Fee
+  bidAmount: Fee
+}
+
+type Auction {
+  id: String!
+  kind: String!
+  status: String!
+  ownerAddress: String!
+  createTime: String!
+  commitsEndTime: String!
+  revealsEndTime: String!
+  commitFee: Fee!
+  revealFee: Fee!
+  minimumBid: Fee
+  winnerAddresses: [String!]!
+  winnerBids: [Fee!]
+  winnerPrice: Fee
+  maxPrice: Fee
+  numProviders: Int!
+  fundsReleased: Boolean!
+  bids: [Bid!]!
+}
+
+input AuctionParams {
+  maxPrice: String,
+  numProviders: Int,
+}
+
 type Query {
   user: User!
   organizations: [Organization!]
@@ -192,6 +245,7 @@ type Query {
   environmentVariables(projectId: String!): [EnvironmentVariable!]
   projectMembers(projectId: String!): [ProjectMember!]
   searchProjects(searchText: String!): [Project!]
+  getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
 }
 
@@ -215,8 +269,15 @@ type Mutation {
   addProjectFromTemplate(
     organizationSlug: String!
     data: AddProjectFromTemplateInput
+    lrn: String
+    auctionParams: AuctionParams
   ): Project!
-  addProject(organizationSlug: String!, data: AddProjectInput): Project!
+  addProject(
+    organizationSlug: String!
+    data: AddProjectInput!
+    lrn: String
+    auctionParams: AuctionParams
+  ): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!

@@ -23,11 +23,13 @@ query ($projectId: String!) {
     template
     updatedAt
     prodBranch
+    auctionId
+    deployerLrns
     framework
     repository
     webhooks
     icon
-    subDomain
+    baseDomains
     organization {
       id
       name
@@ -41,6 +43,7 @@ query ($projectId: String!) {
       id
       branch
       isCurrent
+      baseDomain
       status
       updatedAt
       commitHash
@@ -71,16 +74,19 @@ query ($organizationSlug: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrns
     prodBranch
     webhooks
     repository
     updatedAt
     icon
-    subDomain
+    baseDomains
     deployments {
       id
       branch
       isCurrent
+      baseDomain
       status
       updatedAt
       commitHash
@@ -128,8 +134,10 @@ query ($projectId: String!)  {
     commitHash
     commitMessage
     url
+    deployerLrn
     environment
     isCurrent
+    baseDomain
     status
     createdAt
     updatedAt
@@ -183,6 +191,8 @@ query ($searchText: String!) {
     createdAt
     description
     framework
+    auctionId
+    deployerLrns
     prodBranch
     webhooks
     updatedAt
@@ -214,6 +224,66 @@ query ($projectId: String!, $filter: FilterDomainsInput) {
     name
     status
     updatedAt
+  }
+}
+`;
+
+export const getAuctionData = gql`
+query ($auctionId: String!) {
+  getAuctionData(auctionId: $auctionId){
+    id
+    kind
+    status
+    ownerAddress
+    createTime
+    commitsEndTime
+    revealsEndTime
+    commitFee {
+      type
+      quantity
+    }
+    revealFee {
+      type
+      quantity
+    }
+    minimumBid {
+      type
+      quantity
+    }
+    winnerAddresses
+    winnerBids {
+      type
+      quantity
+    }
+    winnerPrice {
+      type
+      quantity
+    }
+    maxPrice {
+      type
+      quantity
+    }
+    numProviders
+    fundsReleased
+    bids {
+      bidderAddress
+      status
+      commitHash
+      commitTime
+      revealTime
+      commitFee {
+        type
+        quantity
+      }
+      revealFee {
+        type
+        quantity
+      }
+      bidAmount {
+        type
+        quantity
+      }
+    }
   }
 }
 `;

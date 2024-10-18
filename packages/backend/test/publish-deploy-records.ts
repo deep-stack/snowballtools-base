@@ -73,7 +73,7 @@ async function main() {
 
     // Remove deployment for project subdomain if deployment is for production environment
     if (deployment.environment === Environment.Production) {
-      applicationDeploymentRecord.url = `https://${deployment.project.subDomain}`
+      applicationDeploymentRecord.url = `https://${deployment.project.name}.${deployment.baseDomain}`;
 
       await registry.setRecord(
         {

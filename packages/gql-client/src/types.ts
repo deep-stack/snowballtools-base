@@ -25,6 +25,45 @@ export enum DeploymentStatus {
   Deleting = "Deleting",
 }
 
+export enum AuctionStatus {
+  AuctionStatusCommitPhase = "commit",
+  AuctionStatusRevealPhase = "reveal",
+  AuctionStatusExpired = "expired",
+  AuctionStatusCompleted = "completed",
+}
+
+export type Bid = {
+  auctionId: string;
+  bidderAddress: string;
+  status: string;
+  commitHash: string;
+  commitTime?: Date;
+  commitFee?: string;
+  revealTime?: Date;
+  revealFee?: string;
+  bidAmount?: string;
+}
+
+export type Auction = {
+  id: string;
+  kind: string;
+  status: string;
+  ownerAddress: string;
+  createTime?: Date;
+  commitsEndTime?: Date;
+  revealsEndTime?: Date;
+  commitFee?: string;
+  revealFee?: string;
+  minimumBid?: string;
+  winnerAddresses: string[];
+  winnerBids?: string[];
+  winnerPrice?: string;
+  maxPrice?: string;
+  numProviders: number;
+  fundsReleased: boolean;
+  bids: Bid[];
+}
+
 export enum DomainStatus {
   Live = "Live",
   Pending = "Pending",
@@ -66,8 +105,10 @@ export type Deployment = {
   commitHash: string;
   commitMessage: string;
   url?: string;
+  deployerLrn: string;
   environment: Environment;
   isCurrent: boolean;
+  baseDomain?: string;
   status: DeploymentStatus;
   createdBy: User;
   createdAt: string;
@@ -128,6 +169,8 @@ export type Project = {
   description: string;
   template: string;
   framework: string;
+  deployerLrns: string[];
+  auctionId: string;
   webhooks: string[];
   members: ProjectMember[];
   environmentVariables: EnvironmentVariable[];
@@ -135,7 +178,7 @@ export type Project = {
   updatedAt: string;
   organization: Organization;
   icon: string;
-  subDomain: string;
+  baseDomains?: string[] | null;
 };
 
 export type GetProjectMembersResponse = {
@@ -308,4 +351,9 @@ export type AuthenticateGitHubResponse = {
 
 export type UnauthenticateGitHubResponse = {
   unauthenticateGitHub: boolean;
+};
+
+export type AuctionParams = {
+  maxPrice: string;
+  numProviders: number;
 };

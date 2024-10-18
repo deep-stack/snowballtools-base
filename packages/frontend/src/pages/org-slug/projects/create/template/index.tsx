@@ -6,7 +6,6 @@ import { useMediaQuery } from 'usehooks-ts';
 import { RequestError } from 'octokit';
 
 import { useOctokit } from '../../../../../context/OctokitContext';
-import { useGQLClient } from '../../../../../context/GQLClientContext';
 import { Template } from '../../../../../types/types';
 import { Heading } from 'components/shared/Heading';
 import { Input } from 'components/shared/Input';
@@ -31,7 +30,6 @@ type SubmitRepoValues = {
 const CreateRepo = () => {
   const { octokit, isAuth } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
-  const client = useGQLClient();
 
   const { orgSlug } = useParams();
   const { toast, dismiss } = useToast();
@@ -55,19 +53,8 @@ const CreateRepo = () => {
 
         setIsLoading(true);
 
-        const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-          orgSlug!,
-          {
-            templateOwner: owner,
-            templateRepo: repo,
-            owner: data.account,
-            name: data.repoName,
-            isPrivate: false,
-          },
-        );
-
         navigate(
-          `deploy?projectId=${addProjectFromTemplate.id}&templateId=${template.id}`,
+          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false&orgSlug=${orgSlug}`
         );
       } catch (err) {
         setIsLoading(false);
@@ -203,7 +190,7 @@ const CreateRepo = () => {
               )
             }
           >
-            Deploy
+            Next
           </Button>
         </div>
       </div>

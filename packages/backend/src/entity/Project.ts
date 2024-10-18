@@ -46,6 +46,12 @@ export class Project {
   @Column('text', { default: '' })
     description!: string;
 
+  @Column('varchar', { nullable: true })
+    auctionId!: string | null;
+
+  @Column({ type: 'simple-array', nullable: true })
+    deployerLrns!: string[] | null;
+
   // TODO: Compute template & framework in import repository
   @Column('varchar', { nullable: true })
     template!: string | null;
@@ -61,8 +67,8 @@ export class Project {
   @Column('varchar')
     icon!: string;
 
-  @Column('varchar')
-    subDomain!: string;
+  @Column({ type: 'simple-array',  nullable: true })
+    baseDomains!: string[] | null;
 
   @CreateDateColumn()
     createdAt!: Date;
