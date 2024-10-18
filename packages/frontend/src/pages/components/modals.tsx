@@ -36,7 +36,11 @@ const deployment: Deployment = {
   url: 'https://deploy1.example.com',
   environment: Environment.Production,
   isCurrent: true,
-  deployerLrn: 'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com',
+  deployer: {
+    deployerApiUrl: 'https://webapp-deployer-api.pwa.wireitin.com',
+    deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
+    deployerLrn:'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com'
+  },
   status: DeploymentStatus.Ready,
   createdBy: {
     id: 'user1',
@@ -49,6 +53,7 @@ const deployment: Deployment = {
   },
   createdAt: '1677676800', // 2023-03-01T12:00:00Z
   updatedAt: '1677680400', // 2023-03-01T13:00:00Z
+  applicationDeploymentRequestId: 'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
 };
 
 const domains: Domain[] = [

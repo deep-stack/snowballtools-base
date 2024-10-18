@@ -102,7 +102,12 @@ export const deployment0: Deployment = {
   domain: domain0,
   commitMessage: 'Commit Message',
   createdBy: user,
-  deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
+  deployer:  {
+    deployerApiUrl: 'https://webapp-deployer-api.pwa.wireitin.com',
+    deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
+    deployerLrn:'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com'
+  },
+  applicationDeploymentRequestId: 'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
 };
 
 export const project: Project = {
