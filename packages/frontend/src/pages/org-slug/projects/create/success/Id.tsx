@@ -23,12 +23,8 @@ const Id = () => {
 
   const handleSetupDomain = async () => {
     if (id) {
-      // console.log('id', id);
-      // console.log('getting project for id', id);
       const project = await client.getProject(id);
-      // console.log('project found:', project);
       if (project && project.project) {
-        // console.log('project:', project.project);
         setProject(project.project);
       }
     } else {
@@ -38,7 +34,7 @@ const Id = () => {
 
   useEffect(() => {
     handleSetupDomain();
-  });
+  }, []);
 
   return (
     <>

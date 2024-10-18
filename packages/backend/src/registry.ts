@@ -432,6 +432,10 @@ export class Registry {
   }
 
   async getCompletedAuctionIds(auctionIds: string[]): Promise<string[]> {
+    if (auctionIds.length === 0) {
+      return [];
+    }
+
     const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions

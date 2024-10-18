@@ -39,9 +39,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
       const intervalId = setInterval(checkAuctionStatus, WAIT_DURATION);
       return () => clearInterval(intervalId);
     }
-  }, [auctionStatus, checkAuctionStatus]);
 
-  useEffect(() => {
     if (auctionStatus === 'completed') {
       const fetchUpdatedProject = async () => {
         // Wait for 5 secs since the project is not immediately updated with deployer LRNs

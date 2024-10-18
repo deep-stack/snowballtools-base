@@ -173,6 +173,9 @@ export class Service {
       where: records.map((record) => ({
         applicationDeploymentRequestId: record.attributes.request,
       })),
+      relations: {
+        project: true,
+      },
       order: {
         createdAt: 'DESC',
       },
@@ -189,8 +192,6 @@ export class Service {
     // Update deployment data for ApplicationDeploymentRecords
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
-      const project = await this.getProjectById(deployment.projectId)
-      assert(project)
 
       const parts = record.attributes.url.replace('https://', '').split('.');
       const baseDomain = parts.slice(1).join('.');
@@ -204,19 +205,21 @@ export class Service {
 
       await this.db.updateDeploymentById(deployment.id, deployment);
 
-      const baseDomains = project.baseDomains || [];
+      const baseDomains = deployment.project.baseDomains || [];
 
       if (!baseDomains.includes(baseDomain)) {
         baseDomains.push(baseDomain);
       }
 
       // Release deployer funds on successful deployment
-      const fundsReleased = await this.releaseDeployerFundsByProjectId(project.id);
+      if (!deployment.project.fundsReleased) {
+        const fundsReleased = await this.releaseDeployerFundsByProjectId(deployment.projectId);
 
-      await this.db.updateProjectById(project.id, {
-        baseDomains,
-        fundsReleased,
-      })
+        await this.db.updateProjectById(deployment.projectId, {
+          baseDomains,
+          fundsReleased,
+        });
+      }
 
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
@@ -296,7 +299,7 @@ export class Service {
   async checkAuctionStatus(): Promise<void> {
     const projects = await this.db.allProjectsWithoutDeployments();
 
-    const validAuctionIds = projects.map((project) => project.auctionId!)
+    const validAuctionIds = projects.map((project) => project.auctionId)
       .filter((id): id is string => Boolean(id));
     const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(validAuctionIds);
 
@@ -305,7 +308,7 @@ export class Service {
     );
 
     for (const project of projectsToBedeployed) {
-      const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
+      const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project.auctionId!);
 
       if (!deployerLrns) {
         log(`No winning deployer for auction ${project!.auctionId}`);
@@ -1271,6 +1274,7 @@ export class Service {
 
     if (!project || !project.auctionId) {
       log(`Project ${projectId} ${!project ? 'not found' : 'does not have an auction'}`);
+
       return false;
     }
 
@@ -1279,10 +1283,12 @@ export class Service {
     if (auction.auction.fundsReleased) {
       log(`Funds released for auction ${project.auctionId}`);
       await this.db.updateProjectById(projectId, { fundsReleased: true });
+
       return true;
     }
 
     log(`Error releasing funds for auction ${project.auctionId}`);
+
     return false;
   }
 }
