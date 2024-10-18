@@ -34,10 +34,11 @@ const Configure = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control, watch } = useForm<ConfigureFormValues>({
-    defaultValues: { option: 'LRN' },
+    defaultValues: { option: 'Auction', lrn: '', numProviders: 0, maxPrice: '' },
   });
 
   const selectedOption = watch('option');
+  const lrnValue = watch('lrn');
 
   const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
   const buttonSize = isTabletView ? { size: 'lg' as const } : {};
@@ -216,7 +217,7 @@ const Configure = () => {
             <Button
               {...buttonSize}
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || lrnValue === ''}
               rightIcon={
                 isLoading ? (
                   <LoadingIcon className="animate-spin" />
