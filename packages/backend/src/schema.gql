@@ -230,7 +230,7 @@ type Auction {
   bids: [Bid!]!
 }
 
-input AuctionData {
+input AuctionParams {
   maxPrice: String,
   numProviders: Int,
 }
@@ -270,13 +270,13 @@ type Mutation {
     organizationSlug: String!
     data: AddProjectFromTemplateInput
     lrn: String
-    auctionData: AuctionData
+    auctionParams: AuctionParams
   ): Project!
   addProject(
     organizationSlug: String!
     data: AddProjectInput!
     lrn: String
-    auctionData: AuctionData
+    auctionParams: AuctionParams
   ): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!

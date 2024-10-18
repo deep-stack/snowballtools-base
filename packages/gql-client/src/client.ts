@@ -232,7 +232,7 @@ export class GQLClient {
     organizationSlug: string,
     data: types.AddProjectFromTemplateInput,
     lrn?: string,
-    auctionData?: types.AuctionData,
+    auctionParams?: types.AuctionParams,
   ): Promise<types.AddProjectFromTemplateResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProjectFromTemplate,
@@ -240,7 +240,7 @@ export class GQLClient {
         organizationSlug,
         data,
         lrn,
-        auctionData
+        auctionParams
       },
     });
 
@@ -251,7 +251,7 @@ export class GQLClient {
     organizationSlug: string,
     data: types.AddProjectInput,
     lrn?: string,
-    auctionData?: types.AuctionData,
+    auctionParams?: types.AuctionParams,
   ): Promise<types.AddProjectResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProject,
@@ -259,7 +259,7 @@ export class GQLClient {
         organizationSlug,
         data,
         lrn,
-        auctionData
+        auctionParams
       },
     });
 

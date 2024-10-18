@@ -49,16 +49,16 @@ export const updateDeploymentToProd = gql`
 `;
 
 export const addProjectFromTemplate = gql`
-  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionData: AuctionData) {
-    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionParams: AuctionParams) {
+    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionParams: $auctionParams) {
       id
     }
   }
 `;
 
 export const addProject = gql`
-  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionData: AuctionData) {
-    addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionParams: Auctionparams) {
+    addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionParams: $auctionParams) {
       id
     }
   }

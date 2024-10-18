@@ -19,7 +19,7 @@ import {
   AddProjectFromTemplateInput,
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
-  AuctionData,
+  AuctionParams,
   GitPushEventPayload,
 } from './types';
 import { Role } from './entity/UserOrganization';
@@ -793,7 +793,7 @@ export class Service {
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
     lrn?: string,
-    auctionData?: AuctionData
+    auctionParams?: AuctionParams
   ): Promise<Project | undefined> {
     try {
       const octokit = await this.getOctokit(user.id);
@@ -824,7 +824,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      }, lrn, auctionData);
+      }, lrn, auctionParams);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -842,7 +842,7 @@ export class Service {
     organizationSlug: string,
     data: DeepPartial<Project>,
     lrn?: string,
-    auctionData?: AuctionData
+    auctionParams?: AuctionParams
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -878,8 +878,8 @@ export class Service {
       commitMessage: latestCommit.commit.message,
     };
 
-    if (auctionData) {
-      const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionData!, deploymentData);
+    if (auctionParams) {
+      const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
       await this.createDeployment(user.id, octokit, deploymentData, lrn!);

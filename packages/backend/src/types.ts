@@ -72,7 +72,7 @@ export interface AddProjectFromTemplateInput {
   isPrivate: boolean;
 }
 
-export interface AuctionData {
+export interface AuctionParams {
   maxPrice: string,
   numProviders: number,
 }

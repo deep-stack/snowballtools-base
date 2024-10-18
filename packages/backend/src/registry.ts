@@ -14,7 +14,7 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionData } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams } from './types';
 import { getConfig, getRepoDetails, sleep } from './utils';
 
 const log = debug('snowball:registry');
@@ -163,7 +163,7 @@ export class Registry {
   async createApplicationDeploymentAuction(
     appName: string,
     octokit: Octokit,
-    auctionData: AuctionData,
+    auctionParams: AuctionParams,
     data: DeepPartial<Deployment>,
   ): Promise<{
     applicationDeploymentAuctionId: string;
@@ -189,8 +189,8 @@ export class Registry {
         revealFee: auctionConfig.revealFee,
         revealsDuration: auctionConfig.revealsDuration,
         denom: auctionConfig.denom,
-        maxPrice: auctionData.maxPrice,
-        numProviders: auctionData.numProviders,
+        maxPrice: auctionParams.maxPrice,
+        numProviders: auctionParams.numProviders,
       },
       this.registryConfig.privateKey,
       fee

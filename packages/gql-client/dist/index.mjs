@@ -350,15 +350,15 @@ var updateDeploymentToProd = gql2`
   }
 `;
 var addProjectFromTemplate = gql2`
-  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionData: AuctionData) {
-    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
+  mutation ($organizationSlug: String!, $data: AddProjectFromTemplateInput, $lrn: String, $auctionParams: AuctionParams) {
+    addProjectFromTemplate(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionParams: $auctionParams) {
       id
     }
   }
 `;
 var addProject = gql2`
-  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionData: AuctionData) {
-    addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionData: $auctionData) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionParams: Auctionparams) {
+    addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionParams: $auctionParams) {
       id
     }
   }
@@ -599,7 +599,7 @@ var GQLClient = class {
       return data;
     });
   }
-  addProjectFromTemplate(organizationSlug, data, lrn, auctionData) {
+  addProjectFromTemplate(organizationSlug, data, lrn, auctionParams) {
     return __async(this, null, function* () {
       const result = yield this.client.mutate({
         mutation: addProjectFromTemplate,
@@ -607,13 +607,13 @@ var GQLClient = class {
           organizationSlug,
           data,
           lrn,
-          auctionData
+          auctionParams
         }
       });
       return result.data;
     });
   }
-  addProject(organizationSlug, data, lrn, auctionData) {
+  addProject(organizationSlug, data, lrn, auctionParams) {
     return __async(this, null, function* () {
       const result = yield this.client.mutate({
         mutation: addProject,
@@ -621,7 +621,7 @@ var GQLClient = class {
           organizationSlug,
           data,
           lrn,
-          auctionData
+          auctionParams
         }
       });
       return result.data;

@@ -353,7 +353,7 @@ export type UnauthenticateGitHubResponse = {
   unauthenticateGitHub: boolean;
 };
 
-export type AuctionData = {
+export type AuctionParams = {
   maxPrice: string;
   numProviders: number;
 };

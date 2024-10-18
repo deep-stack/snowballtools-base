@@ -41,10 +41,11 @@
     fees = ""
     gasPrice = "1alnt"
 
+# Durations are set to 2 mins as deployers may take time with ongoing deployments and auctions
 [auction]
-  commitFee = "1000"
+  commitFee = "100000"
   commitsDuration = "120s"
-  revealFee = "1000"
+  revealFee = "100000"
   revealsDuration = "120s"
   denom = "alnt"
 

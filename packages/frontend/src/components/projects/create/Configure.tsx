@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import { AuctionData } from 'gql-client';
+import { AuctionParams } from 'gql-client';
 
 import {
   ArrowRightCircleFilledIcon,
@@ -48,12 +48,12 @@ const Configure = () => {
 
       try {
         let lrn: string | undefined;
-        let auctionData: AuctionData | undefined;
+        let auctionParams: AuctionParams | undefined;
 
         if (data.option === 'LRN') {
           lrn = data.lrn;
         } else if (data.option === 'Auction') {
-          auctionData = {
+          auctionParams = {
             numProviders: Number(data.numProviders!),
             maxPrice: (data.maxPrice!).toString(),
           };
@@ -73,7 +73,7 @@ const Configure = () => {
             orgSlug,
             projectData,
             lrn,
-            auctionData
+            auctionParams
           );
 
           data.option === 'Auction'
@@ -94,7 +94,7 @@ const Configure = () => {
               template: 'webapp',
             },
             lrn,
-            auctionData
+            auctionParams
           );
 
           data.option === 'Auction'
