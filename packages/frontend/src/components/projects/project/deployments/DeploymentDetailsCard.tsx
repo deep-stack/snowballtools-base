@@ -87,6 +87,14 @@ const DeploymentDetailsCard = ({
     }
   };
 
+  const fetchDeploymentLogs = useCallback(async () => {
+    let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
+    const res = await fetch(url);
+    const logs = await res.text();
+    setDeploymentLogs(logs);
+    handleOpenDialog();
+  }, [deployment.deployer.deployerApiUrl, deployment.applicationDeploymentRequestId, handleOpenDialog]);
+
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
       return (
@@ -95,14 +103,7 @@ const DeploymentDetailsCard = ({
             leftIcon={getIconByDeploymentStatus(deployment.status)}
             size="xs"
             type={STATUS_COLORS[deployment.status] ?? 'neutral'}
-            onClick={async()=> {
-              let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`
-              const res = await fetch(url);
-              const logs = await res.text()
-              // console.log(">>>>RESPONSE",await res.text())
-              setDeploymentLogs(logs)
-              handleOpenDialog()
-            }}
+            onClick={fetchDeploymentLogs}
           >
             {deployment.status}
           </Tag>
