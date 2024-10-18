@@ -44,6 +44,7 @@ export class Service {
   private config: Config;
 
   private deployRecordCheckTimeout?: NodeJS.Timeout;
+  private auctionStatusCheckTimeout?: NodeJS.Timeout;
 
   constructor(config: Config, db: Database, app: OAuthApp, registry: Registry) {
     this.db = db;
@@ -70,6 +71,7 @@ export class Service {
    */
   destroy(): void {
     clearTimeout(this.deployRecordCheckTimeout);
+    clearTimeout(this.auctionStatusCheckTimeout);
   }
 
   /**
@@ -160,41 +162,20 @@ export class Service {
 
   /**
    * Update deployments with ApplicationDeploymentRecord data
+   * Deployments that are completed but not updated in DB
    */
   async updateDeploymentsWithRecordData(
     records: AppDeploymentRecord[],
   ): Promise<void> {
-    // Get deployments for ApplicationDeploymentRecords
-    // Deployments that are completed but not updated(are in building state and ApplicationDeploymentRecord is present)
+    // get and update deployments to be updated using request id
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
-        applicationRecordId: record.attributes.application,
-        // Only for the specific deployer
-        deployerLrn: record.attributes.deployer
+        applicationDeploymentRequestId: record.attributes.request,
       })),
       order: {
         createdAt: 'DESC',
       },
     });
-
-    // Get deployment IDs of deployments that are in production environment
-    const productionDeploymentIds: string[] = [];
-    deployments.forEach(deployment => {
-      if (deployment.environment === Environment.Production) {
-        if (!productionDeploymentIds.includes(deployment.id)) {
-          productionDeploymentIds.push(deployment.id);
-        }
-      }
-    });
-
-    // Set old deployments isCurrent to false
-    // TODO: Only set isCurrent to false for the deployment for that specific deployer
-    for (const deploymentId of productionDeploymentIds) {
-      await this.db.updateDeployment(
-        { id: deploymentId },
-        { isCurrent: false }
-      );
-    }
 
     const recordToDeploymentsMap = deployments.reduce(
       (acc: { [key: string]: Deployment }, deployment) => {
@@ -213,14 +194,14 @@ export class Service {
       const parts = record.attributes.url.replace('https://', '').split('.');
       const baseDomain = parts.slice(1).join('.');
 
-      await this.db.updateDeploymentById(deployment.id, {
-        applicationDeploymentRecordId: record.id,
-        applicationDeploymentRecordData: record.attributes,
-        url: record.attributes.url,
-        baseDomain,
-        status: DeploymentStatus.Ready,
-        isCurrent: deployment.environment === Environment.Production,
-      });
+      deployment.applicationDeploymentRecordId = record.id;
+      deployment.applicationDeploymentRecordData = record.attributes;
+      deployment.url = record.attributes.url;
+      deployment.baseDomain = baseDomain;
+      deployment.status = DeploymentStatus.Ready;
+      deployment.isCurrent = deployment.environment === Environment.Production;
+
+      await this.db.updateDeploymentById(deployment.id, deployment);
 
       const baseDomains = project.baseDomains || [];
 
@@ -236,6 +217,33 @@ export class Service {
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
       );
     });
+
+    await Promise.all(deploymentUpdatePromises);
+
+    // if iscurrent is true for this deployment then update the old ones
+    const prodDeployments = Object.values(recordToDeploymentsMap).filter(deployment => deployment.isCurrent);
+
+    // Get deployment IDs of deployments that are in production environment
+    for (const deployment of prodDeployments) {
+      const projectDeployments = await this.db.getDeploymentsByProjectId(deployment.projectId);
+      const oldDeployments = projectDeployments
+        .filter(projectDeployment => projectDeployment.deployerLrn === deployment.deployerLrn && projectDeployment.id !== deployment.id);
+      for (const oldDeployment of oldDeployments) {
+        await this.db.updateDeployment(
+          { id: oldDeployment.id },
+          { isCurrent: false }
+        );
+      }
+    }
+
+    // Get old deployments for ApplicationDeploymentRecords
+    // flter out deps with is current false
+
+    // loop over these deps
+    // get the project
+    // get all the deployemnts in that proj with the same deployer lrn (query filter not above updated dep)
+    // set is current to false
+
 
     await Promise.all(deploymentUpdatePromises);
   }
@@ -280,13 +288,6 @@ export class Service {
       );
 
       await this.db.deleteDeploymentById(deployment.id);
-      const project = await this.db.getProjectById(deployment.projectId);
-
-      const updatedBaseDomains = project!.baseDomains!.filter(baseDomain => baseDomain !== deployment.baseDomain);
-
-      await this.db.updateProjectById(deployment.projectId, {
-        baseDomains: updatedBaseDomains
-      });
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -309,9 +310,7 @@ export class Service {
     const projects = allProjects.filter(project => {
       if (project.deletedAt !== null) return false;
 
-      const deletedDeployments = project.deployments.filter(deployment => deployment.deletedAt !== null).length;
-
-      return project.deployments.length === 0 && deletedDeployments === 0;
+      return project.deployments.length === 0;
     });
 
     const auctionIds = projects.map((project) => project.auctionId);
@@ -343,7 +342,7 @@ export class Service {
       }
     }
 
-    this.deployRecordCheckTimeout = setTimeout(() => {
+    this.auctionStatusCheckTimeout = setTimeout(() => {
       this.checkAuctionStatus();
     }, this.config.registryConfig.checkAuctionStatusDelay);
   }
@@ -605,7 +604,8 @@ export class Service {
       domain: prodBranchDomains[0],
       commitHash: oldDeployment.commitHash,
       commitMessage: oldDeployment.commitMessage,
-    }, oldDeployment.deployerLrn);
+      deployerLrn: oldDeployment.deployerLrn
+    });
 
     return newDeployment;
   }
@@ -613,8 +613,7 @@ export class Service {
   async createDeployment(
     userId: string,
     octokit: Octokit,
-    data: DeepPartial<Deployment>,
-    deployerLrn: string
+    data: DeepPartial<Deployment>
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
@@ -643,7 +642,7 @@ export class Service {
       );
     }
 
-    const newDeployment = await this.createDeploymentFromData(userId, data, deployerLrn, applicationRecordId, applicationRecordData);
+    const newDeployment = await this.createDeploymentFromData(userId, data, data.deployerLrn!, applicationRecordId, applicationRecordData);
 
     const { repo, repoUrl } = await getRepoDetails(octokit, data.project.repository, data.commitHash);
     const environmentVariablesObj = await this.getEnvVariables(data.project!.id!);
@@ -657,7 +656,7 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn: deployerLrn
+        lrn: data.deployerLrn!
       });
     }
 
@@ -666,7 +665,7 @@ export class Service {
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
-        lrn: deployerLrn,
+        lrn: data.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -675,11 +674,6 @@ export class Service {
       applicationDeploymentRequestId,
       applicationDeploymentRequestData,
     });
-
-    // Save deployer lrn only if present
-    if (deployerLrn) {
-      newDeployment.project.deployerLrns = [deployerLrn];
-    }
 
     return newDeployment;
   }
@@ -876,13 +870,14 @@ export class Service {
       domain: null,
       commitHash: latestCommit.sha,
       commitMessage: latestCommit.commit.message,
+      deployerLrn: lrn
     };
 
     if (auctionParams) {
       const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
     } else {
-      await this.createDeployment(user.id, octokit, deploymentData, lrn!);
+      await this.createDeployment(user.id, octokit, deploymentData);
       await this.updateProject(project.id, { deployerLrns: [lrn!] })
     }
 
@@ -954,7 +949,10 @@ export class Service {
       });
 
       const deployers = project.deployerLrns;
-      if (!deployers) return;
+      if (!deployers) {
+        log(`No deployer present for project ${project.id}`)
+        return;
+      }
 
       for (const deployer of deployers) {
         // Create deployment with branch and latest commit in GitHub data
@@ -969,8 +967,8 @@ export class Service {
             domain,
             commitHash: headCommit.id,
             commitMessage: headCommit.message,
+            deployerLrn: deployer
           },
-          deployer
         );
       }
     }
@@ -1025,6 +1023,7 @@ export class Service {
     let newDeployment: Deployment;
 
     if (oldDeployment.project.auctionId) {
+      // TODO: Discuss creating applicationRecord for redeployments
       newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployerLrn);
     } else {
       newDeployment = await this.createDeployment(user.id, octokit,
@@ -1036,8 +1035,8 @@ export class Service {
           domain: oldDeployment.domain,
           commitHash: oldDeployment.commitHash,
           commitMessage: oldDeployment.commitMessage,
-        },
-        oldDeployment.deployerLrn
+          deployerLrn: oldDeployment.deployerLrn
+        }
       );
     }
 

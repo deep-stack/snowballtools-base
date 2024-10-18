@@ -36,7 +36,7 @@ const deployment: Deployment = {
   url: 'https://deploy1.example.com',
   environment: Environment.Production,
   isCurrent: true,
-  deployerLrn: 'lrn://deepstack-test4/deployers/webapp-deployer-api.test4.wireitin.com',
+  deployerLrn: 'lrn://example/deployers/webapp-deployer-api.test.com',
   status: DeploymentStatus.Ready,
   createdBy: {
     id: 'user1',

@@ -254,7 +254,6 @@ export class Registry {
       application: `${lrn}@${applicationRecord.attributes.app_version}`,
       dns: data.dns,
 
-      // TODO: Not set in test-progressive-web-app CI
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({
         env: data.environmentVariables

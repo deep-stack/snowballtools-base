@@ -29,28 +29,29 @@ export const AuctionCard = ({ project }: { project: Project }) => {
     setAuctionStatus(result.status);
     setAuctionDetails(result);
     setDeployerLrns(project.deployerLrns);
-    }, [client, project.auctionId, project.deployerLrns]);
+  }, [client, project.auctionId, project.deployerLrns]);
 
   useEffect(() => {
-    const fetchUpdatedProject = async () => {
-      if (auctionStatus === 'completed') {
-        // Wait for 5 secs since the project is not immediately updated with deployer LRNs
-        await new Promise((resolve) => setTimeout(resolve, WAIT_DURATION));
-
-        const updatedProject = await client.getProject(project.id);
-        setDeployerLrns(updatedProject.project!.deployerLrns || []);
-      }
-    };
-
     if (auctionStatus !== 'completed') {
-      const intervalId = setInterval(checkAuctionStatus, WAIT_DURATION);
       checkAuctionStatus();
+      const intervalId = setInterval(checkAuctionStatus, WAIT_DURATION);
 
       return () => clearInterval(intervalId);
-    } else {
+    }
+  }, [auctionStatus, checkAuctionStatus]);
+
+  useEffect(() => {
+    if (auctionStatus === 'completed') {
+      const fetchUpdatedProject = async () => {
+        // Wait for 5 secs since the project is not immediately updated with deployer LRNs
+        await new Promise((resolve) => setTimeout(resolve, WAIT_DURATION));
+        const updatedProject = await client.getProject(project.id);
+        setDeployerLrns(updatedProject.project?.deployerLrns || []);
+      };
+
       fetchUpdatedProject();
     }
-  }, [auctionStatus, checkAuctionStatus, client]);
+  }, [auctionStatus, client, project.id]);
 
   const renderAuctionStatus = useCallback(
     () => (
