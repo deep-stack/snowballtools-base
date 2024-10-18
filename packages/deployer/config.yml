@@ -1,8 +1,8 @@
 services:
   registry:
-    rpcEndpoint: http://dss-daemon.wireitin.com:26657
-    gqlEndpoint: http://dss-daemon.wireitin.com:9473/api
-    userKey: 08c0d30ed23706330468e6936316a3bc3e69e451e394f05027ad56119bb485b9
-    bondId: 820587f916d9a6a056f1e6a5a250151d9fa0c1e771347a6b8bb3d6f2090fd11b
+    rpcEndpoint: http://dss-daemon.wireitin.com:36657
+    gqlEndpoint: http://dss-daemon.wireitin.com:3473/api
+    userKey: 756355ee24180b4a42af2c8dc7709ac599e7d5f75b71352bf244532dbb40aa8e
+    bondId: e03ee886f8d59ae10f3a09006488a4a8fe56d5e69d3ca8b62554a67a15694f27
     chainId: laconic_9000-2
-    gasPrice: 1alnt
+    gasPrice: .001alnt
