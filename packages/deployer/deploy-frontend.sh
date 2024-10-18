@@ -39,16 +39,16 @@ record:
   dns: dashboard
   config:
     env:
-      LACONIC_HOSTED_CONFIG_server_url: https://snowball-backend.pwa.laconic.com
-      LACONIC_HOSTED_CONFIG_github_clientid: b7c63b235ca1dd5639ab
+      LACONIC_HOSTED_CONFIG_server_url: https://snowball-backend.wireitin.com
+      LACONIC_HOSTED_CONFIG_github_clientid: 5273b7cd85627f8d5f53
       LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
       LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
       LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073
-      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.pwa.laconic.com
+      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.pwa.wireitin.com
       LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com
-      LACONIC_HOSTED_CONFIG_turnkey_organization_id: 5049ae99-5bca-40b3-8317-504384d4e591
+      LACONIC_HOSTED_CONFIG_turnkey_organization_id: 50faec04-12eb-4e78-a845-56dfaf455d7a
   meta:
     note: Added by Snowball @ $CURRENT_DATE_TIME
     repository: "$REPO_URL"
