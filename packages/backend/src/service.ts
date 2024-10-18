@@ -784,7 +784,8 @@ export class Service {
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
     lrn?: string,
-    auctionParams?: AuctionParams
+    auctionParams?: AuctionParams,
+    environmentVariables?: { environments: string[]; key: string; value: string }[],
   ): Promise<Project | undefined> {
     try {
       const octokit = await this.getOctokit(user.id);
@@ -815,7 +816,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      }, lrn, auctionParams);
+      }, lrn, auctionParams, environmentVariables);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -833,7 +834,8 @@ export class Service {
     organizationSlug: string,
     data: DeepPartial<Project>,
     lrn?: string,
-    auctionParams?: AuctionParams
+    auctionParams?: AuctionParams,
+    environmentVariables?: { environments: string[]; key: string; value: string }[],
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -844,8 +846,11 @@ export class Service {
       throw new Error('Organization does not exist');
     }
 
-    const project = await this.db.addProject(user, organization.id, data);
-    log(`Project created ${project.id}`);
+    const project = await this.db.addProject(user, organization.id, data);4
+
+    if(environmentVariables) {
+      await this.addEnvironmentVariables(project.id, environmentVariables);
+    }
 
     const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');

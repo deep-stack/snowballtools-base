@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import {  FormProvider, FieldValues } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import { AuctionParams } from 'gql-client';
+import { AddEnvironmentVariableInput, AuctionParams } from 'gql-client';
 
 import {
   ArrowRightCircleFilledIcon,
@@ -55,7 +55,7 @@ const Configure = () => {
   const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
   const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
-  const createProject = async (data: FieldValues): Promise<string> => {
+  const createProject = async (data: FieldValues, envVariables: AddEnvironmentVariableInput[]): Promise<string> => {
     setIsLoading(true);
     let projectId: string | null = null;
 
@@ -81,13 +81,15 @@ const Configure = () => {
           isPrivate,
         };
 
-      const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-        orgSlug!,
-        projectData,
-        lrn,
-        auctionParams
-      );
-      projectId = addProjectFromTemplate.id;
+        const { addProjectFromTemplate } = await client.addProjectFromTemplate(
+          orgSlug!,
+          projectData,
+          lrn,
+          auctionParams,
+          envVariables
+        );
+
+        projectId = addProjectFromTemplate.id;
       } else {
         const { addProject } = await client.addProject(
           orgSlug!,
@@ -98,7 +100,8 @@ const Configure = () => {
             template: 'webapp',
           },
           lrn,
-          auctionParams
+          auctionParams,
+          envVariables
         );
 
         projectId = addProject.id;
@@ -134,12 +137,12 @@ const Configure = () => {
         };
       });
 
-      const projectId = await createProject(createFormData);
+      const projectId = await createProject(createFormData, environmentVariables);
 
-      const { addEnvironmentVariables: isEnvironmentVariablesAdded } =
-        await client.addEnvironmentVariables(projectId, environmentVariables);
+      const { environmentVariables: isEnvironmentVariablesAdded } =
+        await client.getEnvironmentVariables(projectId);
 
-      if (isEnvironmentVariablesAdded) {
+      if (isEnvironmentVariablesAdded.length > 0) {
         toast({
           id:
             createFormData.variables.length > 1
