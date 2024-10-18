@@ -4,6 +4,6 @@
   "main": "index.js",
   "private": true,
   "devDependencies": {
-    "@snowballtools/laconic-registry-cli": "^0.1.13"
+    "@cerc-io/laconic-registry-cli": "^0.2.9"
   }
 }

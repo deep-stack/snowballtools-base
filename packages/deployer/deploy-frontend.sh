@@ -1,7 +1,11 @@
 #!/bin/bash
 
+source .env
+echo "Using REGISTRY_BOND_ID: $REGISTRY_BOND_ID"
+echo "Using DEPLOYER_LRN: $DEPLOYER_LRN"
+
 # Repository URL
-REPO_URL="https://github.com/snowball-tools/snowballtools-base"
+REPO_URL="https://git.vdb.to/cerc-io/snowballtools-base"
 
 # Get the latest commit hash from the repository
 LATEST_HASH=$(git ls-remote $REPO_URL HEAD | awk '{print $1}')
@@ -13,7 +17,6 @@ PACKAGE_VERSION=$(jq -r '.version' ../frontend/package.json)
 CURRENT_DATE_TIME=$(date -u)
 
 CONFIG_FILE=config.yml
-REGISTRY_BOND_ID="99c0e9aec0ac1b8187faa579be3b54f93fafb6060ac1fd29170b860df605be32"
 
 # Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
 
@@ -32,15 +35,20 @@ record:
   version: '1.0.0'
   name: snowballtools-base-frontend@$PACKAGE_VERSION
   application: lrn://snowballtools/applications/snowballtools-base-frontend@$PACKAGE_VERSION
+  deployer: $DEPLOYER_LRN
   dns: dashboard
   config:
     env:
-      LACONIC_HOSTED_CONFIG_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
+      LACONIC_HOSTED_CONFIG_server_url: https://snowball-backend.pwa.laconic.com
       LACONIC_HOSTED_CONFIG_github_clientid: b7c63b235ca1dd5639ab
-      LACONIC_HOSTED_CONFIG_github_templaterepo: snowball-tools/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
+      LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
+      LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073
+      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.pwa.laconic.com
+      LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com
+      LACONIC_HOSTED_CONFIG_turnkey_organization_id: 5049ae99-5bca-40b3-8317-504384d4e591
   meta:
     note: Added by Snowball @ $CURRENT_DATE_TIME
     repository: "$REPO_URL"

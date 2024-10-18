@@ -16,7 +16,6 @@ VITE_GITHUB_PWA_TEMPLATE_REPO = 'LACONIC_HOSTED_CONFIG_github_pwa_templaterepo'
 VITE_GITHUB_IMAGE_UPLOAD_PWA_TEMPLATE_REPO = 'LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo'
 VITE_WALLET_CONNECT_ID = 'LACONIC_HOSTED_CONFIG_wallet_connect_id'
 VITE_LIT_RELAY_API_KEY = 'LACONIC_HOSTED_CONFIG_lit_relay_api_key'
-VITE_ALCHEMY_API_KEY = 'LACONIC_HOSTED_CONFIG_aplchemy_api_key'
 VITE_BUGSNAG_API_KEY = 'LACONIC_HOSTED_CONFIG_bugsnag_api_key'
 VITE_PASSKEY_WALLET_RPID = 'LACONIC_HOSTED_CONFIG_passkey_wallet_rpid'
 VITE_TURNKEY_API_BASE_URL = 'LACONIC_HOSTED_CONFIG_turnkey_api_base_url'
@@ -24,7 +23,7 @@ VITE_TURNKEY_ORGANIZATION_ID = 'LACONIC_HOSTED_CONFIG_turnkey_organization_id'
 EOF
 
 yarn || exit 1
-yarn build || exit 1
+yarn build --ignore backend || exit 1
 
 if [[ ! -d "$OUTPUT_DIR" ]]; then
   echo "Missing output directory: $OUTPUT_DIR" 1>&2
