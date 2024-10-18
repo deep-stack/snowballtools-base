@@ -1,7 +1,7 @@
 import { TurnkeyClient, getWebAuthnAttestation } from '@turnkey/http';
 import { WebauthnStamper } from '@turnkey/webauthn-stamper';
 
-import { baseUrl, PASSKEY_WALLET_RPID, TURNKEY_BASE_URL } from './constants';
+import { BASE_URL, PASSKEY_WALLET_RPID, TURNKEY_BASE_URL } from './constants';
 
 // All algorithms can be found here: https://www.iana.org/assignments/cose/cose.xhtml#algorithms
 // We only support ES256, which is listed here
@@ -10,7 +10,7 @@ const es256 = -7;
 export async function subOrganizationIdForEmail(
   email: string,
 ): Promise<string | null> {
-  const res = await fetch(`${baseUrl}/auth/registration/${email}`);
+  const res = await fetch(`${BASE_URL}/auth/registration/${email}`);
 
   // If API returns a non-empty 200, this email maps to an existing user.
   if (res.status == 200) {
@@ -64,7 +64,7 @@ export async function turnkeySignup(email: string) {
     },
   });
 
-  const res = await fetch(`${baseUrl}/auth/register`, {
+  const res = await fetch(`${BASE_URL}/auth/register`, {
     method: 'POST',
     body: JSON.stringify({
       email,
@@ -108,7 +108,7 @@ export async function turnkeySignin(subOrganizationId: string) {
     throw new Error(`Error during webauthn prompt: ${e}`);
   }
 
-  const res = await fetch(`${baseUrl}/auth/authenticate`, {
+  const res = await fetch(`${BASE_URL}/auth/authenticate`, {
     method: 'POST',
     body: JSON.stringify({
       signedWhoamiRequest: signedRequest,

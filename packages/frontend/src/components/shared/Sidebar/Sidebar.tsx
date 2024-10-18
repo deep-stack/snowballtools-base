@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Organization, User } from 'gql-client';
 import { motion } from 'framer-motion';
+import { useDisconnect } from 'wagmi';
 
 import { useGQLClient } from 'context/GQLClientContext';
 import {
@@ -20,7 +21,7 @@ import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
 import { SIDEBAR_MENU } from './constants';
 import { UserSelect } from 'components/shared/UserSelect';
-import { baseUrl } from 'utils/constants';
+import { BASE_URL } from 'utils/constants';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -33,6 +34,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [user, setUser] = useState<User>();
+  const { disconnect } = useDisconnect();
 
   const fetchUser = useCallback(async () => {
     const { user } = await client.getUser();
@@ -84,13 +86,14 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   }, [orgSlug]);
 
   const handleLogOut = useCallback(async () => {
-    await fetch(`${baseUrl}/auth/logout`, {
+    await fetch(`${BASE_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     });
     localStorage.clear();
+    disconnect();
     navigate('/login');
-  }, [navigate]);
+  }, [disconnect, navigate]);
 
   return (
     <motion.nav

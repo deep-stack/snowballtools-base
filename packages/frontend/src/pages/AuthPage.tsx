@@ -1,5 +1,5 @@
 import { CloudyFlow } from 'components/CloudyFlow';
-import { SnowballAuth } from './auth/SnowballAuth';
+import { Login } from './auth/Login';
 
 const AuthPage = () => {
   return (
@@ -18,7 +18,7 @@ const AuthPage = () => {
       </div>
       <div className="pb-12 relative z-10 flex-1 flex-center">
         <div className="max-w-[520px] w-full bg-white rounded-xl shadow">
-          <SnowballAuth />
+          <Login />
         </div>
       </div>
     </CloudyFlow>

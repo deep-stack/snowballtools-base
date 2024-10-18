@@ -6,19 +6,6 @@ import { authenticateUser, createUser } from '../turnkey-backend';
 const router = Router();
 
 //
-// Access Code
-//
-router.post('/accesscode', async (req, res) => {
-  console.log('Access Code', req.body);
-  const { accesscode } = req.body;
-  if (accesscode === '44444') {
-    return res.send({ isValid: true });
-  } else {
-    return res.sendStatus(204);
-  }
-});
-
-//
 // Turnkey
 //
 router.get('/registration/:email', async (req, res) => {
@@ -40,7 +27,7 @@ router.post('/register', async (req, res) => {
     userEmail: email,
     userName: email.split('@')[0],
   });
-  req.session.userId = user.id;
+  req.session.address = user.id;
   res.sendStatus(200);
 });
 
@@ -52,19 +39,15 @@ router.post('/authenticate', async (req, res) => {
     signedWhoamiRequest,
   );
   if (user) {
-    req.session.userId = user.id;
+    req.session.address = user.id;
     res.sendStatus(200);
   } else {
     res.sendStatus(401);
   }
 });
 
-//
-// Lit
-//
-
 router.post('/validate', async (req, res) => {
-  const { message, signature, action } = req.body;
+  const { message, signature } = req.body;
   const { success, data } = await new SiweMessage(message).verify({
     signature,
   });
@@ -75,10 +58,7 @@ router.post('/validate', async (req, res) => {
   const service: Service = req.app.get('service');
   const user = await service.getUserByEthAddress(data.address);
 
-  if (action === 'signup') {
-    if (user) {
-      return res.send({ success: false, error: 'user_already_exists' });
-    }
+  if (!user) {
     const newUser = await service.createUser({
       ethAddress: data.address,
       email: '',
@@ -86,12 +66,12 @@ router.post('/validate', async (req, res) => {
       subOrgId: '',
       turnkeyWalletId: '',
     });
-    req.session.userId = newUser.id;
-  } else if (action === 'login') {
-    if (!user) {
-      return res.send({ success: false, error: 'user_not_found' });
-    }
-    req.session.userId = user.id;
+    // SIWESession from the web3modal library requires both address and chain ID
+    req.session.address = newUser.id;
+    req.session.chainId = data.chainId;
+  } else {
+    req.session.address = user.id;
+    req.session.chainId = data.chainId;
   }
 
   res.send({ success });
@@ -101,9 +81,10 @@ router.post('/validate', async (req, res) => {
 // General
 //
 router.get('/session', (req, res) => {
-  if (req.session.userId) {
+  if (req.session.address && req.session.chainId) {
     res.send({
-      userId: req.session.userId,
+      address: req.session.address,
+      chainId: req.session.chainId
     });
   } else {
     res.status(401).send({ error: 'Unauthorized: No active session' });
@@ -111,9 +92,12 @@ router.get('/session', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  // This is how you clear cookie-session
-  (req as any).session = null;
-  res.send({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.send({ success: false });
+    }
+    res.send({ success: true });
+  });
 });
 
 export default router;

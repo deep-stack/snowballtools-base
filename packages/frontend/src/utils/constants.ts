@@ -1,4 +1,4 @@
-export const baseUrl = import.meta.env.VITE_SERVER_URL;
+export const BASE_URL = import.meta.env.VITE_SERVER_URL;
 export const PASSKEY_WALLET_RPID = import.meta.env.VITE_PASSKEY_WALLET_RPID!;
 export const TURNKEY_BASE_URL = import.meta.env.VITE_TURNKEY_API_BASE_URL!;
 export const VITE_GITHUB_PWA_TEMPLATE_REPO = import.meta.env
