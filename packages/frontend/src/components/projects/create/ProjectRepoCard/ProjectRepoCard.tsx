@@ -38,18 +38,8 @@ export const ProjectRepoCard: React.FC<ProjectRepoCardProps> = ({
       });
     }
 
-    navigate(`configure`,
-      {
-        state: {
-          repository: {
-            owner: repository.owner?.login,
-            name: repository.name,
-            defaultBranch: repository.default_branch,
-            fullName: repository.full_name,
-          },
-          orgSlug,
-        },
-      }
+    navigate(
+      `configure?owner=${repository.owner?.login}&name=${repository.name}&defaultBranch=${repository.default_branch}&fullName=${repository.full_name}&orgSlug=${orgSlug}`
     );
   }, [client, repository, orgSlug, setIsLoading, navigate, toast]);
 

@@ -54,17 +54,7 @@ const CreateRepo = () => {
         setIsLoading(true);
 
         navigate(
-          `configure?templateId=${template.id}`,
-          {
-            state: {
-              templateOwner: owner,
-              templateRepo: repo,
-              owner: data.account,
-              name: data.repoName,
-              isPrivate: false,
-              orgSlug
-            },
-          }
+          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false&orgSlug=${orgSlug}`
         );
       } catch (err) {
         setIsLoading(false);

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
 import { AuctionParams } from 'gql-client';
 
@@ -25,8 +25,16 @@ type ConfigureFormValues = {
 const Configure = () => {
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
-  const location = useLocation();
-  const { templateOwner, templateRepo, owner, name, isPrivate, orgSlug, repository } = location.state || {};
+  const queryParams = new URLSearchParams(location.search);
+
+  const owner = queryParams.get('owner');
+  const name = queryParams.get('name');
+  const defaultBranch = queryParams.get('defaultBranch');
+  const fullName = queryParams.get('fullName');
+  const orgSlug = queryParams.get('orgSlug');
+  const templateOwner = queryParams.get('templateOwner');
+  const templateRepo = queryParams.get('templateRepo');
+  const isPrivate = queryParams.get('isPrivate') === 'true';
 
   const navigate = useNavigate();
   const { toast, dismiss } = useToast();
@@ -70,7 +78,7 @@ const Configure = () => {
           };
 
           const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-            orgSlug,
+            orgSlug!,
             projectData,
             lrn,
             auctionParams
@@ -78,19 +86,18 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-                `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}`,
-                { state: { isAuction: true } }
-              )
+              `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}?isAuction=true`,
+            )
             : navigate(
-                `/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
-              );
+              `/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
+            );
         } else {
           const { addProject } = await client.addProject(
-            orgSlug,
+            orgSlug!,
             {
-              name: repository.fullName,
-              prodBranch: repository.defaultBranch,
-              repository: repository.fullName,
+              name: fullName!,
+              prodBranch: defaultBranch!,
+              repository: fullName!,
               template: 'webapp',
             },
             lrn,
@@ -99,12 +106,11 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-                `/${orgSlug}/projects/create/success/${addProject.id}`,
-                { state: { isAuction: true } }
-              )
+              `/${orgSlug}/projects/create/success/${addProject.id}?isAuction=true`
+            )
             : navigate(
-                `/${orgSlug}/projects/create/deploy?projectId=${addProject.id}`
-              );
+              `/${orgSlug}/projects/create/deploy?projectId=${addProject.id}`
+            );
         }
       } catch (error) {
         console.error('Error creating project:', error);

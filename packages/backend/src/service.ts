@@ -322,8 +322,6 @@ export class Service {
       );
 
       for (const project of projectsToBedeployed) {
-        log(`Auction ${project!.auctionId} completed`);
-
         const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
 
         if (!deployerLrns) {

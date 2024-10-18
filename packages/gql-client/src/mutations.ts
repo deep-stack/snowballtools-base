@@ -57,7 +57,7 @@ export const addProjectFromTemplate = gql`
 `;
 
 export const addProject = gql`
-  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionParams: Auctionparams) {
+  mutation ($organizationSlug: String!, $data: AddProjectInput!, $lrn: String, $auctionParams: AuctionParams) {
     addProject(organizationSlug: $organizationSlug, data: $data, lrn: $lrn, auctionParams: $auctionParams) {
       id
     }

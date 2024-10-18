@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link,  useParams, useSearchParams } from 'react-router-dom';
 import Lottie from 'lottie-react';
 
 import { Badge } from 'components/shared/Badge';
@@ -18,8 +18,8 @@ const Id = () => {
   const { id, orgSlug } = useParams();
   const client = useGQLClient();
   const [project, setProject] = useState<Project | null>(null);
-  const location = useLocation();
-  const { isAuction } = location.state || {};
+  const [searchParams] = useSearchParams();
+  const isAuction = searchParams.get('isAuction') === 'true';
 
   const handleSetupDomain = async () => {
     if (id) {
