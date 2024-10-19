@@ -46,6 +46,9 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+//
+// SIWE Auth
+//
 router.post('/validate', async (req, res) => {
   const { message, signature } = req.body;
   const { success, data } = await new SiweMessage(message).verify({
@@ -61,11 +64,11 @@ router.post('/validate', async (req, res) => {
   if (!user) {
     const newUser = await service.createUser({
       ethAddress: data.address,
-      email: '',
-      name: '',
+      email: `${data.address}@example.com`,
       subOrgId: '',
       turnkeyWalletId: '',
     });
+
     // SIWESession from the web3modal library requires both address and chain ID
     req.session.address = newUser.id;
     req.session.chainId = data.chainId;

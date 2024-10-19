@@ -4,8 +4,11 @@
   gqlPath = "/graphql"
   [server.session]
     secret = ""
+    # Frontend webapp URL origin
     appOriginUrl = "http://localhost:3000"
+    # Set to true if server running behind proxy
     trustProxy = false
+    # Backend URL hostname
     domain = "localhost"
 
 [database]

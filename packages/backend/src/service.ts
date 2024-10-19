@@ -378,7 +378,7 @@ export class Service {
   }
 
   async createUser(params: {
-    name: string;
+    name?: string;
     email: string;
     subOrgId: string;
     ethAddress: string;
