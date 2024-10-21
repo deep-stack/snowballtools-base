@@ -54,6 +54,9 @@ const Configure = () => {
       setIsLoading(true);
 
       try {
+
+        const { organizations } = await client.getOrganizations();
+        const orgSlug = organizations[0].slug
         let lrn: string | undefined;
         let auctionParams: AuctionParams | undefined;
 
@@ -77,7 +80,7 @@ const Configure = () => {
           };
 
           const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-            "",
+            orgSlug,
             projectData,
             lrn,
             auctionParams
@@ -92,7 +95,7 @@ const Configure = () => {
             );
         } else {
           const { addProject } = await client.addProject(
-            "",
+            orgSlug,
             {
               name: fullName!,
               prodBranch: defaultBranch!,

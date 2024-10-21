@@ -76,7 +76,7 @@ const Id = () => {
                 className="rounded-full h-11 w-11 p-0 shrink-0"
                 aria-label="Go back"
                 leftIcon={<ChevronLeft />}
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/')}
               />
               <Heading className="text-2xl font-medium truncate">
                 {project?.name}
