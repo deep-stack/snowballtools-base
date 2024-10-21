@@ -124,5 +124,6 @@ export const project: Project = {
   deployerLrns: ['lrn://deployer.apps.snowballtools.com '],
   webhooks: ['beepboop'],
   icon: 'Icon',
+  fundsReleased: true,
   baseDomains: ['baseDomain'],
 };

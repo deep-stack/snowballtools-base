@@ -3,7 +3,9 @@ import {
   DeepPartial,
   FindManyOptions,
   FindOneOptions,
-  FindOptionsWhere
+  FindOptionsWhere,
+  IsNull,
+  Not
 } from 'typeorm';
 import path from 'path';
 import debug from 'debug';
@@ -151,14 +153,19 @@ export class Database {
   }
 
   async allProjectsWithoutDeployments(): Promise<Project[]> {
-    const projectRepository = this.dataSource.getRepository(Project);
+    const allProjects = await this.getProjects({
+      where: {
+        auctionId: Not(IsNull()),
+      },
+      relations: ['deployments'],
+      withDeleted: true,
+    });
 
-    const projects = await projectRepository
-      .createQueryBuilder('project')
-      .leftJoinAndSelect('project.deployments', 'deployment', 'deployment.deletedAt IS NULL') // Join only non-soft-deleted deployments
-      .where('deployment.id IS NULL') // Get projects where no deployments are present
-      .andWhere('project.auctionId IS NOT NULL') // Ensure auctionId is not null
-      .getMany();
+    const projects = allProjects.filter(project => {
+      if (project.deletedAt !== null) return false;
+
+      return project.deployments.length === 0;
+    });
 
     return projects;
   }

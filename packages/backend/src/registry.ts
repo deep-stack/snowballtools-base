@@ -319,6 +319,21 @@ export class Registry {
     return deployerLrns;
   }
 
+  async releaseDeployerFunds(
+    auctionId: string
+  ): Promise<any> {
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    const auction = await this.registry.releaseFunds(
+      {
+        auctionId
+      },
+      this.registryConfig.privateKey,
+      fee
+    );
+
+    return auction;
+  }
+
   /**
    * Fetch ApplicationDeploymentRecords for deployments
    */
@@ -417,6 +432,10 @@ export class Registry {
   }
 
   async getCompletedAuctionIds(auctionIds: string[]): Promise<string[]> {
+    if (auctionIds.length === 0) {
+      return [];
+    }
+
     const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions
