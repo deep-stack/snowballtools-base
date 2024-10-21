@@ -76,3 +76,9 @@ export interface AuctionParams {
   maxPrice: string,
   numProviders: number,
 }
+
+export interface EnvironmentVariables {
+  environments: string[],
+  key: string,
+  value: string,
+}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
+// TODO: Use custom checkbox component
 import { Checkbox } from '@snowballtools/material-tailwind-react-fork';
 
 import { Button } from 'components/shared/Button';

@@ -6,7 +6,7 @@ import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
-import { AddProjectFromTemplateInput, AuctionParams } from './types';
+import { AddProjectFromTemplateInput, AuctionParams, EnvironmentVariables } from './types';
 
 const log = debug('snowball:resolver');
 
@@ -218,7 +218,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
           data: AddProjectFromTemplateInput;
           lrn: string;
           auctionParams: AuctionParams,
-          environmentVariables: { environments: string[]; key: string; value: string }[];
+          environmentVariables: EnvironmentVariables[];
         },
         context: any,
       ) => {
@@ -250,7 +250,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
           data: DeepPartial<Project>;
           lrn: string;
           auctionParams: AuctionParams,
-          environmentVariables: { environments: string[]; key: string; value: string }[];
+          environmentVariables: EnvironmentVariables[];
         },
         context: any,
       ) => {

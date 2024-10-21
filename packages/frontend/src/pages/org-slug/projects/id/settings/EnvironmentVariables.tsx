@@ -8,7 +8,6 @@ import { useGQLClient } from 'context/GQLClientContext';
 import { EnvironmentVariablesFormValues } from '../../../../../types';
 import HorizontalLine from 'components/HorizontalLine';
 import { Heading } from 'components/shared/Heading';
-// import { Checkbox } from 'components/shared/Checkbox';
 import { PlusIcon } from 'components/shared/CustomIcon';
 import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 import { useToast } from 'components/shared/Toast';
@@ -79,7 +78,7 @@ export const EnvironmentVariablesTabPanel = () => {
         await client.addEnvironmentVariables(id!, environmentVariables);
 
       if (isEnvironmentVariablesAdded) {
-        // reset();
+        methods.reset();
         setCreateNewVariable((cur) => !cur);
 
         fetchEnvironmentVariables(id);

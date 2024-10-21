@@ -417,13 +417,7 @@ export class Registry {
   }
 
   async getCompletedAuctionIds(auctionIds: string[]): Promise<string[]> {
-    const validAuctionIds = auctionIds.filter((id): id is string => id !== '');
-
-    if (!validAuctionIds.length) {
-      return [];
-    }
-
-    const auctions = await this.registry.getAuctionsByIds(validAuctionIds);
+    const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions
       .filter((auction: { id:  string, status: string }) => auction.status === 'completed')

@@ -33,7 +33,7 @@ export class Database {
   private dataSource: DataSource;
   private projectDomain: string;
 
-  constructor ({ dbPath } : DatabaseConfig, { projectDomain } : MiscConfig) {
+  constructor({ dbPath }: DatabaseConfig, { projectDomain }: MiscConfig) {
     this.dataSource = new DataSource({
       type: 'better-sqlite3',
       database: dbPath,
@@ -45,7 +45,7 @@ export class Database {
     this.projectDomain = projectDomain;
   }
 
-  async init (): Promise<void> {
+  async init(): Promise<void> {
     await this.dataSource.initialize();
     log('database initialized');
 
@@ -58,21 +58,21 @@ export class Database {
     }
   }
 
-  async getUser (options: FindOneOptions<User>): Promise<User | null> {
+  async getUser(options: FindOneOptions<User>): Promise<User | null> {
     const userRepository = this.dataSource.getRepository(User);
     const user = await userRepository.findOne(options);
 
     return user;
   }
 
-  async addUser (data: DeepPartial<User>): Promise<User> {
+  async addUser(data: DeepPartial<User>): Promise<User> {
     const userRepository = this.dataSource.getRepository(User);
     const user = await userRepository.save(data);
 
     return user;
   }
 
-  async updateUser (user: User, data: DeepPartial<User>): Promise<boolean> {
+  async updateUser(user: User, data: DeepPartial<User>): Promise<boolean> {
     const userRepository = this.dataSource.getRepository(User);
     const updateResult = await userRepository.update({ id: user.id }, data);
     assert(updateResult.affected);
@@ -80,7 +80,7 @@ export class Database {
     return updateResult.affected > 0;
   }
 
-  async getOrganizations (
+  async getOrganizations(
     options: FindManyOptions<Organization>
   ): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
@@ -89,7 +89,7 @@ export class Database {
     return organizations;
   }
 
-  async getOrganization (
+  async getOrganization(
     options: FindOneOptions<Organization>
   ): Promise<Organization | null> {
     const organizationRepository = this.dataSource.getRepository(Organization);
@@ -98,7 +98,7 @@ export class Database {
     return organization;
   }
 
-  async getOrganizationsByUserId (userId: string): Promise<Organization[]> {
+  async getOrganizationsByUserId(userId: string): Promise<Organization[]> {
     const organizationRepository = this.dataSource.getRepository(Organization);
 
     const userOrgs = await organizationRepository.find({
@@ -114,21 +114,21 @@ export class Database {
     return userOrgs;
   }
 
-  async addUserOrganization (data: DeepPartial<UserOrganization>): Promise<UserOrganization> {
+  async addUserOrganization(data: DeepPartial<UserOrganization>): Promise<UserOrganization> {
     const userOrganizationRepository = this.dataSource.getRepository(UserOrganization);
     const newUserOrganization = await userOrganizationRepository.save(data);
 
     return newUserOrganization;
   }
 
-  async getProjects (options: FindManyOptions<Project>): Promise<Project[]> {
+  async getProjects(options: FindManyOptions<Project>): Promise<Project[]> {
     const projectRepository = this.dataSource.getRepository(Project);
     const projects = await projectRepository.find(options);
 
     return projects;
   }
 
-  async getProjectById (projectId: string): Promise<Project | null> {
+  async getProjectById(projectId: string): Promise<Project | null> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     const project = await projectRepository
@@ -150,7 +150,20 @@ export class Database {
     return project;
   }
 
-  async getProjectsInOrganization (
+  async allProjectsWithoutDeployments(): Promise<Project[]> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.deployments', 'deployment', 'deployment.deletedAt IS NULL') // Join only non-soft-deleted deployments
+      .where('deployment.id IS NULL') // Get projects where no deployments are present
+      .andWhere('project.auctionId IS NOT NULL') // Ensure auctionId is not null
+      .getMany();
+
+    return projects;
+  }
+
+  async getProjectsInOrganization(
     userId: string,
     organizationSlug: string
   ): Promise<Project[]> {
@@ -181,7 +194,7 @@ export class Database {
   /**
    * Get deployments with specified filter
    */
-  async getDeployments (
+  async getDeployments(
     options: FindManyOptions<Deployment>
   ): Promise<Deployment[]> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
@@ -190,7 +203,7 @@ export class Database {
     return deployments;
   }
 
-  async getDeploymentsByProjectId (projectId: string): Promise<Deployment[]> {
+  async getDeploymentsByProjectId(projectId: string): Promise<Deployment[]> {
     return this.getDeployments({
       relations: {
         project: true,
@@ -208,7 +221,7 @@ export class Database {
     });
   }
 
-  async getDeployment (
+  async getDeployment(
     options: FindOneOptions<Deployment>
   ): Promise<Deployment | null> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
@@ -217,14 +230,14 @@ export class Database {
     return deployment;
   }
 
-  async getDomains (options: FindManyOptions<Domain>): Promise<Domain[]> {
+  async getDomains(options: FindManyOptions<Domain>): Promise<Domain[]> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const domains = await domainRepository.find(options);
 
     return domains;
   }
 
-  async addDeployment (data: DeepPartial<Deployment>): Promise<Deployment> {
+  async addDeployment(data: DeepPartial<Deployment>): Promise<Deployment> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
 
     const id = nanoid();
@@ -238,7 +251,7 @@ export class Database {
     return deployment;
   }
 
-  async getProjectMembersByProjectId (
+  async getProjectMembersByProjectId(
     projectId: string
   ): Promise<ProjectMember[]> {
     const projectMemberRepository =
@@ -259,7 +272,7 @@ export class Database {
     return projectMembers;
   }
 
-  async getEnvironmentVariablesByProjectId (
+  async getEnvironmentVariablesByProjectId(
     projectId: string,
     filter?: FindOptionsWhere<EnvironmentVariable>
   ): Promise<EnvironmentVariable[]> {
@@ -278,7 +291,7 @@ export class Database {
     return environmentVariables;
   }
 
-  async removeProjectMemberById (projectMemberId: string): Promise<boolean> {
+  async removeProjectMemberById(projectMemberId: string): Promise<boolean> {
     const projectMemberRepository =
       this.dataSource.getRepository(ProjectMember);
 
@@ -293,7 +306,7 @@ export class Database {
     }
   }
 
-  async updateProjectMemberById (
+  async updateProjectMemberById(
     projectMemberId: string,
     data: DeepPartial<ProjectMember>
   ): Promise<boolean> {
@@ -307,7 +320,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async addProjectMember (
+  async addProjectMember(
     data: DeepPartial<ProjectMember>
   ): Promise<ProjectMember> {
     const projectMemberRepository =
@@ -317,7 +330,7 @@ export class Database {
     return newProjectMember;
   }
 
-  async addEnvironmentVariables (
+  async addEnvironmentVariables(
     data: DeepPartial<EnvironmentVariable>[]
   ): Promise<EnvironmentVariable[]> {
     const environmentVariableRepository =
@@ -328,7 +341,7 @@ export class Database {
     return savedEnvironmentVariables;
   }
 
-  async updateEnvironmentVariable (
+  async updateEnvironmentVariable(
     environmentVariableId: string,
     data: DeepPartial<EnvironmentVariable>
   ): Promise<boolean> {
@@ -342,7 +355,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async deleteEnvironmentVariable (
+  async deleteEnvironmentVariable(
     environmentVariableId: string
   ): Promise<boolean> {
     const environmentVariableRepository =
@@ -358,7 +371,7 @@ export class Database {
     }
   }
 
-  async getProjectMemberById (projectMemberId: string): Promise<ProjectMember> {
+  async getProjectMemberById(projectMemberId: string): Promise<ProjectMember> {
     const projectMemberRepository =
       this.dataSource.getRepository(ProjectMember);
 
@@ -381,7 +394,7 @@ export class Database {
     return projectMemberWithProject[0];
   }
 
-  async getProjectsBySearchText (
+  async getProjectsBySearchText(
     userId: string,
     searchText: string
   ): Promise<Project[]> {
@@ -403,14 +416,14 @@ export class Database {
     return projects;
   }
 
-  async updateDeploymentById (
+  async updateDeploymentById(
     deploymentId: string,
     data: DeepPartial<Deployment>
   ): Promise<boolean> {
     return this.updateDeployment({ id: deploymentId }, data);
   }
 
-  async updateDeployment (
+  async updateDeployment(
     criteria: FindOptionsWhere<Deployment>,
     data: DeepPartial<Deployment>
   ): Promise<boolean> {
@@ -420,7 +433,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async updateDeploymentsByProjectIds (
+  async updateDeploymentsByProjectIds(
     projectIds: string[],
     data: DeepPartial<Deployment>
   ): Promise<boolean> {
@@ -436,7 +449,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async deleteDeploymentById (deploymentId: string): Promise<boolean> {
+  async deleteDeploymentById(deploymentId: string): Promise<boolean> {
     const deploymentRepository = this.dataSource.getRepository(Deployment);
     const deployment = await deploymentRepository.findOneOrFail({
       where: {
@@ -449,7 +462,7 @@ export class Database {
     return Boolean(deleteResult);
   }
 
-  async addProject (user: User, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
+  async addProject(user: User, organizationId: string, data: DeepPartial<Project>): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     // TODO: Check if organization exists
@@ -468,7 +481,7 @@ export class Database {
     return projectRepository.save(newProject);
   }
 
-  async updateProjectById (
+  async updateProjectById(
     projectId: string,
     data: DeepPartial<Project>
   ): Promise<boolean> {
@@ -481,7 +494,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async deleteProjectById (projectId: string): Promise<boolean> {
+  async deleteProjectById(projectId: string): Promise<boolean> {
     const projectRepository = this.dataSource.getRepository(Project);
     const project = await projectRepository.findOneOrFail({
       where: {
@@ -497,7 +510,7 @@ export class Database {
     return Boolean(deleteResult);
   }
 
-  async deleteDomainById (domainId: string): Promise<boolean> {
+  async deleteDomainById(domainId: string): Promise<boolean> {
     const domainRepository = this.dataSource.getRepository(Domain);
 
     const deleteResult = await domainRepository.softDelete({ id: domainId });
@@ -509,21 +522,21 @@ export class Database {
     }
   }
 
-  async addDomain (data: DeepPartial<Domain>): Promise<Domain> {
+  async addDomain(data: DeepPartial<Domain>): Promise<Domain> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const newDomain = await domainRepository.save(data);
 
     return newDomain;
   }
 
-  async getDomain (options: FindOneOptions<Domain>): Promise<Domain | null> {
+  async getDomain(options: FindOneOptions<Domain>): Promise<Domain | null> {
     const domainRepository = this.dataSource.getRepository(Domain);
     const domain = await domainRepository.findOne(options);
 
     return domain;
   }
 
-  async updateDomainById (
+  async updateDomainById(
     domainId: string,
     data: DeepPartial<Domain>
   ): Promise<boolean> {
@@ -533,7 +546,7 @@ export class Database {
     return Boolean(updateResult.affected);
   }
 
-  async getDomainsByProjectId (
+  async getDomainsByProjectId(
     projectId: string,
     filter?: FindOptionsWhere<Domain>
   ): Promise<Domain[]> {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {  FormProvider, FieldValues } from 'react-hook-form';
+import { FormProvider, FieldValues } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
 import { AddEnvironmentVariableInput, AuctionParams } from 'gql-client';
@@ -59,18 +59,18 @@ const Configure = () => {
     setIsLoading(true);
     let projectId: string | null = null;
 
-      try {
-        let lrn: string | undefined;
-        let auctionParams: AuctionParams | undefined;
+    try {
+      let lrn: string | undefined;
+      let auctionParams: AuctionParams | undefined;
 
-        if (data.option === 'LRN') {
-          lrn = data.lrn;
-        } else if (data.option === 'Auction') {
-          auctionParams = {
-            numProviders: Number(data.numProviders!),
-            maxPrice: (data.maxPrice!).toString(),
-          };
-        }
+      if (data.option === 'LRN') {
+        lrn = data.lrn;
+      } else if (data.option === 'Auction') {
+        auctionParams = {
+          numProviders: Number(data.numProviders!),
+          maxPrice: (data.maxPrice!).toString(),
+        };
+      }
 
       if (templateId) {
         const projectData: any = {
@@ -125,7 +125,7 @@ const Configure = () => {
     }
   };
 
-  const createEnvironmentVariablesHandler = useCallback(
+  const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
       const environmentVariables = createFormData.variables.map((variable: any) => {
         return {
@@ -165,20 +165,20 @@ const Configure = () => {
       }
       if (templateId) {
         createFormData.option === 'Auction'
-        ? navigate(
-          `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-        )
-        : navigate(
-          `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`
-        );
+          ? navigate(
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+          )
+          : navigate(
+            `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`
+          );
       } else {
         createFormData.option === 'Auction'
-        ? navigate(
-          `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`
-        )
-        : navigate(
-          `/${orgSlug}/projects/create/deploy?projectId=${projectId}`
-        );
+          ? navigate(
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`
+          )
+          : navigate(
+            `/${orgSlug}/projects/create/deploy?projectId=${projectId}`
+          );
       }
     },
     [client, createProject, dismiss, toast]
@@ -201,7 +201,7 @@ const Configure = () => {
 
       <div className="flex flex-col gap-6 lg:gap-8 w-full">
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(createEnvironmentVariablesHandler)}>
+          <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
             <div className="flex flex-col justify-start gap-4 mb-6">
               <Controller
                 name="option"
@@ -236,7 +236,7 @@ const Configure = () => {
                 <Controller
                   name="lrn"
                   control={methods.control}
-                  rules={{ required : true }}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <Input value={value} onChange={onChange} />
                   )}
@@ -256,7 +256,7 @@ const Configure = () => {
                   <Controller
                     name="numProviders"
                     control={methods.control}
-                    rules={{ required : true }}
+                    rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <Input type="number" value={value} onChange={onChange} />
                     )}
@@ -269,7 +269,7 @@ const Configure = () => {
                   <Controller
                     name="maxPrice"
                     control={methods.control}
-                    rules={{ required : true }}
+                    rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <Input type="number" value={value} onChange={onChange} />
                     )}
