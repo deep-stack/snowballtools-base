@@ -117,7 +117,7 @@ export class Registry {
       this.registryConfig.privateKey,
       fee
     );
-    log("Result: ", result);
+
     log(`Published application record ${result.id}`);
     log('Application record data:', applicationRecord);
 
@@ -302,13 +302,9 @@ export class Registry {
     const { winnerAddresses } = auctionResult;
 
     for (const auctionWinner of winnerAddresses) {
-      const records = await this.registry.queryRecords(
-        {
-          paymentAddress: auctionWinner,
-          type: WEBAPP_DEPLOYER_RECORD_TYPE,
-        },
-        true
-      );
+      const records = await this.getDeployerRecordsByFilter({
+        paymentAddress: auctionWinner,
+      });
 
       for (const record of records) {
         if (record.id) {
@@ -358,6 +354,19 @@ export class Registry {
           deployment.applicationDeploymentRequestId === record.attributes.request &&
           record.attributes.url.includes(deployment.id)
       )
+    );
+  }
+
+  /**
+   * Fetch WebappDeployer Records by filter
+   */
+  async getDeployerRecordsByFilter(filter: { [key: string]: any }): Promise<DeployerRecord[]> {
+    return this.registry.queryRecords(
+      {
+        type: WEBAPP_DEPLOYER_RECORD_TYPE,
+        ...filter
+      },
+      true
     );
   }
 
@@ -441,8 +450,8 @@ export class Registry {
     const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions
-      .filter((auction: { id:  string, status: string }) => auction.status === 'completed')
-      .map((auction: { id:  string, status: string }) => auction.id);
+      .filter((auction: { id: string, status: string }) => auction.status === 'completed')
+      .map((auction: { id: string, status: string }) => auction.id);
 
     return completedAuctions;
   }

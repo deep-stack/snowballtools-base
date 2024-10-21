@@ -176,6 +176,7 @@ export class Service {
       })),
       relations: {
         deployer: true,
+        project: true,
       },
       order: {
         createdAt: 'DESC',
@@ -194,17 +195,19 @@ export class Service {
     const deploymentUpdatePromises = records.map(async (record) => {
       const deployment = recordToDeploymentsMap[record.attributes.request];
 
-      const parts = record.attributes.url.replace('https://', '').split('.');
-      const baseDomain = parts.slice(1).join('.');
+      if (!deployment.project) {
+        log(`Project ${deployment.projectId} not found`);
+        return;
+      }
+      else {
+        deployment.applicationDeploymentRecordId = record.id;
+        deployment.applicationDeploymentRecordData = record.attributes;
+        deployment.url = record.attributes.url;
+        deployment.status = DeploymentStatus.Ready;
+        deployment.isCurrent = deployment.environment === Environment.Production;
 
-      deployment.applicationDeploymentRecordId = record.id;
-      deployment.applicationDeploymentRecordData = record.attributes;
-      deployment.url = record.attributes.url;
-      deployment.baseDomain = baseDomain;
-      deployment.status = DeploymentStatus.Ready;
-      deployment.isCurrent = deployment.environment === Environment.Production;
-
-      await this.db.updateDeploymentById(deployment.id, deployment);
+        await this.db.updateDeploymentById(deployment.id, deployment);
+      }
 
       log(
         `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
@@ -314,26 +317,26 @@ export class Service {
 
           for (const record of deployerRecords) {
             const deployerId = record.id;
-            const deployerLrn = record.names[0]
-            const deployerApiUrl = record.attributes.apiUrl;
+            const deployerLrn = record.names[0];
 
             deployerIds.push(deployerId);
             deployerLrns.push(deployerLrn);
+
+            const deployerApiUrl = record.attributes.apiUrl;
+            const apiURL = new URL(deployerApiUrl);
+            const baseDomain = apiURL.hostname.split('.').slice(-3).join('.');
 
             const deployerData = {
               deployerId,
               deployerLrn,
               deployerApiUrl,
+              baseDomain
             };
 
             // Store the deployer in the DB
+            // TODO: Update project with deployer
             await this.db.addDeployer(deployerData);
           }
-
-          // TODO:Update project with deployer LRNs
-          // await this.db.updateProjectById(project.id!, {
-          //   deployerLrns
-          // });
 
           for (const deployer of deployerIds) {
             log(`Creating deployment for deployer LRN ${deployer}`);
@@ -676,6 +679,19 @@ export class Service {
       applicationDeploymentRequestData,
     });
 
+    // const deployerRecord = await this.laconicRegistry.getDeployerRecordsByFilter({
+    //   name: deployerLrn,
+    // });
+
+    // TODO: Store deployer data
+    // newDeployment.project.deployers.push({
+    //   deployerId: deployerRecord[0].id,
+    //   deployerApiUrl: deployerRecord[0].attributes.apiUrl,
+    // })
+    // await this.updateProject(newDeployment.project.id, {
+    //   deployers:
+    // });
+
     return newDeployment;
   }
 
@@ -886,7 +902,7 @@ export class Service {
 
     if (auctionParams) {
       const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
-      await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId })
+      await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId });
     } else {
       await this.createDeployment(user.id, octokit, deploymentData);
       // await this.updateProject(project.id, { deployerLrns: [lrn!] })
@@ -966,22 +982,25 @@ export class Service {
       //   return;
       // }
 
+      const deployers = project.deployers;
+      if (!deployers) return;
+
       // for (const deployer of deployers) {
-        // Create deployment with branch and latest commit in GitHub data
-        await this.createDeployment(project.ownerId, octokit,
-          {
-            project,
-            branch,
-            environment:
-              project.prodBranch === branch
-                ? Environment.Production
-                : Environment.Preview,
-            domain,
-            commitHash: headCommit.id,
-            commitMessage: headCommit.message,
-            // deployer: deployer
-          },
-        );
+      // Create deployment with branch and latest commit in GitHub data
+      await this.createDeployment(project.ownerId, octokit,
+        {
+          project,
+          branch,
+          environment:
+            project.prodBranch === branch
+              ? Environment.Production
+              : Environment.Preview,
+          domain,
+          commitHash: headCommit.id,
+          commitMessage: headCommit.message,
+          // deployer: deployer
+        },
+      );
       // }
     }
   }
@@ -1101,7 +1120,7 @@ export class Service {
     if (deployment && deployment.applicationDeploymentRecordId) {
       // If deployment is current, remove deployment for project subdomain as well
       if (deployment.isCurrent) {
-        const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.baseDomain}`;
+        const currentDeploymentURL = `https://${(deployment.project.name).toLowerCase()}.${deployment.deployer.baseDomain}`;
 
         // TODO: Store the latest DNS deployment record
         const deploymentRecords =

@@ -1,16 +1,16 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity()
 export class Deployer {
-  @PrimaryColumn()
-  deployerId!: string;
+  @PrimaryColumn('varchar')
+    deployerId!: string;
 
-  @Column()
-  deployerLrn!: string;
+  @Column('varchar')
+    deployerLrn!: string;
 
-  @Column()
-  deployerApiUrl!: string;
+  @Column('varchar')
+    deployerApiUrl!: string;
 
-  @Column()
-  baseDomain!: string;
+  @Column('varchar')
+    baseDomain!: string;
 }

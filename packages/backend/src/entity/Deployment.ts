@@ -140,9 +140,6 @@ export class Deployment {
   @Column('boolean', { default: false })
     isCurrent!: boolean;
 
-  @Column('varchar', { nullable: true })
-    baseDomain!: string | null;
-
   @Column({
     enum: DeploymentStatus
   })

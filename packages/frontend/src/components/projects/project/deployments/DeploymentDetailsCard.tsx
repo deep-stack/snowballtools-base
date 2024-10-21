@@ -6,6 +6,14 @@ import {
   Environment,
   Project,
 } from 'gql-client';
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+
 import { Avatar } from 'components/shared/Avatar';
 import {
   BranchStrokeIcon,
@@ -15,12 +23,6 @@ import {
   LoadingIcon,
   WarningIcon,
 } from 'components/shared/CustomIcon';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@mui/material';
 import { Heading } from 'components/shared/Heading';
 import { OverflownText } from 'components/shared/OverflownText';
 import { Tag, TagTheme } from 'components/shared/Tag';
@@ -66,10 +68,10 @@ const DeploymentDetailsCard = ({
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const handleOpenDialog = () => setOpenDialog(true);
-  const handleCloseDialog = () => setOpenDialog(false);
   const [deploymentLogs, setDeploymentLogs] = useState<string>();
 
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
   const getIconByDeploymentStatus = (status: DeploymentStatus) => {
     if (
@@ -89,7 +91,7 @@ const DeploymentDetailsCard = ({
 
   const fetchDeploymentLogs = useCallback(async () => {
     let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     const logs = await res.text();
     setDeploymentLogs(logs);
     handleOpenDialog();
