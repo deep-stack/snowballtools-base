@@ -31,7 +31,6 @@ const Configure = () => {
   const name = queryParams.get('name');
   const defaultBranch = queryParams.get('defaultBranch');
   const fullName = queryParams.get('fullName');
-  const orgSlug = queryParams.get('orgSlug');
   const templateOwner = queryParams.get('templateOwner');
   const templateRepo = queryParams.get('templateRepo');
   const isPrivate = queryParams.get('isPrivate') === 'true';
@@ -78,7 +77,7 @@ const Configure = () => {
           };
 
           const { addProjectFromTemplate } = await client.addProjectFromTemplate(
-            orgSlug!,
+            "",
             projectData,
             lrn,
             auctionParams
@@ -86,14 +85,14 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-              `/${orgSlug}/projects/create/success/${addProjectFromTemplate.id}?isAuction=true`,
+              `/projects/create/success/${addProjectFromTemplate.id}?isAuction=true`,
             )
             : navigate(
-              `/${orgSlug}/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
+              `/projects/create/template/deploy?projectId=${addProjectFromTemplate.id}&templateId=${templateId}`
             );
         } else {
           const { addProject } = await client.addProject(
-            orgSlug!,
+            "",
             {
               name: fullName!,
               prodBranch: defaultBranch!,
@@ -106,10 +105,10 @@ const Configure = () => {
 
           data.option === 'Auction'
             ? navigate(
-              `/${orgSlug}/projects/create/success/${addProject.id}?isAuction=true`
+              `/projects/create/success/${addProject.id}?isAuction=true`
             )
             : navigate(
-              `/${orgSlug}/projects/create/deploy?projectId=${addProject.id}`
+              `/projects/create/deploy?projectId=${addProject.id}`
             );
         }
       } catch (error) {

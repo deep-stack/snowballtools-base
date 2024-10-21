@@ -28,7 +28,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ mobileOpen }: SidebarProps) => {
-  const { orgSlug } = useParams();
+  // const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
   const isDesktop = useMediaQuery('(min-width: 960px)');
@@ -45,45 +45,37 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
     fetchUser();
   }, []);
 
-  const [selectedOrgSlug, setSelectedOrgSlug] = useState(orgSlug);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  // const [selectedOrgSlug, setSelectedOrgSlug] = useState(orgSlug);
+  // const [organizations, setOrganizations] = useState<Organization[]>([]);
 
-  const fetchUserOrganizations = useCallback(async () => {
-    const { organizations } = await client.getOrganizations();
-    setOrganizations(organizations);
-  }, [orgSlug]);
+  // const fetchUserOrganizations = useCallback(async () => {
+  //   const { organizations } = await client.getOrganizations();
+  //   setOrganizations(organizations);
+  // }, [orgSlug]);
 
-  useEffect(() => {
-    fetchUserOrganizations();
-    setSelectedOrgSlug(orgSlug);
-  }, [orgSlug]);
+  // useEffect(() => {
+  //   fetchUserOrganizations();
+  //   setSelectedOrgSlug(orgSlug);
+  // }, [orgSlug]);
 
-  const formattedSelected = useMemo(() => {
-    const selected = organizations.find((org) => org.slug === selectedOrgSlug);
-    return {
-      value: selected?.slug ?? '',
-      label: selected?.name ?? '',
-      imgSrc: '/logo.svg',
-    };
-  }, [organizations, selectedOrgSlug, orgSlug]);
+  // const formattedSelected = useMemo(() => {
+  //   const selected = organizations.find((org) => org.slug === selectedOrgSlug);
+  //   return {
+  //     value: selected?.slug ?? '',
+  //     label: selected?.name ?? '',
+  //     imgSrc: '/logo.svg',
+  //   };
+  // }, [organizations, selectedOrgSlug, orgSlug]);
 
-  const formattedSelectOptions = useMemo(() => {
-    return organizations.map((org) => ({
-      value: org.slug,
-      label: org.name,
-      imgSrc: '/logo.svg',
-    }));
-  }, [organizations, selectedOrgSlug, orgSlug]);
-
-  const renderMenu = useMemo(() => {
-    return SIDEBAR_MENU(orgSlug).map(({ title, icon, url }, index) => (
-      <NavLink to={url} key={index}>
-        <Tabs.Trigger icon={icon} value={title}>
-          {title}
-        </Tabs.Trigger>
-      </NavLink>
-    ));
-  }, [orgSlug]);
+  // const renderMenu = useMemo(() => {
+  //   return SIDEBAR_MENU(orgSlug).map(({ title, icon, url }, index) => (
+  //     <NavLink to={url} key={index}>
+  //       <Tabs.Trigger icon={icon} value={title}>
+  //         {title}
+  //       </Tabs.Trigger>
+  //     </NavLink>
+  //   ));
+  // }, [orgSlug]);
 
   const handleLogOut = useCallback(async () => {
     await fetch(`${BASE_URL}/auth/logout`, {
@@ -115,17 +107,16 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       >
         {/* Logo */}
         <div className="hidden lg:flex">
-          <Logo orgSlug={orgSlug} />
+          <Logo />
         </div>
         {/* Switch organization */}
         <div className="flex flex-1 flex-col gap-4">
-          <UserSelect
+          {/* <UserSelect
             value={formattedSelected}
-            options={formattedSelectOptions}
           />
           <Tabs defaultValue="Projects" orientation="vertical">
             <Tabs.List>{renderMenu}</Tabs.List>
-          </Tabs>
+          </Tabs> */}
         </div>
         {/* Bottom navigation */}
         <div className="flex flex-col gap-5 justify-end">

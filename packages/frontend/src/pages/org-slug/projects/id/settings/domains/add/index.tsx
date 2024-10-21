@@ -8,18 +8,18 @@ import {
 import Stepper from 'components/Stepper';
 
 const AddDomain = () => {
-  const { id, orgSlug } = useParams();
+  const { id } = useParams();
   const location = useLocation();
 
   const stepperValues = [
     {
       step: 1,
-      route: `/${orgSlug}/projects/${id}/settings/domains/add`,
+      route: `/projects/${id}/settings/domains/add`,
       label: 'Setup',
     },
     {
       step: 2,
-      route: `/${orgSlug}/projects/${id}/settings/domains/add/config`,
+      route: `/projects/${id}/settings/domains/add/config`,
       label: 'Configure DNS',
     },
   ];
@@ -34,7 +34,7 @@ const AddDomain = () => {
     <div className="p-4">
       <div className="flex justify-between">
         <Typography variant="h3">Add Domain</Typography>
-        <Link to={`/${orgSlug}/projects/${id}`}>
+        <Link to={`/projects/${id}`}>
           <IconButton className="rounded-full" variant="outlined">
             X
           </IconButton>

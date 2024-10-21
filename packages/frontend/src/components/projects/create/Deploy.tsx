@@ -17,15 +17,14 @@ const Deploy = () => {
   const handleOpen = () => setOpen(!open);
 
   const navigate = useNavigate();
-  const { orgSlug } = useParams();
 
   const handleCancel = useCallback(() => {
-    navigate(`/${orgSlug}/projects/create`);
+    navigate(`/projects/create`);
   }, []);
 
   useEffect(() => {
     const timerID = setTimeout(() => {
-      navigate(`/${orgSlug}/projects/create/success/${projectId}`);
+      navigate(`/projects/create/success/${projectId}`);
     }, TIMEOUT_DURATION);
 
     return () => clearInterval(timerID);

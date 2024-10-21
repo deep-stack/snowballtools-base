@@ -18,7 +18,6 @@ import { useMediaQuery } from 'usehooks-ts';
 
 // TODO: Set dynamic route for template and load details from DB
 const CreateWithTemplate = () => {
-  const { orgSlug } = useParams();
 
   const isDesktopView = useMediaQuery('(min-width: 960px)'); // lg:
   const stepsOrientation = isDesktopView ? 'vertical' : 'horizontal';
@@ -26,17 +25,17 @@ const CreateWithTemplate = () => {
   const stepperValues = [
     {
       step: 1,
-      route: `/${orgSlug}/projects/create/template`,
+      route: `/projects/create/template`,
       label: 'Create repository',
     },
     {
       step: 2,
-      route: `/${orgSlug}/projects/create/template/configure`,
+      route: `/projects/create/template/configure`,
       label: 'Configure',
     },
     {
       step: 3,
-      route: `/${orgSlug}/projects/create/template/deploy`,
+      route: `/projects/create/template/deploy`,
       label: 'Deploy',
     },
   ];

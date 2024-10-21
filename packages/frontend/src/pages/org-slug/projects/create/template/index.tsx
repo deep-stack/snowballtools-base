@@ -31,7 +31,6 @@ const CreateRepo = () => {
   const { octokit, isAuth } = useOctokit();
   const { template } = useOutletContext<{ template: Template }>();
 
-  const { orgSlug } = useParams();
   const { toast, dismiss } = useToast();
 
   const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
@@ -54,7 +53,7 @@ const CreateRepo = () => {
         setIsLoading(true);
 
         navigate(
-          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false&orgSlug=${orgSlug}`
+          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false`
         );
       } catch (err) {
         setIsLoading(false);

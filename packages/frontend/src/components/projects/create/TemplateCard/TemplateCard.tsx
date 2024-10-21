@@ -30,7 +30,6 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
 }: TemplateCardProps) => {
   const { toast, dismiss } = useToast();
   const navigate = useNavigate();
-  const { orgSlug } = useParams();
 
   const handleClick = useCallback(() => {
     if (template?.isComingSoon) {
@@ -43,7 +42,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
     }
     if (isGitAuth) {
       return navigate(
-        `/${orgSlug}/projects/create/template?templateId=${template.id}`,
+        `/projects/create/template?templateId=${template.id}`,
       );
     }
     return toast({
@@ -52,7 +51,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
       variant: 'error',
       onDismiss: dismiss,
     });
-  }, [orgSlug, dismiss, isGitAuth, navigate, template, toast]);
+  }, [dismiss, isGitAuth, navigate, template, toast]);
 
   return (
     <div

@@ -32,7 +32,6 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const navigate = useNavigate();
-  const { orgSlug } = useParams();
   const { toast, dismiss } = useToast();
   const client = useGQLClient();
 
@@ -70,9 +69,9 @@ export const OctokitProvider = ({ children }: { children: ReactNode }) => {
           onDismiss: dismiss,
         });
 
-        navigate(`/${orgSlug}/projects/create`);
+        navigate(`/projects/create`);
       },
-      [toast, navigate, orgSlug],
+      [toast, navigate],
     ),
     500,
   );

@@ -9,19 +9,19 @@ import { Project } from 'gql-client';
 
 const Projects = () => {
   const client = useGQLClient();
-  const { orgSlug } = useParams();
   const [projects, setProjects] = useState<Project[]>([]);
 
   const fetchProjects = useCallback(async () => {
+    const { organizations } = await client.getOrganizations();
     const { projectsInOrganization } = await client.getProjectsInOrganization(
-      orgSlug!,
+      organizations[0].slug,
     );
     setProjects(projectsInOrganization);
-  }, [orgSlug]);
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, [orgSlug]);
+  }, []);
 
   return (
     <section className="px-4 md:px-6 py-6 flex flex-col gap-6">

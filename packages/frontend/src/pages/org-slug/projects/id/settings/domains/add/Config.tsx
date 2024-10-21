@@ -9,7 +9,7 @@ import { ProjectSettingContainer } from 'components/projects/project/settings/Pr
 import { useToast } from 'components/shared/Toast';
 
 const Config = () => {
-  const { id, orgSlug } = useParams();
+  const { id } = useParams();
   const client = useGQLClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -48,7 +48,7 @@ const Config = () => {
         variant: 'success',
         onDismiss: dismiss,
       });
-      navigate(`/${orgSlug}/projects/${id}/settings/domains`);
+      navigate(`/projects/${id}/settings/domains`);
     } else {
       toast({
         id: 'generic_error_adding_domain',
