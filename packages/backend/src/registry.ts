@@ -416,14 +416,8 @@ export class Registry {
     };
   }
 
-  async getCompletedAuctionIds(auctionIds: (string | null | undefined)[]): Promise<string[] | null> {
-    const validAuctionIds = auctionIds.filter((id): id is string => id !== null && id !== undefined);
-
-    if (!validAuctionIds.length) {
-      return null;
-    }
-
-    const auctions = await this.registry.getAuctionsByIds(validAuctionIds);
+  async getCompletedAuctionIds(auctionIds: string[]): Promise<string[]> {
+    const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions
       .filter((auction: { id:  string, status: string }) => auction.status === 'completed')

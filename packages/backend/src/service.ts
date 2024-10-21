@@ -20,6 +20,7 @@ import {
   AppDeploymentRecord,
   AppDeploymentRemovalRecord,
   AuctionParams,
+  EnvironmentVariables,
   GitPushEventPayload,
 } from './types';
 import { Role } from './entity/UserOrganization';
@@ -167,7 +168,7 @@ export class Service {
   async updateDeploymentsWithRecordData(
     records: AppDeploymentRecord[],
   ): Promise<void> {
-    // get and update deployments to be updated using request id
+    // Fetch the deployments to be updated using deployment requestId
     const deployments = await this.db.getDeployments({
       where: records.map((record) => ({
         applicationDeploymentRequestId: record.attributes.request,
@@ -220,10 +221,10 @@ export class Service {
 
     await Promise.all(deploymentUpdatePromises);
 
-    // if iscurrent is true for this deployment then update the old ones
+    // Get deployments that are in production environment
     const prodDeployments = Object.values(recordToDeploymentsMap).filter(deployment => deployment.isCurrent);
 
-    // Get deployment IDs of deployments that are in production environment
+    // Set the isCurrent state to false for the old deployments
     for (const deployment of prodDeployments) {
       const projectDeployments = await this.db.getDeploymentsByProjectId(deployment.projectId);
       const oldDeployments = projectDeployments
@@ -235,15 +236,6 @@ export class Service {
         );
       }
     }
-
-    // Get old deployments for ApplicationDeploymentRecords
-    // flter out deps with is current false
-
-    // loop over these deps
-    // get the project
-    // get all the deployemnts in that proj with the same deployer lrn (query filter not above updated dep)
-    // set is current to false
-
 
     await Promise.all(deploymentUpdatePromises);
   }
@@ -298,44 +290,30 @@ export class Service {
    * Calls the createDeploymentFromAuction method for deployments with completed auctions
    */
   async checkAuctionStatus(): Promise<void> {
-    const allProjects = await this.db.getProjects({
-      where: {
-        auctionId: Not(IsNull()),
-      },
-      relations: ['deployments'],
-      withDeleted: true,
-    });
+    const projects = await this.db.allProjectsWithoutDeployments();
 
-    // Should only check on the first deployment
-    const projects = allProjects.filter(project => {
-      if (project.deletedAt !== null) return false;
+    const validAuctionIds = projects.map((project) => project.auctionId!)
+      .filter((id): id is string => Boolean(id));
+    const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(validAuctionIds);
 
-      return project.deployments.length === 0;
-    });
+    const projectsToBedeployed = projects.filter((project) =>
+      completedAuctionIds.includes(project.auctionId!)
+    );
 
-    const auctionIds = projects.map((project) => project.auctionId);
-    const completedAuctionIds = await this.laconicRegistry.getCompletedAuctionIds(auctionIds);
+    for (const project of projectsToBedeployed) {
+      const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
 
-    if (completedAuctionIds) {
-      const projectsToBedeployed = projects.filter((project) =>
-        completedAuctionIds.includes(project.auctionId!)
-      );
+      if (!deployerLrns) {
+        log(`No winning deployer for auction ${project!.auctionId}`);
+      } else {
+        // Update project with deployer LRNs
+        await this.db.updateProjectById(project.id!, {
+          deployerLrns
+        });
 
-      for (const project of projectsToBedeployed) {
-        const deployerLrns = await this.laconicRegistry.getAuctionWinningDeployers(project!.auctionId!);
-
-        if (!deployerLrns) {
-          log(`No winning deployer for auction ${project!.auctionId}`);
-        } else {
-          // Update project with deployer LRNs
-          await this.db.updateProjectById(project.id!, {
-            deployerLrns
-          });
-
-          for (const deployer of deployerLrns) {
-            log(`Creating deployment for deployer LRN ${deployer}`);
-            await this.createDeploymentFromAuction(project, deployer);
-          }
+        for (const deployer of deployerLrns) {
+          log(`Creating deployment for deployer LRN ${deployer}`);
+          await this.createDeploymentFromAuction(project, deployer);
         }
       }
     }
@@ -785,7 +763,8 @@ export class Service {
     organizationSlug: string,
     data: AddProjectFromTemplateInput,
     lrn?: string,
-    auctionParams?: AuctionParams
+    auctionParams?: AuctionParams,
+    environmentVariables?: EnvironmentVariables[],
   ): Promise<Project | undefined> {
     try {
       const octokit = await this.getOctokit(user.id);
@@ -816,7 +795,7 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
-      }, lrn, auctionParams);
+      }, lrn, auctionParams, environmentVariables);
 
       if (!project || !project.id) {
         throw new Error('Failed to create project from template');
@@ -834,7 +813,8 @@ export class Service {
     organizationSlug: string,
     data: DeepPartial<Project>,
     lrn?: string,
-    auctionParams?: AuctionParams
+    auctionParams?: AuctionParams,
+    environmentVariables?: EnvironmentVariables[],
   ): Promise<Project | undefined> {
     const organization = await this.db.getOrganization({
       where: {
@@ -846,7 +826,10 @@ export class Service {
     }
 
     const project = await this.db.addProject(user, organization.id, data);
-    log(`Project created ${project.id}`);
+
+    if (environmentVariables) {
+      await this.addEnvironmentVariables(project.id, environmentVariables);
+    }
 
     const octokit = await this.getOctokit(user.id);
     const [owner, repo] = project.repository.split('/');

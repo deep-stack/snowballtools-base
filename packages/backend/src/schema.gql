@@ -271,12 +271,14 @@ type Mutation {
     data: AddProjectFromTemplateInput
     lrn: String
     auctionParams: AuctionParams
+    environmentVariables: [AddEnvironmentVariableInput!]
   ): Project!
   addProject(
     organizationSlug: String!
     data: AddProjectInput!
     lrn: String
     auctionParams: AuctionParams
+    environmentVariables: [AddEnvironmentVariableInput!]
   ): Project!
   updateProject(projectId: String!, data: UpdateProjectInput): Boolean!
   redeployToProd(deploymentId: String!): Boolean!

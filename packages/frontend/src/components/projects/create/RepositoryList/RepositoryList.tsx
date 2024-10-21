@@ -64,9 +64,9 @@ export const RepositoryList = () => {
 
         // Check if selected account is an organization
         if (selectedAccount.value === gitUser.login) {
-          query = query + ` user:${selectedAccount}`;
+          query = query + ` user:${selectedAccount.value}`;
         } else {
-          query = query + ` org:${selectedAccount}`;
+          query = query + ` org:${selectedAccount.value}`;
         }
 
         const result = await octokit.rest.search.repos({

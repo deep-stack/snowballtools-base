@@ -6,7 +6,7 @@ import { Permission } from './entity/ProjectMember';
 import { Domain } from './entity/Domain';
 import { Project } from './entity/Project';
 import { EnvironmentVariable } from './entity/EnvironmentVariable';
-import { AddProjectFromTemplateInput, AuctionParams } from './types';
+import { AddProjectFromTemplateInput, AuctionParams, EnvironmentVariables } from './types';
 
 const log = debug('snowball:resolver');
 
@@ -211,8 +211,15 @@ export const createResolvers = async (service: Service): Promise<any> => {
           organizationSlug,
           data,
           lrn,
-          auctionParams
-        }: { organizationSlug: string; data: AddProjectFromTemplateInput; lrn: string; auctionParams: AuctionParams },
+          auctionParams,
+          environmentVariables
+        }: {
+          organizationSlug: string;
+          data: AddProjectFromTemplateInput;
+          lrn: string;
+          auctionParams: AuctionParams,
+          environmentVariables: EnvironmentVariables[];
+        },
         context: any,
       ) => {
         try {
@@ -221,7 +228,8 @@ export const createResolvers = async (service: Service): Promise<any> => {
             organizationSlug,
             data,
             lrn,
-            auctionParams
+            auctionParams,
+            environmentVariables
           );
         } catch (err) {
           log(err);
@@ -235,12 +243,26 @@ export const createResolvers = async (service: Service): Promise<any> => {
           organizationSlug,
           data,
           lrn,
-          auctionParams
-        }: { organizationSlug: string; data: DeepPartial<Project>; lrn: string; auctionParams: AuctionParams },
+          auctionParams,
+          environmentVariables
+        }: {
+          organizationSlug: string;
+          data: DeepPartial<Project>;
+          lrn: string;
+          auctionParams: AuctionParams,
+          environmentVariables: EnvironmentVariables[];
+        },
         context: any,
       ) => {
         try {
-          return await service.addProject(context.user, organizationSlug, data, lrn, auctionParams);
+          return await service.addProject(
+            context.user,
+            organizationSlug,
+            data,
+            lrn,
+            auctionParams,
+            environmentVariables
+          );
         } catch (err) {
           log(err);
           throw err;

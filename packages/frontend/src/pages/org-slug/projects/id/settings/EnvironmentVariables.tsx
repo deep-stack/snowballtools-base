@@ -1,22 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Collapse, Checkbox } from '@snowballtools/material-tailwind-react-fork';
+import { Collapse } from '@snowballtools/material-tailwind-react-fork';
 
-import AddEnvironmentVariableRow from 'components/projects/project/settings/AddEnvironmentVariableRow';
 import DisplayEnvironmentVariables from 'components/projects/project/settings/DisplayEnvironmentVariables';
 import { useGQLClient } from 'context/GQLClientContext';
 import { EnvironmentVariablesFormValues } from '../../../../../types';
 import HorizontalLine from 'components/HorizontalLine';
 import { Heading } from 'components/shared/Heading';
-import { Button } from 'components/shared/Button';
-// import { Checkbox } from 'components/shared/Checkbox';
 import { PlusIcon } from 'components/shared/CustomIcon';
-import { InlineNotification } from 'components/shared/InlineNotification';
 import { ProjectSettingContainer } from 'components/projects/project/settings/ProjectSettingContainer';
 import { useToast } from 'components/shared/Toast';
 import { Environment, EnvironmentVariable } from 'gql-client';
+import EnvironmentVariablesForm from './EnvironmentVariablesForm';
+import { FieldValues, FormProvider, useForm } from 'react-hook-form';
+import { Button } from 'components/shared';
 
 export const EnvironmentVariablesTabPanel = () => {
   const { id } = useParams();
@@ -27,13 +25,9 @@ export const EnvironmentVariablesTabPanel = () => {
     EnvironmentVariable[]
   >([]);
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    reset,
-    formState: { isSubmitSuccessful, errors },
-  } = useForm<EnvironmentVariablesFormValues>({
+  const [createNewVariable, setCreateNewVariable] = useState(false);
+
+  const methods = useForm<EnvironmentVariablesFormValues>({
     defaultValues: {
       variables: [{ key: '', value: '' }],
       environment: {
@@ -43,21 +37,6 @@ export const EnvironmentVariablesTabPanel = () => {
       },
     },
   });
-  const [createNewVariable, setCreateNewVariable] = useState(false);
-
-  const { fields, append, remove } = useFieldArray({
-    name: 'variables',
-    control,
-    rules: {
-      required: 'Add at least 1 environment variables',
-    },
-  });
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful, reset, id]);
 
   const getEnvironmentVariables = useCallback(
     (environment: Environment) => {
@@ -67,21 +46,6 @@ export const EnvironmentVariablesTabPanel = () => {
     },
     [environmentVariables, id],
   );
-
-  const isFieldEmpty = useMemo(() => {
-    if (errors.variables) {
-      return fields.some((_, index) => {
-        if (
-          errors.variables![index]?.value?.type === 'required' ||
-          errors.variables![index]?.key?.type === 'required'
-        ) {
-          return true;
-        }
-      });
-    }
-
-    return false;
-  }, [fields, errors.variables, id]);
 
   const fetchEnvironmentVariables = useCallback(
     async (id: string | undefined) => {
@@ -99,8 +63,8 @@ export const EnvironmentVariablesTabPanel = () => {
   }, [id]);
 
   const createEnvironmentVariablesHandler = useCallback(
-    async (createFormData: EnvironmentVariablesFormValues) => {
-      const environmentVariables = createFormData.variables.map((variable) => {
+    async (createFormData: FieldValues) => {
+      const environmentVariables = createFormData.variables.map((variable: any) => {
         return {
           key: variable.key,
           value: variable.value,
@@ -114,7 +78,7 @@ export const EnvironmentVariablesTabPanel = () => {
         await client.addEnvironmentVariables(id!, environmentVariables);
 
       if (isEnvironmentVariablesAdded) {
-        reset();
+        methods.reset();
         setCreateNewVariable((cur) => !cur);
 
         fetchEnvironmentVariables(id);
@@ -159,59 +123,10 @@ export const EnvironmentVariablesTabPanel = () => {
           </div>
         </Heading>
         <Collapse open={createNewVariable}>
-          <div className="p-4 bg-slate-100">
-            <form onSubmit={handleSubmit(createEnvironmentVariablesHandler)}>
-              {fields.map((field, index) => {
-                return (
-                  <AddEnvironmentVariableRow
-                    key={field.id}
-                    index={index}
-                    register={register}
-                    onDelete={() => remove(index)}
-                    isDeleteDisabled={fields.length === 1}
-                  />
-                );
-              })}
-              <div className="flex gap-1 p-2">
-                <Button
-                  size="md"
-                  onClick={() =>
-                    append({
-                      key: '',
-                      value: '',
-                    })
-                  }
-                >
-                  + Add variable
-                </Button>
-                {/* TODO: Implement import environment varible functionality */}
-                <Button size="md" disabled>
-                  Import .env
-                </Button>
-              </div>
-              {isFieldEmpty && (
-                <InlineNotification
-                  title="Please ensure no fields are empty before saving."
-                  variant="danger"
-                  size="md"
-                />
-              )}
-              <div className="flex gap-2 p-2">
-                <Checkbox
-                  label="Production"
-                  {...register(`environment.production`)}
-                  color="blue"
-                />
-                <Checkbox
-                  label="Preview"
-                  {...register(`environment.preview`)}
-                  color="blue"
-                />
-                <Checkbox
-                  label="Development"
-                  {...register(`environment.development`)}
-                  color="blue"
-                />
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit((data) => createEnvironmentVariablesHandler(data))}>
+              <div className="p-4 bg-slate-100">
+                <EnvironmentVariablesForm />
               </div>
               <div className="p-2">
                 <Button size="md" type="submit">
@@ -219,7 +134,7 @@ export const EnvironmentVariablesTabPanel = () => {
                 </Button>
               </div>
             </form>
-          </div>
+          </FormProvider>
         </Collapse>
       </div>
       <div className="p-2">

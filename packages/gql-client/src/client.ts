@@ -233,6 +233,7 @@ export class GQLClient {
     data: types.AddProjectFromTemplateInput,
     lrn?: string,
     auctionParams?: types.AuctionParams,
+    environmentVariables?: types.AddEnvironmentVariableInput[]
   ): Promise<types.AddProjectFromTemplateResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProjectFromTemplate,
@@ -240,7 +241,8 @@ export class GQLClient {
         organizationSlug,
         data,
         lrn,
-        auctionParams
+        auctionParams,
+        environmentVariables
       },
     });
 
@@ -252,6 +254,7 @@ export class GQLClient {
     data: types.AddProjectInput,
     lrn?: string,
     auctionParams?: types.AuctionParams,
+    environmentVariables?: types.AddEnvironmentVariableInput[]
   ): Promise<types.AddProjectResponse> {
     const result = await this.client.mutate({
       mutation: mutations.addProject,
@@ -259,7 +262,8 @@ export class GQLClient {
         organizationSlug,
         data,
         lrn,
-        auctionParams
+        auctionParams,
+        environmentVariables
       },
     });
 
