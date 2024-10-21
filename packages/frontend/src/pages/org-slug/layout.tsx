@@ -9,7 +9,7 @@ import {
 import { Sidebar } from 'components/shared/Sidebar';
 import { OctokitProvider } from 'context/OctokitContext';
 import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
@@ -22,7 +22,6 @@ export const DashboardLayout = ({
   className,
   ...props
 }: DashboardLayoutProps) => {
-  const { orgSlug } = useParams();
   const isDesktop = useMediaQuery('(min-width: 960px)');
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -45,7 +44,7 @@ export const DashboardLayout = ({
       >
         {/* Header on mobile */}
         <div className="flex lg:hidden items-center px-4 py-2.5 justify-between">
-          <Logo orgSlug={orgSlug} />
+          <Logo />
           <div className="flex items-center gap-0.5">
             <AnimatePresence>
               {isSidebarOpen ? (

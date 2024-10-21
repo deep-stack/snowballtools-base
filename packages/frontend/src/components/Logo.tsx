@@ -1,13 +1,7 @@
-import { Link } from 'react-router-dom';
 import { Heading } from './shared/Heading';
 
-interface LogoProps {
-  orgSlug?: string;
-}
-
-export const Logo = ({ orgSlug }: LogoProps) => {
+export const Logo = () => {
   return (
-    <Link to={`/${orgSlug}`}>
       <div className="flex items-center gap-3 px-0 lg:px-2">
         <img
           src="/logo.svg"
@@ -18,6 +12,5 @@ export const Logo = ({ orgSlug }: LogoProps) => {
           Snowball
         </Heading>
       </div>
-    </Link>
   );
 };
