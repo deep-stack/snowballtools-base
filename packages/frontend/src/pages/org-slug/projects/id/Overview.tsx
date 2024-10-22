@@ -129,15 +129,19 @@ const OverviewTabPanel = () => {
             <Heading className="text-lg leading-6 font-medium truncate">
               {project.name}
             </Heading>
-            {project.baseDomains && project.baseDomains.length > 0 && project.baseDomains.map((baseDomain, index) => (
-              <a
-                key={index}
-                href={`https://${project.name}.${baseDomain}`}
-                className="text-sm text-elements-low-em tracking-tight truncate"
-              >
-                {baseDomain}
-              </a>
-            ))}
+            {project.baseDomains &&
+              project.baseDomains.length > 0 &&
+              project.baseDomains.map((baseDomain, index) => (
+                <p>
+                  <a
+                    key={index}
+                    href={`https://${project.name}.${baseDomain}`}
+                    className="text-sm text-elements-low-em tracking-tight truncate"
+                  >
+                    {baseDomain}
+                  </a>
+                </p>
+              ))}
           </div>
         </div>
         <OverviewInfo label="Domain" icon={<GlobeIcon />}>
@@ -209,7 +213,7 @@ const OverviewTabPanel = () => {
             No current deployment found.
           </p>
         )}
-        {project.auctionId && <AuctionCard project={project}/>}
+        {project.auctionId && <AuctionCard project={project} />}
       </div>
       <Activity activities={activities} isLoading={fetchingActivities} />
     </div>
