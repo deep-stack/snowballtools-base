@@ -176,7 +176,7 @@ export type Project = {
   description: string;
   template: string;
   framework: string;
-  deployerLrns: string[];
+  deployers: [Deployer]
   auctionId: string;
   fundsReleased: boolean;
   webhooks: string[];

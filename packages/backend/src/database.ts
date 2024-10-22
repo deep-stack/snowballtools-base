@@ -144,6 +144,7 @@ export class Database {
       .leftJoinAndSelect('deployments.createdBy', 'user')
       .leftJoinAndSelect('deployments.domain', 'domain')
       .leftJoinAndSelect('project.owner', 'owner')
+      .leftJoinAndSelect('project.deployers', 'deployers')
       .leftJoinAndSelect('project.organization', 'organization')
       .where('project.id = :projectId', {
         projectId
