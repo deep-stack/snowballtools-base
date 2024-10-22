@@ -13,6 +13,7 @@ import {
 import { Project } from './Project';
 import { Domain } from './Domain';
 import { User } from './User';
+import { Deployer } from './Deployer';
 import { AppDeploymentRecordAttributes, AppDeploymentRemovalRecordAttributes } from '../types';
 
 export enum Environment {
@@ -127,8 +128,9 @@ export class Deployment {
   @Column('simple-json', { nullable: true })
     applicationDeploymentRemovalRecordData!: AppDeploymentRemovalRecordAttributes | null;
 
-  @Column('varchar')
-    deployerLrn!: string;
+  @ManyToOne(() => Deployer)
+  @JoinColumn({ name: 'deployerId' })
+    deployer!: Deployer;
 
   @Column({
     enum: Environment
@@ -137,9 +139,6 @@ export class Deployment {
 
   @Column('boolean', { default: false })
     isCurrent!: boolean;
-
-  @Column('varchar', { nullable: true })
-    baseDomain!: string | null;
 
   @Column({
     enum: DeploymentStatus

@@ -82,3 +82,20 @@ export interface EnvironmentVariables {
   key: string,
   value: string,
 }
+
+export interface DeployerRecord {
+  id: string;
+  names: string[];
+  owners: string[];
+  bondId: string;
+  createTime: string;
+  expiryTime: string;
+  attributes: {
+    apiUrl: string;
+    name: string;
+    paymentAddress: string;
+    publicKey: string;
+    type: string;
+    version: string;
+  };
+}

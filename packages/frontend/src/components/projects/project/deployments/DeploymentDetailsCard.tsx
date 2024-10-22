@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Deployment,
   DeploymentStatus,
@@ -6,6 +6,14 @@ import {
   Environment,
   Project,
 } from 'gql-client';
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+
 import { Avatar } from 'components/shared/Avatar';
 import {
   BranchStrokeIcon,
@@ -18,11 +26,22 @@ import {
 import { Heading } from 'components/shared/Heading';
 import { OverflownText } from 'components/shared/OverflownText';
 import { Tag, TagTheme } from 'components/shared/Tag';
+import { Button } from 'components/shared/Button';
 import { getInitials } from 'utils/geInitials';
 import { relativeTimeMs } from 'utils/time';
 import { SHORT_COMMIT_HASH_LENGTH } from '../../../../constants';
 import { formatAddress } from '../../../../utils/format';
 import { DeploymentMenu } from './DeploymentMenu';
+
+const DEPLOYMENT_LOGS_STYLE = {
+  backgroundColor: "rgba(0,0,0, .9)",
+  padding: "2em",
+  borderRadius: "0.5em",
+  marginLeft: "0.5em",
+  marginRight: "0.5em",
+  color: "gray",
+  fontSize: "small",
+};
 
 interface DeployDetailsCardProps {
   deployment: Deployment;
@@ -48,6 +67,12 @@ const DeploymentDetailsCard = ({
   project,
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [deploymentLogs, setDeploymentLogs] = useState<string>();
+
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+
   const getIconByDeploymentStatus = (status: DeploymentStatus) => {
     if (
       status === DeploymentStatus.Building ||
@@ -64,6 +89,14 @@ const DeploymentDetailsCard = ({
     }
   };
 
+  const fetchDeploymentLogs = useCallback(async () => {
+    let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    const logs = await res.text();
+    setDeploymentLogs(logs);
+    handleOpenDialog();
+  }, [deployment.deployer.deployerApiUrl, deployment.applicationDeploymentRequestId, handleOpenDialog]);
+
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
       return (
@@ -72,6 +105,7 @@ const DeploymentDetailsCard = ({
             leftIcon={getIconByDeploymentStatus(deployment.status)}
             size="xs"
             type={STATUS_COLORS[deployment.status] ?? 'neutral'}
+            onClick={fetchDeploymentLogs}
           >
             {deployment.status}
           </Tag>
@@ -96,9 +130,9 @@ const DeploymentDetailsCard = ({
               </OverflownText>
             </Heading>
           )}
-          {deployment.deployerLrn && (
+          {deployment.deployer.deployerLrn && (
             <span className="text-sm text-elements-low-em tracking-tight block mt-2">
-              Deployer LRN: {deployment.deployerLrn}
+              Deployer LRN: {deployment.deployer.deployerLrn}
             </span>
           )}
           <span className="text-sm text-elements-low-em tracking-tight block">
@@ -167,6 +201,15 @@ const DeploymentDetailsCard = ({
           prodBranchDomains={prodBranchDomains}
         />
       </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
+        <DialogTitle>Deployment logs</DialogTitle>
+        <DialogContent style={DEPLOYMENT_LOGS_STYLE} >
+          {deploymentLogs && <pre >{deploymentLogs}</pre>}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

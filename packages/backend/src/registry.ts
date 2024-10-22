@@ -14,7 +14,7 @@ import {
   ApplicationDeploymentRequest,
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
-import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams } from './types';
+import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams, DeployerRecord } from './types';
 import { getConfig, getRepoDetails, sleep } from './utils';
 
 const log = debug('snowball:registry');
@@ -25,6 +25,7 @@ const APP_DEPLOYMENT_REQUEST_TYPE = 'ApplicationDeploymentRequest';
 const APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE = 'ApplicationDeploymentRemovalRequest';
 const APP_DEPLOYMENT_RECORD_TYPE = 'ApplicationDeploymentRecord';
 const APP_DEPLOYMENT_REMOVAL_RECORD_TYPE = 'ApplicationDeploymentRemovalRecord';
+const WEBAPP_DEPLOYER_RECORD_TYPE = 'WebappDeployer'
 const SLEEP_DURATION = 1000;
 
 // TODO: Move registry code to registry-sdk/watcher-ts
@@ -291,32 +292,29 @@ export class Registry {
     };
   }
 
-  async getAuctionWinningDeployers(
+  async getAuctionWinningDeployerRecords(
     auctionId: string
-  ): Promise<string[]> {
+  ): Promise<DeployerRecord[]> {
     const records = await this.registry.getAuctionsByIds([auctionId]);
     const auctionResult = records[0];
 
-    let deployerLrns = [];
+    let deployerRecords = [];
     const { winnerAddresses } = auctionResult;
 
     for (const auctionWinner of winnerAddresses) {
-      const deployerRecords = await this.registry.queryRecords(
-        {
-          paymentAddress: auctionWinner,
-        },
-        true
-      );
+      const records = await this.getDeployerRecordsByFilter({
+        paymentAddress: auctionWinner,
+      });
 
-      for (const record of deployerRecords) {
-        if (record.names && record.names.length > 0) {
-          deployerLrns.push(record.names[0]);
+      for (const record of records) {
+        if (record.id) {
+          deployerRecords.push(record);
           break;
         }
       }
     }
 
-    return deployerLrns;
+    return deployerRecords;
   }
 
   async releaseDeployerFunds(
@@ -356,6 +354,19 @@ export class Registry {
           deployment.applicationDeploymentRequestId === record.attributes.request &&
           record.attributes.url.includes(deployment.id)
       )
+    );
+  }
+
+  /**
+   * Fetch WebappDeployer Records by filter
+   */
+  async getDeployerRecordsByFilter(filter: { [key: string]: any }): Promise<DeployerRecord[]> {
+    return this.registry.queryRecords(
+      {
+        type: WEBAPP_DEPLOYER_RECORD_TYPE,
+        ...filter
+      },
+      true
     );
   }
 
@@ -439,8 +450,8 @@ export class Registry {
     const auctions = await this.registry.getAuctionsByIds(auctionIds);
 
     const completedAuctions = auctions
-      .filter((auction: { id:  string, status: string }) => auction.status === 'completed')
-      .map((auction: { id:  string, status: string }) => auction.id);
+      .filter((auction: { id: string, status: string }) => auction.status === 'completed')
+      .map((auction: { id: string, status: string }) => auction.id);
 
     return completedAuctions;
   }

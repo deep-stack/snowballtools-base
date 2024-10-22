@@ -104,7 +104,8 @@ type Deployment {
   commitMessage: String!
   url: String
   environment: Environment!
-  deployerLrn: String
+  deployer: Deployer
+  applicationDeploymentRequestId: String
   isCurrent: Boolean!
   baseDomain: String
   status: DeploymentStatus!
@@ -128,6 +129,14 @@ type EnvironmentVariable {
   environment: Environment!
   key: String!
   value: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Deployer {
+  deployerId: String!
+  deployerLrn: String!
+  deployerApiUrl: String!
   createdAt: String!
   updatedAt: String!
 }

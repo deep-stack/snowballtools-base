@@ -139,30 +139,8 @@ const Configure = () => {
 
       const projectId = await createProject(createFormData, environmentVariables);
 
-      const { environmentVariables: isEnvironmentVariablesAdded } =
-        await client.getEnvironmentVariables(projectId);
+      await client.getEnvironmentVariables(projectId);
 
-      if (isEnvironmentVariablesAdded.length > 0) {
-        toast({
-          id:
-            createFormData.variables.length > 1
-              ? 'env_variable_added'
-              : 'env_variables_added',
-          title:
-            createFormData.variables.length > 1
-              ? `${createFormData.variables.length} variables added`
-              : `Variable added`,
-          variant: 'success',
-          onDismiss: dismiss,
-        });
-      } else {
-        toast({
-          id: 'env_variables_not_added',
-          title: 'Environment variables not added',
-          variant: 'error',
-          onDismiss: dismiss,
-        });
-      }
       if (templateId) {
         createFormData.option === 'Auction'
           ? navigate(

@@ -136,7 +136,11 @@ query ($projectId: String!)  {
     commitHash
     commitMessage
     url
-    deployerLrn
+    deployer {
+      deployerId
+      deployerLrn,
+      deployerApiUrl,
+    }
     environment
     isCurrent
     baseDomain
@@ -148,6 +152,7 @@ query ($projectId: String!)  {
       name
       email
     }
+    applicationDeploymentRequestId
   }
 }
 `;
