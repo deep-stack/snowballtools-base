@@ -135,7 +135,7 @@ const OverviewTabPanel = () => {
                 <p>
                   <a
                     key={index}
-                    href={`https://${project.name}.${baseDomain}`}
+                    href={`https://${project.name.toLowerCase()}.${baseDomain}`}
                     className="text-sm text-elements-low-em tracking-tight truncate"
                   >
                     {baseDomain}

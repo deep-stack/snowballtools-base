@@ -34,13 +34,13 @@ import { formatAddress } from '../../../../utils/format';
 import { DeploymentMenu } from './DeploymentMenu';
 
 const DEPLOYMENT_LOGS_STYLE = {
-  backgroundColor: "rgba(0,0,0, .9)",
-  padding: "2em",
-  borderRadius: "0.5em",
-  marginLeft: "0.5em",
-  marginRight: "0.5em",
-  color: "gray",
-  fontSize: "small",
+  backgroundColor: 'rgba(0,0,0, .9)',
+  padding: '2em',
+  borderRadius: '0.5em',
+  marginLeft: '0.5em',
+  marginRight: '0.5em',
+  color: 'gray',
+  fontSize: 'small',
 };
 
 interface DeployDetailsCardProps {
@@ -95,7 +95,11 @@ const DeploymentDetailsCard = ({
     const logs = await res.text();
     setDeploymentLogs(logs);
     handleOpenDialog();
-  }, [deployment.deployer.deployerApiUrl, deployment.applicationDeploymentRequestId, handleOpenDialog]);
+  }, [
+    deployment.deployer.deployerApiUrl,
+    deployment.applicationDeploymentRequestId,
+    handleOpenDialog,
+  ]);
 
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
@@ -201,10 +205,15 @@ const DeploymentDetailsCard = ({
           prodBranchDomains={prodBranchDomains}
         />
       </div>
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Deployment logs</DialogTitle>
-        <DialogContent style={DEPLOYMENT_LOGS_STYLE} >
-          {deploymentLogs && <pre >{deploymentLogs}</pre>}
+        <DialogContent style={DEPLOYMENT_LOGS_STYLE}>
+          {deploymentLogs && <pre>{deploymentLogs}</pre>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Close</Button>

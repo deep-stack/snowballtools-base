@@ -60,8 +60,10 @@ const DeleteProjectDialog = ({
           <Modal.Body>
             <Input
               label={
-                "Deleting your project is irreversible. Enter your project's name " + '"' +
-                project.name + '"' +
+                "Deleting your project is irreversible. Enter your project's name " +
+                '"' +
+                project.name +
+                '"' +
                 ' below to confirm you want to permanently delete it:'
               }
               id="input"

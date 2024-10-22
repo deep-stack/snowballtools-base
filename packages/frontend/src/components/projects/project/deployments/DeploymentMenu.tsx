@@ -48,6 +48,8 @@ export const DeploymentMenu = ({
   const [redeployToProduction, setRedeployToProduction] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
   const [assignDomainDialog, setAssignDomainDialog] = useState(false);
+  const [isConfirmButtonLoading, setConfirmButtonLoadingLoading] =
+    useState(false);
 
   const updateDeployment = async () => {
     const isUpdated = await client.updateDeploymentToProd(deployment.id);
@@ -71,6 +73,7 @@ export const DeploymentMenu = ({
 
   const redeployToProd = async () => {
     const isRedeployed = await client.redeployToProd(deployment.id);
+    setConfirmButtonLoadingLoading(false);
     if (isRedeployed) {
       await onUpdate();
       toast({
@@ -113,6 +116,13 @@ export const DeploymentMenu = ({
   };
 
   const deleteDeployment = async () => {
+    toast({
+      id: 'deployment_going_to_be_deleted',
+      title: 'Deployment going to be deleted',
+      variant: 'success',
+      onDismiss: dismiss,
+    });
+
     const isDeleted = await client.deleteDeployment(deployment.id);
     if (isDeleted) {
       await onUpdate();
@@ -228,11 +238,13 @@ export const DeploymentMenu = ({
         open={redeployToProduction}
         confirmButtonTitle="Redeploy"
         handleConfirm={async () => {
+          setConfirmButtonLoadingLoading(true);
           await redeployToProd();
           setRedeployToProduction((preVal) => !preVal);
         }}
         deployment={deployment}
         domains={deployment.domain ? [deployment.domain] : []}
+        isConfirmButtonLoading={isConfirmButtonLoading}
       />
       {Boolean(currentDeployment) && (
         <ChangeStateToProductionDialog

@@ -1,4 +1,4 @@
-import { Link,  useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import Lottie from 'lottie-react';
 
 import { Badge } from 'components/shared/Badge';
@@ -48,7 +48,9 @@ const Id = () => {
           {/* Heading */}
           <div className="flex flex-col items-center gap-1.5">
             <Heading as="h3" className="font-medium text-xl">
-              {isAuction? 'Auction created successfully.' : 'Project deployment created successfully.'}
+              {isAuction
+                ? 'Auction created successfully.'
+                : 'Project deployment created successfully.'}
             </Heading>
           </div>
 

@@ -12,7 +12,7 @@ export const Login = () => {
 
       <div className="self-stretch p-4 xs:p-6 flex-col justify-center items-center gap-8 flex">
         <div className="self-stretch flex-col justify-center  items-center gap-3 flex">
-        <w3m-button />
+          <w3m-button />
         </div>
       </div>
     </div>

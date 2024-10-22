@@ -67,7 +67,10 @@ const EnvironmentVariablesForm = () => {
       <div className="flex gap-2 p-2">
         <Checkbox label="Production" {...register('environment.production')} />
         <Checkbox label="Preview" {...register('environment.preview')} />
-        <Checkbox label="Development" {...register('environment.development')} />
+        <Checkbox
+          label="Development"
+          {...register('environment.development')}
+        />
       </div>
     </>
   );

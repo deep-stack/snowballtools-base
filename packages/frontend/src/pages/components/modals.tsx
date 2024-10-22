@@ -39,7 +39,7 @@ const deployment: Deployment = {
   deployer: {
     deployerApiUrl: 'https://webapp-deployer-api.example.com',
     deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
-    deployerLrn:'lrn://example/deployers/webapp-deployer-api.example.com'
+    deployerLrn: 'lrn://example/deployers/webapp-deployer-api.example.com',
   },
   status: DeploymentStatus.Ready,
   createdBy: {
@@ -53,7 +53,8 @@ const deployment: Deployment = {
   },
   createdAt: '1677676800', // 2023-03-01T12:00:00Z
   updatedAt: '1677680400', // 2023-03-01T13:00:00Z
-  applicationDeploymentRequestId: 'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
+  applicationDeploymentRequestId:
+    'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
 };
 
 const domains: Domain[] = [

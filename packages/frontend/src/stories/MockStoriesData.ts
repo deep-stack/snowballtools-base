@@ -102,12 +102,13 @@ export const deployment0: Deployment = {
   domain: domain0,
   commitMessage: 'Commit Message',
   createdBy: user,
-  deployer:  {
+  deployer: {
     deployerApiUrl: 'https://webapp-deployer-api.example.com',
     deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
-    deployerLrn:'lrn://deployer.apps.snowballtools.com '
+    deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
   },
-  applicationDeploymentRequestId: 'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
+  applicationDeploymentRequestId:
+    'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
 };
 
 export const project: Project = {
