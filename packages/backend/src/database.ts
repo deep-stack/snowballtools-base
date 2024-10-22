@@ -597,4 +597,10 @@ export class Database {
 
     return deployer;
   }
+
+  async getDeployers(): Promise<Deployer[]> {
+    const deployerRepository = this.dataSource.getRepository(Deployer);
+    const deployers = await deployerRepository.find();
+    return deployers;
+  }
 }

@@ -443,6 +443,11 @@ export class Service {
     return dbDeployments;
   }
 
+  async getDeployers(): Promise<Deployer[]> {
+    const dbDeployers = await this.db.getDeployers();
+    return dbDeployers;
+  }
+
   async getEnvironmentVariablesByProjectId(
     projectId: string,
   ): Promise<EnvironmentVariable[]> {

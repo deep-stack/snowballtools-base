@@ -424,4 +424,12 @@ export class GQLClient {
 
     return data.getAuctionData;
   }
+
+  async getDeployers(): Promise<types.GetDeployersResponse> {
+    const { data } = await this.client.query({
+      query: queries.getDeployers,
+    });
+
+    return data;
+  }
 }
