@@ -91,7 +91,7 @@ const DeploymentDetailsCard = ({
     }
   };
 
-  const fetchDeploymentLogs = useCallback(async () => {
+  const fetchDeploymentLogs = async () => {
     let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
     const res = await fetch(url, { cache: 'no-store' });
     handleOpenDialog();
@@ -99,11 +99,7 @@ const DeploymentDetailsCard = ({
       const logs = await res.text();
       setDeploymentLogs(logs);
     }
-  }, [
-    deployment.deployer.deployerApiUrl,
-    deployment.applicationDeploymentRequestId,
-    handleOpenDialog,
-  ]);
+  };
 
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
@@ -189,8 +185,8 @@ const DeploymentDetailsCard = ({
                 type="orange"
                 initials={getInitials(deployment.createdBy.name ?? '')}
                 className="lg:size-5 2xl:size-6"
-                // TODO: Add avatarUrl
-                // imageSrc={deployment.createdBy.avatarUrl}
+              // TODO: Add avatarUrl
+              // imageSrc={deployment.createdBy.avatarUrl}
               ></Avatar>
             </div>
             <OverflownText

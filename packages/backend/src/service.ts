@@ -334,9 +334,9 @@ export class Service {
           await this.updateProjectWithDeployer(project.id, deployer);
         }
 
-        for (const deployer of deployerIds) {
-          log(`Creating deployment for deployer LRN ${deployer}`);
-          await this.createDeploymentFromAuction(project, deployer);
+        for (const deployerId of deployerIds) {
+          log(`Creating deployment for deployer ${deployerId}`);
+          await this.createDeploymentFromAuction(project, deployerId);
         }
       }
     }
