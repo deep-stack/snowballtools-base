@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { FormProvider, FieldValues } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import { AddEnvironmentVariableInput, AuctionParams } from 'gql-client';
+import { AddEnvironmentVariableInput, AuctionParams, Deployer } from 'gql-client';
 
 import {
   ArrowRightCircleFilledIcon,
@@ -30,6 +30,8 @@ type ConfigureFormValues = ConfigureDeploymentFormValues &
 
 const Configure = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [deployers, setDeployers] = useState<Deployer[]>([]);
+
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
   const queryParams = new URLSearchParams(location.search);
@@ -170,6 +172,15 @@ const Configure = () => {
     },
     [client, createProject, dismiss, toast],
   );
+
+  const fetchDeployers = useCallback(async () => {
+    const res = await client.getDeployers()
+    setDeployers(res.deployers)
+    }, [client])
+
+  useEffect(()=>{
+    fetchDeployers()
+  }, [])
 
   return (
     <div className="space-y-7 px-4 py-6">

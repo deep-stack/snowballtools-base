@@ -76,6 +76,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
       ) => {
         return service.getAuctionData(auctionId);
       },
+
+      deployers: async (_: any, __: any, context: any) => {
+        return service.getDeployers();
+      },
     },
 
     // TODO: Return error in GQL response

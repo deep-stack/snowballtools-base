@@ -257,6 +257,7 @@ type Query {
   searchProjects(searchText: String!): [Project!]
   getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
+  deployers: [Deployer]
 }
 
 type Mutation {

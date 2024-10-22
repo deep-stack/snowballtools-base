@@ -233,6 +233,10 @@ export type GetDomainsResponse = {
   domains: Domain[];
 };
 
+export type GetDeployersResponse = {
+  deployers: Deployer[];
+};
+
 export type SearchProjectsResponse = {
   searchProjects: Project[];
 };

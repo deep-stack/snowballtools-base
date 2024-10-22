@@ -307,3 +307,13 @@ query ($auctionId: String!) {
   }
 }
 `;
+
+export const getDeployers = gql`
+query {
+  deployers {
+    deployerApiUrl
+    deployerId
+    deployerLrn
+  }
+}
+`;
