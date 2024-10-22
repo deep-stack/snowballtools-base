@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { User } from 'gql-client';
 import { motion } from 'framer-motion';
 import { useDisconnect } from 'wagmi';
@@ -26,6 +26,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ mobileOpen }: SidebarProps) => {
+  const { orgSlug } = useParams();
   const navigate = useNavigate();
   const client = useGQLClient();
   const isDesktop = useMediaQuery('(min-width: 960px)');
@@ -72,7 +73,7 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
       >
         {/* Logo */}
         <div className="hidden lg:flex">
-          <Logo />
+          <Logo orgSlug={orgSlug} />
         </div>
         {/* This element ensures the space between logo and navigation */}
         <div className="flex-1"></div>

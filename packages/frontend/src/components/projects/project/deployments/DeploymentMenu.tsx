@@ -117,8 +117,8 @@ export const DeploymentMenu = ({
 
   const deleteDeployment = async () => {
     toast({
-      id: 'deployment_going_to_be_deleted',
-      title: 'Deployment going to be deleted',
+      id: 'deleting_deployment',
+      title: 'Deleting deployment....',
       variant: 'success',
       onDismiss: dismiss,
     });
@@ -127,8 +127,8 @@ export const DeploymentMenu = ({
     if (isDeleted) {
       await onUpdate();
       toast({
-        id: 'deployment_deleted',
-        title: 'Deployment deleted',
+        id: 'deployment_removal_requested',
+        title: 'Deployment removal requested',
         variant: 'success',
         onDismiss: dismiss,
       });
