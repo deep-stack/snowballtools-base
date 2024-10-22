@@ -490,7 +490,13 @@ export class Database {
     return projectRepository.save(newProject);
   }
 
-  async updateProjectById(
+  async saveProject (project: Project): Promise<Project> {
+    const projectRepository = this.dataSource.getRepository(Project);
+
+    return projectRepository.save(project);
+  }
+
+  async updateProjectById (
     projectId: string,
     data: DeepPartial<Project>
   ): Promise<boolean> {

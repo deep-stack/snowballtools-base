@@ -7,7 +7,9 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  DeleteDateColumn
+  DeleteDateColumn,
+  JoinTable,
+  ManyToMany
 } from 'typeorm';
 
 import { User } from './User';
@@ -50,8 +52,9 @@ export class Project {
   @Column('varchar', { nullable: true })
     auctionId!: string | null;
 
-  @OneToMany(() => Deployer, (deployer) => deployer.deployerId)
-    deployers!: Deployer[];
+  @ManyToMany(() => Deployer, (deployer) => (deployer.projects))
+  @JoinTable()
+    deployers!: Deployer[]
 
   @Column('boolean', { default: false, nullable: true })
     fundsReleased!: boolean;

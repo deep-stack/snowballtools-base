@@ -198,8 +198,7 @@ export class Service {
       if (!deployment.project) {
         log(`Project ${deployment.projectId} not found`);
         return;
-      }
-      else {
+      } else {
         deployment.applicationDeploymentRecordId = record.id;
         deployment.applicationDeploymentRecordData = record.attributes;
         deployment.url = record.attributes.url;
@@ -207,11 +206,20 @@ export class Service {
         deployment.isCurrent = deployment.environment === Environment.Production;
 
         await this.db.updateDeploymentById(deployment.id, deployment);
-      }
 
-      log(
-        `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
-      );
+        // Release deployer funds on successful deployment
+        if (!deployment.project.fundsReleased) {
+          const fundsReleased = await this.releaseDeployerFundsByProjectId(deployment.projectId);
+
+          await this.db.updateProjectById(deployment.projectId, {
+            fundsReleased,
+          });
+        }
+
+        log(
+          `Updated deployment ${deployment.id} with URL ${record.attributes.url}`,
+        );
+      }
     });
 
     await Promise.all(deploymentUpdatePromises);
@@ -295,53 +303,40 @@ export class Service {
       completedAuctionIds.includes(project.auctionId!)
     );
 
-
     for (const project of projectsToBedeployed) {
-      const deployers = await this.laconicRegistry.getAuctionWinningDeployerRecords(project!.auctionId!);
+      const deployerRecords = await this.laconicRegistry.getAuctionWinningDeployerRecords(project!.auctionId!);
 
-      if (!deployers) {
+      if (!deployerRecords) {
         log(`No winning deployer for auction ${project!.auctionId}`);
       } else {
-        // TODO:Update project with deployer LRNs
-        // await this.db.updateProjectById(project.id!, {
-        //   deployers
-        // });
+        const deployerIds = [];
 
-        const deployerRecords = await this.laconicRegistry.getAuctionWinningDeployerRecords(project!.auctionId!);
+        for (const record of deployerRecords) {
+          const deployerId = record.id;
+          const deployerLrn = record.names[0];
 
-        if (!deployerRecords) {
-          log(`No winning deployer for auction ${project!.auctionId}`);
-        } else {
-          const deployerLrns = [];
-          const deployerIds = [];
+          deployerIds.push(deployerId);
 
-          for (const record of deployerRecords) {
-            const deployerId = record.id;
-            const deployerLrn = record.names[0];
+          const deployerApiUrl = record.attributes.apiUrl;
+          const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
 
-            deployerIds.push(deployerId);
-            deployerLrns.push(deployerLrn);
+          const deployerData = {
+            deployerId,
+            deployerLrn,
+            deployerApiUrl,
+            baseDomain
+          };
 
-            const deployerApiUrl = record.attributes.apiUrl;
-            const apiURL = new URL(deployerApiUrl);
-            const baseDomain = apiURL.hostname.split('.').slice(-3).join('.');
+          // Store the deployer in the DB
+          const deployer = await this.db.addDeployer(deployerData);
 
-            const deployerData = {
-              deployerId,
-              deployerLrn,
-              deployerApiUrl,
-              baseDomain
-            };
+          // Update project with deployer
+          await this.updateProjectWithDeployer(project.id, deployer);
+        }
 
-            // Store the deployer in the DB
-            // TODO: Update project with deployer
-            await this.db.addDeployer(deployerData);
-          }
-
-          for (const deployer of deployerIds) {
-            log(`Creating deployment for deployer LRN ${deployer}`);
-            await this.createDeploymentFromAuction(project, deployer);
-          }
+        for (const deployer of deployerIds) {
+          log(`Creating deployment for deployer LRN ${deployer}`);
+          await this.createDeploymentFromAuction(project, deployer);
         }
       }
     }
@@ -617,7 +612,8 @@ export class Service {
   async createDeployment(
     userId: string,
     octokit: Octokit,
-    data: DeepPartial<Deployment>
+    data: DeepPartial<Deployment>,
+    deployerLrn?: string
   ): Promise<Deployment> {
     assert(data.project?.repository, 'Project repository not found');
     log(
@@ -646,7 +642,14 @@ export class Service {
       );
     }
 
-    const newDeployment = await this.createDeploymentFromData(userId, data, data.deployer!.deployerId!, applicationRecordId, applicationRecordData);
+    let deployer;
+    if (deployerLrn) {
+      deployer = await this.createDeployerFromLRN(deployerLrn);
+    } else {
+      deployer = data.deployer;
+    }
+
+    const newDeployment = await this.createDeploymentFromData(userId, data, deployer!.deployerId!, applicationRecordId, applicationRecordData);
 
     const { repo, repoUrl } = await getRepoDetails(octokit, data.project.repository, data.commitHash);
     const environmentVariablesObj = await this.getEnvVariables(data.project!.id!);
@@ -660,7 +663,7 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn: data.deployer!.deployerLrn!
+        lrn: deployer!.deployerLrn!
       });
     }
 
@@ -669,7 +672,7 @@ export class Service {
         deployment: newDeployment,
         appName: repo,
         repository: repoUrl,
-        lrn: data.deployer!.deployerLrn!,
+        lrn: deployer!.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
       });
@@ -678,19 +681,6 @@ export class Service {
       applicationDeploymentRequestId,
       applicationDeploymentRequestData,
     });
-
-    // const deployerRecord = await this.laconicRegistry.getDeployerRecordsByFilter({
-    //   name: deployerLrn,
-    // });
-
-    // TODO: Store deployer data
-    // newDeployment.project.deployers.push({
-    //   deployerId: deployerRecord[0].id,
-    //   deployerApiUrl: deployerRecord[0].attributes.apiUrl,
-    // })
-    // await this.updateProject(newDeployment.project.id, {
-    //   deployers:
-    // });
 
     return newDeployment;
   }
@@ -804,6 +794,50 @@ export class Service {
     return newDeployment;
   }
 
+  async createDeployerFromLRN(deployerLrn: string): Promise<Deployer | null> {
+    const records = await this.laconicRegistry.getRecordsByName(deployerLrn);
+
+    if (records.length === 0) {
+      log('No records found for deployer LRN:', deployerLrn);
+      return null;
+    }
+
+    const deployerId = records[0].id;
+    const deployerApiUrl = records[0].attributes.apiUrl;
+    const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
+
+    const deployerData = {
+      deployerId,
+      deployerLrn,
+      deployerApiUrl,
+      baseDomain
+    };
+
+    const deployer = await this.db.addDeployer(deployerData);
+
+    return deployer;
+  }
+
+  async updateProjectWithDeployer(
+    projectId: string,
+    deployer: Deployer
+  ): Promise<Deployer> {
+    const deploymentProject = await this.db.getProjects({
+      where: { id: projectId },
+      relations: ['deployers']
+    });
+
+    if (!deploymentProject[0].deployers) {
+      deploymentProject[0].deployers = [];
+    }
+
+    deploymentProject[0].deployers.push(deployer);
+
+    await this.db.saveProject(deploymentProject[0]);
+
+    return deployer;
+  }
+
   async addProjectFromTemplate(
     user: User,
     organizationSlug: string,
@@ -867,6 +901,7 @@ export class Service {
         slug: organizationSlug,
       },
     });
+
     if (!organization) {
       throw new Error('Organization does not exist');
     }
@@ -897,15 +932,15 @@ export class Service {
       domain: null,
       commitHash: latestCommit.sha,
       commitMessage: latestCommit.commit.message,
-      deployerLrn: lrn
     };
 
     if (auctionParams) {
       const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId });
     } else {
-      await this.createDeployment(user.id, octokit, deploymentData);
-      // await this.updateProject(project.id, { deployerLrns: [lrn!] })
+      const newDeployment = await this.createDeployment(user.id, octokit, deploymentData, lrn);
+      // Update project with deployer
+      await this.updateProjectWithDeployer(newDeployment.projectId, newDeployment.deployer);
     }
 
     await this.createRepoHook(octokit, project);
@@ -959,6 +994,9 @@ export class Service {
     );
     const projects = await this.db.getProjects({
       where: { repository: repository.full_name },
+      relations: {
+        deployers: true,
+      }
     });
 
     if (!projects.length) {
@@ -975,33 +1013,29 @@ export class Service {
         branch,
       });
 
-      // TODO: Store deployer in project
-      // const deployers = project.deployerLrns;
-      // if (!deployers) {
-      //   log(`No deployer present for project ${project.id}`)
-      //   return;
-      // }
-
       const deployers = project.deployers;
-      if (!deployers) return;
+      if (!deployers) {
+        log(`No deployer present for project ${project.id}`)
+        return;
+      }
 
-      // for (const deployer of deployers) {
-      // Create deployment with branch and latest commit in GitHub data
-      await this.createDeployment(project.ownerId, octokit,
-        {
-          project,
-          branch,
-          environment:
-            project.prodBranch === branch
-              ? Environment.Production
-              : Environment.Preview,
-          domain,
-          commitHash: headCommit.id,
-          commitMessage: headCommit.message,
-          // deployer: deployer
-        },
-      );
-      // }
+      for (const deployer of deployers) {
+        // Create deployment with branch and latest commit in GitHub data
+        await this.createDeployment(project.ownerId, octokit,
+          {
+            project,
+            branch,
+            environment:
+              project.prodBranch === branch
+                ? Environment.Production
+                : Environment.Preview,
+            domain,
+            commitHash: headCommit.id,
+            commitMessage: headCommit.message,
+            deployer: deployer
+          },
+        );
+      }
     }
   }
 
@@ -1038,6 +1072,7 @@ export class Service {
       relations: {
         project: true,
         domain: true,
+        deployer: true,
         createdBy: true,
       },
       where: {
@@ -1054,7 +1089,7 @@ export class Service {
     let newDeployment: Deployment;
 
     if (oldDeployment.project.auctionId) {
-      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployer.deployerLrn);
+      newDeployment = await this.createDeploymentFromAuction(oldDeployment.project, oldDeployment.deployer.deployerId);
     } else {
       newDeployment = await this.createDeployment(user.id, octokit,
         {
@@ -1114,6 +1149,7 @@ export class Service {
       },
       relations: {
         project: true,
+        deployer: true,
       },
     });
 

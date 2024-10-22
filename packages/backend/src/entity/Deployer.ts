@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToMany } from 'typeorm';
+import { Project } from './Project';
 
 @Entity()
 export class Deployer {
@@ -13,4 +14,7 @@ export class Deployer {
 
   @Column('varchar')
     baseDomain!: string;
+
+  @ManyToMany(() => Project, (project) => project.deployers)
+    projects!: Project[];
 }
