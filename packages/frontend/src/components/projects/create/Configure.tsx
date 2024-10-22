@@ -98,7 +98,7 @@ const Configure = () => {
         const { addProject } = await client.addProject(
           orgSlug!,
           {
-            name: fullName!,
+            name: `${owner}-${name}`,
             prodBranch: defaultBranch!,
             repository: fullName!,
             template: 'webapp',
