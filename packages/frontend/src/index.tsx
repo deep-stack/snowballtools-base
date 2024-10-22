@@ -17,7 +17,6 @@ import { LogErrorBoundary } from 'utils/log-error';
 import { BASE_URL } from 'utils/constants';
 import Web3ModalProvider from './context/Web3Provider';
 
-
 console.log(`v-0.0.9`);
 
 const root = ReactDOM.createRoot(
@@ -33,11 +32,11 @@ root.render(
   <LogErrorBoundary>
     <React.StrictMode>
       <ThemeProvider>
-      <Web3ModalProvider>
-        <GQLClientProvider client={gqlClient}>
-          <App />
-          <Toaster />
-        </GQLClientProvider>
+        <Web3ModalProvider>
+          <GQLClientProvider client={gqlClient}>
+            <App />
+            <Toaster />
+          </GQLClientProvider>
         </Web3ModalProvider>
       </ThemeProvider>
     </React.StrictMode>

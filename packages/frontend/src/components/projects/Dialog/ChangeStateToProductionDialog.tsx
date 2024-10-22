@@ -10,11 +10,16 @@ import {
   LinkChainIcon,
 } from 'components/shared/CustomIcon';
 import { TagProps } from 'components/shared/Tag';
+import {
+  ArrowRightCircleFilledIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
 
 interface ChangeStateToProductionDialogProps extends ConfirmDialogProps {
   deployment: Deployment;
   newDeployment?: Deployment;
   domains: Domain[];
+  isConfirmButtonLoading?: boolean;
 }
 
 export const ChangeStateToProductionDialog = ({
@@ -24,6 +29,7 @@ export const ChangeStateToProductionDialog = ({
   open,
   handleCancel,
   handleConfirm,
+  isConfirmButtonLoading,
   ...props
 }: ChangeStateToProductionDialogProps) => {
   const currentChip = {
@@ -41,6 +47,14 @@ export const ChangeStateToProductionDialog = ({
       handleCancel={handleCancel}
       open={open}
       handleConfirm={handleConfirm}
+      confirmButtonProps={{
+        disabled: isConfirmButtonLoading,
+        rightIcon: isConfirmButtonLoading ? (
+          <LoadingIcon className="animate-spin" />
+        ) : (
+          <ArrowRightCircleFilledIcon />
+        ),
+      }}
     >
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-3">

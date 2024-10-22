@@ -25,7 +25,8 @@ type ConfigureDeploymentFormValues = {
   maxPrice?: string;
 };
 
-type ConfigureFormValues = ConfigureDeploymentFormValues & EnvironmentVariablesFormValues;
+type ConfigureFormValues = ConfigureDeploymentFormValues &
+  EnvironmentVariablesFormValues;
 
 const Configure = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +56,10 @@ const Configure = () => {
   const isTabletView = useMediaQuery('(min-width: 720px)'); // md:
   const buttonSize = isTabletView ? { size: 'lg' as const } : {};
 
-  const createProject = async (data: FieldValues, envVariables: AddEnvironmentVariableInput[]): Promise<string> => {
+  const createProject = async (
+    data: FieldValues,
+    envVariables: AddEnvironmentVariableInput[],
+  ): Promise<string> => {
     setIsLoading(true);
     let projectId: string | null = null;
 
@@ -68,7 +72,7 @@ const Configure = () => {
       } else if (data.option === 'Auction') {
         auctionParams = {
           numProviders: Number(data.numProviders!),
-          maxPrice: (data.maxPrice!).toString(),
+          maxPrice: data.maxPrice!.toString(),
         };
       }
 
@@ -86,7 +90,7 @@ const Configure = () => {
           projectData,
           lrn,
           auctionParams,
-          envVariables
+          envVariables,
         );
 
         projectId = addProjectFromTemplate.id;
@@ -94,14 +98,14 @@ const Configure = () => {
         const { addProject } = await client.addProject(
           orgSlug!,
           {
-            name: fullName!,
+            name: `${owner}-${name}`,
             prodBranch: defaultBranch!,
             repository: fullName!,
             template: 'webapp',
           },
           lrn,
           auctionParams,
-          envVariables
+          envVariables,
         );
 
         projectId = addProject.id;
@@ -127,39 +131,44 @@ const Configure = () => {
 
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
-      const environmentVariables = createFormData.variables.map((variable: any) => {
-        return {
-          key: variable.key,
-          value: variable.value,
-          environments: Object.entries(createFormData.environment)
-            .filter(([, value]) => value === true)
-            .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
-        };
-      });
+      const environmentVariables = createFormData.variables.map(
+        (variable: any) => {
+          return {
+            key: variable.key,
+            value: variable.value,
+            environments: Object.entries(createFormData.environment)
+              .filter(([, value]) => value === true)
+              .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
+          };
+        },
+      );
 
-      const projectId = await createProject(createFormData, environmentVariables);
+      const projectId = await createProject(
+        createFormData,
+        environmentVariables,
+      );
 
       await client.getEnvironmentVariables(projectId);
 
       if (templateId) {
         createFormData.option === 'Auction'
           ? navigate(
-            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-          )
+              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+            )
           : navigate(
-            `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`
-          );
+              `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
+            );
       } else {
         createFormData.option === 'Auction'
           ? navigate(
-            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`
-          )
+              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+            )
           : navigate(
-            `/${orgSlug}/projects/create/deploy?projectId=${projectId}`
-          );
+              `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
+            );
       }
     },
-    [client, createProject, dismiss, toast]
+    [client, createProject, dismiss, toast],
   );
 
   return (
@@ -190,10 +199,15 @@ const Configure = () => {
                     value={
                       {
                         value: value || 'LRN',
-                        label: value === 'Auction' ? 'Create Auction' : 'Deployer LRN',
+                        label:
+                          value === 'Auction'
+                            ? 'Create Auction'
+                            : 'Deployer LRN',
                       } as SelectOption
                     }
-                    onChange={(value) => onChange((value as SelectOption).value)}
+                    onChange={(value) =>
+                      onChange((value as SelectOption).value)
+                    }
                     options={[
                       { value: 'LRN', label: 'Deployer LRN' },
                       { value: 'Auction', label: 'Create Auction' },
@@ -205,7 +219,10 @@ const Configure = () => {
 
             {selectedOption === 'LRN' && (
               <div className="flex flex-col justify-start gap-4 mb-6">
-                <Heading as="h5" className="text-sm font-sans text-elements-low-em">
+                <Heading
+                  as="h5"
+                  className="text-sm font-sans text-elements-low-em"
+                >
                   The app will be deployed by the configured deployer
                 </Heading>
                 <span className="text-sm text-elements-high-em">
@@ -225,8 +242,12 @@ const Configure = () => {
             {selectedOption === 'Auction' && (
               <>
                 <div className="flex flex-col justify-start gap-4 mb-6">
-                  <Heading as="h5" className="text-sm font-sans text-elements-low-em">
-                    Set the number of deployers and maximum price for each deployment
+                  <Heading
+                    as="h5"
+                    className="text-sm font-sans text-elements-low-em"
+                  >
+                    Set the number of deployers and maximum price for each
+                    deployment
                   </Heading>
                   <span className="text-sm text-elements-high-em">
                     Number of Deployers

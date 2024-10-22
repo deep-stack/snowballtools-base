@@ -55,7 +55,7 @@ const siweConfig = createSIWEConfig({
       statement: 'Sign in With Ethereum.',
     }).prepareMessage(),
   getNonce: async () => {
-    return generateNonce()
+    return generateNonce();
   },
   getSession: async () => {
     try {

@@ -64,15 +64,17 @@ export const EnvironmentVariablesTabPanel = () => {
 
   const createEnvironmentVariablesHandler = useCallback(
     async (createFormData: FieldValues) => {
-      const environmentVariables = createFormData.variables.map((variable: any) => {
-        return {
-          key: variable.key,
-          value: variable.value,
-          environments: Object.entries(createFormData.environment)
-            .filter(([, value]) => value === true)
-            .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
-        };
-      });
+      const environmentVariables = createFormData.variables.map(
+        (variable: any) => {
+          return {
+            key: variable.key,
+            value: variable.value,
+            environments: Object.entries(createFormData.environment)
+              .filter(([, value]) => value === true)
+              .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
+          };
+        },
+      );
 
       const { addEnvironmentVariables: isEnvironmentVariablesAdded } =
         await client.addEnvironmentVariables(id!, environmentVariables);
@@ -124,7 +126,11 @@ export const EnvironmentVariablesTabPanel = () => {
         </Heading>
         <Collapse open={createNewVariable}>
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit((data) => createEnvironmentVariablesHandler(data))}>
+            <form
+              onSubmit={methods.handleSubmit((data) =>
+                createEnvironmentVariablesHandler(data),
+              )}
+            >
               <div className="p-4 bg-slate-100">
                 <EnvironmentVariablesForm />
               </div>

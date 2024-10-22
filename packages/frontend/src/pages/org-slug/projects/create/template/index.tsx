@@ -54,7 +54,7 @@ const CreateRepo = () => {
         setIsLoading(true);
 
         navigate(
-          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false&orgSlug=${orgSlug}`
+          `configure?templateId=${template.id}&templateOwner=${owner}&templateRepo=${repo}&owner=${data.account}&name=${data.repoName}&isPrivate=false&orgSlug=${orgSlug}`,
         );
       } catch (err) {
         setIsLoading(false);
@@ -173,7 +173,7 @@ const CreateRepo = () => {
           <Controller
             name="isPrivate"
             control={control}
-            render={({ }) => (
+            render={({}) => (
               <Checkbox label="Make this repo private" disabled={true} />
             )}
           />

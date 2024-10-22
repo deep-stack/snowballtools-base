@@ -2,7 +2,7 @@ record:
   type: ApplicationRecord
   version: 0.0.1
   repository_ref: 61e3e88a6c9d57e95441059369ee5a46f5c07601
-  repository: ["https://github.com/snowball-tools/snowballtools-base"]
+  repository: ["https://git.vdb.to/cerc-io/snowballtools-base"]
   app_type: webapp
   name: staging-snowballtools-base-frontend
   app_version: 0.0.0

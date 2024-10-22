@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { Organization, User } from 'gql-client';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { User } from 'gql-client';
 import { motion } from 'framer-motion';
 import { useDisconnect } from 'wagmi';
 
@@ -19,8 +19,6 @@ import { getInitials } from 'utils/geInitials';
 import { Button } from 'components/shared/Button';
 import { cn } from 'utils/classnames';
 import { useMediaQuery } from 'usehooks-ts';
-import { SIDEBAR_MENU } from './constants';
-import { UserSelect } from 'components/shared/UserSelect';
 import { BASE_URL } from 'utils/constants';
 
 interface SidebarProps {
@@ -44,46 +42,6 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
   useEffect(() => {
     fetchUser();
   }, []);
-
-  const [selectedOrgSlug, setSelectedOrgSlug] = useState(orgSlug);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-
-  const fetchUserOrganizations = useCallback(async () => {
-    const { organizations } = await client.getOrganizations();
-    setOrganizations(organizations);
-  }, [orgSlug]);
-
-  useEffect(() => {
-    fetchUserOrganizations();
-    setSelectedOrgSlug(orgSlug);
-  }, [orgSlug]);
-
-  const formattedSelected = useMemo(() => {
-    const selected = organizations.find((org) => org.slug === selectedOrgSlug);
-    return {
-      value: selected?.slug ?? '',
-      label: selected?.name ?? '',
-      imgSrc: '/logo.svg',
-    };
-  }, [organizations, selectedOrgSlug, orgSlug]);
-
-  const formattedSelectOptions = useMemo(() => {
-    return organizations.map((org) => ({
-      value: org.slug,
-      label: org.name,
-      imgSrc: '/logo.svg',
-    }));
-  }, [organizations, selectedOrgSlug, orgSlug]);
-
-  const renderMenu = useMemo(() => {
-    return SIDEBAR_MENU(orgSlug).map(({ title, icon, url }, index) => (
-      <NavLink to={url} key={index}>
-        <Tabs.Trigger icon={icon} value={title}>
-          {title}
-        </Tabs.Trigger>
-      </NavLink>
-    ));
-  }, [orgSlug]);
 
   const handleLogOut = useCallback(async () => {
     await fetch(`${BASE_URL}/auth/logout`, {
@@ -117,16 +75,8 @@ export const Sidebar = ({ mobileOpen }: SidebarProps) => {
         <div className="hidden lg:flex">
           <Logo orgSlug={orgSlug} />
         </div>
-        {/* Switch organization */}
-        <div className="flex flex-1 flex-col gap-4">
-          <UserSelect
-            value={formattedSelected}
-            options={formattedSelectOptions}
-          />
-          <Tabs defaultValue="Projects" orientation="vertical">
-            <Tabs.List>{renderMenu}</Tabs.List>
-          </Tabs>
-        </div>
+        {/* This element ensures the space between logo and navigation */}
+        <div className="flex-1"></div>
         {/* Bottom navigation */}
         <div className="flex flex-col gap-5 justify-end">
           <Tabs defaultValue="Projects" orientation="vertical">

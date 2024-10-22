@@ -8,7 +8,10 @@ import {
   DialogActions,
 } from '@mui/material';
 
-import { CheckRoundFilledIcon, LoadingIcon } from 'components/shared/CustomIcon';
+import {
+  CheckRoundFilledIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
 import { useGQLClient } from 'context/GQLClientContext';
 import { Button, Heading, Tag } from 'components/shared';
 
@@ -23,7 +26,11 @@ export const AuctionCard = ({ project }: { project: Project }) => {
   const client = useGQLClient();
 
   const getIconByAuctionStatus = (status: string) =>
-    status === 'completed' ? <CheckRoundFilledIcon /> : <LoadingIcon className="animate-spin" />;
+    status === 'completed' ? (
+      <CheckRoundFilledIcon />
+    ) : (
+      <LoadingIcon className="animate-spin" />
+    );
 
   const checkAuctionStatus = useCallback(async () => {
     const result = await client.getAuctionData(project.auctionId);
@@ -61,7 +68,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
         {auctionStatus.toUpperCase()}
       </Tag>
     ),
-    [auctionStatus]
+    [auctionStatus],
   );
 
   const handleOpenDialog = () => setOpenDialog(true);
@@ -71,19 +78,25 @@ export const AuctionCard = ({ project }: { project: Project }) => {
     <>
       <div className="p-3 gap-2 rounded-xl border border-gray-200 transition-colors hover:bg-base-bg-alternate flex flex-col mt-8">
         <div className="flex justify-between items-center">
-          <Heading className="text-lg leading-6 font-medium">Auction details</Heading>
+          <Heading className="text-lg leading-6 font-medium">
+            Auction details
+          </Heading>
           <Button onClick={handleOpenDialog} variant="tertiary" size="sm">
             View details
           </Button>
         </div>
 
         <div className="flex justify-between items-center mt-1">
-          <span className="text-elements-high-em text-sm font-medium tracking-tight">Auction Status</span>
+          <span className="text-elements-high-em text-sm font-medium tracking-tight">
+            Auction Status
+          </span>
           <div className="ml-2">{renderAuctionStatus()}</div>
         </div>
 
         <div className="flex justify-between items-center mt-2">
-          <span className="text-elements-high-em text-sm font-medium tracking-tight">Auction Id</span>
+          <span className="text-elements-high-em text-sm font-medium tracking-tight">
+            Auction Id
+          </span>
           <span className="text-elements-mid-em text-sm text-right">
             {project.auctionId}
           </span>
@@ -91,7 +104,9 @@ export const AuctionCard = ({ project }: { project: Project }) => {
 
         {deployerLrns?.length > 0 && (
           <div className="mt-3">
-            <span className="text-elements-high-em text-sm font-medium tracking-tight">Deployer LRNs</span>
+            <span className="text-elements-high-em text-sm font-medium tracking-tight">
+              Deployer LRNs
+            </span>
             {deployerLrns.map((lrn, index) => (
               <p key={index} className="text-elements-mid-em text-sm">
                 {'\u2022'} {lrn}
@@ -101,22 +116,28 @@ export const AuctionCard = ({ project }: { project: Project }) => {
         )}
 
         <div className="flex justify-between items-center mt-1">
-          <span className="text-elements-high-em text-sm font-medium tracking-tight">Deployer Funds Status</span>
+          <span className="text-elements-high-em text-sm font-medium tracking-tight">
+            Deployer Funds Status
+          </span>
           <div className="ml-2">
-            <Tag
-              size="xs"
-              type={fundsStatus ? 'positive' : 'emphasized'}
-            >
+            <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
               {fundsStatus ? 'RELEASED' : 'LOCKED'}
             </Tag>
           </div>
         </div>
       </div>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Auction Details</DialogTitle>
         <DialogContent>
-          {auctionDetails && <pre>{JSON.stringify(auctionDetails, null, 2)}</pre>}
+          {auctionDetails && (
+            <pre>{JSON.stringify(auctionDetails, null, 2)}</pre>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Close</Button>

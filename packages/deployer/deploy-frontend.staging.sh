@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Repository URL
-REPO_URL="https://github.com/snowball-tools/snowballtools-base"
+REPO_URL="https://git.vdb.to/cerc-io/snowballtools-base"
 
 # Get the latest commit hash from the repository
 LATEST_HASH=$(git ls-remote $REPO_URL HEAD | awk '{print $1}')
