@@ -68,7 +68,9 @@ const DeploymentDetailsCard = ({
   prodBranchDomains,
 }: DeployDetailsCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [deploymentLogs, setDeploymentLogs] = useState<string>();
+  const [deploymentLogs, setDeploymentLogs] = useState<string>(
+    'No deployment logs available',
+  );
 
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
@@ -92,9 +94,11 @@ const DeploymentDetailsCard = ({
   const fetchDeploymentLogs = useCallback(async () => {
     let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
     const res = await fetch(url, { cache: 'no-store' });
-    const logs = await res.text();
-    setDeploymentLogs(logs);
     handleOpenDialog();
+    if (res.ok) {
+      const logs = await res.text();
+      setDeploymentLogs(logs);
+    }
   }, [
     deployment.deployer.deployerApiUrl,
     deployment.applicationDeploymentRequestId,
