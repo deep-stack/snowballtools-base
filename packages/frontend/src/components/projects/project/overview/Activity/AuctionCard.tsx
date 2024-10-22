@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Auction, Project } from 'gql-client';
+import { Auction, Deployer, Project } from 'gql-client';
 
 import {
   Dialog,
@@ -19,7 +19,7 @@ const WAIT_DURATION = 5000;
 
 export const AuctionCard = ({ project }: { project: Project }) => {
   const [auctionStatus, setAuctionStatus] = useState<string>('');
-  const [deployerLrns, setDeployerLrns] = useState<string[]>([]);
+  const [deployers, setDeployers] = useState<Deployer[]>([]);
   const [fundsStatus, setFundsStatus] = useState<boolean>(false);
   const [auctionDetails, setAuctionDetails] = useState<Auction | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -36,7 +36,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
     const result = await client.getAuctionData(project.auctionId);
     setAuctionStatus(result.status);
     setAuctionDetails(result);
-    setDeployerLrns(project.deployerLrns);
+    setDeployers(project.deployers);
     setFundsStatus(project.fundsReleased);
   }, []);
 
@@ -52,7 +52,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
         // Wait for 5 secs since the project is not immediately updated with deployer LRNs
         await new Promise((resolve) => setTimeout(resolve, WAIT_DURATION));
         const updatedProject = await client.getProject(project.id);
-        setDeployerLrns(updatedProject.project?.deployerLrns || []);
+        setDeployers(updatedProject.project?.deployers || []);
       };
       fetchUpdatedProject();
     }
@@ -102,14 +102,14 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-        {deployerLrns?.length > 0 && (
+        {deployers?.length > 0 && (
           <div className="mt-3">
             <span className="text-elements-high-em text-sm font-medium tracking-tight">
               Deployer LRNs
             </span>
-            {deployerLrns.map((lrn, index) => (
+            {deployers.map((deployer, index) => (
               <p key={index} className="text-elements-mid-em text-sm">
-                {'\u2022'} {lrn}
+                {'\u2022'} {deployer.deployerLrn}
               </p>
             ))}
           </div>

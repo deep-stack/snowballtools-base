@@ -127,7 +127,13 @@ export const project: Project = {
   template: 'Template',
   members: [member],
   auctionId: '7553538436710373822151221341b43f577e07b0525d083cc9b2de98890138a1',
-  deployerLrns: ['lrn://deployer.apps.snowballtools.com '],
+  deployers: [
+    {
+      deployerApiUrl: 'https://webapp-deployer-api.example.com',
+      deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
+      deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
+    }
+  ],
   webhooks: ['beepboop'],
   icon: 'Icon',
   fundsReleased: true,

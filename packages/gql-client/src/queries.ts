@@ -24,7 +24,11 @@ query ($projectId: String!) {
     updatedAt
     prodBranch
     auctionId
-    deployerLrns
+    deployers {
+      deployerApiUrl
+      deployerId
+      deployerLrn
+    }
     fundsReleased
     framework
     repository
@@ -76,7 +80,11 @@ query ($organizationSlug: String!) {
     description
     framework
     auctionId
-    deployerLrns
+    deployers {
+      deployerApiUrl
+      deployerId
+      deployerLrn
+    }
     fundsReleased
     prodBranch
     webhooks
@@ -199,7 +207,11 @@ query ($searchText: String!) {
     description
     framework
     auctionId
-    deployerLrns
+    deployers {
+      deployerApiUrl
+      deployerId
+      deployerLrn
+    }
     fundsReleased
     prodBranch
     webhooks
