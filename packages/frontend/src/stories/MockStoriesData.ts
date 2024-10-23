@@ -132,7 +132,7 @@ export const project: Project = {
       deployerApiUrl: 'https://webapp-deployer-api.example.com',
       deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
       deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
-    }
+    },
   ],
   webhooks: ['beepboop'],
   icon: 'Icon',

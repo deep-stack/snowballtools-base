@@ -105,7 +105,6 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-
         <div className="flex justify-between items-center mt-1">
           <span className="text-elements-high-em text-sm font-medium tracking-tight">
             Auction Status

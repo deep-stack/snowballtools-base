@@ -185,8 +185,8 @@ const DeploymentDetailsCard = ({
                 type="orange"
                 initials={getInitials(deployment.createdBy.name ?? '')}
                 className="lg:size-5 2xl:size-6"
-              // TODO: Add avatarUrl
-              // imageSrc={deployment.createdBy.avatarUrl}
+                // TODO: Add avatarUrl
+                // imageSrc={deployment.createdBy.avatarUrl}
               ></Avatar>
             </div>
             <OverflownText

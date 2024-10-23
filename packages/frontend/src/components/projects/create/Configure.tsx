@@ -3,7 +3,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { FormProvider, FieldValues } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import { AddEnvironmentVariableInput, AuctionParams, Deployer } from 'gql-client';
+import {
+  AddEnvironmentVariableInput,
+  AuctionParams,
+  Deployer,
+} from 'gql-client';
 
 import { Select, MenuItem, FormControl, FormHelperText } from '@mui/material';
 
@@ -156,32 +160,32 @@ const Configure = () => {
       if (templateId) {
         createFormData.option === 'Auction'
           ? navigate(
-            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-          )
+              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+            )
           : navigate(
-            `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
-          );
+              `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
+            );
       } else {
         createFormData.option === 'Auction'
           ? navigate(
-            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-          )
+              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+            )
           : navigate(
-            `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
-          );
+              `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
+            );
       }
     },
     [client, createProject, dismiss, toast],
   );
 
   const fetchDeployers = useCallback(async () => {
-    const res = await client.getDeployers()
-    setDeployers(res.deployers)
-  }, [client])
+    const res = await client.getDeployers();
+    setDeployers(res.deployers);
+  }, [client]);
 
   useEffect(() => {
-    fetchDeployers()
-  }, [])
+    fetchDeployers();
+  }, []);
 
   return (
     <div className="space-y-7 px-4 py-6">
@@ -209,7 +213,7 @@ const Configure = () => {
                   <Select
                     value={value}
                     onChange={(event) => onChange(event.target.value)}
-                    size='small'
+                    size="small"
                     displayEmpty
                   >
                     <MenuItem value="LRN">Deployer LRN</MenuItem>
@@ -240,15 +244,22 @@ const Configure = () => {
                         value={value}
                         onChange={(event) => onChange(event.target.value)}
                         displayEmpty
-                        size='small'
+                        size="small"
                       >
                         {deployers.map((deployer) => (
-                          <MenuItem key={deployer.deployerLrn} value={deployer.deployerLrn}>
+                          <MenuItem
+                            key={deployer.deployerLrn}
+                            value={deployer.deployerLrn}
+                          >
                             {deployer.deployerLrn}
                           </MenuItem>
                         ))}
                       </Select>
-                      {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
+                      {fieldState.error && (
+                        <FormHelperText>
+                          {fieldState.error.message}
+                        </FormHelperText>
+                      )}
                     </FormControl>
                   )}
                 />

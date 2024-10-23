@@ -15,7 +15,7 @@ import {
   ApplicationDeploymentRemovalRequest
 } from './entity/Deployment';
 import { AppDeploymentRecord, AppDeploymentRemovalRecord, AuctionParams, DeployerRecord } from './types';
-import { getConfig, getRepoDetails, sleep } from './utils';
+import { getConfig, getRepoDetails, registryTransactionWithRetry, sleep } from './utils';
 
 const log = debug('snowball:registry');
 
@@ -108,14 +108,16 @@ export class Registry {
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
-    const result = await this.registry.setRecord(
-      {
-        privateKey: this.registryConfig.privateKey,
-        record: applicationRecord,
-        bondId: this.registryConfig.bondId
-      },
-      this.registryConfig.privateKey,
-      fee
+    const result = await registryTransactionWithRetry(() =>
+      this.registry.setRecord(
+        {
+          privateKey: this.registryConfig.privateKey,
+          record: applicationRecord,
+          bondId: this.registryConfig.bondId
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     log(`Published application record ${result.id}`);
@@ -126,33 +128,39 @@ export class Registry {
     log(`Setting name: ${lrn} for record ID: ${result.id}`);
 
     await sleep(SLEEP_DURATION);
-    await this.registry.setName(
-      {
-        cid: result.id,
-        lrn
-      },
-      this.registryConfig.privateKey,
-      fee
+    await registryTransactionWithRetry(() =>
+      this.registry.setName(
+        {
+          cid: result.id,
+          lrn
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     await sleep(SLEEP_DURATION);
-    await this.registry.setName(
-      {
-        cid: result.id,
-        lrn: `${lrn}@${applicationRecord.app_version}`
-      },
-      this.registryConfig.privateKey,
-      fee
+    await registryTransactionWithRetry(() =>
+      this.registry.setName(
+        {
+          cid: result.id,
+          lrn: `${lrn}@${applicationRecord.app_version}`
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     await sleep(SLEEP_DURATION);
-    await this.registry.setName(
-      {
-        cid: result.id,
-        lrn: `${lrn}@${applicationRecord.repository_ref}`
-      },
-      this.registryConfig.privateKey,
-      fee
+    await registryTransactionWithRetry(() =>
+      this.registry.setName(
+        {
+          cid: result.id,
+          lrn: `${lrn}@${applicationRecord.repository_ref}`
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     return {
@@ -183,19 +191,21 @@ export class Registry {
     const auctionConfig = config.auction;
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
-    const auctionResult = await this.registry.createProviderAuction(
-      {
-        commitFee: auctionConfig.commitFee,
-        commitsDuration: auctionConfig.commitsDuration,
-        revealFee: auctionConfig.revealFee,
-        revealsDuration: auctionConfig.revealsDuration,
-        denom: auctionConfig.denom,
-        maxPrice: auctionParams.maxPrice,
-        numProviders: auctionParams.numProviders,
-      },
-      this.registryConfig.privateKey,
-      fee
-    )
+    const auctionResult = await registryTransactionWithRetry(() =>
+      this.registry.createProviderAuction(
+        {
+          commitFee: auctionConfig.commitFee,
+          commitsDuration: auctionConfig.commitsDuration,
+          revealFee: auctionConfig.revealFee,
+          revealsDuration: auctionConfig.revealsDuration,
+          denom: auctionConfig.denom,
+          maxPrice: auctionParams.maxPrice,
+          numProviders: auctionParams.numProviders,
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
+    );
 
     if (!auctionResult.auction) {
       throw new Error('Error creating auction');
@@ -208,14 +218,16 @@ export class Registry {
       type: APP_DEPLOYMENT_AUCTION_RECORD_TYPE,
     };
 
-    const result = await this.registry.setRecord(
-      {
-        privateKey: this.registryConfig.privateKey,
-        record: applicationDeploymentAuction,
-        bondId: this.registryConfig.bondId
-      },
-      this.registryConfig.privateKey,
-      fee
+    const result = await registryTransactionWithRetry(() =>
+      this.registry.setRecord(
+        {
+          privateKey: this.registryConfig.privateKey,
+          record: applicationDeploymentAuction,
+          bondId: this.registryConfig.bondId
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     log(`Application deployment auction created: ${auctionResult.auction.id}`);
@@ -274,14 +286,16 @@ export class Registry {
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
-    const result = await this.registry.setRecord(
-      {
-        privateKey: this.registryConfig.privateKey,
-        record: applicationDeploymentRequest,
-        bondId: this.registryConfig.bondId
-      },
-      this.registryConfig.privateKey,
-      fee
+    const result = await registryTransactionWithRetry(() =>
+      this.registry.setRecord(
+        {
+          privateKey: this.registryConfig.privateKey,
+          record: applicationDeploymentRequest,
+          bondId: this.registryConfig.bondId
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     log(`Application deployment request record published: ${result.id}`);
@@ -322,12 +336,14 @@ export class Registry {
     auctionId: string
   ): Promise<any> {
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
-    const auction = await this.registry.releaseFunds(
-      {
-        auctionId
-      },
-      this.registryConfig.privateKey,
-      fee
+    const auction = await registryTransactionWithRetry(() =>
+      this.registry.releaseFunds(
+        {
+          auctionId
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     return auction;
@@ -424,14 +440,16 @@ export class Registry {
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
 
-    const result = await this.registry.setRecord(
-      {
-        privateKey: this.registryConfig.privateKey,
-        record: applicationDeploymentRemovalRequest,
-        bondId: this.registryConfig.bondId
-      },
-      this.registryConfig.privateKey,
-      fee
+    const result = await registryTransactionWithRetry(() =>
+      this.registry.setRecord(
+        {
+          privateKey: this.registryConfig.privateKey,
+          record: applicationDeploymentRemovalRequest,
+          bondId: this.registryConfig.bondId
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
     );
 
     log(`Application deployment removal request record published: ${result.id}`);
