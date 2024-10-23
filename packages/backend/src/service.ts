@@ -443,11 +443,6 @@ export class Service {
     return dbDeployments;
   }
 
-  async getDeployers(): Promise<Deployer[]> {
-    const dbDeployers = await this.db.getDeployers();
-    return dbDeployers;
-  }
-
   async getEnvironmentVariablesByProjectId(
     projectId: string,
   ): Promise<EnvironmentVariable[]> {
@@ -1373,5 +1368,39 @@ export class Service {
     log(`Error releasing funds for auction ${project.auctionId}`);
 
     return false;
+  }
+
+  async getDeployers(): Promise<Deployer[]> {
+    const dbDeployers = await this.db.getDeployers();
+
+    if (dbDeployers.length > 0) {
+      this.updateDeployersFromRegistry();
+      return dbDeployers;
+    } else {
+      return await this.updateDeployersFromRegistry();
+    }
+  }
+
+  async updateDeployersFromRegistry(): Promise<Deployer[]> {
+    const deployerRecords = await this.laconicRegistry.getDeployerRecordsByFilter({});
+
+    for (const record of deployerRecords) {
+      const deployerId = record.id;
+      const deployerLrn = record.names[0];
+
+      const deployerApiUrl = record.attributes.apiUrl;
+      const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
+
+      const deployerData = {
+        deployerId,
+        deployerLrn,
+        deployerApiUrl,
+        baseDomain
+      };
+
+      await this.db.addDeployer(deployerData);
+    }
+
+    return await this.db.getDeployers();
   }
 }

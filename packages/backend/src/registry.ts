@@ -283,6 +283,7 @@ export class Registry {
       this.registryConfig.privateKey,
       fee
     );
+
     log(`Application deployment request record published: ${result.id}`);
     log('Application deployment request data:', applicationDeploymentRequest);
 

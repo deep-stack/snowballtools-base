@@ -102,7 +102,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-        {deployers?.length > 0 && (
+        {deployers?.length > 0 ? (
           <div className="mt-3">
             <span className="text-elements-high-em text-sm font-medium tracking-tight">
               Deployer LRNs
@@ -112,6 +112,12 @@ export const AuctionCard = ({ project }: { project: Project }) => {
                 {'\u2022'} {deployer.deployerLrn}
               </p>
             ))}
+          </div>
+        ) : (
+          <div className="mt-3">
+            <span className="text-elements-high-em text-sm font-medium tracking-tight">
+              No winning deployers
+            </span>
           </div>
         )}
 

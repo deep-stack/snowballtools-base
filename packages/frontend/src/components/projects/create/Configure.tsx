@@ -155,19 +155,19 @@ const Configure = () => {
       if (templateId) {
         createFormData.option === 'Auction'
           ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+          )
           : navigate(
-              `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
-            );
+            `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
+          );
       } else {
         createFormData.option === 'Auction'
           ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+          )
           : navigate(
-              `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
-            );
+            `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
+          );
       }
     },
     [client, createProject, dismiss, toast],
@@ -176,9 +176,9 @@ const Configure = () => {
   const fetchDeployers = useCallback(async () => {
     const res = await client.getDeployers()
     setDeployers(res.deployers)
-    }, [client])
+  }, [client])
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchDeployers()
   }, [])
 
@@ -236,15 +236,25 @@ const Configure = () => {
                 >
                   The app will be deployed by the configured deployer
                 </Heading>
-                <span className="text-sm text-elements-high-em">
-                  Enter LRN for deployer
-                </span>
                 <Controller
                   name="lrn"
                   control={methods.control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
-                    <Input value={value} onChange={onChange} />
+                    <Select
+                      label="Select deployer LRN"
+                      value={{
+                        value: value || '',
+                        label: value || ''
+                      } as SelectOption}
+                      onChange={(selectedOption) =>
+                        onChange((selectedOption as SelectOption).value)
+                      }
+                      options={deployers.map(deployer => ({
+                        value: deployer.deployerLrn,
+                        label: deployer.deployerLrn
+                      }))}
+                    />
                   )}
                 />
               </div>
