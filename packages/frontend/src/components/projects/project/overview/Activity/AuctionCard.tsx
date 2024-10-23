@@ -17,6 +17,16 @@ import { Button, Heading, Tag } from 'components/shared';
 
 const WAIT_DURATION = 5000;
 
+const DIALOG_STYLE = {
+  backgroundColor: 'rgba(0,0,0, .9)',
+  padding: '2em',
+  borderRadius: '0.5em',
+  marginLeft: '0.5em',
+  marginRight: '0.5em',
+  color: 'gray',
+  fontSize: 'small',
+};
+
 export const AuctionCard = ({ project }: { project: Project }) => {
   const [auctionStatus, setAuctionStatus] = useState<string>('');
   const [deployers, setDeployers] = useState<Deployer[]>([]);
@@ -140,7 +150,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
         maxWidth="md"
       >
         <DialogTitle>Auction Details</DialogTitle>
-        <DialogContent>
+        <DialogContent style={DIALOG_STYLE}>
           {auctionDetails && (
             <pre>{JSON.stringify(auctionDetails, null, 2)}</pre>
           )}

@@ -5,13 +5,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
 import { AddEnvironmentVariableInput, AuctionParams, Deployer } from 'gql-client';
 
+import { Select, MenuItem, FormControl, FormHelperText } from '@mui/material';
+
 import {
   ArrowRightCircleFilledIcon,
   LoadingIcon,
 } from 'components/shared/CustomIcon';
 import { Heading } from '../../shared/Heading';
 import { Button } from '../../shared/Button';
-import { Select, SelectOption } from 'components/shared/Select';
 import { Input } from 'components/shared/Input';
 import { useToast } from 'components/shared/Toast';
 import { useGQLClient } from '../../../context/GQLClientContext';
@@ -206,24 +207,14 @@ const Configure = () => {
                 control={methods.control}
                 render={({ field: { value, onChange } }) => (
                   <Select
-                    label="Configuration Options"
-                    value={
-                      {
-                        value: value || 'LRN',
-                        label:
-                          value === 'Auction'
-                            ? 'Create Auction'
-                            : 'Deployer LRN',
-                      } as SelectOption
-                    }
-                    onChange={(value) =>
-                      onChange((value as SelectOption).value)
-                    }
-                    options={[
-                      { value: 'LRN', label: 'Deployer LRN' },
-                      { value: 'Auction', label: 'Create Auction' },
-                    ]}
-                  />
+                    value={value}
+                    onChange={(event) => onChange(event.target.value)}
+                    size='small'
+                    displayEmpty
+                  >
+                    <MenuItem value="LRN">Deployer LRN</MenuItem>
+                    <MenuItem value="Auction">Create Auction</MenuItem>
+                  </Select>
                 )}
               />
             </div>
@@ -240,21 +231,26 @@ const Configure = () => {
                   name="lrn"
                   control={methods.control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <Select
-                      label="Select deployer LRN"
-                      value={{
-                        value: value || '',
-                        label: value || ''
-                      } as SelectOption}
-                      onChange={(selectedOption) =>
-                        onChange((selectedOption as SelectOption).value)
-                      }
-                      options={deployers.map(deployer => ({
-                        value: deployer.deployerLrn,
-                        label: deployer.deployerLrn
-                      }))}
-                    />
+                  render={({ field: { value, onChange }, fieldState }) => (
+                    <FormControl fullWidth error={Boolean(fieldState.error)}>
+                      <span className="text-sm text-elements-high-em mb-4">
+                        Select deployer LRN
+                      </span>
+                      <Select
+                        value={value}
+                        onChange={(event) => onChange(event.target.value)}
+                        displayEmpty
+                        size='small'
+
+                      >
+                        {deployers.map((deployer) => (
+                          <MenuItem key={deployer.deployerId} value={deployer.deployerLrn}>
+                            {deployer.deployerLrn}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
+                    </FormControl>
                   )}
                 />
               </div>
