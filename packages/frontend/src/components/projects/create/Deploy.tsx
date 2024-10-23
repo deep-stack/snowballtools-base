@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Deployment, DeploymentStatus } from 'gql-client';
 
 import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
@@ -12,6 +11,23 @@ import { useGQLClient } from 'context/GQLClientContext';
 
 const FETCH_DEPLOYMENTS_INTERVAL = 5000;
 
+type RequestState =
+  | 'SUBMITTED'
+  | 'DEPLOYING'
+  | 'DEPLOYED'
+  | 'REMOVED'
+  | 'CANCELLED'
+  | 'ERROR';
+
+type Record = {
+  id: string;
+  createTime: string;
+  app: string;
+  lastState: RequestState;
+  lastUpdate: string;
+  logAvailable: boolean;
+};
+
 const Deploy = () => {
   const client = useGQLClient();
 
@@ -19,7 +35,7 @@ const Deploy = () => {
   const projectId = searchParams.get('projectId');
 
   const [open, setOpen] = React.useState(false);
-  const [deployments, setDeployments] = useState<Deployment[]>([]);
+  const [record, setRecord] = useState<Record>();
 
   const handleOpen = () => setOpen(!open);
 
@@ -30,35 +46,84 @@ const Deploy = () => {
     navigate(`/${orgSlug}/projects/create`);
   }, []);
 
-  const fetchDeployments = useCallback(async () => {
+  const showSteps = useMemo(() => {
+    if (!record) {
+      return true;
+    }
+
+    if (
+      record.lastState === 'CANCELLED' ||
+      record.lastState === 'REMOVED' ||
+      record.lastState === 'ERROR'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [record]);
+
+  const showTimer = useMemo(() => {
+    if (!record) {
+      return true;
+    }
+
+    if (
+      record.lastState === 'CANCELLED' ||
+      record.lastState === 'REMOVED' ||
+      record.lastState === 'ERROR' ||
+      record.lastState === 'DEPLOYED'
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [record]);
+
+  const fetchDeploymentRecords = useCallback(async () => {
     if (!projectId) {
       return;
     }
 
     const { deployments } = await client.getDeployments(projectId);
-    setDeployments(deployments);
+    const deployment = deployments[0];
+
+    try {
+      const response = await fetch(
+        `${deployment.deployer.deployerApiUrl}/${deployment.applicationDeploymentRequestId}`,
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const record: Record = await response.json();
+      setRecord(record);
+    } catch (err: any) {
+      console.log('Error fetching data from deployer', err);
+    }
   }, [client, projectId]);
 
   useEffect(() => {
-    fetchDeployments();
+    fetchDeploymentRecords();
 
     const interval = setInterval(() => {
-      fetchDeployments();
+      fetchDeploymentRecords();
     }, FETCH_DEPLOYMENTS_INTERVAL);
 
     return () => {
       clearInterval(interval);
     };
-  }, [fetchDeployments]);
+  }, [fetchDeploymentRecords]);
 
   useEffect(() => {
-    if (
-      deployments.length > 0 &&
-      deployments[0].status === DeploymentStatus.Ready
-    ) {
+    if (!record) {
+      return;
+    }
+
+    if (record.lastState === 'DEPLOYED') {
       navigate(`/${orgSlug}/projects/create/success/${projectId}`);
     }
-  }, [deployments]);
+  }, [record]);
 
   return (
     <div className="space-y-7">
@@ -67,12 +132,14 @@ const Deploy = () => {
           <Heading as="h4" className="md:text-lg font-medium">
             Deployment started ...
           </Heading>
-          <div className="flex items-center gap-1.5">
-            <ClockOutlineIcon size={16} className="text-elements-mid-em" />
-            <Stopwatch
-              offsetTimestamp={setStopWatchOffset(Date.now().toString())}
-            />
-          </div>
+          {showTimer && (
+            <div className="flex items-center gap-1.5">
+              <ClockOutlineIcon size={16} className="text-elements-mid-em" />
+              <Stopwatch
+                offsetTimestamp={setStopWatchOffset(Date.now().toString())}
+              />
+            </div>
+          )}
         </div>
         <Button
           onClick={handleOpen}
@@ -89,30 +156,36 @@ const Deploy = () => {
         />
       </div>
 
-      <div>
-        <DeployStep
-          title="Building"
-          status={DeployStatus.COMPLETE}
-          step="1"
-          processTime="72000"
-        />
-        <DeployStep
-          title="Deployment summary"
-          status={DeployStatus.PROCESSING}
-          step="2"
-          startTime={Date.now().toString()}
-        />
-        <DeployStep
-          title="Running checks"
-          status={DeployStatus.NOT_STARTED}
-          step="3"
-        />
-        <DeployStep
-          title="Assigning domains"
-          status={DeployStatus.NOT_STARTED}
-          step="4"
-        />
-      </div>
+      {showSteps ? (
+        <div>
+          <DeployStep
+            title={record ? 'Submitted' : 'Submitting'}
+            status={record ? DeployStatus.COMPLETE : DeployStatus.PROCESSING}
+            step="1"
+          />
+
+          <DeployStep
+            title={
+              record && record.lastState === 'DEPLOYED'
+                ? 'Deployed'
+                : 'Deploying'
+            }
+            status={
+              !record
+                ? DeployStatus.NOT_STARTED
+                : record.lastState === 'DEPLOYED'
+                  ? DeployStatus.COMPLETE
+                  : DeployStatus.PROCESSING
+            }
+            step="2"
+            startTime={Date.now().toString()}
+          />
+        </div>
+      ) : (
+        <div>
+          <DeployStep title={record!.lastState} status={DeployStatus.ERROR} />
+        </div>
+      )}
     </div>
   );
 };
