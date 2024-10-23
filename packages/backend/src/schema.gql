@@ -134,8 +134,8 @@ type EnvironmentVariable {
 }
 
 type Deployer {
-  deployerId: String!
   deployerLrn: String!
+  deployerId: String!
   deployerApiUrl: String!
   createdAt: String!
   updatedAt: String!

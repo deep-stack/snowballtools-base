@@ -117,9 +117,9 @@ export type Deployment = {
 };
 
 export type Deployer = {
-  deployerApiUrl: string;
-  deployerId: string;
   deployerLrn: string;
+  deployerId: string;
+  deployerApiUrl: string;
 }
 
 export type OrganizationMember = {

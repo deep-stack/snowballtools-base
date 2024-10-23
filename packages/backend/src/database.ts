@@ -590,14 +590,6 @@ export class Database {
     return newDomain;
   }
 
-  async getDeployerById (deployerId: string): Promise<Deployer | null> {
-    const deployerRepository = this.dataSource.getRepository(Deployer);
-
-    const deployer = await deployerRepository.findOne({ where: { deployerId } });
-
-    return deployer;
-  }
-
   async getDeployers(): Promise<Deployer[]> {
     const deployerRepository = this.dataSource.getRepository(Deployer);
     const deployers = await deployerRepository.find();

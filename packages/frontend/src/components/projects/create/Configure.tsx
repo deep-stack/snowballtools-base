@@ -51,7 +51,7 @@ const Configure = () => {
   const client = useGQLClient();
 
   const methods = useForm<ConfigureFormValues>({
-    defaultValues: { option: 'LRN' },
+    defaultValues: { option: 'Auction' },
   });
 
   const selectedOption = methods.watch('option');
@@ -244,7 +244,7 @@ const Configure = () => {
 
                       >
                         {deployers.map((deployer) => (
-                          <MenuItem key={deployer.deployerId} value={deployer.deployerLrn}>
+                          <MenuItem key={deployer.deployerLrn} value={deployer.deployerLrn}>
                             {deployer.deployerLrn}
                           </MenuItem>
                         ))}

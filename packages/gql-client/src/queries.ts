@@ -25,9 +25,9 @@ query ($projectId: String!) {
     prodBranch
     auctionId
     deployers {
-      deployerApiUrl
-      deployerId
       deployerLrn
+      deployerId
+      deployerApiUrl
     }
     fundsReleased
     framework
@@ -81,9 +81,9 @@ query ($organizationSlug: String!) {
     framework
     auctionId
     deployers {
-      deployerApiUrl
-      deployerId
       deployerLrn
+      deployerId
+      deployerApiUrl
     }
     fundsReleased
     prodBranch
@@ -145,9 +145,9 @@ query ($projectId: String!)  {
     commitMessage
     url
     deployer {
+      deployerLrn
       deployerId
-      deployerLrn,
-      deployerApiUrl,
+      deployerApiUrl
     }
     environment
     isCurrent
@@ -208,9 +208,9 @@ query ($searchText: String!) {
     framework
     auctionId
     deployers {
-      deployerApiUrl
-      deployerId
       deployerLrn
+      deployerId
+      deployerApiUrl
     }
     fundsReleased
     prodBranch
@@ -311,9 +311,9 @@ query ($auctionId: String!) {
 export const getDeployers = gql`
 query {
   deployers {
-    deployerApiUrl
-    deployerId
     deployerLrn
+    deployerId
+    deployerApiUrl
   }
 }
 `;
