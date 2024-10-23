@@ -38,7 +38,7 @@ async function main() {
   });
 
   for await (const deployment of deployments) {
-    const url = `https://${deployment.project.name}-${deployment.id}.${misc.projectDomain}`;
+    const url = `https://${(deployment.project.name).toLowerCase()}-${deployment.id}.${deployment.deployer.baseDomain}`;
 
     const applicationDeploymentRecord = {
       type: 'ApplicationDeploymentRecord',
@@ -73,7 +73,7 @@ async function main() {
 
     // Remove deployment for project subdomain if deployment is for production environment
     if (deployment.environment === Environment.Production) {
-      applicationDeploymentRecord.url = `https://${deployment.project.name}.${deployment.baseDomain}`;
+      applicationDeploymentRecord.url = `https://${deployment.project.name}.${deployment.deployer.baseDomain}`;
 
       await registry.setRecord(
         {

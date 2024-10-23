@@ -129,7 +129,7 @@ export class Deployment {
     applicationDeploymentRemovalRecordData!: AppDeploymentRemovalRecordAttributes | null;
 
   @ManyToOne(() => Deployer)
-  @JoinColumn({ name: 'deployerId' })
+  @JoinColumn({ name: 'deployerLrn' })
     deployer!: Deployer;
 
   @Column({

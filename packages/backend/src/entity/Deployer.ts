@@ -4,10 +4,10 @@ import { Project } from './Project';
 @Entity()
 export class Deployer {
   @PrimaryColumn('varchar')
-    deployerId!: string;
+    deployerLrn!: string;
 
   @Column('varchar')
-    deployerLrn!: string;
+    deployerId!: string;
 
   @Column('varchar')
     deployerApiUrl!: string;

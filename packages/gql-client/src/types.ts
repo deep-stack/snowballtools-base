@@ -117,9 +117,9 @@ export type Deployment = {
 };
 
 export type Deployer = {
-  deployerApiUrl: string;
-  deployerId: string;
   deployerLrn: string;
+  deployerId: string;
+  deployerApiUrl: string;
 }
 
 export type OrganizationMember = {
@@ -231,6 +231,10 @@ export type GetProjectsInOrganizationResponse = {
 
 export type GetDomainsResponse = {
   domains: Domain[];
+};
+
+export type GetDeployersResponse = {
+  deployers: Deployer[];
 };
 
 export type SearchProjectsResponse = {

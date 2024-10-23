@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { FormProvider, FieldValues } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import { AddEnvironmentVariableInput, AuctionParams } from 'gql-client';
+import { AddEnvironmentVariableInput, AuctionParams, Deployer } from 'gql-client';
+
+import { Select, MenuItem, FormControl, FormHelperText } from '@mui/material';
 
 import {
   ArrowRightCircleFilledIcon,
@@ -11,7 +13,6 @@ import {
 } from 'components/shared/CustomIcon';
 import { Heading } from '../../shared/Heading';
 import { Button } from '../../shared/Button';
-import { Select, SelectOption } from 'components/shared/Select';
 import { Input } from 'components/shared/Input';
 import { useToast } from 'components/shared/Toast';
 import { useGQLClient } from '../../../context/GQLClientContext';
@@ -30,6 +31,8 @@ type ConfigureFormValues = ConfigureDeploymentFormValues &
 
 const Configure = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [deployers, setDeployers] = useState<Deployer[]>([]);
+
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
   const queryParams = new URLSearchParams(location.search);
@@ -48,7 +51,7 @@ const Configure = () => {
   const client = useGQLClient();
 
   const methods = useForm<ConfigureFormValues>({
-    defaultValues: { option: 'LRN' },
+    defaultValues: { option: 'Auction' },
   });
 
   const selectedOption = methods.watch('option');
@@ -153,23 +156,32 @@ const Configure = () => {
       if (templateId) {
         createFormData.option === 'Auction'
           ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+          )
           : navigate(
-              `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
-            );
+            `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
+          );
       } else {
         createFormData.option === 'Auction'
           ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
+            `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+          )
           : navigate(
-              `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
-            );
+            `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
+          );
       }
     },
     [client, createProject, dismiss, toast],
   );
+
+  const fetchDeployers = useCallback(async () => {
+    const res = await client.getDeployers()
+    setDeployers(res.deployers)
+  }, [client])
+
+  useEffect(() => {
+    fetchDeployers()
+  }, [])
 
   return (
     <div className="space-y-7 px-4 py-6">
@@ -195,24 +207,14 @@ const Configure = () => {
                 control={methods.control}
                 render={({ field: { value, onChange } }) => (
                   <Select
-                    label="Configuration Options"
-                    value={
-                      {
-                        value: value || 'LRN',
-                        label:
-                          value === 'Auction'
-                            ? 'Create Auction'
-                            : 'Deployer LRN',
-                      } as SelectOption
-                    }
-                    onChange={(value) =>
-                      onChange((value as SelectOption).value)
-                    }
-                    options={[
-                      { value: 'LRN', label: 'Deployer LRN' },
-                      { value: 'Auction', label: 'Create Auction' },
-                    ]}
-                  />
+                    value={value}
+                    onChange={(event) => onChange(event.target.value)}
+                    size='small'
+                    displayEmpty
+                  >
+                    <MenuItem value="LRN">Deployer LRN</MenuItem>
+                    <MenuItem value="Auction">Create Auction</MenuItem>
+                  </Select>
                 )}
               />
             </div>
@@ -225,15 +227,29 @@ const Configure = () => {
                 >
                   The app will be deployed by the configured deployer
                 </Heading>
-                <span className="text-sm text-elements-high-em">
-                  Enter LRN for deployer
-                </span>
                 <Controller
                   name="lrn"
                   control={methods.control}
                   rules={{ required: true }}
-                  render={({ field: { value, onChange } }) => (
-                    <Input value={value} onChange={onChange} />
+                  render={({ field: { value, onChange }, fieldState }) => (
+                    <FormControl fullWidth error={Boolean(fieldState.error)}>
+                      <span className="text-sm text-elements-high-em mb-4">
+                        Select deployer LRN
+                      </span>
+                      <Select
+                        value={value}
+                        onChange={(event) => onChange(event.target.value)}
+                        displayEmpty
+                        size='small'
+                      >
+                        {deployers.map((deployer) => (
+                          <MenuItem key={deployer.deployerLrn} value={deployer.deployerLrn}>
+                            {deployer.deployerLrn}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
+                    </FormControl>
                   )}
                 />
               </div>

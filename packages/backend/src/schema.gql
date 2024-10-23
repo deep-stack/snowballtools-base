@@ -134,8 +134,8 @@ type EnvironmentVariable {
 }
 
 type Deployer {
-  deployerId: String!
   deployerLrn: String!
+  deployerId: String!
   deployerApiUrl: String!
   createdAt: String!
   updatedAt: String!
@@ -257,6 +257,7 @@ type Query {
   searchProjects(searchText: String!): [Project!]
   getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
+  deployers: [Deployer]
 }
 
 type Mutation {

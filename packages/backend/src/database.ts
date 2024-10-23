@@ -34,9 +34,8 @@ const nanoid = customAlphabet(lowercase + numbers, 8);
 // TODO: Fix order of methods
 export class Database {
   private dataSource: DataSource;
-  private projectDomain: string;
 
-  constructor({ dbPath }: DatabaseConfig, { projectDomain }: MiscConfig) {
+  constructor({ dbPath }: DatabaseConfig) {
     this.dataSource = new DataSource({
       type: 'better-sqlite3',
       database: dbPath,
@@ -44,8 +43,6 @@ export class Database {
       synchronize: true,
       logging: false
     });
-
-    this.projectDomain = projectDomain;
   }
 
   async init(): Promise<void> {
@@ -491,13 +488,13 @@ export class Database {
     return projectRepository.save(newProject);
   }
 
-  async saveProject (project: Project): Promise<Project> {
+  async saveProject(project: Project): Promise<Project> {
     const projectRepository = this.dataSource.getRepository(Project);
 
     return projectRepository.save(project);
   }
 
-  async updateProjectById (
+  async updateProjectById(
     projectId: string,
     data: DeepPartial<Project>
   ): Promise<boolean> {
@@ -583,17 +580,22 @@ export class Database {
     return domains;
   }
 
-  async addDeployer (data: DeepPartial<Deployer>): Promise<Deployer> {
+  async addDeployer(data: DeepPartial<Deployer>): Promise<Deployer> {
     const deployerRepository = this.dataSource.getRepository(Deployer);
     const newDomain = await deployerRepository.save(data);
 
     return newDomain;
   }
 
-  async getDeployerById (deployerId: string): Promise<Deployer | null> {
+  async getDeployers(): Promise<Deployer[]> {
     const deployerRepository = this.dataSource.getRepository(Deployer);
+    const deployers = await deployerRepository.find();
+    return deployers;
+  }
 
-    const deployer = await deployerRepository.findOne({ where: { deployerId } });
+  async getDeployerByLRN(deployerLrn: string): Promise<Deployer | null> {
+    const deployerRepository = this.dataSource.getRepository(Deployer);
+    const deployer = await deployerRepository.findOne({ where: { deployerLrn } });
 
     return deployer;
   }
