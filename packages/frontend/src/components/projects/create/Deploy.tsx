@@ -51,11 +51,8 @@ const Deploy = () => {
       return true;
     }
 
-    if (
-      record.lastState === 'CANCELLED' ||
-      record.lastState === 'REMOVED' ||
-      record.lastState === 'ERROR'
-    ) {
+    // Not checking for `REMOVED` status as this status is received for a brief period before receiving `DEPLOYED` status
+    if (record.lastState === 'CANCELLED' || record.lastState === 'ERROR') {
       return false;
     } else {
       return true;
@@ -67,9 +64,9 @@ const Deploy = () => {
       return true;
     }
 
+    // Not checking for `REMOVED` status as this status is received for a brief period before receiving `DEPLOYED` status
     if (
       record.lastState === 'CANCELLED' ||
-      record.lastState === 'REMOVED' ||
       record.lastState === 'ERROR' ||
       record.lastState === 'DEPLOYED'
     ) {
