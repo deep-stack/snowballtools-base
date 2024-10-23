@@ -125,6 +125,17 @@ export const AuctionCard = ({ project }: { project: Project }) => {
                     {'\u2022'} {deployer.deployerLrn}
                   </p>
                 ))}
+
+                <div className="flex justify-between items-center mt-1">
+                  <span className="text-elements-high-em text-sm font-medium tracking-tight">
+                    Deployer Funds Status
+                  </span>
+                  <div className="ml-2">
+                    <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
+                      {fundsStatus ? 'RELEASED' : 'LOCKED'}
+                    </Tag>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="mt-3">
@@ -133,20 +144,8 @@ export const AuctionCard = ({ project }: { project: Project }) => {
                 </span>
               </div>
             )}
-
-            <div className="flex justify-between items-center mt-1">
-              <span className="text-elements-high-em text-sm font-medium tracking-tight">
-                Deployer Funds Status
-              </span>
-              <div className="ml-2">
-                <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
-                  {fundsStatus ? 'RELEASED' : 'LOCKED'}
-                </Tag>
-              </div>
-            </div>
           </>
         )}
-
       </div>
 
       <Dialog

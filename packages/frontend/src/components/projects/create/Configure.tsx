@@ -241,7 +241,6 @@ const Configure = () => {
                         onChange={(event) => onChange(event.target.value)}
                         displayEmpty
                         size='small'
-
                       >
                         {deployers.map((deployer) => (
                           <MenuItem key={deployer.deployerLrn} value={deployer.deployerLrn}>

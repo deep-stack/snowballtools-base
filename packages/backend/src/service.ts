@@ -623,7 +623,7 @@ export class Service {
 
     let deployer;
     if (deployerLrn) {
-      deployer = await this.createDeployerFromLRN(deployerLrn);
+      deployer = await this.db.getDeployerByLRN(deployerLrn);
     } else {
       deployer = data.deployer;
     }
@@ -770,19 +770,6 @@ export class Service {
     log(`Created deployment ${newDeployment.id}`);
 
     return newDeployment;
-  }
-
-  async createDeployerFromLRN(deployerLrn: string): Promise<Deployer | null> {
-    const records = await this.laconicRegistry.getRecordsByName(deployerLrn);
-
-    if (records.length === 0) {
-      log('No records found for deployer LRN:', deployerLrn);
-      return null;
-    }
-
-    const deployer = await this.saveDeployersByDeployerRecords(records);
-
-    return deployer[0];
   }
 
   async updateProjectWithDeployer(

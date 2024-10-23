@@ -592,4 +592,11 @@ export class Database {
     const deployers = await deployerRepository.find();
     return deployers;
   }
+
+  async getDeployerByLRN(deployerLrn: string): Promise<Deployer | null> {
+    const deployerRepository = this.dataSource.getRepository(Deployer);
+    const deployer = await deployerRepository.findOne({ where: { deployerLrn } });
+
+    return deployer;
+  }
 }
