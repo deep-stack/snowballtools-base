@@ -48,6 +48,7 @@ export const DeploymentMenu = ({
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
   const [deleteDeploymentDialog, setDeleteDeploymentDialog] = useState(false);
+  const [isConfirmDeleteLoading, setIsConfirmDeleteLoading] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
   const [assignDomainDialog, setAssignDomainDialog] = useState(false);
   const [isConfirmButtonLoading, setConfirmButtonLoadingLoading] =
@@ -118,16 +119,11 @@ export const DeploymentMenu = ({
   };
 
   const deleteDeployment = async () => {
-    toast({
-      id: 'deleting_deployment',
-      title: 'Deleting deployment....',
-      variant: 'success',
-      onDismiss: dismiss,
-    });
+    const isDeleted = await client.deleteDeployment(deployment.id);
 
+    setIsConfirmDeleteLoading(false);
     setDeleteDeploymentDialog((preVal) => !preVal);
 
-    const isDeleted = await client.deleteDeployment(deployment.id);
     if (isDeleted) {
       await onUpdate();
       toast({
@@ -271,8 +267,12 @@ export const DeploymentMenu = ({
       />
       <DeleteDeploymentDialog
         open={deleteDeploymentDialog}
-        handleConfirm={deleteDeployment}
+        handleConfirm={async () => {
+          setIsConfirmDeleteLoading(true);
+          await deleteDeployment();
+        }}
         handleCancel={() => setDeleteDeploymentDialog((preVal) => !preVal)}
+        isConfirmButtonLoading={isConfirmDeleteLoading}
       />
     </>
   );
