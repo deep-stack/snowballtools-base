@@ -25,7 +25,7 @@ export const main = async (): Promise<void> => {
     clientSecret: gitHub.oAuth.clientSecret,
   });
 
-  const db = new Database(database, misc);
+  const db = new Database(database);
   await db.init();
 
   const registry = new Registry(registryConfig);
