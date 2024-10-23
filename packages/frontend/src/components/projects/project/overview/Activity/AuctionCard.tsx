@@ -96,13 +96,6 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </Button>
         </div>
 
-        <div className="flex justify-between items-center mt-1">
-          <span className="text-elements-high-em text-sm font-medium tracking-tight">
-            Auction Status
-          </span>
-          <div className="ml-2">{renderAuctionStatus()}</div>
-        </div>
-
         <div className="flex justify-between items-center mt-2">
           <span className="text-elements-high-em text-sm font-medium tracking-tight">
             Auction Id
@@ -112,35 +105,48 @@ export const AuctionCard = ({ project }: { project: Project }) => {
           </span>
         </div>
 
-        {deployers?.length > 0 ? (
-          <div className="mt-3">
-            <span className="text-elements-high-em text-sm font-medium tracking-tight">
-              Deployer LRNs
-            </span>
-            {deployers.map((deployer, index) => (
-              <p key={index} className="text-elements-mid-em text-sm">
-                {'\u2022'} {deployer.deployerLrn}
-              </p>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-3">
-            <span className="text-elements-high-em text-sm font-medium tracking-tight">
-              No winning deployers
-            </span>
-          </div>
-        )}
 
         <div className="flex justify-between items-center mt-1">
           <span className="text-elements-high-em text-sm font-medium tracking-tight">
-            Deployer Funds Status
+            Auction Status
           </span>
-          <div className="ml-2">
-            <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
-              {fundsStatus ? 'RELEASED' : 'LOCKED'}
-            </Tag>
-          </div>
+          <div className="ml-2">{renderAuctionStatus()}</div>
         </div>
+
+        {auctionStatus === 'completed' && (
+          <>
+            {deployers?.length > 0 ? (
+              <div>
+                <span className="text-elements-high-em text-sm font-medium tracking-tight">
+                  Deployer LRNs
+                </span>
+                {deployers.map((deployer, index) => (
+                  <p key={index} className="text-elements-mid-em text-sm">
+                    {'\u2022'} {deployer.deployerLrn}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-3">
+                <span className="text-elements-high-em text-sm font-medium tracking-tight">
+                  No winning deployers
+                </span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center mt-1">
+              <span className="text-elements-high-em text-sm font-medium tracking-tight">
+                Deployer Funds Status
+              </span>
+              <div className="ml-2">
+                <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
+                  {fundsStatus ? 'RELEASED' : 'LOCKED'}
+                </Tag>
+              </div>
+            </div>
+          </>
+        )}
+
       </div>
 
       <Dialog

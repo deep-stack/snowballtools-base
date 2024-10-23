@@ -23,6 +23,7 @@ import { useGQLClient } from 'context/GQLClientContext';
 import { cn } from 'utils/classnames';
 import { ChangeStateToProductionDialog } from 'components/projects/Dialog/ChangeStateToProductionDialog';
 import { useToast } from 'components/shared/Toast';
+import { DeleteDeploymentDialog } from 'components/projects/Dialog/DeleteDeploymentDialog';
 
 interface DeploymentMenuProps extends ComponentPropsWithRef<'div'> {
   deployment: Deployment;
@@ -46,6 +47,7 @@ export const DeploymentMenu = ({
 
   const [changeToProduction, setChangeToProduction] = useState(false);
   const [redeployToProduction, setRedeployToProduction] = useState(false);
+  const [deleteDeploymentDialog, setDeleteDeploymentDialog] = useState(false);
   const [rollbackDeployment, setRollbackDeployment] = useState(false);
   const [assignDomainDialog, setAssignDomainDialog] = useState(false);
   const [isConfirmButtonLoading, setConfirmButtonLoadingLoading] =
@@ -122,6 +124,8 @@ export const DeploymentMenu = ({
       variant: 'success',
       onDismiss: dismiss,
     });
+
+    setDeleteDeploymentDialog((preVal) => !preVal);
 
     const isDeleted = await client.deleteDeployment(deployment.id);
     if (isDeleted) {
@@ -212,7 +216,7 @@ export const DeploymentMenu = ({
             </MenuItem>
             <MenuItem
               className="hover:bg-base-bg-emphasized flex items-center gap-3"
-              onClick={() => deleteDeployment()}
+              onClick={() => setDeleteDeploymentDialog((preVal) => !preVal)}
             >
               <CrossCircleIcon /> Delete deployment
             </MenuItem>
@@ -264,6 +268,11 @@ export const DeploymentMenu = ({
       <AssignDomainDialog
         open={assignDomainDialog}
         handleOpen={() => setAssignDomainDialog(!assignDomainDialog)}
+      />
+      <DeleteDeploymentDialog
+        open={deleteDeploymentDialog}
+        handleConfirm={deleteDeployment}
+        handleCancel={() => setDeleteDeploymentDialog((preVal) => !preVal)}
       />
     </>
   );
