@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { Deployment } from 'gql-client';
 
 import { DeployStep, DeployStatus } from './DeployStep';
 import { Stopwatch, setStopWatchOffset } from '../../StopWatch';
@@ -35,6 +37,7 @@ const Deploy = () => {
   const projectId = searchParams.get('projectId');
 
   const [open, setOpen] = React.useState(false);
+  const [deployment, setDeployment] = useState<Deployment>();
   const [record, setRecord] = useState<Record>();
 
   const handleOpen = () => setOpen(!open);
@@ -46,61 +49,47 @@ const Deploy = () => {
     navigate(`/${orgSlug}/projects/create`);
   }, []);
 
-  const showSteps = useMemo(() => {
+  const isDeploymentFailed = useMemo(() => {
     if (!record) {
-      return true;
+      return false;
     }
 
     // Not checking for `REMOVED` status as this status is received for a brief period before receiving `DEPLOYED` status
     if (record.lastState === 'CANCELLED' || record.lastState === 'ERROR') {
-      return false;
+      return true;
     } else {
-      return true;
-    }
-  }, [record]);
-
-  const showTimer = useMemo(() => {
-    if (!record) {
-      return true;
-    }
-
-    // Not checking for `REMOVED` status as this status is received for a brief period before receiving `DEPLOYED` status
-    if (
-      record.lastState === 'CANCELLED' ||
-      record.lastState === 'ERROR' ||
-      record.lastState === 'DEPLOYED'
-    ) {
       return false;
-    } else {
-      return true;
     }
   }, [record]);
 
   const fetchDeploymentRecords = useCallback(async () => {
+    if (!deployment) {
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${deployment.deployer.deployerApiUrl}/${deployment.applicationDeploymentRequestId}`,
+      );
+
+      const record: Record = response.data;
+      setRecord(record);
+    } catch (err: any) {
+      console.log('Error fetching data from deployer', err);
+    }
+  }, [deployment]);
+
+  const fetchDeployment = useCallback(async () => {
     if (!projectId) {
       return;
     }
 
     const { deployments } = await client.getDeployments(projectId);
-    const deployment = deployments[0];
-
-    try {
-      const response = await fetch(
-        `${deployment.deployer.deployerApiUrl}/${deployment.applicationDeploymentRequestId}`,
-      );
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const record: Record = await response.json();
-      setRecord(record);
-    } catch (err: any) {
-      console.log('Error fetching data from deployer', err);
-    }
+    setDeployment(deployments[0]);
   }, [client, projectId]);
 
   useEffect(() => {
+    fetchDeployment();
     fetchDeploymentRecords();
 
     const interval = setInterval(() => {
@@ -110,7 +99,7 @@ const Deploy = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [fetchDeploymentRecords]);
+  }, [fetchDeployment, fetchDeploymentRecords]);
 
   useEffect(() => {
     if (!record) {
@@ -129,14 +118,13 @@ const Deploy = () => {
           <Heading as="h4" className="md:text-lg font-medium">
             Deployment started ...
           </Heading>
-          {showTimer && (
-            <div className="flex items-center gap-1.5">
-              <ClockOutlineIcon size={16} className="text-elements-mid-em" />
-              <Stopwatch
-                offsetTimestamp={setStopWatchOffset(Date.now().toString())}
-              />
-            </div>
-          )}
+          <div className="flex items-center gap-1.5">
+            <ClockOutlineIcon size={16} className="text-elements-mid-em" />
+            <Stopwatch
+              offsetTimestamp={setStopWatchOffset(Date.now().toString())}
+              isPaused={isDeploymentFailed}
+            />
+          </div>
         </div>
         <Button
           onClick={handleOpen}
@@ -153,7 +141,7 @@ const Deploy = () => {
         />
       </div>
 
-      {showSteps ? (
+      {!isDeploymentFailed ? (
         <div>
           <DeployStep
             title={record ? 'Submitted' : 'Submitting'}

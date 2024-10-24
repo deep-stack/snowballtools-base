@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useStopwatch } from 'react-timer-hook';
 
 import FormatMillisecond, { FormatMilliSecondProps } from './FormatMilliSecond';
@@ -12,13 +13,20 @@ const setStopWatchOffset = (time: string) => {
 
 interface StopwatchProps extends Omit<FormatMilliSecondProps, 'time'> {
   offsetTimestamp: Date;
+  isPaused: boolean;
 }
 
-const Stopwatch = ({ offsetTimestamp, ...props }: StopwatchProps) => {
-  const { totalSeconds } = useStopwatch({
+const Stopwatch = ({ offsetTimestamp, isPaused, ...props }: StopwatchProps) => {
+  const { totalSeconds, pause } = useStopwatch({
     autoStart: true,
     offsetTimestamp: offsetTimestamp,
   });
+
+  useEffect(() => {
+    if (isPaused) {
+      pause();
+    }
+  }, [isPaused]);
 
   return <FormatMillisecond time={totalSeconds * 1000} {...props} />;
 };
