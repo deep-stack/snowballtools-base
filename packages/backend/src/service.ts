@@ -1401,4 +1401,8 @@ export class Service {
 
     return deployers;
   }
+
+  async getAddress(): Promise<any> {
+    return this.laconicRegistry.getAddress();
+  }
 }

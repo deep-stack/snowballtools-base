@@ -264,6 +264,7 @@ type Query {
   getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
   deployers: [Deployer]
+  address: String!
 }
 
 type Mutation {

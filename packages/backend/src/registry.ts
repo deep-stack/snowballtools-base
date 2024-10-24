@@ -5,7 +5,7 @@ import { Octokit } from 'octokit';
 import { inc as semverInc } from 'semver';
 import { DeepPartial } from 'typeorm';
 
-import { Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
 
 import { RegistryConfig } from './config';
 import {
@@ -496,6 +496,13 @@ export class Registry {
         fee
       )
     );
+  }
+
+  async getAddress(): Promise<any> {
+    const account = new Account(Buffer.from(this.registryConfig.privateKey, 'hex'));
+    await account.init();
+
+    return account.address;
   }
 
   getLrn(appName: string): string {

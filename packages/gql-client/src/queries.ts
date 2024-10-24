@@ -323,3 +323,9 @@ query {
   }
 }
 `;
+
+export const getAddress = gql`
+query {
+  address
+}
+`;

@@ -432,4 +432,12 @@ export class GQLClient {
 
     return data;
   }
+
+  async getAddress(): Promise<string> {
+    const { data } = await this.client.query({
+      query: queries.getAddress,
+    });
+
+    return data;
+  }
 }

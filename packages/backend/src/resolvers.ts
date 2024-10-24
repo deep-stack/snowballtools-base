@@ -80,6 +80,10 @@ export const createResolvers = async (service: Service): Promise<any> => {
       deployers: async (_: any, __: any, context: any) => {
         return service.getDeployers();
       },
+
+      address: async (_: any, __: any, context: any) => {
+        return service.getAddress();
+      },
     },
 
     // TODO: Return error in GQL response
