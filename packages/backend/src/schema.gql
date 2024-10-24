@@ -77,6 +77,8 @@ type Project {
   fundsReleased: Boolean
   template: String
   framework: String
+  paymentAddress: String!
+  txHash: String!
   webhooks: [String!]
   members: [ProjectMember!]
   environmentVariables: [EnvironmentVariable!]

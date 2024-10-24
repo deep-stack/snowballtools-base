@@ -134,6 +134,8 @@ export const project: Project = {
       deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
     },
   ],
+  paymentAddress: '0x657868687686rb4787987br8497298r79284797487',
+  txHash: '74btygeuydguygf838gcergurcbhuedbcjhu',
   webhooks: ['beepboop'],
   icon: 'Icon',
   fundsReleased: true,

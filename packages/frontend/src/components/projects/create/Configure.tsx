@@ -66,6 +66,8 @@ const Configure = () => {
   const createProject = async (
     data: FieldValues,
     envVariables: AddEnvironmentVariableInput[],
+    senderAddress: string,
+    txHash: string
   ): Promise<string> => {
     setIsLoading(true);
     let projectId: string | null = null;
@@ -90,6 +92,8 @@ const Configure = () => {
           owner,
           name,
           isPrivate,
+          paymentAddress: senderAddress,
+          txHash
         };
 
         const { addProjectFromTemplate } = await client.addProjectFromTemplate(
@@ -109,6 +113,8 @@ const Configure = () => {
             prodBranch: defaultBranch!,
             repository: fullName!,
             template: 'webapp',
+            paymentAddress: senderAddress,
+            txHash
           },
           lrn,
           auctionParams,
@@ -138,6 +144,11 @@ const Configure = () => {
 
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
+      // Send tx request to wallet -> amount = createFormData.maxPrice * createFormData.numProviders
+      // Get address of sender account(from wallet connect session) and txHash(result.signature)
+      const senderAddress = 'address';
+      const txHash = 'txHash';
+
       const environmentVariables = createFormData.variables.map(
         (variable: any) => {
           return {
@@ -153,6 +164,8 @@ const Configure = () => {
       const projectId = await createProject(
         createFormData,
         environmentVariables,
+        senderAddress,
+        txHash
       );
 
       await client.getEnvironmentVariables(projectId);

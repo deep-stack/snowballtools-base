@@ -29,6 +29,8 @@ query ($projectId: String!) {
       deployerId
       deployerApiUrl
     }
+    paymentAddress
+    txHash
     fundsReleased
     framework
     repository
@@ -85,6 +87,8 @@ query ($organizationSlug: String!) {
       deployerId
       deployerApiUrl
     }
+    paymentAddress
+    txHash
     fundsReleased
     prodBranch
     webhooks
@@ -212,6 +216,8 @@ query ($searchText: String!) {
       deployerId
       deployerApiUrl
     }
+    paymentAddress
+    txHash
     fundsReleased
     prodBranch
     webhooks
