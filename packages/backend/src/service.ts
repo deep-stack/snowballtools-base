@@ -213,7 +213,7 @@ export class Service {
           const fundsReleased = await this.releaseDeployerFundsByProjectId(deployment.projectId);
 
           // Return remaining amount to owner
-          await this.returnCreatorFundsByProjectId(deployment.projectId);
+          await this.returnCreatorFundsByProjectId(deployment.projectId, true);
 
           await this.db.updateProjectById(deployment.projectId, {
             fundsReleased,
@@ -312,6 +312,9 @@ export class Service {
 
       if (!deployerRecords) {
         log(`No winning deployer for auction ${project!.auctionId}`);
+
+        // Return all funds to the owner
+        await this.returnCreatorFundsByProjectId(project.id, false)
       } else {
         const deployers = await this.saveDeployersByDeployerRecords(deployerRecords);
         for (const deployer of deployers) {
@@ -1329,7 +1332,7 @@ export class Service {
     return false;
   }
 
-  async returnCreatorFundsByProjectId(projectId: string) {
+  async returnCreatorFundsByProjectId(projectId: string, winningDeployersPresent: boolean) {
     const project = await this.db.getProjectById(projectId);
 
     if (!project || !project.auctionId) {
@@ -1339,7 +1342,13 @@ export class Service {
     }
 
     const auction = await this.getAuctionData(project.auctionId);
-    const amountToBeReturned = auction.winnerPrice * auction.numProviders
+
+    let amountToBeReturned;
+    if (winningDeployersPresent) {
+      amountToBeReturned = auction.winnerPrice * auction.numProviders;
+    } else {
+      amountToBeReturned = auction.maxPrice * auction.numProviders;
+    }
 
     await this.laconicRegistry.sendTokensToAccount(
       project.paymentAddress,
