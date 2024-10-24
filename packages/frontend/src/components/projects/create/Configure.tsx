@@ -223,8 +223,8 @@ const Configure = () => {
                       },
                     }}
                   >
-                    <MenuItem value="LRN">Deployer LRN</MenuItem>
                     <MenuItem value="Auction">Create Auction</MenuItem>
+                    <MenuItem value="LRN">Deployer LRN</MenuItem>
                   </Select>
                 )}
               />
