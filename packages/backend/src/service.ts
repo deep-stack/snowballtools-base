@@ -832,6 +832,8 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
+        paymentAddress: data.paymentAddress,
+        txHash: data.txHash
       }, lrn, auctionParams, environmentVariables);
 
       if (!project || !project.id) {

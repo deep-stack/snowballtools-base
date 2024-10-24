@@ -221,7 +221,7 @@ export const createResolvers = async (service: Service): Promise<any> => {
           organizationSlug: string;
           data: AddProjectFromTemplateInput;
           lrn: string;
-          auctionParams: AuctionParams,
+          auctionParams: AuctionParams;
           environmentVariables: EnvironmentVariables[];
         },
         context: any,

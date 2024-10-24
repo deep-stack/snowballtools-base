@@ -70,6 +70,8 @@ export interface AddProjectFromTemplateInput {
   owner: string;
   name: string;
   isPrivate: boolean;
+  paymentAddress: string;
+  txHash: string;
 }
 
 export interface AuctionParams {

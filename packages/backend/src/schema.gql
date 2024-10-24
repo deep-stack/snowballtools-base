@@ -159,6 +159,8 @@ input AddProjectFromTemplateInput {
   owner: String!
   name: String!
   isPrivate: Boolean!
+  paymentAddress: String!
+  txHash: String!
 }
 
 input AddProjectInput {
@@ -166,6 +168,8 @@ input AddProjectInput {
   repository: String!
   prodBranch: String!
   template: String
+  paymentAddress: String!
+  txHash: String!
 }
 
 input UpdateProjectInput {
