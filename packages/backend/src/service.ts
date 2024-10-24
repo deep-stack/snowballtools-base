@@ -212,6 +212,9 @@ export class Service {
         if (!deployment.project.fundsReleased) {
           const fundsReleased = await this.releaseDeployerFundsByProjectId(deployment.projectId);
 
+          // Return remaining amount to owner
+          await this.returnCreatorFundsByProjectId(deployment.projectId);
+
           await this.db.updateProjectById(deployment.projectId, {
             fundsReleased,
           });
@@ -1322,6 +1325,24 @@ export class Service {
     log(`Error releasing funds for auction ${project.auctionId}`);
 
     return false;
+  }
+
+  async returnCreatorFundsByProjectId(projectId: string) {
+    const project = await this.db.getProjectById(projectId);
+
+    if (!project || !project.auctionId) {
+      log(`Project ${projectId} ${!project ? 'not found' : 'does not have an auction'}`);
+
+      return false;
+    }
+
+    const auction = await this.getAuctionData(project.auctionId);
+    const amountToBeReturned = auction.winnerPrice * auction.numProviders
+
+    await this.laconicRegistry.sendTokensToAccount(
+      project.paymentAddress,
+      amountToBeReturned.toString()
+    );
   }
 
   async getDeployers(): Promise<Deployer[]> {

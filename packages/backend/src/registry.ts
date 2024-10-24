@@ -483,6 +483,21 @@ export class Registry {
     return this.registry.getAuctionsByIds([auctionId]);
   }
 
+  async sendTokensToAccount(receiverAddress: string, amount: string): Promise<any> {
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    await registryTransactionWithRetry(() =>
+      this.registry.sendCoins(
+        {
+          amount,
+          denom: 'tlnt',
+          destinationAddress: receiverAddress
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
+    );
+  }
+
   getLrn(appName: string): string {
     assert(this.registryConfig.authority, "Authority doesn't exist");
     return `lrn://${this.registryConfig.authority}/applications/${appName}`;
