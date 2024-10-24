@@ -215,6 +215,13 @@ const Configure = () => {
                     onChange={(event) => onChange(event.target.value)}
                     size="small"
                     displayEmpty
+                    sx={{
+                      fontFamily: 'inherit',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#e0e0e0',
+                        borderRadius: '8px',
+                      },
+                    }}
                   >
                     <MenuItem value="LRN">Deployer LRN</MenuItem>
                     <MenuItem value="Auction">Create Auction</MenuItem>

@@ -130,7 +130,10 @@ export const AuctionCard = ({ project }: { project: Project }) => {
                     Deployer Funds Status
                   </span>
                   <div className="ml-2">
-                    <Tag size="xs" type={fundsStatus ? 'positive' : 'emphasized'}>
+                    <Tag
+                      size="xs"
+                      type={fundsStatus ? 'positive' : 'emphasized'}
+                    >
                       {fundsStatus ? 'RELEASED' : 'LOCKED'}
                     </Tag>
                   </div>
