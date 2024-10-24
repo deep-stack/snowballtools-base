@@ -21,12 +21,7 @@ interface DeployStepsProps {
   processTime?: string;
 }
 
-const DeployStep = ({
-  step,
-  status,
-  title,
-  startTime,
-}: DeployStepsProps) => {
+const DeployStep = ({ step, status, title, startTime }: DeployStepsProps) => {
   return (
     <div className="border-b border-border-separator">
       <button
@@ -60,7 +55,10 @@ const DeployStep = ({
         {status === DeployStatus.PROCESSING && (
           <div className="flex items-center gap-1.5">
             <ClockOutlineIcon size={16} className="text-elements-low-em" />
-            <Stopwatch offsetTimestamp={setStopWatchOffset(startTime!)} isPaused={false}/>
+            <Stopwatch
+              offsetTimestamp={setStopWatchOffset(startTime!)}
+              isPaused={false}
+            />
           </div>
         )}
         {status === DeployStatus.COMPLETE && (

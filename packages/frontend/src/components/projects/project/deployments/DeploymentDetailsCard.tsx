@@ -93,12 +93,20 @@ const DeploymentDetailsCard = ({
   };
 
   const fetchDeploymentLogs = async () => {
-    let url = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    handleOpenDialog();
-    if (res.ok) {
-      const logs = await res.text();
-      setDeploymentLogs(logs);
+    const statusUrl = `${deployment.deployer.deployerApiUrl}/${deployment.applicationDeploymentRequestId}`;
+    const statusRes = await fetch(statusUrl, { cache: 'no-store' }).then(
+      (res) => res.json(),
+    );
+    if (!statusRes.logAvailable) {
+      setDeploymentLogs(statusRes.lastState);
+      handleOpenDialog();
+    } else {
+      const logsUrl = `${deployment.deployer.deployerApiUrl}/log/${deployment.applicationDeploymentRequestId}`;
+      const logsRes = await fetch(logsUrl, { cache: 'no-store' }).then((res) =>
+        res.text(),
+      );
+      setDeploymentLogs(logsRes);
+      handleOpenDialog();
     }
   };
 
