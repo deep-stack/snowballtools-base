@@ -1,4 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import SignClient from '@walletconnect/sign-client';
 import { getSdkError } from '@walletconnect/utils';
@@ -6,7 +13,10 @@ import { SessionTypes } from '@walletconnect/types';
 import { StargateClient } from '@cosmjs/stargate';
 
 import { walletConnectModal } from '../utils/web3modal';
-import { VITE_WALLET_CONNECT_ID } from 'utils/constants';
+import {
+  VITE_LACONICD_CHAIN_ID,
+  VITE_WALLET_CONNECT_ID,
+} from 'utils/constants';
 
 interface ClientInterface {
   signClient: SignClient | undefined;
@@ -15,7 +25,7 @@ interface ClientInterface {
   onConnect: () => Promise<void>;
   onDisconnect: () => Promise<void>;
   onSessionDelete: () => void;
-  accounts: {address: string, balance?: string}[] | undefined;
+  accounts: { address: string; balance?: string }[] | undefined;
 }
 
 const ClientContext = createContext({} as ClientInterface);
@@ -24,11 +34,15 @@ export const useWalletConnectClient = () => {
   return useContext(ClientContext);
 };
 
-export const WalletConnectClientProvider = ({ children }: {children: JSX.Element}) => {
+export const WalletConnectClientProvider = ({
+  children,
+}: {
+  children: JSX.Element;
+}) => {
   const [signClient, setSignClient] = useState<SignClient>();
   const [session, setSession] = useState<SessionTypes.Struct>();
   const [loadingSession, setLoadingSession] = useState(true);
-  const [accounts, setAccounts] = useState<{address: string, balance?: string}[]>();
+  const [accounts, setAccounts] = useState<{ address: string }[]>();
 
   const isSignClientInitializing = useRef<boolean>(false);
 
@@ -36,13 +50,9 @@ export const WalletConnectClientProvider = ({ children }: {children: JSX.Element
     return await StargateClient.connect(endpoint);
   }, []);
 
-  const onSessionConnect = useCallback(async(session: SessionTypes.Struct) => {
+  const onSessionConnect = useCallback(async (session: SessionTypes.Struct) => {
     setSession(session);
   }, []);
-
-  useEffect(()=>{
-    console.log(accounts)
-  }, [accounts])
 
   const subscribeToEvents = useCallback(
     async (client: SignClient) => {
@@ -51,17 +61,24 @@ export const WalletConnectClientProvider = ({ children }: {children: JSX.Element
         const currentSession = client.session.get(topic);
         const updatedSession = { ...currentSession, namespaces };
         setSession(updatedSession);
-      });},
-    [setSession]
+      });
+    },
+    [setSession],
   );
 
   const onConnect = async () => {
-    console.log({signClient})
-    try {
-      const { uri, approval } = await signClient!.connect({});
+    const proposalNamespace = {
+      cosmos: {
+        methods: ['cosmos_sendTransaction'],
+        chains: [`cosmos:${VITE_LACONICD_CHAIN_ID}`],
+        events: [],
+      },
+    };
 
-      console.log({uri})
-      console.log({uri})
+    try {
+      const { uri, approval } = await signClient!.connect({
+        requiredNamespaces: proposalNamespace,
+      });
 
       if (uri) {
         walletConnectModal.openModal({ uri });
@@ -105,33 +122,34 @@ export const WalletConnectClientProvider = ({ children }: {children: JSX.Element
       if (signClient.session.length) {
         const lastKeyIndex = signClient.session.keys.length - 1;
         const previousSsession = signClient.session.get(
-          signClient.session.keys[lastKeyIndex]
+          signClient.session.keys[lastKeyIndex],
         );
 
         await onSessionConnect(previousSsession);
         return previousSsession;
       }
-    },[session, onSessionConnect]);
+    },
+    [session, onSessionConnect],
+  );
 
-  const createClient = useCallback( async () => {
+  const createClient = useCallback(async () => {
     isSignClientInitializing.current = true;
-    try{
+    try {
       const signClient = await SignClient.init({
         projectId: VITE_WALLET_CONNECT_ID,
         metadata: {
-          name: 'Laconic Pay',
-          description: 'App for payments',
+          name: 'Snowball',
+          description: 'App for deploying apps',
           url: window.location.href,
-          icons: ['https://avatars.githubusercontent.com/u/92608123']
-        }
+          icons: ['https://avatars.githubusercontent.com/u/92608123'],
+        },
       });
 
       setSignClient(signClient);
       await checkPersistedState(signClient);
       await subscribeToEvents(signClient);
       setLoadingSession(false);
-
-    } catch(e) {
+    } catch (e) {
       console.error('error in createClient', e);
     }
     isSignClientInitializing.current = false;
@@ -163,7 +181,7 @@ export const WalletConnectClientProvider = ({ children }: {children: JSX.Element
   }, [session, createCosmosClient]);
 
   useEffect(() => {
-    if(!signClient){
+    if (!signClient) {
       return;
     }
 
@@ -176,16 +194,15 @@ export const WalletConnectClientProvider = ({ children }: {children: JSX.Element
 
   return (
     <ClientContext.Provider
-      value=
-        {{
-          signClient,
-          onConnect,
-          onDisconnect,
-          onSessionDelete,
-          loadingSession,
-          session,
-          accounts,
-        }}
+      value={{
+        signClient,
+        onConnect,
+        onDisconnect,
+        onSessionDelete,
+        loadingSession,
+        session,
+        accounts,
+      }}
     >
       {children}
     </ClientContext.Provider>
