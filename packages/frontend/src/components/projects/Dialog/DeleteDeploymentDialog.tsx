@@ -1,7 +1,10 @@
 import ConfirmDialog, {
   ConfirmDialogProps,
 } from 'components/shared/ConfirmDialog';
-import { ArrowRightCircleFilledIcon, LoadingIcon } from 'components/shared/CustomIcon';
+import {
+  ArrowRightCircleFilledIcon,
+  LoadingIcon,
+} from 'components/shared/CustomIcon';
 
 interface DeleteDeploymentDialogProps extends ConfirmDialogProps {
   isConfirmButtonLoading?: boolean;
@@ -20,7 +23,11 @@ export const DeleteDeploymentDialog = ({
       dialogTitle="Delete deployment?"
       handleCancel={handleCancel}
       open={open}
-      confirmButtonTitle={isConfirmButtonLoading ? "Deleting deployment" : "Yes, delete deployment"}
+      confirmButtonTitle={
+        isConfirmButtonLoading
+          ? 'Deleting deployment'
+          : 'Yes, delete deployment'
+      }
       handleConfirm={handleConfirm}
       confirmButtonProps={{
         variant: 'danger',

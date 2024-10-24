@@ -120,3 +120,24 @@ export const getRepoDetails = async (
     repoUrl
   };
 }
+
+// Wrapper method for registry txs to retry once if 'account sequence mismatch' occurs
+export const registryTransactionWithRetry = async (
+  txMethod: () => Promise<any>
+): Promise<any> => {
+  try {
+    return await txMethod();
+  } catch (error: any) {
+    if (!error.message.includes('account sequence mismatch')) {
+      throw error;
+    }
+
+    console.error(`Transaction failed due to account sequence mismatch. Retrying...`);
+
+    try {
+      return await txMethod();
+    } catch (retryError: any) {
+      throw new Error(`Transaction failed again after retry: ${retryError.message}`);
+    }
+  }
+}

@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
 } from '@mui/material';
 
 import { Avatar } from 'components/shared/Avatar';
@@ -104,16 +105,18 @@ const DeploymentDetailsCard = ({
   const renderDeploymentStatus = useCallback(
     (className?: string) => {
       return (
-        <div className={className}>
-          <Tag
-            leftIcon={getIconByDeploymentStatus(deployment.status)}
-            size="xs"
-            type={STATUS_COLORS[deployment.status] ?? 'neutral'}
-            onClick={fetchDeploymentLogs}
-          >
-            {deployment.status}
-          </Tag>
-        </div>
+        <Tooltip title="Click to view build logs">
+          <div className={className} style={{ cursor: 'pointer' }}>
+            <Tag
+              leftIcon={getIconByDeploymentStatus(deployment.status)}
+              size="xs"
+              type={STATUS_COLORS[deployment.status] ?? 'neutral'}
+              onClick={fetchDeploymentLogs}
+            >
+              {deployment.status}
+            </Tag>
+          </div>
+        </Tooltip>
       );
     },
     [deployment.status, deployment.commitHash],
@@ -185,8 +188,8 @@ const DeploymentDetailsCard = ({
                 type="orange"
                 initials={getInitials(deployment.createdBy.name ?? '')}
                 className="lg:size-5 2xl:size-6"
-              // TODO: Add avatarUrl
-              // imageSrc={deployment.createdBy.avatarUrl}
+                // TODO: Add avatarUrl
+                // imageSrc={deployment.createdBy.avatarUrl}
               ></Avatar>
             </div>
             <OverflownText

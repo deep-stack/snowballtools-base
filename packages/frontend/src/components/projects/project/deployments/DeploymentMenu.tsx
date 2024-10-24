@@ -56,7 +56,7 @@ export const DeploymentMenu = ({
 
   const updateDeployment = async () => {
     const isUpdated = await client.updateDeploymentToProd(deployment.id);
-    if (isUpdated) {
+    if (isUpdated.updateDeploymentToProd) {
       await onUpdate();
       toast({
         id: 'deployment_changed_to_production',
@@ -77,7 +77,7 @@ export const DeploymentMenu = ({
   const redeployToProd = async () => {
     const isRedeployed = await client.redeployToProd(deployment.id);
     setConfirmButtonLoadingLoading(false);
-    if (isRedeployed) {
+    if (isRedeployed.redeployToProd) {
       await onUpdate();
       toast({
         id: 'redeployed_to_production',
@@ -100,7 +100,7 @@ export const DeploymentMenu = ({
       project.id,
       deployment.id,
     );
-    if (isRollbacked) {
+    if (isRollbacked.rollbackDeployment) {
       await onUpdate();
       toast({
         id: 'deployment_rolled_back',
@@ -124,7 +124,7 @@ export const DeploymentMenu = ({
     setIsConfirmDeleteLoading(false);
     setDeleteDeploymentDialog((preVal) => !preVal);
 
-    if (isDeleted) {
+    if (isDeleted.deleteDeployment) {
       await onUpdate();
       toast({
         id: 'deployment_removal_requested',
