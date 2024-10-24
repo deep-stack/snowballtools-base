@@ -16,6 +16,7 @@ import { Toaster } from 'components/shared/Toast';
 import { LogErrorBoundary } from 'utils/log-error';
 import { BASE_URL } from 'utils/constants';
 import Web3ModalProvider from './context/Web3Provider';
+import { WalletConnectClientProvider } from 'context/WalletConnectContext';
 
 console.log(`v-0.0.9`);
 
@@ -31,14 +32,16 @@ const gqlClient = new GQLClient({ gqlEndpoint });
 root.render(
   <LogErrorBoundary>
     <React.StrictMode>
-      <ThemeProvider>
-        <Web3ModalProvider>
-          <GQLClientProvider client={gqlClient}>
-            <App />
-            <Toaster />
-          </GQLClientProvider>
-        </Web3ModalProvider>
-      </ThemeProvider>
+      <WalletConnectClientProvider>
+        <ThemeProvider>
+          <Web3ModalProvider>
+            <GQLClientProvider client={gqlClient}>
+              <App />
+              <Toaster />
+            </GQLClientProvider>
+          </Web3ModalProvider>
+        </ThemeProvider>
+      </WalletConnectClientProvider>
     </React.StrictMode>
   </LogErrorBoundary>,
 );

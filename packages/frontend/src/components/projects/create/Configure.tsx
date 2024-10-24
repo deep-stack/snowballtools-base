@@ -22,6 +22,7 @@ import { useToast } from 'components/shared/Toast';
 import { useGQLClient } from '../../../context/GQLClientContext';
 import EnvironmentVariablesForm from 'pages/org-slug/projects/id/settings/EnvironmentVariablesForm';
 import { EnvironmentVariablesFormValues } from 'types/types';
+import { useWalletConnectClient } from 'context/WalletConnectContext';
 
 type ConfigureDeploymentFormValues = {
   option: string;
@@ -34,6 +35,8 @@ type ConfigureFormValues = ConfigureDeploymentFormValues &
   EnvironmentVariablesFormValues;
 
 const Configure = () => {
+  const { onConnect } = useWalletConnectClient()
+
   const [isLoading, setIsLoading] = useState(false);
   const [deployers, setDeployers] = useState<Deployer[]>([]);
 
@@ -349,6 +352,7 @@ const Configure = () => {
             </div>
           </form>
         </FormProvider>
+      <Button onClick={onConnect}>Connect Wallet</Button>
       </div>
     </div>
   );
