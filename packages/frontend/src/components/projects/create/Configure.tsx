@@ -164,6 +164,7 @@ const Configure = () => {
       `${amount.toString()}alnt`,
       senderAddress,
     );
+
     return isValid;
   };
 
@@ -174,41 +175,46 @@ const Configure = () => {
       }
 
       const senderAddress = selectedAccount;
+      const deployerLrn = createFormData.lrn;
+      const deployer = deployers.find(deployer => deployer.deployerLrn === deployerLrn);
 
       let amount: string;
-      if(createFormData.option === 'LRN') {
-        const deployerLrn = createFormData.lrn;
-        const deployer = deployers.find(deployer => deployer.deployerLrn === deployerLrn);
-        if (!deployer?.minimumPayment) {
-          toast({
-            id: 'no-payment-required',
-            title: 'No payment',
-            variant: 'info',
-            onDismiss: dismiss,
-          });
+      let txHash: string;
+      if (createFormData.option === 'LRN' && !deployer?.minimumPayment) {
+        toast({
+          id: 'no-payment-required',
+          title: 'No payment required. Deploying app...',
+          variant: 'info',
+          onDismiss: dismiss,
+        });
 
-          amount = ''
-        } else {
-          amount = deployer!.minimumPayment
-        }
+        txHash = '';
       } else {
-        amount = (createFormData.numProviders * createFormData.maxPrice).toString();
-      }
+        if (createFormData.option === 'LRN') {
+          amount = deployer?.minimumPayment!;
+        } else {
+          amount = (createFormData.numProviders * createFormData.maxPrice).toString();
+        }
 
-      const txHash = await cosmosSendTokensHandler(
-        selectedAccount,
-        amount,
-      );
+        const amountToBePaid = (amount.replace(/\D/g, '')).toString();
 
-      if(!txHash) {
-        console.error('Tx not successful');
-        return;
-      }
+        const txHashResponse = await cosmosSendTokensHandler(
+          selectedAccount,
+          amountToBePaid,
+        );
 
-      const isTxHashValid = verifyTx(senderAddress, txHash, amount.toString());
-      if (!isTxHashValid) {
-        console.error("Invalid Tx hash", txHash)
-        return
+        if (!txHashResponse) {
+          console.error('Tx not successful');
+          return;
+        }
+
+        txHash = txHashResponse;
+
+        const isTxHashValid = verifyTx(senderAddress, txHash, amount.toString());
+        if (!isTxHashValid) {
+          console.error("Invalid Tx hash", txHash)
+          return;
+        }
       }
 
       const environmentVariables = createFormData.variables.map(
@@ -227,7 +233,7 @@ const Configure = () => {
         createFormData,
         environmentVariables,
         senderAddress,
-        txHash!,
+        txHash,
       );
 
       await client.getEnvironmentVariables(projectId);
