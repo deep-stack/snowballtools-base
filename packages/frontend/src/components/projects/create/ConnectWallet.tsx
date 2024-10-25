@@ -32,7 +32,7 @@ const ConnectWallet = ({
           >
             {accounts.map((account, index) => (
               <Option key={index} value={account.address}>
-                {account.address}
+                {account.address.split(':')[2]}
               </Option>
             ))}
           </Select>
