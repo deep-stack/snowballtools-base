@@ -1,17 +1,16 @@
 record:
   type: ApplicationDeploymentRequest
-  version: "1.0.0"
-  name: snowballtools-base-frontend@0.1.8
-  application: crn://snowballtools/applications/snowballtools-base-frontend@0.1.8
-  dns: dashboard
+  version: '1.0.0'
+  name: deploy-frontend@1.0.0
+  application: lrn://vaasl/applications/deploy-frontend@1.0.0
+  dns: deploy
   config:
     env:
-      LACONIC_HOSTED_CONFIG_app_server_url: https://snowballtools-base-api-001.apps.snowballtools.com
-      LACONIC_HOSTED_CONFIG_app_github_clientid: b7c63b235ca1dd5639ab
-      LACONIC_HOSTED_CONFIG_app_github_templaterepo: snowball-tools/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_app_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_app_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
-      LACONIC_HOSTED_CONFIG_app_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
+      LACONIC_HOSTED_CONFIG_server_url: https://deploy-backend.apps.vaasl.io
+      LACONIC_HOSTED_CONFIG_github_clientid: Ov23liaet4yc0KX0iM1c
+      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: laconic-templates/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: laconic-templates/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_wallet_connect_id: 63cad7ba97391f63652161f484670e15
   meta:
     note: Added by Snowball @ Thu Apr  4 14:49:41 UTC 2024
     repository: "https://git.vdb.to/cerc-io/snowballtools-base"

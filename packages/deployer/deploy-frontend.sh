@@ -3,6 +3,7 @@
 source .env
 echo "Using REGISTRY_BOND_ID: $REGISTRY_BOND_ID"
 echo "Using DEPLOYER_LRN: $DEPLOYER_LRN"
+echo "Using AUTHORITY: $AUTHORITY"
 
 # Repository URL
 REPO_URL="https://git.vdb.to/cerc-io/snowballtools-base"
@@ -21,39 +22,12 @@ CONFIG_FILE=config.yml
 # Reference: https://git.vdb.to/cerc-io/test-progressive-web-app/src/branch/main/scripts
 
 # Get latest version from registry and increment application-record version
-NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "snowballtools-base-frontend" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+NEW_APPLICATION_VERSION=$(yarn --silent laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "deploy-frontend" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
 
 if [ -z "$NEW_APPLICATION_VERSION" ] || [ "1" == "$NEW_APPLICATION_VERSION" ]; then
   # Set application-record version if no previous records were found
   NEW_APPLICATION_VERSION=0.0.1
 fi
-
-# Generate application-deployment-request.yml
-cat >./records/application-deployment-request.yml <<EOF
-record:
-  type: ApplicationDeploymentRequest
-  version: '1.0.0'
-  name: snowballtools-base-frontend@$PACKAGE_VERSION
-  application: lrn://snowballtools/applications/snowballtools-base-frontend@$PACKAGE_VERSION
-  deployer: $DEPLOYER_LRN
-  dns: dashboard
-  config:
-    env:
-      LACONIC_HOSTED_CONFIG_server_url: https://snowball-backend.pwa.laconic.com
-      LACONIC_HOSTED_CONFIG_github_clientid: b7c63b235ca1dd5639ab
-      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
-      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
-      LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
-      LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
-      LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073
-      LACONIC_HOSTED_CONFIG_passkey_wallet_rpid: dashboard.pwa.laconic.com
-      LACONIC_HOSTED_CONFIG_turnkey_api_base_url: https://api.turnkey.com
-      LACONIC_HOSTED_CONFIG_turnkey_organization_id: 5049ae99-5bca-40b3-8317-504384d4e591
-  meta:
-    note: Added by Snowball @ $CURRENT_DATE_TIME
-    repository: "$REPO_URL"
-    repository_ref: $LATEST_HASH
-EOF
 
 # Generate application-record.yml with incremented version
 cat >./records/application-record.yml <<EOF
@@ -63,11 +37,11 @@ record:
   repository_ref: $LATEST_HASH
   repository: ["$REPO_URL"]
   app_type: webapp
-  name: snowballtools-base-frontend
+  name: deploy-frontend
   app_version: $PACKAGE_VERSION
 EOF
 
-echo "Files generated successfully."
+echo "Files generated successfully"
 
 RECORD_FILE=records/application-record.yml
 
@@ -83,7 +57,7 @@ echo "ApplicationRecord published"
 echo $RECORD_ID
 
 # Set name to record
-REGISTRY_APP_LRN="lrn://snowballtools/applications/snowballtools-base-frontend"
+REGISTRY_APP_LRN="lrn://$AUTHORITY/applications/deploy-frontend"
 
 sleep 2
 yarn --silent laconic -c $CONFIG_FILE registry name set "$REGISTRY_APP_LRN@${PACKAGE_VERSION}" "$RECORD_ID"
@@ -121,6 +95,45 @@ if [ -z "$APP_RECORD" ] || [ "null" == "$APP_RECORD" ]; then
   echo "No record found for $REGISTRY_APP_LRN."
   exit 1
 fi
+
+# Get payment address for deployer
+paymentAddress=$(yarn --silent laconic -c config.yml registry name resolve "$DEPLOYER_LRN" | jq -r '.[0].attributes.paymentAddress')
+paymentAmount=$(yarn --silent laconic -c config.yml registry name resolve "$DEPLOYER_LRN" | jq -r '.[0].attributes.minimumPayment')
+
+# Pay deployer if paymentAmount is not null
+if [[ -n "$paymentAmount" && "$paymentAmount" != "null" ]]; then
+  payment=$(yarn --silent laconic -c config.yml registry tokens send --address "$paymentAddress" --type alnt --quantity "$paymentAmount")
+
+  # Extract the transaction hash
+  txHash=$(echo "$payment" | jq -r '.tx.hash')
+  echo "Paid deployer with txHash as $txHash"
+
+else
+  echo "Payment amount is null; skipping payment."
+fi
+
+# Generate application-deployment-request.yml
+cat >./records/application-deployment-request.yml <<EOF
+record:
+  type: ApplicationDeploymentRequest
+  version: '1.0.0'
+  name: deploy-frontend@$PACKAGE_VERSION
+  application: lrn://$AUTHORITY/applications/deploy-frontend@$PACKAGE_VERSION
+  deployer: $DEPLOYER_LRN
+  dns: deploy
+  config:
+    env:
+      LACONIC_HOSTED_CONFIG_server_url: https://deploy-backend.apps.vaasl.io
+      LACONIC_HOSTED_CONFIG_github_clientid: Ov23liaet4yc0KX0iM1c
+      LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: laconic-templates/test-progressive-web-app
+      LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: laconic-templates/image-upload-pwa-example
+      LACONIC_HOSTED_CONFIG_wallet_connect_id: 63cad7ba97391f63652161f484670e15
+  meta:
+    note: Added by Snowball @ $CURRENT_DATE_TIME
+    repository: "$REPO_URL"
+    repository_ref: $LATEST_HASH
+  payment: $txHash
+EOF
 
 RECORD_FILE=records/application-deployment-request.yml
 
