@@ -98,8 +98,7 @@ fi
 
 # Get payment address for deployer
 paymentAddress=$(yarn --silent laconic -c config.yml registry name resolve "$DEPLOYER_LRN" | jq -r '.[0].attributes.paymentAddress')
-paymentAmount=$(yarn --silent laconic -c config.yml registry name resolve "$DEPLOYER_LRN" | jq -r '.[0].attributes.minimumPayment')
-
+paymentAmount=$(yarn --silent laconic -c config.yml registry name resolve "$DEPLOYER_LRN" | jq -r '.[0].attributes.minimumPayment' | sed 's/alnt//g')
 # Pay deployer if paymentAmount is not null
 if [[ -n "$paymentAmount" && "$paymentAmount" != "null" ]]; then
   payment=$(yarn --silent laconic -c config.yml registry tokens send --address "$paymentAddress" --type alnt --quantity "$paymentAmount")

@@ -1,10 +1,8 @@
 services:
   registry:
-    rpcEndpoint: http://laconicd.laconic.com:26657
-    gqlEndpoint: http://laconicd.laconic.com:9473/api
-    userKey: 08c0d30ed23706330468e6936316a3bc3e69e451e394f05027ad56119bb485b9
-    bondId: 820587f916d9a6a056f1e6a5a250151d9fa0c1e771347a6b8bb3d6f2090fd11b
+    rpcEndpoint: https://laconicd-sapo.laconic.com
+    gqlEndpoint: https://laconicd-sapo.laconic.com/api
+    userKey: 
+    bondId: 
     chainId: laconic_9000-2
-    gas:
-    fees:
     gasPrice: 1alnt
