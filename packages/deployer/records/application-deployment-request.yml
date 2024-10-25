@@ -1,8 +1,8 @@
 record:
   type: ApplicationDeploymentRequest
   version: '1.0.0'
-  name: deploy-frontend@
-  application: lrn:///applications/deploy-frontend@
+  name: deploy-frontend@1.0.0
+  application: lrn://vaasl/applications/deploy-frontend@1.0.0
   dns: deploy
   config:
     env:
