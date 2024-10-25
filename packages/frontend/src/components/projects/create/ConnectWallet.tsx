@@ -23,7 +23,7 @@ const ConnectWallet = () => {
 
   const cosmosSendTokensHandler = useCallback(
     async (senderAddress: string, amount: string) => {
-      if (!signClient || !session || !selectedAccount) {
+      if (!signClient || !session || !selectedAccount || !snowballAddress) {
         console.log({signClient, session, selectedAccount})
         return;
       }
@@ -52,13 +52,16 @@ const ConnectWallet = () => {
         }
 
         setTxHash(result.signature);
-        console.log(txHash)
       } catch (error: any) {
         throw error;
       }
     },
-    [session, signClient, selectedAccount],
+    [session, signClient, selectedAccount, snowballAddress],
   );
+
+  useEffect(() => {
+    console.log(txHash)
+  }, [txHash])
 
   const fetchSnowballAddress = useCallback(async() => {
 
