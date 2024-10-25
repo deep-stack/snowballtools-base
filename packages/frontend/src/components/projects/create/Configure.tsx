@@ -23,6 +23,7 @@ import { useGQLClient } from '../../../context/GQLClientContext';
 import EnvironmentVariablesForm from 'pages/org-slug/projects/id/settings/EnvironmentVariablesForm';
 import { EnvironmentVariablesFormValues } from 'types/types';
 import ConnectWallet from './ConnectWallet';
+import { useWalletConnectClient } from 'context/WalletConnectContext';
 
 type ConfigureDeploymentFormValues = {
   option: string;
@@ -35,8 +36,11 @@ type ConfigureFormValues = ConfigureDeploymentFormValues &
   EnvironmentVariablesFormValues;
 
 const Configure = () => {
+  const { signClient, session } = useWalletConnectClient();
+
   const [isLoading, setIsLoading] = useState(false);
   const [deployers, setDeployers] = useState<Deployer[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<string>();
 
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
@@ -148,12 +152,41 @@ const Configure = () => {
     }
   };
 
+  // const verifyTx = async (
+  //   senderAddress: string,
+  //   txHash: string,
+  // ): Promise<boolean> => {
+  //   const isValid = await client.verifyTx(
+  //     txHash,
+  //     `${amount.toString()}alnt`,
+  //     senderAddress,
+  //   );
+  //   return isValid;
+  // };
+
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
       // Send tx request to wallet -> amount = createFormData.maxPrice * createFormData.numProviders
       // Get address of sender account(from wallet connect session) and txHash(result.signature)
-      const senderAddress = 'address';
-      const txHash = 'txHash';
+      if (!selectedAccount) {
+        return;
+      }
+
+      const senderAddress = selectedAccount;
+
+      const amount = createFormData.numProviders * createFormData.maxPrice;
+      const txHash = await cosmosSendTokensHandler(
+        selectedAccount,
+        String(amount),
+      );
+
+      console.log(txHash);
+
+      // const isTxHashValid = verifyTx(senderAddress, txHash);
+      // if (!isTxHashValid) {
+      //   console.error("Invalid Tx hash", txHash)
+      //   return
+      // }
 
       const environmentVariables = createFormData.variables.map(
         (variable: any) => {
@@ -171,7 +204,7 @@ const Configure = () => {
         createFormData,
         environmentVariables,
         senderAddress,
-        txHash,
+        txHash!,
       );
 
       await client.getEnvironmentVariables(projectId);
@@ -201,6 +234,48 @@ const Configure = () => {
     const res = await client.getDeployers();
     setDeployers(res.deployers);
   }, [client]);
+
+  const onAccountChange = useCallback((account: string) => {
+    setSelectedAccount(account);
+  }, []);
+
+  const cosmosSendTokensHandler = useCallback(
+    async (selectedAccount: string, amount: string) => {
+      if (!signClient || !session || !selectedAccount) {
+        return;
+      }
+
+      const chainId = selectedAccount.split(':')[1];
+      const senderAddress = selectedAccount.split(':')[2];
+      const snowballAddress = await client.getAddress();
+
+      try {
+        const result: { signature: string } = await signClient.request({
+          topic: session.topic,
+          chainId: `cosmos:${chainId}`,
+          request: {
+            method: 'cosmos_sendTokens',
+            params: [
+              {
+                from: senderAddress,
+                to: snowballAddress,
+                value: amount,
+              },
+            ],
+          },
+        });
+
+        if (!result) {
+          throw new Error('Error completing transaction');
+        }
+
+        return result.signature;
+      } catch (error: any) {
+        throw error;
+      }
+    },
+    [session, signClient],
+  );
 
   useEffect(() => {
     fetchDeployers();
@@ -340,7 +415,10 @@ const Configure = () => {
             <div className="p-4 bg-slate-100 rounded-lg mb-6">
               <EnvironmentVariablesForm />
             </div>
-
+            <Heading as="h4" className="md:text-lg font-medium mb-3">
+              Connect to your wallet
+            </Heading>
+            <ConnectWallet onAccountChange={onAccountChange} />
             <div>
               <Button
                 {...buttonSize}
@@ -359,7 +437,6 @@ const Configure = () => {
             </div>
           </form>
         </FormProvider>
-        <ConnectWallet numProviders={methods.watch('numProviders') || 0} />
       </div>
     </div>
   );
