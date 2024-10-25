@@ -36,11 +36,13 @@ type ConfigureFormValues = ConfigureDeploymentFormValues &
   EnvironmentVariablesFormValues;
 
 const Configure = () => {
-  const { signClient, session } = useWalletConnectClient();
+  const { signClient, session, accounts } = useWalletConnectClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [deployers, setDeployers] = useState<Deployer[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<string>();
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
 
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
@@ -271,6 +273,16 @@ const Configure = () => {
       const snowballAddress = await client.getAddress();
 
       try {
+        setIsPaymentDone(false);
+        setIsPaymentLoading(true);
+
+        toast({
+          id: 'sending-payment-request',
+          title: 'Check your wallet and approve payment request',
+          variant: 'loading',
+          onDismiss: dismiss,
+        });
+
         const result: { signature: string } = await signClient.request({
           topic: session.topic,
           chainId: `cosmos:${chainId}`,
@@ -290,12 +302,28 @@ const Configure = () => {
           throw new Error('Error completing transaction');
         }
 
+        toast({
+          id: 'payment-successful',
+          title: 'Payment successful',
+          variant: 'success',
+          onDismiss: dismiss,
+        });
+
         return result.signature;
       } catch (error: any) {
-        throw error;
+        console.error('Error sending tokens', error);
+        toast({
+          id: 'error-sending-tokens',
+          title: 'Error sending tokens',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
+      } finally {
+        setIsPaymentLoading(false);
+        setIsPaymentDone(true);
       }
     },
-    [session, signClient],
+    [session, signClient, toast],
   );
 
   useEffect(() => {
@@ -440,22 +468,30 @@ const Configure = () => {
               Connect to your wallet
             </Heading>
             <ConnectWallet onAccountChange={onAccountChange} />
-            <div>
-              <Button
-                {...buttonSize}
-                type="submit"
-                disabled={isLoading}
-                rightIcon={
-                  isLoading ? (
-                    <LoadingIcon className="animate-spin" />
-                  ) : (
-                    <ArrowRightCircleFilledIcon />
-                  )
-                }
-              >
-                {isLoading ? 'Deploying repo' : 'Deploy repo'}
-              </Button>
-            </div>
+            {accounts && accounts?.length > 0 && (
+              <div>
+                <Button
+                  {...buttonSize}
+                  type="submit"
+                  disabled={isLoading || isPaymentLoading}
+                  rightIcon={
+                    isLoading || isPaymentLoading ? (
+                      <LoadingIcon className="animate-spin" />
+                    ) : (
+                      <ArrowRightCircleFilledIcon />
+                    )
+                  }
+                >
+                  {!isPaymentDone
+                    ? isPaymentLoading
+                      ? 'Paying'
+                      : 'Pay and Deploy'
+                    : isLoading
+                      ? 'Deploying repo'
+                      : 'Deploy'}
+                </Button>
+              </div>
+            )}
           </form>
         </FormProvider>
       </div>
