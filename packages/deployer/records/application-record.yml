@@ -5,4 +5,4 @@ record:
   repository: ["https://git.vdb.to/cerc-io/snowballtools-base"]
   app_type: webapp
   name: deploy-frontend
-  app_version: 0.0.0
+  app_version: 1.0.0
