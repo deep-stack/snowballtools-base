@@ -1,4 +1,3 @@
-import { addProjectFromTemplate } from "./mutations";
 // Note: equivalent to types present in GQL schema
 
 export enum Role {

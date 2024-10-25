@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "module": "./dist/index.mjs",
+  "types": "./src",
   "scripts": {
     "build": "npx tsup src/index.ts --dts --format esm,cjs --sourcemap",
     "lint": "tsc --noEmit"
