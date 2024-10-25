@@ -14,7 +14,6 @@ import {
   ArrowRightCircleFilledIcon,
   LoadingIcon,
 } from 'components/shared/CustomIcon';
-import { Checkbox } from 'components/shared/Checkbox';
 import { Button } from 'components/shared/Button';
 import { useToast } from 'components/shared/Toast';
 
@@ -166,15 +165,6 @@ const CreateRepo = () => {
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <Input value={value} onChange={onChange} />
-            )}
-          />
-        </div>
-        <div>
-          <Controller
-            name="isPrivate"
-            control={control}
-            render={({}) => (
-              <Checkbox label="Make this repo private" disabled={true} />
             )}
           />
         </div>

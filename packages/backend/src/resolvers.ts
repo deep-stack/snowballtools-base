@@ -84,6 +84,17 @@ export const createResolvers = async (service: Service): Promise<any> => {
       address: async (_: any, __: any, context: any) => {
         return service.getAddress();
       },
+
+      verifyTx: async (
+        _: any,
+        {
+          txHash,
+          amount,
+          senderAddress,
+        }: { txHash: string; amount: string; senderAddress: string },
+      ) => {
+        return service.verifyTx(txHash, amount, senderAddress);
+      },
     },
 
     // TODO: Return error in GQL response

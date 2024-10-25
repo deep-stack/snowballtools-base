@@ -5,7 +5,7 @@ import { Octokit } from 'octokit';
 import { inc as semverInc } from 'semver';
 import { DeepPartial } from 'typeorm';
 
-import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees, IndexedTx } from '@cerc-io/registry-sdk';
 
 import { RegistryConfig } from './config';
 import {
@@ -503,6 +503,15 @@ export class Registry {
     await account.init();
 
     return account.address;
+  }
+
+  async getTxResponse(txHash: string): Promise<IndexedTx | null> {
+    const account = new Account(Buffer.from(this.registryConfig.privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.registry.getLaconicClient(account);
+    const txResponse: IndexedTx | null = await laconicClient.getTx(txHash);
+
+    return txResponse;
   }
 
   getLrn(appName: string): string {

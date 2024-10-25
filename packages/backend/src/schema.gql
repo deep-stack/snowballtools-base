@@ -265,6 +265,7 @@ type Query {
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
   deployers: [Deployer]
   address: String!
+  verifyTx(txhash: String!, amount: String!, senderAddress: String!): Boolean!
 }
 
 type Mutation {

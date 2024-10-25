@@ -1405,4 +1405,26 @@ export class Service {
   async getAddress(): Promise<any> {
     return this.laconicRegistry.getAddress();
   }
+
+  async verifyTx(txhash: string, amountSent: string, senderAddress: string): Promise<boolean> {
+    const txResponse = await this.laconicRegistry.getTxResponse(txhash);
+    if (!txResponse) {
+      log('Transaction response not found');
+      return false;
+    }
+
+    const transfer = txResponse.events.find(e => e.type === 'transfer' && e.attributes.some(a => a.key === 'msg_index'));
+    if (!transfer) {
+      log('No transfer event found');
+      return false;
+    }
+
+    const sender = transfer.attributes.find(a => a.key === 'sender')?.value;
+    const recipient = transfer.attributes.find(a => a.key === 'recipient')?.value;
+    const amount = transfer.attributes.find(a => a.key === 'amount')?.value;
+
+    const recipientAddress = await this.getAddress();
+
+    return amount === amountSent && sender === senderAddress && recipient === recipientAddress;
+  }
 }

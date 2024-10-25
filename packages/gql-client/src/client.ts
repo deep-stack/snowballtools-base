@@ -440,4 +440,22 @@ export class GQLClient {
 
     return data.address;
   }
+
+  async verifyTx(txhash: string, amount: string, senderAddress: string): Promise<boolean> {
+    console.log('Verifying Transaction with parameters:', {
+      txhash,
+      amount,
+      senderAddress
+  });
+    const { data } = await this.client.query({
+      query: queries.verifyTx,
+      variables: {
+        txhash,
+        amount,
+        senderAddress
+      }
+    });
+
+    return data;
+  }
 }

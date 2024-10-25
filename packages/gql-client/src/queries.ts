@@ -329,3 +329,9 @@ query {
   address
 }
 `;
+
+export const verifyTx = gql`
+query ($txhash: String!, $amount: String!, $senderAddress: String!) {
+  verifyTx(txhash: $txhash, amount: $amount, senderAddress: $senderAddress)
+}
+`;
