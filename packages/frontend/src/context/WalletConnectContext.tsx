@@ -25,7 +25,7 @@ interface ClientInterface {
   onConnect: () => Promise<void>;
   onDisconnect: () => Promise<void>;
   onSessionDelete: () => void;
-  accounts: { address: string; balance?: string }[] | undefined;
+  accounts: { address: string }[] | undefined;
 }
 
 const ClientContext = createContext({} as ClientInterface);

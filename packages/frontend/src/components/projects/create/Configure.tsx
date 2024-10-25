@@ -56,7 +56,12 @@ const Configure = () => {
   const client = useGQLClient();
 
   const methods = useForm<ConfigureFormValues>({
-    defaultValues: { option: 'Auction' },
+    defaultValues: {
+      option: 'Auction',
+      maxPrice: '0',
+      lrn: '',
+      numProviders: 0,
+    },
   });
 
   const selectedOption = methods.watch('option');
@@ -68,7 +73,7 @@ const Configure = () => {
     data: FieldValues,
     envVariables: AddEnvironmentVariableInput[],
     senderAddress: string,
-    txHash: string
+    txHash: string,
   ): Promise<string> => {
     setIsLoading(true);
     let projectId: string | null = null;
@@ -94,7 +99,7 @@ const Configure = () => {
           name,
           isPrivate,
           paymentAddress: senderAddress,
-          txHash
+          txHash,
         };
 
         const { addProjectFromTemplate } = await client.addProjectFromTemplate(
@@ -115,7 +120,7 @@ const Configure = () => {
             repository: fullName!,
             template: 'webapp',
             paymentAddress: senderAddress,
-            txHash
+            txHash,
           },
           lrn,
           auctionParams,
@@ -166,7 +171,7 @@ const Configure = () => {
         createFormData,
         environmentVariables,
         senderAddress,
-        txHash
+        txHash,
       );
 
       await client.getEnvironmentVariables(projectId);
@@ -305,7 +310,11 @@ const Configure = () => {
                     control={methods.control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <Input type="number" value={value} onChange={onChange} />
+                      <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => onChange(e)}
+                      />
                     )}
                   />
                 </div>
@@ -350,7 +359,7 @@ const Configure = () => {
             </div>
           </form>
         </FormProvider>
-      <ConnectWallet/>
+        <ConnectWallet numProviders={methods.watch('numProviders') || 0} />
       </div>
     </div>
   );

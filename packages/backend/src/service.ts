@@ -1406,8 +1406,8 @@ export class Service {
     return this.laconicRegistry.getAddress();
   }
 
-  async verifyTx(txhash: string, amountSent: string, senderAddress: string): Promise<boolean> {
-    const txResponse = await this.laconicRegistry.getTxResponse(txhash);
+  async verifyTx(txHash: string, amountSent: string, senderAddress: string): Promise<boolean> {
+    const txResponse = await this.laconicRegistry.getTxResponse(txHash);
     if (!txResponse) {
       log('Transaction response not found');
       return false;

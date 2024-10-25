@@ -331,7 +331,7 @@ query {
 `;
 
 export const verifyTx = gql`
-query ($txhash: String!, $amount: String!, $senderAddress: String!) {
-  verifyTx(txhash: $txhash, amount: $amount, senderAddress: $senderAddress)
+query ($txHash: String!, $amount: String!, $senderAddress: String!) {
+  verifyTx(txHash: $txHash, amount: $amount, senderAddress: $senderAddress)
 }
 `;

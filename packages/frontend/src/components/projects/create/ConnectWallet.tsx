@@ -1,39 +1,46 @@
+import { useMemo, useState, useCallback } from 'react';
+import { Select, Option } from '@snowballtools/material-tailwind-react-fork';
 import { Button } from '../../shared/Button';
 import { useWalletConnectClient } from 'context/WalletConnectContext';
-import { Select, Option } from '@snowballtools/material-tailwind-react-fork';
 import { useGQLClient } from 'context/GQLClientContext';
-import { useCallback, useEffect, useState } from 'react';
 
-const TEST_AMOUNT = "10000"
-
-const ConnectWallet = () => {
+const ConnectWallet = ({ numProviders }: { numProviders: number }) => {
   const { onConnect, accounts, signClient, session } = useWalletConnectClient();
   const client = useGQLClient();
 
-  const [selectedAccount, setSelectedAccount] = useState<{
-    address: string;
-    balance?: string;
-  }>();
-  const [txHash, setTxHash] = useState<string>();
-  const [snowballAddress, setSnowballAddress] = useState<string>();
+  const [selectedAccount, setSelectedAccount] = useState<string>();
+  const [isTxValid, setIsTxValid] = useState<boolean>(false);
+
+  const amount = useMemo(() => numProviders * 10000, [numProviders]);
 
   const handleConnect = async () => {
     await onConnect();
   };
 
+  const verifyTx = async (
+    senderAddress: string,
+    txHash: string,
+  ): Promise<boolean> => {
+    const isValid = await client.verifyTx(
+      txHash,
+      `${amount.toString()}alnt`,
+      senderAddress,
+    );
+    return isValid;
+  };
+
   const cosmosSendTokensHandler = useCallback(
-    async (senderAddress: string, amount: string) => {
-      if (!signClient || !session || !selectedAccount || !snowballAddress) {
-        console.log({signClient, session, selectedAccount})
+    async (selectedAccount: string) => {
+      if (!signClient || !session || !selectedAccount) {
         return;
       }
 
-      const chainId = selectedAccount.address.split(':')[1];
+      const chainId = selectedAccount.split(':')[1];
+      const senderAddress = selectedAccount.split(':')[2];
+      const snowballAddress = await client.getAddress();
 
       try {
-        const result: {
-          signature: string;
-        } = await signClient.request({
+        const result: { signature: string } = await signClient.request({
           topic: session.topic,
           chainId: `cosmos:${chainId}`,
           request: {
@@ -47,47 +54,33 @@ const ConnectWallet = () => {
             ],
           },
         });
+
         if (!result) {
           throw new Error('Error completing transaction');
         }
 
-        setTxHash(result.signature);
+        const isValid = await verifyTx(senderAddress, result.signature);
+        setIsTxValid(isValid);
       } catch (error: any) {
         throw error;
       }
     },
-    [session, signClient, selectedAccount, snowballAddress],
+    [session, signClient, selectedAccount, amount],
   );
 
-  useEffect(() => {
-    console.log(txHash)
-  }, [txHash])
-
-  const fetchSnowballAddress = useCallback(async() => {
-
-    const address = await client.getAddress();
-    setSnowballAddress(address);
-
-    console.log(address)
-  }, [client])
-
-  useEffect(() => {
-    fetchSnowballAddress()
-  }, [])
-
   return (
-    <>
+    <div className="p-4 bg-slate-100 rounded-lg mb-6">
       {!accounts ? (
         <Button onClick={handleConnect}>Connect Wallet</Button>
+      ) : isTxValid ? (
+        <div className="mt-4 text-green-600">Tx successful!</div>
       ) : (
         <div>
           <Select
             label="Select Account"
             defaultValue={accounts[0].address}
             onChange={(value) => {
-              setSelectedAccount({
-                address: value!,
-              });
+              setSelectedAccount(value);
             }}
           >
             {accounts.map((account, index) => (
@@ -96,10 +89,14 @@ const ConnectWallet = () => {
               </Option>
             ))}
           </Select>
-          <Button onClick={() => cosmosSendTokensHandler(selectedAccount!.address.split(":")[2], TEST_AMOUNT)}>Pay</Button>
+          <Button
+            onClick={() => cosmosSendTokensHandler(selectedAccount || '')}
+          >
+            Pay
+          </Button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
