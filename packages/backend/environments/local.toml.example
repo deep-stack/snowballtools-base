@@ -20,16 +20,6 @@
     clientId = ""
     clientSecret = ""
 
-[google]
-  clientId = ""
-  clientSecret = ""
-
-[turnkey]
-  apiBaseUrl = "https://api.turnkey.com"
-  apiPrivateKey = ""
-  apiPublicKey = ""
-  defaultOrganizationId = ""
-
 [registryConfig]
   fetchDeploymentRecordDelay = 5000
   checkAuctionStatusDelay = 5000

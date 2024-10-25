@@ -1348,7 +1348,7 @@ export class Service {
     const deployers: Deployer[] = [];
 
     for (const record of deployerRecords) {
-      if (record.names.length > 0) {
+      if (record.names && record.names.length > 0) {
         const deployerId = record.id;
         const deployerLrn = record.names[0];
         const deployerApiUrl = record.attributes.apiUrl;
