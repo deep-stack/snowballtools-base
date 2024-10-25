@@ -69,7 +69,7 @@ export const WalletConnectClientProvider = ({
   const onConnect = async () => {
     const proposalNamespace = {
       cosmos: {
-        methods: ['cosmos_sendTransaction'],
+        methods: ['cosmos_sendTokens'],
         chains: [`cosmos:${VITE_LACONICD_CHAIN_ID}`],
         events: [],
       },

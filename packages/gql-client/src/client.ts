@@ -438,6 +438,6 @@ export class GQLClient {
       query: queries.getAddress,
     });
 
-    return data;
+    return data.address;
   }
 }
