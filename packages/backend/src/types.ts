@@ -94,6 +94,7 @@ export interface DeployerRecord {
   expiryTime: string;
   attributes: {
     apiUrl: string;
+    minimumPayment: string | null;
     name: string;
     paymentAddress: string;
     publicKey: string;

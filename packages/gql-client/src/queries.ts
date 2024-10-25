@@ -28,6 +28,7 @@ query ($projectId: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
     paymentAddress
     txHash
@@ -86,6 +87,7 @@ query ($organizationSlug: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
     paymentAddress
     txHash
@@ -152,6 +154,7 @@ query ($projectId: String!)  {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
     environment
     isCurrent
@@ -215,6 +218,7 @@ query ($searchText: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
     paymentAddress
     txHash
@@ -320,6 +324,7 @@ query {
     deployerLrn
     deployerId
     deployerApiUrl
+    minimumPayment
   }
 }
 `;

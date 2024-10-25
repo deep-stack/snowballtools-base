@@ -119,6 +119,7 @@ export type Deployer = {
   deployerLrn: string;
   deployerId: string;
   deployerApiUrl: string;
+  minimumPayment: string | null;
 }
 
 export type OrganizationMember = {

@@ -1384,13 +1384,15 @@ export class Service {
         const deployerId = record.id;
         const deployerLrn = record.names[0];
         const deployerApiUrl = record.attributes.apiUrl;
+        const minimumPayment = record.attributes.minimumPayment
         const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
 
         const deployerData = {
           deployerLrn,
           deployerId,
           deployerApiUrl,
-          baseDomain
+          baseDomain,
+          minimumPayment
         };
 
         // TODO: Update deployers table in a separate job

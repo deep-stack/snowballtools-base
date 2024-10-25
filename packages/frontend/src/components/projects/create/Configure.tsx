@@ -152,41 +152,62 @@ const Configure = () => {
     }
   };
 
-  // const verifyTx = async (
-  //   senderAddress: string,
-  //   txHash: string,
-  // ): Promise<boolean> => {
-  //   const isValid = await client.verifyTx(
-  //     txHash,
-  //     `${amount.toString()}alnt`,
-  //     senderAddress,
-  //   );
-  //   return isValid;
-  // };
+  const verifyTx = async (
+    senderAddress: string,
+    txHash: string,
+    amount: string
+  ): Promise<boolean> => {
+    const isValid = await client.verifyTx(
+      txHash,
+      `${amount.toString()}alnt`,
+      senderAddress,
+    );
+    return isValid;
+  };
 
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
-      // Send tx request to wallet -> amount = createFormData.maxPrice * createFormData.numProviders
-      // Get address of sender account(from wallet connect session) and txHash(result.signature)
       if (!selectedAccount) {
         return;
       }
 
       const senderAddress = selectedAccount;
 
-      const amount = createFormData.numProviders * createFormData.maxPrice;
+      let amount: string;
+      if(createFormData.option === 'LRN') {
+        const deployerLrn = createFormData.lrn;
+        const deployer = deployers.find(deployer => deployer.deployerLrn === deployerLrn);
+        if (!deployer?.minimumPayment) {
+          toast({
+            id: 'no-payment-required',
+            title: 'No payment',
+            variant: 'info',
+            onDismiss: dismiss,
+          });
+
+          amount = ''
+        } else {
+          amount = deployer!.minimumPayment
+        }
+      } else {
+        amount = (createFormData.numProviders * createFormData.maxPrice).toString();
+      }
+
       const txHash = await cosmosSendTokensHandler(
         selectedAccount,
-        String(amount),
+        amount,
       );
 
-      console.log(txHash);
+      if(!txHash) {
+        console.error('Tx not successful');
+        return;
+      }
 
-      // const isTxHashValid = verifyTx(senderAddress, txHash);
-      // if (!isTxHashValid) {
-      //   console.error("Invalid Tx hash", txHash)
-      //   return
-      // }
+      const isTxHashValid = verifyTx(senderAddress, txHash, amount.toString());
+      if (!isTxHashValid) {
+        console.error("Invalid Tx hash", txHash)
+        return
+      }
 
       const environmentVariables = createFormData.variables.map(
         (variable: any) => {
@@ -352,7 +373,7 @@ const Configure = () => {
                             key={deployer.deployerLrn}
                             value={deployer.deployerLrn}
                           >
-                            {deployer.deployerLrn}
+                            {deployer.deployerLrn}  {deployer.minimumPayment}
                           </MenuItem>
                         ))}
                       </Select>

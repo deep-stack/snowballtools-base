@@ -15,6 +15,9 @@ export class Deployer {
   @Column('varchar')
     baseDomain!: string;
 
+  @Column('varchar', { nullable: true })
+    minimumPayment!: string | null;
+
   @ManyToMany(() => Project, (project) => project.deployers)
     projects!: Project[];
 }
