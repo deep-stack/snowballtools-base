@@ -127,6 +127,7 @@ record:
       LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: laconic-templates/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: laconic-templates/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: 63cad7ba97391f63652161f484670e15
+      LACONIC_HOSTED_CONFIG_laconicd_chain_id: laconic-testnet-2
   meta:
     note: Added by Snowball @ $CURRENT_DATE_TIME
     repository: "$REPO_URL"
