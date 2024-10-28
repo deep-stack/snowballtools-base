@@ -248,6 +248,7 @@ export class Registry {
     lrn: string,
     environmentVariables: { [key: string]: string },
     dns: string,
+    payment: string
   }): Promise<{
     applicationDeploymentRequestId: string;
     applicationDeploymentRequestData: ApplicationDeploymentRequest;
@@ -267,6 +268,7 @@ export class Registry {
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
       application: `${lrn}@${applicationRecord.attributes.app_version}`,
       dns: data.dns,
+      payment: data.payment,
 
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({

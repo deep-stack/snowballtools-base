@@ -648,7 +648,8 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn: deployer!.deployerLrn!
+        lrn: deployer!.deployerLrn!,
+        payment: data.project.txHash!
       });
     }
 
@@ -660,6 +661,7 @@ export class Service {
         lrn: deployer!.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
+        payment: data.project.txHash!
       });
 
     await this.db.updateDeploymentById(newDeployment.id, {
@@ -725,6 +727,7 @@ export class Service {
         dns: `${newDeployment.project.name}`,
         auctionId: project.auctionId!,
         lrn: deployerLrn,
+        payment: project.txHash!
       });
     }
 
@@ -738,6 +741,7 @@ export class Service {
         lrn: deployerLrn,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
+        payment: project.txHash!
       });
 
     await this.db.updateDeploymentById(newDeployment.id, {
@@ -1342,12 +1346,13 @@ export class Service {
     }
 
     const auction = await this.getAuctionData(project.auctionId);
+    const maxPrice = Number(auction.maxPrice.quantity) * auction.numProviders;
 
     let amountToBeReturned;
     if (winningDeployersPresent) {
-      amountToBeReturned = auction.winnerPrice * auction.numProviders;
+      amountToBeReturned = maxPrice - auction.winnerAddresses.length * Number(auction.winnerPrice.quantity);
     } else {
-      amountToBeReturned = auction.maxPrice * auction.numProviders;
+      amountToBeReturned = maxPrice;
     }
 
     await this.laconicRegistry.sendTokensToAccount(

@@ -38,6 +38,7 @@ export interface ApplicationDeploymentRequest {
   auction?: string;
   config: string;
   meta: string;
+  payment: string;
 }
 
 export interface ApplicationDeploymentRemovalRequest {
