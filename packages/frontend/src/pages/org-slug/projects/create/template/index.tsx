@@ -41,6 +41,17 @@ const CreateRepo = () => {
   const [gitAccounts, setGitAccounts] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const checkRepoExists = async (account: string, repoName: string) => {
+    try {
+      await octokit.rest.repos.get({ owner: account, repo: repoName });
+      return true;
+    } catch (error) {
+      // Error handled by octokit error hook interceptor in Octokit context
+      console.error(error);
+      return;
+    }
+  };
+
   const submitRepoHandler: SubmitHandler<SubmitRepoValues> = useCallback(
     async (data) => {
       assert(data.account);
@@ -49,6 +60,18 @@ const CreateRepo = () => {
       try {
         assert(template.repoFullName, 'Template URL not provided');
         const [owner, repo] = template.repoFullName.split('/');
+
+        const repoExists = await checkRepoExists(data.account, data.repoName);
+        if (repoExists) {
+          toast({
+            id: 'repo-exist-error',
+            title: 'Repository already exists with this name',
+            variant: 'warning',
+            onDismiss: dismiss,
+          });
+          setIsLoading(false);
+          return;
+        }
 
         setIsLoading(true);
 
@@ -81,7 +104,7 @@ const CreateRepo = () => {
         });
       }
     },
-    [octokit],
+    [octokit, toast],
   );
 
   useEffect(() => {
