@@ -5,7 +5,8 @@ import { Octokit } from 'octokit';
 import { inc as semverInc } from 'semver';
 import { DeepPartial } from 'typeorm';
 
-import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees, IndexedTx } from '@cerc-io/registry-sdk';
+import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { IndexedTx } from '@cosmjs/stargate';
 
 import { RegistryConfig } from './config';
 import {

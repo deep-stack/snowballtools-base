@@ -106,7 +106,7 @@ export const deployment0: Deployment = {
     deployerApiUrl: 'https://webapp-deployer-api.example.com',
     deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
     deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
-    minimumPayment: '1000units'
+    minimumPayment: '1000alnt'
   },
   applicationDeploymentRequestId:
     'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
@@ -133,7 +133,7 @@ export const project: Project = {
       deployerApiUrl: 'https://webapp-deployer-api.example.com',
       deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
       deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
-      minimumPayment: '1000units'
+      minimumPayment: '1000alnt'
     },
   ],
   paymentAddress: '0x657868687686rb4787987br8497298r79284797487',
