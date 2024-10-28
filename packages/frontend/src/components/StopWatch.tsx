@@ -23,11 +23,7 @@ const Stopwatch = ({ offsetTimestamp, isPaused, ...props }: StopwatchProps) => {
   });
 
   useEffect(() => {
-    if (isPaused) {
-      pause();
-    } else {
-      start();
-    }
+    isPaused ? pause() : start();
   }, [isPaused]);
 
   return <FormatMillisecond time={totalSeconds * 1000} {...props} />;

@@ -499,16 +499,15 @@ export class Registry {
     );
   }
 
-  async getAddress(): Promise<any> {
+  async getAccount(): Promise<Account> {
     const account = new Account(Buffer.from(this.registryConfig.privateKey, 'hex'));
     await account.init();
 
-    return account.address;
+    return account;
   }
 
   async getTxResponse(txHash: string): Promise<IndexedTx | null> {
-    const account = new Account(Buffer.from(this.registryConfig.privateKey, 'hex'));
-    await account.init();
+    const account = await this.getAccount();
     const laconicClient = await this.registry.getLaconicClient(account);
     const txResponse: IndexedTx | null = await laconicClient.getTx(txHash);
 
