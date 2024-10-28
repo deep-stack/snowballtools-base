@@ -315,18 +315,22 @@ const Configure = () => {
           onDismiss: dismiss,
         });
 
+        setIsPaymentDone(true);
+
         return result.signature;
       } catch (error: any) {
         console.error('Error sending tokens', error);
+
         toast({
           id: 'error-sending-tokens',
           title: 'Error sending tokens',
           variant: 'error',
           onDismiss: dismiss,
         });
+
+        setIsPaymentDone(false);
       } finally {
         setIsPaymentLoading(false);
-        setIsPaymentDone(true);
       }
     },
     [session, signClient, toast],
@@ -490,7 +494,7 @@ const Configure = () => {
                 >
                   {!isPaymentDone
                     ? isPaymentLoading
-                      ? 'Paying'
+                      ? 'Transaction Requested'
                       : 'Pay and Deploy'
                     : isLoading
                       ? 'Deploying repo'
