@@ -157,7 +157,7 @@ const Configure = () => {
   const verifyTx = async (
     senderAddress: string,
     txHash: string,
-    amount: string
+    amount: string,
   ): Promise<boolean> => {
     const isValid = await client.verifyTx(
       txHash,
@@ -176,7 +176,9 @@ const Configure = () => {
 
       const senderAddress = selectedAccount;
       const deployerLrn = createFormData.lrn;
-      const deployer = deployers.find(deployer => deployer.deployerLrn === deployerLrn);
+      const deployer = deployers.find(
+        (deployer) => deployer.deployerLrn === deployerLrn,
+      );
 
       let amount: string;
       let txHash: string;
@@ -193,10 +195,12 @@ const Configure = () => {
         if (createFormData.option === 'LRN') {
           amount = deployer?.minimumPayment!;
         } else {
-          amount = (createFormData.numProviders * createFormData.maxPrice).toString();
+          amount = (
+            createFormData.numProviders * createFormData.maxPrice
+          ).toString();
         }
 
-        const amountToBePaid = (amount.replace(/\D/g, '')).toString();
+        const amountToBePaid = amount.replace(/\D/g, '').toString();
 
         const txHashResponse = await cosmosSendTokensHandler(
           selectedAccount,
@@ -210,9 +214,13 @@ const Configure = () => {
 
         txHash = txHashResponse;
 
-        const isTxHashValid = verifyTx(senderAddress, txHash, amount.toString());
+        const isTxHashValid = verifyTx(
+          senderAddress,
+          txHash,
+          amount.toString(),
+        );
         if (!isTxHashValid) {
-          console.error("Invalid Tx hash", txHash)
+          console.error('Invalid Tx hash', txHash);
           return;
         }
       }
@@ -232,7 +240,7 @@ const Configure = () => {
       const projectId = await createProject(
         createFormData,
         environmentVariables,
-        senderAddress,
+        senderAddress.split(':')[2],
         txHash,
       );
 
@@ -411,7 +419,7 @@ const Configure = () => {
                             key={deployer.deployerLrn}
                             value={deployer.deployerLrn}
                           >
-                            {deployer.deployerLrn}  {deployer.minimumPayment}
+                            {`${deployer.deployerLrn} ${deployer.minimumPayment ? `(${deployer.minimumPayment})` : ''}`}
                           </MenuItem>
                         ))}
                       </Select>
