@@ -57,4 +57,10 @@ export interface Config {
   gitHub: GitHubConfig;
   registryConfig: RegistryConfig;
   auction: AuctionConfig;
+  turnkey: {
+    apiBaseUrl: string;
+    apiPublicKey: string;
+    apiPrivateKey: string;
+    defaultOrganizationId: string;
+  };
 }
