@@ -35,12 +35,15 @@ type ConfigureDeploymentFormValues = {
 type ConfigureFormValues = ConfigureDeploymentFormValues &
   EnvironmentVariablesFormValues;
 
+const DEFAULT_MAX_PRICE = '10000';
+
 const Configure = () => {
   const { signClient, session, accounts } = useWalletConnectClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [deployers, setDeployers] = useState<Deployer[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<string>();
+  const [selectedDeployer, setSelectedDeployer] = useState<Deployer>();
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
 
@@ -64,9 +67,9 @@ const Configure = () => {
   const methods = useForm<ConfigureFormValues>({
     defaultValues: {
       option: 'Auction',
-      maxPrice: '0',
+      maxPrice: DEFAULT_MAX_PRICE,
       lrn: '',
-      numProviders: 0,
+      numProviders: 1,
     },
   });
 
@@ -214,12 +217,12 @@ const Configure = () => {
 
         txHash = txHashResponse;
 
-        const isTxHashValid = verifyTx(
+        const isTxHashValid = await verifyTx(
           senderAddress,
           txHash,
           amount.toString(),
         );
-        if (!isTxHashValid) {
+        if (isTxHashValid === false) {
           console.error('Invalid Tx hash', txHash);
           return;
         }
@@ -275,6 +278,11 @@ const Configure = () => {
   const onAccountChange = useCallback((account: string) => {
     setSelectedAccount(account);
   }, []);
+
+  const onDeployerChange = useCallback((selectedLrn: string) => {
+    const deployer = deployers.find((d) => d.deployerLrn === selectedLrn);
+    setSelectedDeployer(deployer);
+  }, [deployers]);
 
   const cosmosSendTokensHandler = useCallback(
     async (selectedAccount: string, amount: string) => {
@@ -410,7 +418,10 @@ const Configure = () => {
                       </span>
                       <Select
                         value={value}
-                        onChange={(event) => onChange(event.target.value)}
+                        onChange={(event) => {
+                          onChange(event.target.value);
+                          onDeployerChange(event.target.value);
+                        }}
                         displayEmpty
                         size="small"
                       >
@@ -482,33 +493,56 @@ const Configure = () => {
             <div className="p-4 bg-slate-100 rounded-lg mb-6">
               <EnvironmentVariablesForm />
             </div>
-            <Heading as="h4" className="md:text-lg font-medium mb-3">
-              Connect to your wallet
-            </Heading>
-            <ConnectWallet onAccountChange={onAccountChange} />
-            {accounts && accounts?.length > 0 && (
+
+            {selectedOption === 'LRN' &&
+            !selectedDeployer?.minimumPayment ? (
               <div>
                 <Button
                   {...buttonSize}
                   type="submit"
-                  disabled={isLoading || isPaymentLoading}
+                  disabled={isLoading}
                   rightIcon={
-                    isLoading || isPaymentLoading ? (
+                    isLoading ? (
                       <LoadingIcon className="animate-spin" />
                     ) : (
                       <ArrowRightCircleFilledIcon />
                     )
                   }
                 >
-                  {!isPaymentDone
-                    ? isPaymentLoading
-                      ? 'Transaction Requested'
-                      : 'Pay and Deploy'
-                    : isLoading
-                      ? 'Deploying repo'
-                      : 'Deploy'}
+                  {isLoading ? 'Deploying' : 'Deploy'}
                 </Button>
               </div>
+            ) : (
+              <>
+                <Heading as="h4" className="md:text-lg font-medium mb-3">
+                  Connect to your wallet
+                </Heading>
+                <ConnectWallet onAccountChange={onAccountChange} />
+                {accounts && accounts?.length > 0 && (
+                  <div>
+                    <Button
+                      {...buttonSize}
+                      type="submit"
+                      disabled={isLoading || isPaymentLoading}
+                      rightIcon={
+                        isLoading || isPaymentLoading ? (
+                          <LoadingIcon className="animate-spin" />
+                        ) : (
+                          <ArrowRightCircleFilledIcon />
+                        )
+                      }
+                    >
+                      {!isPaymentDone
+                        ? isPaymentLoading
+                          ? 'Transaction Requested'
+                          : 'Pay and Deploy'
+                        : isLoading
+                          ? 'Deploying'
+                          : 'Deploy'}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </form>
         </FormProvider>

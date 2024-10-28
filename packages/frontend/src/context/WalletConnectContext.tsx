@@ -138,8 +138,8 @@ export const WalletConnectClientProvider = ({
       const signClient = await SignClient.init({
         projectId: VITE_WALLET_CONNECT_ID,
         metadata: {
-          name: 'Snowball',
-          description: 'App for deploying apps',
+          name: 'Deploy App',
+          description: '',
           url: window.location.href,
           icons: ['https://avatars.githubusercontent.com/u/92608123'],
         },
