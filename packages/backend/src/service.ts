@@ -212,6 +212,9 @@ export class Service {
         if (!deployment.project.fundsReleased) {
           const fundsReleased = await this.releaseDeployerFundsByProjectId(deployment.projectId);
 
+          // Return remaining amount to owner
+          await this.returnUserFundsByProjectId(deployment.projectId, true);
+
           await this.db.updateProjectById(deployment.projectId, {
             fundsReleased,
           });
@@ -309,6 +312,9 @@ export class Service {
 
       if (!deployerRecords) {
         log(`No winning deployer for auction ${project!.auctionId}`);
+
+        // Return all funds to the owner
+        await this.returnUserFundsByProjectId(project.id, false)
       } else {
         const deployers = await this.saveDeployersByDeployerRecords(deployerRecords);
         for (const deployer of deployers) {
@@ -829,6 +835,8 @@ export class Service {
         repository: gitRepo.data.full_name,
         // TODO: Set selected template
         template: 'webapp',
+        paymentAddress: data.paymentAddress,
+        txHash: data.txHash
       }, lrn, auctionParams, environmentVariables);
 
       if (!project || !project.id) {
@@ -1324,6 +1332,30 @@ export class Service {
     return false;
   }
 
+  async returnUserFundsByProjectId(projectId: string, winningDeployersPresent: boolean) {
+    const project = await this.db.getProjectById(projectId);
+
+    if (!project || !project.auctionId) {
+      log(`Project ${projectId} ${!project ? 'not found' : 'does not have an auction'}`);
+
+      return false;
+    }
+
+    const auction = await this.getAuctionData(project.auctionId);
+
+    let amountToBeReturned;
+    if (winningDeployersPresent) {
+      amountToBeReturned = auction.winnerPrice * auction.numProviders;
+    } else {
+      amountToBeReturned = auction.maxPrice * auction.numProviders;
+    }
+
+    await this.laconicRegistry.sendTokensToAccount(
+      project.paymentAddress,
+      amountToBeReturned.toString()
+    );
+  }
+
   async getDeployers(): Promise<Deployer[]> {
     const dbDeployers = await this.db.getDeployers();
 
@@ -1352,13 +1384,15 @@ export class Service {
         const deployerId = record.id;
         const deployerLrn = record.names[0];
         const deployerApiUrl = record.attributes.apiUrl;
+        const minimumPayment = record.attributes.minimumPayment
         const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
 
         const deployerData = {
           deployerLrn,
           deployerId,
           deployerApiUrl,
-          baseDomain
+          baseDomain,
+          minimumPayment
         };
 
         // TODO: Update deployers table in a separate job
@@ -1368,5 +1402,33 @@ export class Service {
     }
 
     return deployers;
+  }
+
+  async getAddress(): Promise<any> {
+    const account = await this.laconicRegistry.getAccount();
+
+    return account.address;
+  }
+
+  async verifyTx(txHash: string, amountSent: string, senderAddress: string): Promise<boolean> {
+    const txResponse = await this.laconicRegistry.getTxResponse(txHash);
+    if (!txResponse) {
+      log('Transaction response not found');
+      return false;
+    }
+
+    const transfer = txResponse.events.find(e => e.type === 'transfer' && e.attributes.some(a => a.key === 'msg_index'));
+    if (!transfer) {
+      log('No transfer event found');
+      return false;
+    }
+
+    const sender = transfer.attributes.find(a => a.key === 'sender')?.value;
+    const recipient = transfer.attributes.find(a => a.key === 'recipient')?.value;
+    const amount = transfer.attributes.find(a => a.key === 'amount')?.value;
+
+    const recipientAddress = await this.getAddress();
+
+    return amount === amountSent && sender === senderAddress && recipient === recipientAddress;
   }
 }

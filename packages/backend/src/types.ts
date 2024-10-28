@@ -70,6 +70,8 @@ export interface AddProjectFromTemplateInput {
   owner: string;
   name: string;
   isPrivate: boolean;
+  paymentAddress: string;
+  txHash: string;
 }
 
 export interface AuctionParams {
@@ -92,6 +94,7 @@ export interface DeployerRecord {
   expiryTime: string;
   attributes: {
     apiUrl: string;
+    minimumPayment: string | null;
     name: string;
     paymentAddress: string;
     publicKey: string;

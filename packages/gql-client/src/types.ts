@@ -119,6 +119,7 @@ export type Deployer = {
   deployerLrn: string;
   deployerId: string;
   deployerApiUrl: string;
+  minimumPayment: string | null;
 }
 
 export type OrganizationMember = {
@@ -177,6 +178,8 @@ export type Project = {
   framework: string;
   deployers: [Deployer]
   auctionId: string;
+  paymentAddress: string;
+  txHash: string;
   fundsReleased: boolean;
   webhooks: string[];
   members: ProjectMember[];
@@ -306,6 +309,8 @@ export type AddProjectFromTemplateInput = {
   owner: string;
   name: string;
   isPrivate: boolean;
+  paymentAddress: string;
+  txHash: string;
 };
 
 export type AddProjectInput = {
@@ -313,6 +318,8 @@ export type AddProjectInput = {
   repository: string;
   prodBranch: string;
   template?: string;
+  paymentAddress: string;
+  txHash: string;
 };
 
 export type UpdateProjectInput = {

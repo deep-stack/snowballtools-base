@@ -41,6 +41,7 @@ record:
       LACONIC_HOSTED_CONFIG_github_pwa_templaterepo: snowball-tools/test-progressive-web-app
       LACONIC_HOSTED_CONFIG_github_image_upload_templaterepo: snowball-tools/image-upload-pwa-example
       LACONIC_HOSTED_CONFIG_wallet_connect_id: eda9ba18042a5ea500f358194611ece2
+      LACONIC_HOSTED_CONFIG_laconicd_chain_id: laconic-testnet-2
       LACONIC_HOSTED_CONFIG_lit_relay_api_key: 15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball
       LACONIC_HOSTED_CONFIG_aplchemy_api_key: THvPart_gqI5x02RNYSBntlmwA66I_qc
       LACONIC_HOSTED_CONFIG_bugsnag_api_key: 8c480cd5386079f9dd44f9581264a073

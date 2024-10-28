@@ -77,6 +77,8 @@ type Project {
   fundsReleased: Boolean
   template: String
   framework: String
+  paymentAddress: String!
+  txHash: String!
   webhooks: [String!]
   members: [ProjectMember!]
   environmentVariables: [EnvironmentVariable!]
@@ -137,6 +139,7 @@ type Deployer {
   deployerLrn: String!
   deployerId: String!
   deployerApiUrl: String!
+  minimumPayment: String
   createdAt: String!
   updatedAt: String!
 }
@@ -157,6 +160,8 @@ input AddProjectFromTemplateInput {
   owner: String!
   name: String!
   isPrivate: Boolean!
+  paymentAddress: String!
+  txHash: String!
 }
 
 input AddProjectInput {
@@ -164,6 +169,8 @@ input AddProjectInput {
   repository: String!
   prodBranch: String!
   template: String
+  paymentAddress: String!
+  txHash: String!
 }
 
 input UpdateProjectInput {
@@ -258,6 +265,8 @@ type Query {
   getAuctionData(auctionId: String!): Auction!
   domains(projectId: String!, filter: FilterDomainsInput): [Domain]
   deployers: [Deployer]
+  address: String!
+  verifyTx(txHash: String!, amount: String!, senderAddress: String!): Boolean!
 }
 
 type Mutation {

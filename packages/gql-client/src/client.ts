@@ -432,4 +432,25 @@ export class GQLClient {
 
     return data;
   }
+
+  async getAddress(): Promise<string> {
+    const { data } = await this.client.query({
+      query: queries.getAddress,
+    });
+
+    return data.address;
+  }
+
+  async verifyTx(txHash: string, amount: string, senderAddress: string): Promise<boolean> {
+    const { data: verifyTx } = await this.client.query({
+      query: queries.verifyTx,
+      variables: {
+        txHash,
+        amount,
+        senderAddress
+      }
+    });
+
+    return verifyTx;
+  }
 }

@@ -41,6 +41,3 @@
   revealFee = "100000"
   revealsDuration = "120s"
   denom = "alnt"
-
-[misc]
-  projectDomain = "apps.snowballtools.com"

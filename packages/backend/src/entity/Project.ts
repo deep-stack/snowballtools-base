@@ -66,6 +66,12 @@ export class Project {
   @Column('varchar', { nullable: true })
     framework!: string | null;
 
+  @Column('varchar')
+    paymentAddress!: string;
+
+  @Column('varchar')
+    txHash!: string;
+
   @Column({
     type: 'simple-array'
   })

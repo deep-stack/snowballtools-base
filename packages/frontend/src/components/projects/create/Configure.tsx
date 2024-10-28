@@ -22,6 +22,8 @@ import { useToast } from 'components/shared/Toast';
 import { useGQLClient } from '../../../context/GQLClientContext';
 import EnvironmentVariablesForm from 'pages/org-slug/projects/id/settings/EnvironmentVariablesForm';
 import { EnvironmentVariablesFormValues } from 'types/types';
+import ConnectWallet from './ConnectWallet';
+import { useWalletConnectClient } from 'context/WalletConnectContext';
 
 type ConfigureDeploymentFormValues = {
   option: string;
@@ -33,9 +35,17 @@ type ConfigureDeploymentFormValues = {
 type ConfigureFormValues = ConfigureDeploymentFormValues &
   EnvironmentVariablesFormValues;
 
+const DEFAULT_MAX_PRICE = '10000';
+
 const Configure = () => {
+  const { signClient, session, accounts } = useWalletConnectClient();
+
   const [isLoading, setIsLoading] = useState(false);
   const [deployers, setDeployers] = useState<Deployer[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<string>();
+  const [selectedDeployer, setSelectedDeployer] = useState<Deployer>();
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
 
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
@@ -55,7 +65,12 @@ const Configure = () => {
   const client = useGQLClient();
 
   const methods = useForm<ConfigureFormValues>({
-    defaultValues: { option: 'Auction' },
+    defaultValues: {
+      option: 'Auction',
+      maxPrice: DEFAULT_MAX_PRICE,
+      lrn: '',
+      numProviders: 1,
+    },
   });
 
   const selectedOption = methods.watch('option');
@@ -66,6 +81,8 @@ const Configure = () => {
   const createProject = async (
     data: FieldValues,
     envVariables: AddEnvironmentVariableInput[],
+    senderAddress: string,
+    txHash: string,
   ): Promise<string> => {
     setIsLoading(true);
     let projectId: string | null = null;
@@ -90,6 +107,8 @@ const Configure = () => {
           owner,
           name,
           isPrivate,
+          paymentAddress: senderAddress,
+          txHash,
         };
 
         const { addProjectFromTemplate } = await client.addProjectFromTemplate(
@@ -109,6 +128,8 @@ const Configure = () => {
             prodBranch: defaultBranch!,
             repository: fullName!,
             template: 'webapp',
+            paymentAddress: senderAddress,
+            txHash,
           },
           lrn,
           auctionParams,
@@ -136,8 +157,77 @@ const Configure = () => {
     }
   };
 
+  const verifyTx = async (
+    senderAddress: string,
+    txHash: string,
+    amount: string,
+  ): Promise<boolean> => {
+    const isValid = await client.verifyTx(
+      txHash,
+      `${amount.toString()}alnt`,
+      senderAddress,
+    );
+
+    return isValid;
+  };
+
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
+      if (!selectedAccount) {
+        return;
+      }
+
+      const senderAddress = selectedAccount;
+      const deployerLrn = createFormData.lrn;
+      const deployer = deployers.find(
+        (deployer) => deployer.deployerLrn === deployerLrn,
+      );
+
+      let amount: string;
+      let txHash: string;
+      if (createFormData.option === 'LRN' && !deployer?.minimumPayment) {
+        toast({
+          id: 'no-payment-required',
+          title: 'No payment required. Deploying app...',
+          variant: 'info',
+          onDismiss: dismiss,
+        });
+
+        txHash = '';
+      } else {
+        if (createFormData.option === 'LRN') {
+          amount = deployer?.minimumPayment!;
+        } else {
+          amount = (
+            createFormData.numProviders * createFormData.maxPrice
+          ).toString();
+        }
+
+        const amountToBePaid = amount.replace(/\D/g, '').toString();
+
+        const txHashResponse = await cosmosSendTokensHandler(
+          selectedAccount,
+          amountToBePaid,
+        );
+
+        if (!txHashResponse) {
+          console.error('Tx not successful');
+          return;
+        }
+
+        txHash = txHashResponse;
+
+        const isTxHashValid = await verifyTx(
+          senderAddress,
+          txHash,
+          amount.toString(),
+        );
+        if (isTxHashValid === false) {
+          console.error('Invalid Tx hash', txHash);
+          return;
+        }
+      }
+
       const environmentVariables = createFormData.variables.map(
         (variable: any) => {
           return {
@@ -153,6 +243,8 @@ const Configure = () => {
       const projectId = await createProject(
         createFormData,
         environmentVariables,
+        senderAddress.split(':')[2],
+        txHash,
       );
 
       await client.getEnvironmentVariables(projectId);
@@ -182,6 +274,83 @@ const Configure = () => {
     const res = await client.getDeployers();
     setDeployers(res.deployers);
   }, [client]);
+
+  const onAccountChange = useCallback((account: string) => {
+    setSelectedAccount(account);
+  }, []);
+
+  const onDeployerChange = useCallback((selectedLrn: string) => {
+    const deployer = deployers.find((d) => d.deployerLrn === selectedLrn);
+    setSelectedDeployer(deployer);
+  }, [deployers]);
+
+  const cosmosSendTokensHandler = useCallback(
+    async (selectedAccount: string, amount: string) => {
+      if (!signClient || !session || !selectedAccount) {
+        return;
+      }
+
+      const chainId = selectedAccount.split(':')[1];
+      const senderAddress = selectedAccount.split(':')[2];
+      const snowballAddress = await client.getAddress();
+
+      try {
+        setIsPaymentDone(false);
+        setIsPaymentLoading(true);
+
+        toast({
+          id: 'sending-payment-request',
+          title: 'Check your wallet and approve payment request',
+          variant: 'loading',
+          onDismiss: dismiss,
+        });
+
+        const result: { signature: string } = await signClient.request({
+          topic: session.topic,
+          chainId: `cosmos:${chainId}`,
+          request: {
+            method: 'cosmos_sendTokens',
+            params: [
+              {
+                from: senderAddress,
+                to: snowballAddress,
+                value: amount,
+              },
+            ],
+          },
+        });
+
+        if (!result) {
+          throw new Error('Error completing transaction');
+        }
+
+        toast({
+          id: 'payment-successful',
+          title: 'Payment successful',
+          variant: 'success',
+          onDismiss: dismiss,
+        });
+
+        setIsPaymentDone(true);
+
+        return result.signature;
+      } catch (error: any) {
+        console.error('Error sending tokens', error);
+
+        toast({
+          id: 'error-sending-tokens',
+          title: 'Error sending tokens',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
+
+        setIsPaymentDone(false);
+      } finally {
+        setIsPaymentLoading(false);
+      }
+    },
+    [session, signClient, toast],
+  );
 
   useEffect(() => {
     fetchDeployers();
@@ -249,7 +418,10 @@ const Configure = () => {
                       </span>
                       <Select
                         value={value}
-                        onChange={(event) => onChange(event.target.value)}
+                        onChange={(event) => {
+                          onChange(event.target.value);
+                          onDeployerChange(event.target.value);
+                        }}
                         displayEmpty
                         size="small"
                       >
@@ -258,7 +430,7 @@ const Configure = () => {
                             key={deployer.deployerLrn}
                             value={deployer.deployerLrn}
                           >
-                            {deployer.deployerLrn}
+                            {`${deployer.deployerLrn} ${deployer.minimumPayment ? `(${deployer.minimumPayment})` : ''}`}
                           </MenuItem>
                         ))}
                       </Select>
@@ -291,7 +463,11 @@ const Configure = () => {
                     control={methods.control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <Input type="number" value={value} onChange={onChange} />
+                      <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => onChange(e)}
+                      />
                     )}
                   />
                 </div>
@@ -318,22 +494,56 @@ const Configure = () => {
               <EnvironmentVariablesForm />
             </div>
 
-            <div>
-              <Button
-                {...buttonSize}
-                type="submit"
-                disabled={isLoading}
-                rightIcon={
-                  isLoading ? (
-                    <LoadingIcon className="animate-spin" />
-                  ) : (
-                    <ArrowRightCircleFilledIcon />
-                  )
-                }
-              >
-                {isLoading ? 'Deploying repo' : 'Deploy repo'}
-              </Button>
-            </div>
+            {selectedOption === 'LRN' &&
+            !selectedDeployer?.minimumPayment ? (
+              <div>
+                <Button
+                  {...buttonSize}
+                  type="submit"
+                  disabled={isLoading}
+                  rightIcon={
+                    isLoading ? (
+                      <LoadingIcon className="animate-spin" />
+                    ) : (
+                      <ArrowRightCircleFilledIcon />
+                    )
+                  }
+                >
+                  {isLoading ? 'Deploying' : 'Deploy'}
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Heading as="h4" className="md:text-lg font-medium mb-3">
+                  Connect to your wallet
+                </Heading>
+                <ConnectWallet onAccountChange={onAccountChange} />
+                {accounts && accounts?.length > 0 && (
+                  <div>
+                    <Button
+                      {...buttonSize}
+                      type="submit"
+                      disabled={isLoading || isPaymentLoading}
+                      rightIcon={
+                        isLoading || isPaymentLoading ? (
+                          <LoadingIcon className="animate-spin" />
+                        ) : (
+                          <ArrowRightCircleFilledIcon />
+                        )
+                      }
+                    >
+                      {!isPaymentDone
+                        ? isPaymentLoading
+                          ? 'Transaction Requested'
+                          : 'Pay and Deploy'
+                        : isLoading
+                          ? 'Deploying'
+                          : 'Deploy'}
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
           </form>
         </FormProvider>
       </div>

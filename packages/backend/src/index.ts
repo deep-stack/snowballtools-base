@@ -17,7 +17,7 @@ const log = debug('snowball:server');
 const OAUTH_CLIENT_TYPE = 'oauth-app';
 
 export const main = async (): Promise<void> => {
-  const { server, database, gitHub, registryConfig, misc } = await getConfig();
+  const { server, database, gitHub, registryConfig } = await getConfig();
 
   const app = new OAuthApp({
     clientType: OAUTH_CLIENT_TYPE,

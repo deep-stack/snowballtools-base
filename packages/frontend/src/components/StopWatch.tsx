@@ -17,15 +17,13 @@ interface StopwatchProps extends Omit<FormatMilliSecondProps, 'time'> {
 }
 
 const Stopwatch = ({ offsetTimestamp, isPaused, ...props }: StopwatchProps) => {
-  const { totalSeconds, pause } = useStopwatch({
+  const { totalSeconds, pause, start } = useStopwatch({
     autoStart: true,
     offsetTimestamp: offsetTimestamp,
   });
 
   useEffect(() => {
-    if (isPaused) {
-      pause();
-    }
+    isPaused ? pause() : start();
   }, [isPaused]);
 
   return <FormatMillisecond time={totalSeconds * 1000} {...props} />;

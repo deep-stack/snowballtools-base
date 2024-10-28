@@ -28,7 +28,10 @@ query ($projectId: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
+    paymentAddress
+    txHash
     fundsReleased
     framework
     repository
@@ -84,7 +87,10 @@ query ($organizationSlug: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
+    paymentAddress
+    txHash
     fundsReleased
     prodBranch
     webhooks
@@ -148,6 +154,7 @@ query ($projectId: String!)  {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
     environment
     isCurrent
@@ -211,7 +218,10 @@ query ($searchText: String!) {
       deployerLrn
       deployerId
       deployerApiUrl
+      minimumPayment
     }
+    paymentAddress
+    txHash
     fundsReleased
     prodBranch
     webhooks
@@ -314,6 +324,19 @@ query {
     deployerLrn
     deployerId
     deployerApiUrl
+    minimumPayment
   }
+}
+`;
+
+export const getAddress = gql`
+query {
+  address
+}
+`;
+
+export const verifyTx = gql`
+query ($txHash: String!, $amount: String!, $senderAddress: String!) {
+  verifyTx(txHash: $txHash, amount: $amount, senderAddress: $senderAddress)
 }
 `;

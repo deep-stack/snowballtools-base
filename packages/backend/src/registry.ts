@@ -5,7 +5,8 @@ import { Octokit } from 'octokit';
 import { inc as semverInc } from 'semver';
 import { DeepPartial } from 'typeorm';
 
-import { Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { IndexedTx } from '@cosmjs/stargate';
 
 import { RegistryConfig } from './config';
 import {
@@ -481,6 +482,36 @@ export class Registry {
 
   async getAuctionData(auctionId: string): Promise<any> {
     return this.registry.getAuctionsByIds([auctionId]);
+  }
+
+  async sendTokensToAccount(receiverAddress: string, amount: string): Promise<any> {
+    const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
+    await registryTransactionWithRetry(() =>
+      this.registry.sendCoins(
+        {
+          amount,
+          denom: 'alnt',
+          destinationAddress: receiverAddress
+        },
+        this.registryConfig.privateKey,
+        fee
+      )
+    );
+  }
+
+  async getAccount(): Promise<Account> {
+    const account = new Account(Buffer.from(this.registryConfig.privateKey, 'hex'));
+    await account.init();
+
+    return account;
+  }
+
+  async getTxResponse(txHash: string): Promise<IndexedTx | null> {
+    const account = await this.getAccount();
+    const laconicClient = await this.registry.getLaconicClient(account);
+    const txResponse: IndexedTx | null = await laconicClient.getTx(txHash);
+
+    return txResponse;
   }
 
   getLrn(appName: string): string {
