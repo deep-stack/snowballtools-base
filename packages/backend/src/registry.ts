@@ -490,7 +490,7 @@ export class Registry {
       this.registry.sendCoins(
         {
           amount,
-          denom: 'tlnt',
+          denom: 'alnt',
           destinationAddress: receiverAddress
         },
         this.registryConfig.privateKey,
