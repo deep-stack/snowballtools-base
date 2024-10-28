@@ -17,7 +17,7 @@ interface StopwatchProps extends Omit<FormatMilliSecondProps, 'time'> {
 }
 
 const Stopwatch = ({ offsetTimestamp, isPaused, ...props }: StopwatchProps) => {
-  const { totalSeconds, pause } = useStopwatch({
+  const { totalSeconds, pause, start } = useStopwatch({
     autoStart: true,
     offsetTimestamp: offsetTimestamp,
   });
@@ -25,6 +25,8 @@ const Stopwatch = ({ offsetTimestamp, isPaused, ...props }: StopwatchProps) => {
   useEffect(() => {
     if (isPaused) {
       pause();
+    } else {
+      start();
     }
   }, [isPaused]);
 
