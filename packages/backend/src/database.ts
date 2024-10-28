@@ -13,7 +13,7 @@ import assert from 'assert';
 import { customAlphabet } from 'nanoid';
 import { lowercase, numbers } from 'nanoid-dictionary';
 
-import { DatabaseConfig, MiscConfig } from './config';
+import { DatabaseConfig } from './config';
 import { User } from './entity/User';
 import { Organization } from './entity/Organization';
 import { Project } from './entity/Project';

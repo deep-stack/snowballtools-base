@@ -51,21 +51,10 @@ export interface AuctionConfig {
   denom: string;
 }
 
-export interface MiscConfig {
-  projectDomain: string;
-}
-
 export interface Config {
   server: ServerConfig;
   database: DatabaseConfig;
   gitHub: GitHubConfig;
   registryConfig: RegistryConfig;
   auction: AuctionConfig;
-  misc: MiscConfig;
-  turnkey: {
-    apiBaseUrl: string;
-    apiPublicKey: string;
-    apiPrivateKey: string;
-    defaultOrganizationId: string;
-  };
 }

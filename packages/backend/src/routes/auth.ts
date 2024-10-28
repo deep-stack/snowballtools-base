@@ -1,50 +1,50 @@
 import { Router } from 'express';
 import { SiweMessage } from 'siwe';
 import { Service } from '../service';
-import { authenticateUser, createUser } from '../turnkey-backend';
+// import { authenticateUser, createUser } from '../turnkey-backend';
 
 const router = Router();
 
 //
 // Turnkey
 //
-router.get('/registration/:email', async (req, res) => {
-  const service: Service = req.app.get('service');
-  const user = await service.getUserByEmail(req.params.email);
-  if (user) {
-    return res.send({ subOrganizationId: user?.subOrgId });
-  } else {
-    return res.sendStatus(204);
-  }
-});
+// router.get('/registration/:email', async (req, res) => {
+//   const service: Service = req.app.get('service');
+//   const user = await service.getUserByEmail(req.params.email);
+//   if (user) {
+//     return res.send({ subOrganizationId: user?.subOrgId });
+//   } else {
+//     return res.sendStatus(204);
+//   }
+// });
 
-router.post('/register', async (req, res) => {
-  console.log('Register', req.body);
-  const { email, challenge, attestation } = req.body;
-  const user = await createUser(req.app.get('service'), {
-    challenge,
-    attestation,
-    userEmail: email,
-    userName: email.split('@')[0],
-  });
-  req.session.address = user.id;
-  res.sendStatus(200);
-});
+// router.post('/register', async (req, res) => {
+//   console.log('Register', req.body);
+//   const { email, challenge, attestation } = req.body;
+//   const user = await createUser(req.app.get('service'), {
+//     challenge,
+//     attestation,
+//     userEmail: email,
+//     userName: email.split('@')[0],
+//   });
+//   req.session.address = user.id;
+//   res.sendStatus(200);
+// });
 
-router.post('/authenticate', async (req, res) => {
-  console.log('Authenticate', req.body);
-  const { signedWhoamiRequest } = req.body;
-  const user = await authenticateUser(
-    req.app.get('service'),
-    signedWhoamiRequest,
-  );
-  if (user) {
-    req.session.address = user.id;
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(401);
-  }
-});
+// router.post('/authenticate', async (req, res) => {
+//   console.log('Authenticate', req.body);
+//   const { signedWhoamiRequest } = req.body;
+//   const user = await authenticateUser(
+//     req.app.get('service'),
+//     signedWhoamiRequest,
+//   );
+//   if (user) {
+//     req.session.address = user.id;
+//     res.sendStatus(200);
+//   } else {
+//     res.sendStatus(401);
+//   }
+// });
 
 //
 // SIWE Auth
