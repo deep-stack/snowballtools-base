@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import assert from 'assert';
 import { SiweMessage, generateNonce } from 'siwe';
 import { WagmiProvider } from 'wagmi';
-import { arbitrum, mainnet } from 'wagmi/chains';
+import { mainnet } from 'wagmi/chains';
 import axios from 'axios';
 
 import { createWeb3Modal } from '@web3modal/wagmi/react';
@@ -36,7 +36,7 @@ const metadata = {
   url: window.location.origin,
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
 };
-const chains = [mainnet, arbitrum] as const;
+const chains = [mainnet] as const;
 const config = defaultWagmiConfig({
   chains,
   projectId: VITE_WALLET_CONNECT_ID,
