@@ -42,31 +42,31 @@ export const AuctionCard = ({ project }: { project: Project }) => {
       <LoadingIcon className="animate-spin" />
     );
 
-  const checkAuctionStatus = useCallback(async () => {
-    const result = await client.getAuctionData(project.auctionId);
-    setAuctionStatus(result.status);
-    setAuctionDetails(result);
-    setDeployers(project.deployers);
-    setFundsStatus(project.fundsReleased);
-  }, []);
+    const checkAuctionStatus = useCallback(async () => {
+      const result = await client.getAuctionData(project.auctionId);
+      setAuctionStatus(result.status);
+      setAuctionDetails(result);
+    }, [project.auctionId, project.deployers, project.fundsReleased]);
 
-  useEffect(() => {
-    if (auctionStatus !== 'completed') {
-      checkAuctionStatus();
-      const intervalId = setInterval(checkAuctionStatus, WAIT_DURATION);
-      return () => clearInterval(intervalId);
-    }
+    const fetchUpdatedProject = useCallback(async () => {
+      const updatedProject = await client.getProject(project.id);
+      setDeployers(updatedProject.project!.deployers!);
+      setFundsStatus(updatedProject.project!.fundsReleased!);
+    }, [project.id]);
 
-    if (auctionStatus === 'completed') {
-      const fetchUpdatedProject = async () => {
-        // Wait for 5 secs since the project is not immediately updated with deployer LRNs
-        await new Promise((resolve) => setTimeout(resolve, WAIT_DURATION));
-        const updatedProject = await client.getProject(project.id);
-        setDeployers(updatedProject.project?.deployers || []);
-      };
-      fetchUpdatedProject();
-    }
-  }, [auctionStatus, client]);
+    const fetchData = useCallback(async () => {
+      await Promise.all([checkAuctionStatus(), fetchUpdatedProject()]);
+    }, [checkAuctionStatus, fetchUpdatedProject]);
+
+    useEffect(() => {
+      fetchData();
+
+      const timerId = setInterval(() => {
+        fetchData();
+      }, WAIT_DURATION);
+
+      return () => clearInterval(timerId);
+    }, [fetchData]);
 
   const renderAuctionStatus = useCallback(
     () => (
