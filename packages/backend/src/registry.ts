@@ -5,8 +5,8 @@ import { Octokit } from 'octokit';
 import { inc as semverInc } from 'semver';
 import { DeepPartial } from 'typeorm';
 
-import { Account, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
-import { IndexedTx } from '@cosmjs/stargate';
+import { Account, DEFAULT_GAS_ESTIMATION_MULTIPLIER, Registry as LaconicRegistry, getGasPrice, parseGasAndFees } from '@cerc-io/registry-sdk';
+import { DeliverTxResponse, IndexedTx } from '@cosmjs/stargate';
 
 import { RegistryConfig } from './config';
 import {
@@ -248,7 +248,7 @@ export class Registry {
     lrn: string,
     environmentVariables: { [key: string]: string },
     dns: string,
-    payment: string
+    payment?: string | null
   }): Promise<{
     applicationDeploymentRequestId: string;
     applicationDeploymentRequestData: ApplicationDeploymentRequest;
@@ -268,7 +268,6 @@ export class Registry {
       name: `${applicationRecord.attributes.name}@${applicationRecord.attributes.app_version}`,
       application: `${lrn}@${applicationRecord.attributes.app_version}`,
       dns: data.dns,
-      payment: data.payment,
 
       // https://git.vdb.to/cerc-io/laconic-registry-cli/commit/129019105dfb93bebcea02fde0ed64d0f8e5983b
       config: JSON.stringify({
@@ -283,6 +282,7 @@ export class Registry {
       }),
       deployer: data.lrn,
       ...(data.auctionId && { auction: data.auctionId }),
+      ...(data.payment && { payment: data.payment }),
     };
 
     await sleep(SLEEP_DURATION);
@@ -430,6 +430,8 @@ export class Registry {
   async createApplicationDeploymentRemovalRequest(data: {
     deploymentId: string;
     deployerLrn: string;
+    auctionId?: string | null;
+    payment?: string | null;
   }): Promise<{
     applicationDeploymentRemovalRequestId: string;
     applicationDeploymentRemovalRequestData: ApplicationDeploymentRemovalRequest;
@@ -438,7 +440,9 @@ export class Registry {
       type: APP_DEPLOYMENT_REMOVAL_REQUEST_TYPE,
       version: '1.0.0',
       deployment: data.deploymentId,
-      deployer: data.deployerLrn
+      deployer: data.deployerLrn,
+      ...(data.auctionId && { auction: data.auctionId }),
+      ...(data.payment && { payment: data.payment }),
     };
 
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
@@ -486,19 +490,23 @@ export class Registry {
     return this.registry.getAuctionsByIds([auctionId]);
   }
 
-  async sendTokensToAccount(receiverAddress: string, amount: string): Promise<any> {
+  async sendTokensToAccount(receiverAddress: string, amount: string): Promise<DeliverTxResponse> {
     const fee = parseGasAndFees(this.registryConfig.fee.gas, this.registryConfig.fee.fees);
-    await registryTransactionWithRetry(() =>
-      this.registry.sendCoins(
-        {
-          amount,
-          denom: 'alnt',
-          destinationAddress: receiverAddress
-        },
-        this.registryConfig.privateKey,
-        fee
-      )
-    );
+    const account = await this.getAccount();
+    const laconicClient = await this.registry.getLaconicClient(account);
+    const txResponse: DeliverTxResponse =
+      await registryTransactionWithRetry(() =>
+        laconicClient.sendTokens(account.address, receiverAddress,
+          [
+            {
+              denom: 'alnt',
+              amount
+            }
+          ],
+          fee || DEFAULT_GAS_ESTIMATION_MULTIPLIER)
+      );
+
+    return txResponse;
   }
 
   async getAccount(): Promise<Account> {

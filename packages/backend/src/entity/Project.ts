@@ -52,6 +52,10 @@ export class Project {
   @Column('varchar', { nullable: true })
     auctionId!: string | null;
 
+  // Tx hash for sending coins from snowball to deployer
+  @Column('varchar', { nullable: true })
+    txHash!: string | null;
+
   @ManyToMany(() => Deployer, (deployer) => (deployer.projects))
   @JoinTable()
     deployers!: Deployer[]
@@ -66,11 +70,9 @@ export class Project {
   @Column('varchar', { nullable: true })
     framework!: string | null;
 
+  // Address of the user who created the project i.e. requested deployments
   @Column('varchar')
     paymentAddress!: string;
-
-  @Column('varchar')
-    txHash!: string;
 
   @Column({
     type: 'simple-array'
