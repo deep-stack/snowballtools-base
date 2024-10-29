@@ -41,7 +41,7 @@ const deployment: Deployment = {
     deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
     deployerLrn: 'lrn://example/deployers/webapp-deployer-api.example.com',
     minimumPayment: '1000alnt',
-    baseDomain: 'pwa.wireitin.com'
+    baseDomain: 'pwa.example.com'
   },
   status: DeploymentStatus.Ready,
   createdBy: {
