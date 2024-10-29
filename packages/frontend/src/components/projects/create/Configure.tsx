@@ -221,7 +221,7 @@ const Configure = () => {
         const isTxHashValid = await verifyTx(
           senderAddress,
           txHash,
-          amount.toString(),
+          amountToBePaid.toString(),
         );
 
         if (isTxHashValid === false) {
