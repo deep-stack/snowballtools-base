@@ -134,7 +134,7 @@ export const AuctionCard = ({ project }: { project: Project }) => {
                       size="xs"
                       type={fundsStatus ? 'positive' : 'emphasized'}
                     >
-                      {fundsStatus ? 'RELEASED' : 'LOCKED'}
+                      {fundsStatus ? 'RELEASED' : 'WAITING'}
                     </Tag>
                   </div>
                 </div>

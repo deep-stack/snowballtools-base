@@ -70,6 +70,7 @@ const Configure = () => {
       maxPrice: DEFAULT_MAX_PRICE,
       lrn: '',
       numProviders: 1,
+      variables: []
     },
   });
 
@@ -173,6 +174,7 @@ const Configure = () => {
 
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
+      try {
       const deployerLrn = createFormData.lrn;
       const deployer = deployers.find(
         (deployer) => deployer.deployerLrn === deployerLrn,
@@ -268,6 +270,15 @@ const Configure = () => {
               `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
             );
       }
+    } catch (error) {
+      console.error(error)
+      toast({
+        id: 'error-deploying-app',
+        title: 'Error deploying app',
+        variant: 'error',
+        onDismiss: dismiss,
+      });
+    }
     },
     [client, createProject, dismiss, toast],
   );
