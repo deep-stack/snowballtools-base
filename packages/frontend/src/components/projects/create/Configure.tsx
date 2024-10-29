@@ -70,7 +70,7 @@ const Configure = () => {
       maxPrice: DEFAULT_MAX_PRICE,
       lrn: '',
       numProviders: 1,
-      variables: []
+      variables: [],
     },
   });
 
@@ -175,110 +175,110 @@ const Configure = () => {
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
       try {
-      const deployerLrn = createFormData.lrn;
-      const deployer = deployers.find(
-        (deployer) => deployer.deployerLrn === deployerLrn,
-      );
-
-      let amount: string;
-      let senderAddress: string;
-      let txHash: string;
-      if (createFormData.option === 'LRN' && !deployer?.minimumPayment) {
-        toast({
-          id: 'no-payment-required',
-          title: 'No payment required. Deploying app...',
-          variant: 'info',
-          onDismiss: dismiss,
-        });
-
-        txHash = '';
-        senderAddress = '';
-      } else {
-        if (!selectedAccount) return;
-
-        senderAddress = selectedAccount.split(':')[2];
-
-        if (createFormData.option === 'LRN') {
-          amount = deployer?.minimumPayment!;
-        } else {
-          amount = (
-            createFormData.numProviders * createFormData.maxPrice
-          ).toString();
-        }
-
-        const amountToBePaid = amount.replace(/\D/g, '').toString();
-
-        const txHashResponse = await cosmosSendTokensHandler(
-          selectedAccount,
-          amountToBePaid,
+        const deployerLrn = createFormData.lrn;
+        const deployer = deployers.find(
+          (deployer) => deployer.deployerLrn === deployerLrn,
         );
 
-        if (!txHashResponse) {
-          console.error('Tx not successful');
-          return;
+        let amount: string;
+        let senderAddress: string;
+        let txHash: string;
+        if (createFormData.option === 'LRN' && !deployer?.minimumPayment) {
+          toast({
+            id: 'no-payment-required',
+            title: 'No payment required. Deploying app...',
+            variant: 'info',
+            onDismiss: dismiss,
+          });
+
+          txHash = '';
+          senderAddress = '';
+        } else {
+          if (!selectedAccount) return;
+
+          senderAddress = selectedAccount.split(':')[2];
+
+          if (createFormData.option === 'LRN') {
+            amount = deployer?.minimumPayment!;
+          } else {
+            amount = (
+              createFormData.numProviders * createFormData.maxPrice
+            ).toString();
+          }
+
+          const amountToBePaid = amount.replace(/\D/g, '').toString();
+
+          const txHashResponse = await cosmosSendTokensHandler(
+            selectedAccount,
+            amountToBePaid,
+          );
+
+          if (!txHashResponse) {
+            console.error('Tx not successful');
+            return;
+          }
+
+          txHash = txHashResponse;
+
+          const isTxHashValid = await verifyTx(
+            senderAddress,
+            txHash,
+            amountToBePaid.toString(),
+          );
+
+          if (isTxHashValid === false) {
+            console.error('Invalid Tx hash', txHash);
+            return;
+          }
         }
 
-        txHash = txHashResponse;
+        const environmentVariables = createFormData.variables.map(
+          (variable: any) => {
+            return {
+              key: variable.key,
+              value: variable.value,
+              environments: Object.entries(createFormData.environment)
+                .filter(([, value]) => value === true)
+                .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
+            };
+          },
+        );
 
-        const isTxHashValid = await verifyTx(
+        const projectId = await createProject(
+          createFormData,
+          environmentVariables,
           senderAddress,
           txHash,
-          amountToBePaid.toString(),
         );
 
-        if (isTxHashValid === false) {
-          console.error('Invalid Tx hash', txHash);
-          return;
+        await client.getEnvironmentVariables(projectId);
+
+        if (templateId) {
+          createFormData.option === 'Auction'
+            ? navigate(
+                `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+              )
+            : navigate(
+                `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
+              );
+        } else {
+          createFormData.option === 'Auction'
+            ? navigate(
+                `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
+              )
+            : navigate(
+                `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
+              );
         }
+      } catch (error) {
+        console.error(error);
+        toast({
+          id: 'error-deploying-app',
+          title: 'Error deploying app',
+          variant: 'error',
+          onDismiss: dismiss,
+        });
       }
-
-      const environmentVariables = createFormData.variables.map(
-        (variable: any) => {
-          return {
-            key: variable.key,
-            value: variable.value,
-            environments: Object.entries(createFormData.environment)
-              .filter(([, value]) => value === true)
-              .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1)),
-          };
-        },
-      );
-
-      const projectId = await createProject(
-        createFormData,
-        environmentVariables,
-        senderAddress,
-        txHash,
-      );
-
-      await client.getEnvironmentVariables(projectId);
-
-      if (templateId) {
-        createFormData.option === 'Auction'
-          ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
-          : navigate(
-              `/${orgSlug}/projects/create/template/deploy?projectId=${projectId}&templateId=${templateId}`,
-            );
-      } else {
-        createFormData.option === 'Auction'
-          ? navigate(
-              `/${orgSlug}/projects/create/success/${projectId}?isAuction=true`,
-            )
-          : navigate(
-              `/${orgSlug}/projects/create/deploy?projectId=${projectId}`,
-            );
-      }
-    } catch (error) {
-      console.error(error)
-      toast({
-        id: 'error-deploying-app',
-        title: 'Error deploying app',
-        variant: 'error',
-        onDismiss: dismiss,
-      });
-    }
     },
     [client, createProject, dismiss, toast],
   );
@@ -292,10 +292,13 @@ const Configure = () => {
     setSelectedAccount(account);
   }, []);
 
-  const onDeployerChange = useCallback((selectedLrn: string) => {
-    const deployer = deployers.find((d) => d.deployerLrn === selectedLrn);
-    setSelectedDeployer(deployer);
-  }, [deployers]);
+  const onDeployerChange = useCallback(
+    (selectedLrn: string) => {
+      const deployer = deployers.find((d) => d.deployerLrn === selectedLrn);
+      setSelectedDeployer(deployer);
+    },
+    [deployers],
+  );
 
   const cosmosSendTokensHandler = useCallback(
     async (selectedAccount: string, amount: string) => {
@@ -507,8 +510,7 @@ const Configure = () => {
               <EnvironmentVariablesForm />
             </div>
 
-            {selectedOption === 'LRN' &&
-            !selectedDeployer?.minimumPayment ? (
+            {selectedOption === 'LRN' && !selectedDeployer?.minimumPayment ? (
               <div>
                 <Button
                   {...buttonSize}
