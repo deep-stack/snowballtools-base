@@ -173,17 +173,13 @@ const Configure = () => {
 
   const handleFormSubmit = useCallback(
     async (createFormData: FieldValues) => {
-      if (!selectedAccount) {
-        return;
-      }
-
-      const senderAddress = selectedAccount;
       const deployerLrn = createFormData.lrn;
       const deployer = deployers.find(
         (deployer) => deployer.deployerLrn === deployerLrn,
       );
 
       let amount: string;
+      let senderAddress: string;
       let txHash: string;
       if (createFormData.option === 'LRN' && !deployer?.minimumPayment) {
         toast({
@@ -194,7 +190,12 @@ const Configure = () => {
         });
 
         txHash = '';
+        senderAddress = '';
       } else {
+        if (!selectedAccount) return;
+
+        senderAddress = selectedAccount.split(':')[2];
+
         if (createFormData.option === 'LRN') {
           amount = deployer?.minimumPayment!;
         } else {
@@ -222,6 +223,7 @@ const Configure = () => {
           txHash,
           amount.toString(),
         );
+
         if (isTxHashValid === false) {
           console.error('Invalid Tx hash', txHash);
           return;
@@ -243,7 +245,7 @@ const Configure = () => {
       const projectId = await createProject(
         createFormData,
         environmentVariables,
-        senderAddress.split(':')[2],
+        senderAddress,
         txHash,
       );
 
