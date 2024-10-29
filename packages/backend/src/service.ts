@@ -912,7 +912,7 @@ export class Service {
 
       if (deployer.minimumPayment && project.txHash) {
         const txResponse = await this.laconicRegistry.sendTokensToAccount(
-          deployer?.deployerAddress!,
+          deployer?.paymentAddress!,
           deployer?.minimumPayment
         );
 
@@ -1423,7 +1423,7 @@ export class Service {
         const deployerLrn = record.names[0];
         const deployerApiUrl = record.attributes.apiUrl;
         const minimumPayment = record.attributes.minimumPayment;
-        const deployerAddress = record.attributes.paymentAddress;
+        const paymentAddress = record.attributes.paymentAddress;
         const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
 
         const deployerData = {
@@ -1432,7 +1432,7 @@ export class Service {
           deployerApiUrl,
           baseDomain,
           minimumPayment,
-          deployerAddress
+          paymentAddress
         };
 
         // TODO: Update deployers table in a separate job

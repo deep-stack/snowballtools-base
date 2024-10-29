@@ -19,7 +19,7 @@ export class Deployer {
     minimumPayment!: string | null;
 
   @Column('varchar', { nullable: true })
-    deployerAddress!: string | null;
+  paymentAddress!: string | null;
 
   @ManyToMany(() => Project, (project) => project.deployers)
     projects!: Project[];
