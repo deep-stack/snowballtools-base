@@ -31,8 +31,8 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 const metadata = {
-  name: 'Web3Modal',
-  description: 'Snowball Web3Modal',
+  name: 'Deploy App Auth',
+  description: '',
   url: window.location.origin,
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
 };

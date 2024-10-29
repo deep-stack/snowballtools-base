@@ -140,6 +140,7 @@ export class Database {
       )
       .leftJoinAndSelect('deployments.createdBy', 'user')
       .leftJoinAndSelect('deployments.domain', 'domain')
+      .leftJoinAndSelect('deployments.deployer', 'deployer')
       .leftJoinAndSelect('project.owner', 'owner')
       .leftJoinAndSelect('project.deployers', 'deployers')
       .leftJoinAndSelect('project.organization', 'organization')

@@ -143,6 +143,7 @@ type Deployer {
   paymentAddress: String
   createdAt: String!
   updatedAt: String!
+  baseDomain: String
 }
 
 type AuthResult {

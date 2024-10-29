@@ -57,6 +57,9 @@ query ($projectId: String!) {
       commitHash
       createdAt
       environment
+      deployer {
+        baseDomain
+      }
       domain {
         status
         branch
