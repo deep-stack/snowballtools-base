@@ -1391,10 +1391,12 @@ export class Service {
       amountToBeReturned = totalAuctionPrice;
     }
 
-    await this.laconicRegistry.sendTokensToAccount(
-      project.paymentAddress,
-      amountToBeReturned.toString()
-    );
+    if (amountToBeReturned !== 0) {
+      await this.laconicRegistry.sendTokensToAccount(
+        project.paymentAddress,
+        amountToBeReturned.toString()
+      );
+    }
   }
 
   async getDeployers(): Promise<Deployer[]> {

@@ -324,7 +324,9 @@ export class Registry {
         paymentAddress: auctionWinner,
       });
 
-      const newRecords = records.filter(record => record.names !== null);
+      const newRecords = records.filter(record => {
+        return record.names !== null && record.names.length > 0;
+      });
 
       for (const record of newRecords) {
         if (record.id) {
