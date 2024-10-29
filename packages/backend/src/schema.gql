@@ -140,6 +140,7 @@ type Deployer {
   deployerId: String!
   deployerApiUrl: String!
   minimumPayment: String
+  paymentAddress: String
   createdAt: String!
   updatedAt: String!
 }
