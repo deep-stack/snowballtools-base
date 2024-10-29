@@ -919,6 +919,7 @@ export class Service {
         const txHash = txResponse.transactionHash;
         if (txHash) {
           await this.updateProject(project.id, { txHash });
+          project.txHash = txHash;
           log('Funds transferrend to deployer');
         }
       }
