@@ -649,7 +649,8 @@ export class Service {
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
         lrn: deployer!.deployerLrn!,
-        payment: data.project.txHash
+        payment: data.project.txHash,
+        auctionId: data.project.auctionId
       });
     }
 
@@ -661,7 +662,8 @@ export class Service {
         lrn: deployer!.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
-        payment: data.project.txHash
+        payment: data.project.txHash,
+        auctionId: data.project.auctionId
       });
 
     await this.db.updateDeploymentById(newDeployment.id, {
@@ -727,7 +729,6 @@ export class Service {
         dns: `${newDeployment.project.name}`,
         auctionId: project.auctionId!,
         lrn: deployerLrn,
-        payment: project.txHash
       });
     }
 
@@ -741,7 +742,6 @@ export class Service {
         lrn: deployerLrn,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
-        payment: project.txHash
       });
 
     await this.db.updateDeploymentById(newDeployment.id, {

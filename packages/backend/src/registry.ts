@@ -244,7 +244,7 @@ export class Registry {
     deployment: Deployment,
     appName: string,
     repository: string,
-    auctionId?: string,
+    auctionId?: string | null,
     lrn: string,
     environmentVariables: { [key: string]: string },
     dns: string,
