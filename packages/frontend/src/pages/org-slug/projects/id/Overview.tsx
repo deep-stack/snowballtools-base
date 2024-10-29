@@ -129,16 +129,16 @@ const OverviewTabPanel = () => {
             <Heading className="text-lg leading-6 font-medium truncate">
               {project.name}
             </Heading>
-            {project.baseDomains &&
-              project.baseDomains.length > 0 &&
-              project.baseDomains.map((baseDomain, index) => (
+            {project.deployments &&
+              project.deployments.length > 0 &&
+              project.deployments.map((deployment, index) => (
                 <p>
                   <a
                     key={index}
-                    href={`https://${project.name.toLowerCase()}.${baseDomain}`}
+                    href={`https://${project.name.toLowerCase()}.${deployment.deployer.baseDomain}`}
                     className="text-sm text-elements-low-em tracking-tight truncate"
                   >
-                    {baseDomain}
+                    {deployment.deployer.baseDomain}
                   </a>
                 </p>
               ))}

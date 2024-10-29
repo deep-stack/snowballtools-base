@@ -107,6 +107,7 @@ export const deployment0: Deployment = {
     deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
     deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
     minimumPayment: '1000alnt',
+    baseDomain: 'pwa.wireitin.com'
   },
   applicationDeploymentRequestId:
     'bafyreiaycvq6imoppnpwdve4smj6t6ql5svt5zl3x6rimu4qwyzgjorize',
@@ -134,6 +135,7 @@ export const project: Project = {
       deployerId: 'bafyreicrtgmkir4evvvysxdqxddf2ftdq2wrzuodgvwnxr4rmubi4obdfu',
       deployerLrn: 'lrn://deployer.apps.snowballtools.com ',
       minimumPayment: '1000alnt',
+      baseDomain: 'pwa.wireitin.com'
     },
   ],
   paymentAddress: '0x657868687686rb4787987br8497298r79284797487',

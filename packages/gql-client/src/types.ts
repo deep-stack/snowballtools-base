@@ -119,6 +119,7 @@ export type Deployer = {
   deployerLrn: string;
   deployerId: string;
   deployerApiUrl: string;
+  baseDomain: string;
   minimumPayment: string | null;
 }
 
