@@ -911,9 +911,11 @@ export class Service {
       }
 
       if (deployer.minimumPayment && project.txHash) {
+        const amountToBePaid = deployer?.minimumPayment.replace(/\D/g, '').toString();
+
         const txResponse = await this.laconicRegistry.sendTokensToAccount(
           deployer?.paymentAddress!,
-          deployer?.minimumPayment
+          amountToBePaid
         );
 
         const txHash = txResponse.transactionHash;
