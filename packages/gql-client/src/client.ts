@@ -442,7 +442,7 @@ export class GQLClient {
   }
 
   async verifyTx(txHash: string, amount: string, senderAddress: string): Promise<boolean> {
-    const { data: verifyTx } = await this.client.query({
+    const { data } = await this.client.query({
       query: queries.verifyTx,
       variables: {
         txHash,
@@ -451,6 +451,6 @@ export class GQLClient {
       }
     });
 
-    return verifyTx;
+    return data.verifyTx;
   }
 }

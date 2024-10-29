@@ -648,7 +648,9 @@ export class Service {
         repository: repoUrl,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}`,
-        lrn: deployer!.deployerLrn!
+        lrn: deployer!.deployerLrn!,
+        payment: data.project.txHash,
+        auctionId: data.project.auctionId
       });
     }
 
@@ -660,6 +662,8 @@ export class Service {
         lrn: deployer!.deployerLrn!,
         environmentVariables: environmentVariablesObj,
         dns: `${newDeployment.project.name}-${newDeployment.id}`,
+        payment: data.project.txHash,
+        auctionId: data.project.auctionId
       });
 
     await this.db.updateDeploymentById(newDeployment.id, {
@@ -886,21 +890,53 @@ export class Service {
       per_page: 1,
     });
 
-    // Create deployment with prod branch and latest commit
-    const deploymentData = {
-      project,
-      branch: project.prodBranch,
-      environment: Environment.Production,
-      domain: null,
-      commitHash: latestCommit.sha,
-      commitMessage: latestCommit.commit.message,
-    };
-
     if (auctionParams) {
+      // Create deployment with prod branch and latest commit
+      const deploymentData = {
+        project,
+        branch: project.prodBranch,
+        environment: Environment.Production,
+        domain: null,
+        commitHash: latestCommit.sha,
+        commitMessage: latestCommit.commit.message,
+      };
       const { applicationDeploymentAuctionId } = await this.laconicRegistry.createApplicationDeploymentAuction(repo, octokit, auctionParams!, deploymentData);
       await this.updateProject(project.id, { auctionId: applicationDeploymentAuctionId });
     } else {
-      const newDeployment = await this.createDeployment(user.id, octokit, deploymentData, lrn);
+      const deployer = await this.db.getDeployerByLRN(lrn!);
+
+      if (!deployer) {
+        log('Invalid deployer LRN');
+        return;
+      }
+
+      if (deployer.minimumPayment && project.txHash) {
+        const amountToBePaid = deployer?.minimumPayment.replace(/\D/g, '').toString();
+
+        const txResponse = await this.laconicRegistry.sendTokensToAccount(
+          deployer?.paymentAddress!,
+          amountToBePaid
+        );
+
+        const txHash = txResponse.transactionHash;
+        if (txHash) {
+          await this.updateProject(project.id, { txHash });
+          project.txHash = txHash;
+          log('Funds transferrend to deployer');
+        }
+      }
+
+      const deploymentData = {
+        project,
+        branch: project.prodBranch,
+        environment: Environment.Production,
+        domain: null,
+        commitHash: latestCommit.sha,
+        commitMessage: latestCommit.commit.message,
+        deployer
+      };
+
+      const newDeployment = await this.createDeployment(user.id, octokit, deploymentData);
       // Update project with deployer
       await this.updateProjectWithDeployer(newDeployment.projectId, newDeployment.deployer);
     }
@@ -1141,14 +1177,18 @@ export class Service {
 
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: latestRecord.id,
-          deployerLrn: deployment.deployer.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn,
+          auctionId: deployment.project.auctionId,
+          payment: deployment.project.txHash
         });
       }
 
       const result =
         await this.laconicRegistry.createApplicationDeploymentRemovalRequest({
           deploymentId: deployment.applicationDeploymentRecordId,
-          deployerLrn: deployment.deployer.deployerLrn
+          deployerLrn: deployment.deployer.deployerLrn,
+          auctionId: deployment.project.auctionId,
+          payment: deployment.project.txHash
         });
 
       await this.db.updateDeploymentById(deployment.id, {
@@ -1342,18 +1382,21 @@ export class Service {
     }
 
     const auction = await this.getAuctionData(project.auctionId);
+    const totalAuctionPrice = Number(auction.maxPrice.quantity) * auction.numProviders;
 
     let amountToBeReturned;
     if (winningDeployersPresent) {
-      amountToBeReturned = auction.winnerPrice * auction.numProviders;
+      amountToBeReturned = totalAuctionPrice - auction.winnerAddresses.length * Number(auction.winnerPrice.quantity);
     } else {
-      amountToBeReturned = auction.maxPrice * auction.numProviders;
+      amountToBeReturned = totalAuctionPrice;
     }
 
-    await this.laconicRegistry.sendTokensToAccount(
-      project.paymentAddress,
-      amountToBeReturned.toString()
-    );
+    if (amountToBeReturned !== 0) {
+      await this.laconicRegistry.sendTokensToAccount(
+        project.paymentAddress,
+        amountToBeReturned.toString()
+      );
+    }
   }
 
   async getDeployers(): Promise<Deployer[]> {
@@ -1384,7 +1427,8 @@ export class Service {
         const deployerId = record.id;
         const deployerLrn = record.names[0];
         const deployerApiUrl = record.attributes.apiUrl;
-        const minimumPayment = record.attributes.minimumPayment
+        const minimumPayment = record.attributes.minimumPayment;
+        const paymentAddress = record.attributes.paymentAddress;
         const baseDomain = deployerApiUrl.substring(deployerApiUrl.indexOf('.') + 1);
 
         const deployerData = {
@@ -1392,7 +1436,8 @@ export class Service {
           deployerId,
           deployerApiUrl,
           baseDomain,
-          minimumPayment
+          minimumPayment,
+          paymentAddress
         };
 
         // TODO: Update deployers table in a separate job
