@@ -407,8 +407,13 @@ export class Service {
     return dbOrganizations;
   }
 
-  async getProjectById(projectId: string): Promise<Project | null> {
+  async getProjectById(user: User, projectId: string): Promise<Project | null> {
     const dbProject = await this.db.getProjectById(projectId);
+
+    if (dbProject && dbProject.owner.id !== user.id) {
+      return null;
+    }
+
     return dbProject;
   }
 

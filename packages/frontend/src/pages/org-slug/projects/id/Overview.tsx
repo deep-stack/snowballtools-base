@@ -180,14 +180,18 @@ const OverviewTabPanel = () => {
 
             {/* DEPLOYMENT */}
             <OverviewInfo label="Deployment URL" icon={<CursorBoxIcon />}>
+            {project.deployments &&
+              project.deployments.length > 0 &&
+              project.deployments.map((deployment) => (
               <div className="flex gap-2 items-center">
-                <Link to="#">
+                <Link to={`https://${project.name.toLowerCase()}.${deployment.deployer.baseDomain}`}>
                   <span className="text-controls-primary group hover:border-controls-primary transition-colors border-b border-b-transparent flex gap-2 items-center text-sm tracking-tight">
-                    {liveDomain?.name}{' '}
+                    {`https://${project.name.toLowerCase()}.${deployment.deployer.baseDomain}`}
                     <LinkIcon className="group-hover:rotate-45 transition-transform" />
                   </span>
                 </Link>
               </div>
+            ))}
             </OverviewInfo>
 
             {/* DEPLOYMENT DATE */}

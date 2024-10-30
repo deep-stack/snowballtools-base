@@ -92,9 +92,13 @@ const Id = () => {
                   Open repo
                 </Button>
               </Link>
-              <Button {...buttonSize} className="h-11 transition-colors">
-                Go to app
-              </Button>
+              {(project.deployments.length > 0) &&
+                <Link to={`https://${project.name.toLowerCase()}.${project.deployments[0].deployer.baseDomain}`}>
+                  <Button {...buttonSize} className="h-11 transition-colors">
+                    Go to app
+                  </Button>
+                </Link>
+              }
             </div>
           </div>
           <WavyBorder />

@@ -42,31 +42,31 @@ export const AuctionCard = ({ project }: { project: Project }) => {
       <LoadingIcon className="animate-spin" />
     );
 
-    const checkAuctionStatus = useCallback(async () => {
-      const result = await client.getAuctionData(project.auctionId);
-      setAuctionStatus(result.status);
-      setAuctionDetails(result);
-    }, [project.auctionId, project.deployers, project.fundsReleased]);
+  const checkAuctionStatus = useCallback(async () => {
+    const result = await client.getAuctionData(project.auctionId);
+    setAuctionStatus(result.status);
+    setAuctionDetails(result);
+  }, [project.auctionId, project.deployers, project.fundsReleased]);
 
-    const fetchUpdatedProject = useCallback(async () => {
-      const updatedProject = await client.getProject(project.id);
-      setDeployers(updatedProject.project!.deployers!);
-      setFundsStatus(updatedProject.project!.fundsReleased!);
-    }, [project.id]);
+  const fetchUpdatedProject = useCallback(async () => {
+    const updatedProject = await client.getProject(project.id);
+    setDeployers(updatedProject.project!.deployers!);
+    setFundsStatus(updatedProject.project!.fundsReleased!);
+  }, [project.id]);
 
-    const fetchData = useCallback(async () => {
-      await Promise.all([checkAuctionStatus(), fetchUpdatedProject()]);
-    }, [checkAuctionStatus, fetchUpdatedProject]);
+  const fetchData = useCallback(async () => {
+    await Promise.all([checkAuctionStatus(), fetchUpdatedProject()]);
+  }, [checkAuctionStatus, fetchUpdatedProject]);
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchData();
+
+    const timerId = setInterval(() => {
       fetchData();
+    }, WAIT_DURATION);
 
-      const timerId = setInterval(() => {
-        fetchData();
-      }, WAIT_DURATION);
-
-      return () => clearInterval(timerId);
-    }, [fetchData]);
+    return () => clearInterval(timerId);
+  }, [fetchData]);
 
   const renderAuctionStatus = useCallback(
     () => (

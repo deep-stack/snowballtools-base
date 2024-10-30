@@ -22,8 +22,8 @@ export const createResolvers = async (service: Service): Promise<any> => {
         return service.getOrganizationsByUserId(context.user);
       },
 
-      project: async (_: any, { projectId }: { projectId: string }) => {
-        return service.getProjectById(projectId);
+      project: async (_: any, { projectId }: { projectId: string }, context: any) => {
+        return service.getProjectById(context.user, projectId);
       },
 
       projectsInOrganization: async (

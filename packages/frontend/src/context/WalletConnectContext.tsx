@@ -10,7 +10,6 @@ import {
 import SignClient from '@walletconnect/sign-client';
 import { getSdkError } from '@walletconnect/utils';
 import { SessionTypes } from '@walletconnect/types';
-import { StargateClient } from '@cosmjs/stargate';
 
 import { walletConnectModal } from '../utils/web3modal';
 import {
@@ -45,10 +44,6 @@ export const WalletConnectClientProvider = ({
   const [accounts, setAccounts] = useState<{ address: string }[]>();
 
   const isSignClientInitializing = useRef<boolean>(false);
-
-  const createCosmosClient = useCallback(async (endpoint: string) => {
-    return await StargateClient.connect(endpoint);
-  }, []);
 
   const onSessionConnect = useCallback(async (session: SessionTypes.Struct) => {
     setSession(session);
@@ -166,6 +161,11 @@ export const WalletConnectClientProvider = ({
       if (!session) {
         return;
       }
+      if (!session.namespaces['cosmos']) {
+        console.log('Accounts for cosmos namespace not found');
+        return;
+      }
+
       const cosmosAddresses = session.namespaces['cosmos'].accounts;
 
       const cosmosAccounts = cosmosAddresses.map((address) => ({
@@ -178,7 +178,7 @@ export const WalletConnectClientProvider = ({
     };
 
     populateAccounts();
-  }, [session, createCosmosClient]);
+  }, [session]);
 
   useEffect(() => {
     if (!signClient) {
