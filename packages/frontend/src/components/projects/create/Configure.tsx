@@ -515,7 +515,7 @@ const Configure = () => {
                 <Button
                   {...buttonSize}
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !selectedDeployer || !selectedAccount}
                   rightIcon={
                     isLoading ? (
                       <LoadingIcon className="animate-spin" />
