@@ -16,7 +16,7 @@ const ConnectWallet = ({
 
   return (
     <div className="p-4 bg-slate-100 rounded-lg mb-6">
-      {!accounts ? (
+      {accounts.length === 0 ? (
         <div>
           <Button type={'button'} onClick={handleConnect}>
             Connect Wallet
