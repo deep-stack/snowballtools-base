@@ -533,7 +533,7 @@ const Configure = () => {
                   Connect to your wallet
                 </Heading>
                 <ConnectWallet onAccountChange={onAccountChange} />
-                {accounts && accounts?.length > 0 && (
+                {accounts.length > 0 && (
                   <div>
                     <Button
                       {...buttonSize}

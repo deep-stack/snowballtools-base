@@ -24,7 +24,7 @@ interface ClientInterface {
   onConnect: () => Promise<void>;
   onDisconnect: () => Promise<void>;
   onSessionDelete: () => void;
-  accounts: { address: string }[] | undefined;
+  accounts: { address: string }[];
 }
 
 const ClientContext = createContext({} as ClientInterface);
@@ -41,7 +41,7 @@ export const WalletConnectClientProvider = ({
   const [signClient, setSignClient] = useState<SignClient>();
   const [session, setSession] = useState<SessionTypes.Struct>();
   const [loadingSession, setLoadingSession] = useState(true);
-  const [accounts, setAccounts] = useState<{ address: string }[]>();
+  const [accounts, setAccounts] = useState<{ address: string }[]>([]);
 
   const isSignClientInitializing = useRef<boolean>(false);
 
@@ -103,7 +103,7 @@ export const WalletConnectClientProvider = ({
   }, [signClient, session]);
 
   const onSessionDelete = () => {
-    setAccounts(undefined);
+    setAccounts([]);
     setSession(undefined);
   };
 

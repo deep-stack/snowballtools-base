@@ -16,7 +16,7 @@ import { Heading } from '../../shared/Heading';
 import { MockConnectGitCard } from './MockConnectGitCard';
 import { VITE_GITHUB_CLIENT_ID } from 'utils/constants';
 
-const SCOPES = 'repo user';
+const SCOPES = 'public_repo user';
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${VITE_GITHUB_CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}`;
 
 interface ConnectAccountInterface {

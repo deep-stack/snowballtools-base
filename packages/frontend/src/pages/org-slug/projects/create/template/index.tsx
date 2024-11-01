@@ -135,7 +135,7 @@ const CreateRepo = () => {
       framework: 'React',
       repoName: '',
       isPrivate: false,
-      account: gitAccounts[0],
+      account: '',
     },
   });
 
